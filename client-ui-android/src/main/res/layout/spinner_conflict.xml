@@ -26,20 +26,12 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-    <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/text_field_conflict_text_field"
+    <Spinner
+            android:id="@+id/spinner_conflict_spinner"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="@dimen/list_item_padding"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
-
-        <com.google.android.material.textfield.TextInputEditText
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="text"/>
-    </com.google.android.material.textfield.TextInputLayout>
+            android:layout_height="wrap_content"/>
 
     <include
-            android:id="@+id/text_field_conflict_conflict"
+            android:id="@+id/spinner_conflict_conflict"
             layout="@layout/conflict_labels" />
 </LinearLayout>

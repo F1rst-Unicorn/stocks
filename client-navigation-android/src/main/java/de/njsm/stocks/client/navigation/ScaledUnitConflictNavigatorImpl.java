@@ -21,13 +21,20 @@
 
 package de.njsm.stocks.client.navigation;
 
-public interface ErrorListNavigator {
+import android.os.Bundle;
+import de.njsm.stocks.client.fragment.scaledunitconflict.ScaledUnitConflictFragmentArgs;
 
-    void showErrorDetails(long id);
+import javax.inject.Inject;
 
-    void resolveLocationEditConflict(long id);
+class ScaledUnitConflictNavigatorImpl extends BaseNavigator implements ScaledUnitConflictNavigator {
 
-    void resolveUnitEditConflict(long id);
+    @Inject
+    ScaledUnitConflictNavigatorImpl(NavigationArgConsumer navigationArgConsumer) {
+        super(navigationArgConsumer);
+    }
 
-    void resolveScaledUnitEditConflict(long id);
+    @Override
+    public long getErrorId(Bundle arguments) {
+        return ScaledUnitConflictFragmentArgs.fromBundle(arguments).getId();
+    }
 }

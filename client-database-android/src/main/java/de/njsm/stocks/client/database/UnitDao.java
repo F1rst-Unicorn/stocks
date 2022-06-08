@@ -36,11 +36,13 @@ abstract class UnitDao {
     abstract List<UnitDbEntity> getAll();
 
     @Query("select * " +
-            "from current_unit")
+            "from current_unit " +
+            "order by name")
     abstract Observable<List<UnitForListing>> getCurrentUnits();
 
     @Query("select * " +
-            "from current_unit")
+            "from current_unit " +
+            "order by name")
     abstract Observable<List<UnitForSelection>> getCurrentUnitsForSelection();
 
     @Query("select * from current_unit where id = :id")

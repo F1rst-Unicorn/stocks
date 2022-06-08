@@ -41,12 +41,16 @@ public abstract class ScaledUnitEditEntity implements IdFields, VersionFields, T
     @AutoValue.CopyAnnotations
     public abstract int scaledUnitId();
 
-    public static ScaledUnitEditEntity create(int id, int version, Instant transactionTime, BigDecimal scale, int unit, int scaledUnitId) {
-        return new AutoValue_ScaledUnitEditEntity(id, version, transactionTime, scale, unit, scaledUnitId);
+    @ColumnInfo(name = "execution_time")
+    @AutoValue.CopyAnnotations
+    public abstract Instant executionTime();
+
+    public static ScaledUnitEditEntity create(int id, int version, Instant transactionTime, Instant executionTime, BigDecimal scale, int unit, int scaledUnitId) {
+        return new AutoValue_ScaledUnitEditEntity(id, version, transactionTime, scale, unit, scaledUnitId, executionTime);
     }
 
     @Ignore
-    public static ScaledUnitEditEntity create(int scaledUnitId, int version, Instant transactionTime, BigDecimal scale, int unit) {
-        return new AutoValue_ScaledUnitEditEntity(0, version, transactionTime, scale, unit, scaledUnitId);
+    public static ScaledUnitEditEntity create(int scaledUnitId, int version, Instant transactionTime, Instant executionTime, BigDecimal scale, int unit) {
+        return new AutoValue_ScaledUnitEditEntity(0, version, transactionTime, scale, unit, scaledUnitId, executionTime);
     }
 }

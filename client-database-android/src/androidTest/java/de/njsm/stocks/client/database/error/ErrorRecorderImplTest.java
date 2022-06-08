@@ -292,6 +292,7 @@ public class ErrorRecorderImplTest extends DbTestCase {
         assertEquals(form.id(), scaledUnitEditEntity.id());
         assertEquals(form.version(), scaledUnitEditEntity.version());
         assertEquals(Instant.EPOCH, scaledUnitEditEntity.transactionTime());
+        assertEquals(getNow(), scaledUnitEditEntity.executionTime());
         assertEquals(form.scale(), scaledUnitEditEntity.scale());
         assertEquals(form.unit(), scaledUnitEditEntity.unit());
         List<ErrorEntity> errors = stocksDatabase.errorDao().getErrors();

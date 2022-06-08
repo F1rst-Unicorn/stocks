@@ -21,13 +21,22 @@
 
 package de.njsm.stocks.client.navigation;
 
-public interface ErrorListNavigator {
+import android.os.Bundle;
+import org.junit.Test;
 
-    void showErrorDetails(long id);
+import static org.junit.Assert.assertEquals;
 
-    void resolveLocationEditConflict(long id);
+public class ScaledUnitConflictNavigatorImplTest extends NavigationTest {
 
-    void resolveUnitEditConflict(long id);
+    @Test
+    public void argumentIsExtracted() {
+        ScaledUnitConflictNavigator uut = new ScaledUnitConflictNavigatorImpl(navigationArgConsumer);
+        Bundle input = new Bundle();
+        long expected = 42L;
+        input.putLong("id", expected);
 
-    void resolveScaledUnitEditConflict(long id);
+        long actual = uut.getErrorId(input);
+
+        assertEquals(expected, actual);
+    }
 }

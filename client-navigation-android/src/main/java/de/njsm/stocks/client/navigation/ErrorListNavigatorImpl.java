@@ -46,4 +46,9 @@ class ErrorListNavigatorImpl extends BaseNavigator implements ErrorListNavigator
     public void resolveUnitEditConflict(long id) {
         getNavigationArgConsumer().navigate(ErrorListFragmentDirections.actionNavFragmentErrorListToNavFragmentUnitConflict(id));
     }
+
+    @Override
+    public void resolveScaledUnitEditConflict(long id) {
+        getNavigationArgConsumer().navigate(ErrorListFragmentDirections.actionNavFragmentErrorListToNavFragmentScaledUnitConflict(id));
+    }
 }

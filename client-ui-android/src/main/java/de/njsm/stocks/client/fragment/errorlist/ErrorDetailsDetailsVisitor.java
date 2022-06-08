@@ -23,6 +23,7 @@ package de.njsm.stocks.client.fragment.errorlist;
 
 import de.njsm.stocks.client.business.entities.*;
 import de.njsm.stocks.client.presenter.ScaledUnitRenderStrategy;
+import de.njsm.stocks.client.presenter.UnitRenderStrategy;
 
 import javax.inject.Inject;
 
@@ -30,9 +31,12 @@ public class ErrorDetailsDetailsVisitor implements ErrorDetailsVisitor<Void, Str
 
     private final ScaledUnitRenderStrategy scaledUnitRenderStrategy;
 
+    private final UnitRenderStrategy unitRenderStrategy;
+
     @Inject
     ErrorDetailsDetailsVisitor() {
         this.scaledUnitRenderStrategy = new ScaledUnitRenderStrategy();
+        this.unitRenderStrategy = new UnitRenderStrategy();
     }
 
     @Override
@@ -57,17 +61,17 @@ public class ErrorDetailsDetailsVisitor implements ErrorDetailsVisitor<Void, Str
 
     @Override
     public String unitAddForm(UnitAddForm unitAddForm, Void input) {
-        return formatUnit(unitAddForm);
+        return unitRenderStrategy.render(unitAddForm);
     }
 
     @Override
     public String unitDeleteErrorDetails(UnitDeleteErrorDetails unitDeleteErrorDetails, Void input) {
-        return formatUnit(unitDeleteErrorDetails);
+        return unitRenderStrategy.render(unitDeleteErrorDetails);
     }
 
     @Override
     public String unitEditErrorDetails(UnitEditErrorDetails unitEditErrorDetails, Void input) {
-        return formatUnit(unitEditErrorDetails);
+        return unitRenderStrategy.render(unitEditErrorDetails);
     }
 
     @Override
@@ -83,9 +87,5 @@ public class ErrorDetailsDetailsVisitor implements ErrorDetailsVisitor<Void, Str
     @Override
     public String scaledUnitDeleteErrorDetails(ScaledUnitDeleteErrorDetails scaledUnitDeleteErrorDetails, Void input) {
         return scaledUnitRenderStrategy.render(scaledUnitDeleteErrorDetails);
-    }
-
-    private String formatUnit(UnitFields unit) {
-        return String.format("%s (%s)", unit.name(), unit.abbreviation());
     }
 }

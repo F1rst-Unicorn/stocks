@@ -22,37 +22,21 @@
 package de.njsm.stocks.client.fragment.view;
 
 import android.view.View;
-import android.widget.TextView;
 import androidx.annotation.StringRes;
 import com.google.android.material.textfield.TextInputLayout;
-import de.njsm.stocks.client.business.entities.conflict.ConflictData;
 import de.njsm.stocks.client.ui.R;
 
 import java.util.function.BiConsumer;
 
 import static de.njsm.stocks.client.fragment.view.ViewUtility.*;
 
-public class ConflictTextField {
-
-    private final View root;
+public class ConflictTextField extends ConflictField {
 
     private final TextInputLayout textInputField;
 
-    private final View conflictLayout;
-
-    private final TextView originalField;
-
-    private final TextView remoteField;
-
-    private final TextView localField;
-
     public ConflictTextField(View root) {
-        this.root = root;
+        super(root);
         textInputField = root.findViewById(R.id.text_field_conflict_text_field);
-        conflictLayout = root.findViewById(R.id.text_field_conflict_conflict);
-        originalField = root.findViewById(R.id.text_field_conflict_original_content);
-        remoteField = root.findViewById(R.id.text_field_conflict_remote_content);
-        localField = root.findViewById(R.id.text_field_conflict_local_content);
     }
 
     public void setEditorHint(@StringRes int id) {
@@ -76,17 +60,6 @@ public class ConflictTextField {
 
     public void addNonEmptyValidator(BiConsumer<TextInputLayout, Boolean> callback) {
         onEditorOf(textInputField, v -> v.addTextChangedListener(new NonEmptyValidator(textInputField, callback)));
-    }
-
-    public void hide() {
-        root.setVisibility(View.GONE);
-    }
-
-    public void showConflictInfo(ConflictData<String> data) {
-        conflictLayout.setVisibility(View.VISIBLE);
-        originalField.setText(data.original());
-        remoteField.setText(data.remote());
-        localField.setText(data.local());
     }
 
     public String get() {

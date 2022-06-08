@@ -30,8 +30,7 @@
             layout="@layout/text_field_conflict"
             android:id="@+id/fragment_scaled_unit_form_scale"/>
 
-    <Spinner
-            android:id="@+id/fragment_scaled_unit_form_unit"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+    <include
+            layout="@layout/spinner_conflict"
+            android:id="@+id/fragment_scaled_unit_form_unit"/>
 </LinearLayout>

@@ -112,19 +112,25 @@ class FakeNavigationModule {
 
     @Provides
     @Singleton
-    UnitEditNavigator  UnitEditNavigator() {
+    UnitEditNavigator UnitEditNavigator() {
         return mock(UnitEditNavigator.class);
     }
 
     @Provides
     @Singleton
-    UnitConflictNavigator  UnitConflictNavigator() {
+    UnitConflictNavigator UnitConflictNavigator() {
         return mock(UnitConflictNavigator.class);
     }
 
     @Provides
     @Singleton
-    ScaledUnitEditNavigator  ScaledUnitEditNavigator() {
+    ScaledUnitEditNavigator ScaledUnitEditNavigator() {
         return mock(ScaledUnitEditNavigator.class);
+    }
+
+    @Provides
+    @Singleton
+    ScaledUnitConflictNavigator ScaledUnitConflictNavigator() {
+        return mock(ScaledUnitConflictNavigator.class);
     }
 }

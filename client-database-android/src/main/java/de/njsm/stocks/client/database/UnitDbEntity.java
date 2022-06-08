@@ -68,6 +68,6 @@ public abstract class UnitDbEntity extends ServerDbEntity<UnitDbEntity> implemen
     @AutoValue.Builder
     public abstract static class Builder extends ServerDbEntity.Builder<UnitDbEntity, Builder> implements UnitFields.Builder<UnitDbEntity, Builder> {
 
-        abstract UnitDbEntity build();
+        public abstract UnitDbEntity build();
     }
 }

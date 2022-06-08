@@ -110,4 +110,7 @@ public interface BusinessModule {
 
     @Binds
     ScaledUnitEditInteractor ScaledUnitEditInteractor(ScaledUnitEditInteractorImpl impl);
+
+    @Binds
+    ScaledUnitConflictInteractor ScaledUnitConflictInteractor(ScaledUnitConflictInteractorImpl impl);
 }

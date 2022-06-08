@@ -84,16 +84,16 @@ public class UnitConflictFragmentTest {
                 isDescendantOfA(withId(R.id.fragment_unit_form_name)),
                 withClassName(is(TextInputEditText.class.getName()))
         )).check(matches(withText(data.name().suggestedValue())));
-        onView(allOf(isDescendantOfA(withId(R.id.fragment_unit_form_name)), withId(R.id.text_field_conflict_original_content))).check(matches(withText(data.name().original())));
-        onView(allOf(isDescendantOfA(withId(R.id.fragment_unit_form_name)), withId(R.id.text_field_conflict_remote_content))).check(matches(withText(data.name().remote())));
-        onView(allOf(isDescendantOfA(withId(R.id.fragment_unit_form_name)), withId(R.id.text_field_conflict_local_content))).check(matches(withText(data.name().local())));
+        onView(allOf(isDescendantOfA(withId(R.id.fragment_unit_form_name)), withId(R.id.conflict_labels_original_content))).check(matches(withText(data.name().original())));
+        onView(allOf(isDescendantOfA(withId(R.id.fragment_unit_form_name)), withId(R.id.conflict_labels_remote_content))).check(matches(withText(data.name().remote())));
+        onView(allOf(isDescendantOfA(withId(R.id.fragment_unit_form_name)), withId(R.id.conflict_labels_local_content))).check(matches(withText(data.name().local())));
         onView(allOf(
                 isDescendantOfA(withId(R.id.fragment_unit_form_abbreviation)),
                 withClassName(is(TextInputEditText.class.getName()))
         )).check(matches(withText(data.abbreviation().suggestedValue())));
-        onView(allOf(isDescendantOfA(withId(R.id.fragment_unit_form_abbreviation)), withId(R.id.text_field_conflict_original_content))).check(matches(withText(data.abbreviation().original())));
-        onView(allOf(isDescendantOfA(withId(R.id.fragment_unit_form_abbreviation)), withId(R.id.text_field_conflict_remote_content))).check(matches(withText(data.abbreviation().remote())));
-        onView(allOf(isDescendantOfA(withId(R.id.fragment_unit_form_abbreviation)), withId(R.id.text_field_conflict_local_content))).check(matches(withText(data.abbreviation().local())));
+        onView(allOf(isDescendantOfA(withId(R.id.fragment_unit_form_abbreviation)), withId(R.id.conflict_labels_original_content))).check(matches(withText(data.abbreviation().original())));
+        onView(allOf(isDescendantOfA(withId(R.id.fragment_unit_form_abbreviation)), withId(R.id.conflict_labels_remote_content))).check(matches(withText(data.abbreviation().remote())));
+        onView(allOf(isDescendantOfA(withId(R.id.fragment_unit_form_abbreviation)), withId(R.id.conflict_labels_local_content))).check(matches(withText(data.abbreviation().local())));
     }
 
     @Test
@@ -117,7 +117,7 @@ public class UnitConflictFragmentTest {
     }
 
     @Test
-    public void onlyConflictInNameHidesDescription() {
+    public void onlyConflictInNameHidesAbbreviation() {
         UnitEditConflictData data = UnitEditConflictData.create(1, 42, 43, "name original", "name remote", "name local", "abbreviation", "abbreviation", "abbreviation");
         unitConflictInteractor.setData(data);
 
@@ -125,9 +125,9 @@ public class UnitConflictFragmentTest {
                 isDescendantOfA(withId(R.id.fragment_unit_form_name)),
                 withClassName(is(TextInputEditText.class.getName()))
         )).check(matches(withText(data.name().suggestedValue())));
-        onView(allOf(isDescendantOfA(withId(R.id.fragment_unit_form_name)), withId(R.id.text_field_conflict_original_content))).check(matches(withText(data.name().original())));
-        onView(allOf(isDescendantOfA(withId(R.id.fragment_unit_form_name)), withId(R.id.text_field_conflict_remote_content))).check(matches(withText(data.name().remote())));
-        onView(allOf(isDescendantOfA(withId(R.id.fragment_unit_form_name)), withId(R.id.text_field_conflict_local_content))).check(matches(withText(data.name().local())));
+        onView(allOf(isDescendantOfA(withId(R.id.fragment_unit_form_name)), withId(R.id.conflict_labels_original_content))).check(matches(withText(data.name().original())));
+        onView(allOf(isDescendantOfA(withId(R.id.fragment_unit_form_name)), withId(R.id.conflict_labels_remote_content))).check(matches(withText(data.name().remote())));
+        onView(allOf(isDescendantOfA(withId(R.id.fragment_unit_form_name)), withId(R.id.conflict_labels_local_content))).check(matches(withText(data.name().local())));
         onView(withId(R.id.fragment_unit_form_abbreviation)).check(matches(withEffectiveVisibility(Visibility.GONE)));
     }
 
@@ -140,9 +140,9 @@ public class UnitConflictFragmentTest {
                 isDescendantOfA(withId(R.id.fragment_unit_form_abbreviation)),
                 withClassName(is(TextInputEditText.class.getName()))
         )).check(matches(withText(data.abbreviation().suggestedValue())));
-        onView(allOf(isDescendantOfA(withId(R.id.fragment_unit_form_abbreviation)), withId(R.id.text_field_conflict_original_content))).check(matches(withText(data.abbreviation().original())));
-        onView(allOf(isDescendantOfA(withId(R.id.fragment_unit_form_abbreviation)), withId(R.id.text_field_conflict_remote_content))).check(matches(withText(data.abbreviation().remote())));
-        onView(allOf(isDescendantOfA(withId(R.id.fragment_unit_form_abbreviation)), withId(R.id.text_field_conflict_local_content))).check(matches(withText(data.abbreviation().local())));
+        onView(allOf(isDescendantOfA(withId(R.id.fragment_unit_form_abbreviation)), withId(R.id.conflict_labels_original_content))).check(matches(withText(data.abbreviation().original())));
+        onView(allOf(isDescendantOfA(withId(R.id.fragment_unit_form_abbreviation)), withId(R.id.conflict_labels_remote_content))).check(matches(withText(data.abbreviation().remote())));
+        onView(allOf(isDescendantOfA(withId(R.id.fragment_unit_form_abbreviation)), withId(R.id.conflict_labels_local_content))).check(matches(withText(data.abbreviation().local())));
         onView(withId(R.id.fragment_unit_form_name)).check(matches(withEffectiveVisibility(Visibility.GONE)));
     }
 

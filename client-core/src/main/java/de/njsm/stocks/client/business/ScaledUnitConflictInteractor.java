@@ -19,15 +19,12 @@
  *
  */
 
-package de.njsm.stocks.client.navigation;
+package de.njsm.stocks.client.business;
 
-public interface ErrorListNavigator {
+import de.njsm.stocks.client.business.entities.conflict.ScaledUnitEditConflictFormData;
+import io.reactivex.rxjava3.core.Observable;
 
-    void showErrorDetails(long id);
+public interface ScaledUnitConflictInteractor {
 
-    void resolveLocationEditConflict(long id);
-
-    void resolveUnitEditConflict(long id);
-
-    void resolveScaledUnitEditConflict(long id);
+    Observable<ScaledUnitEditConflictFormData> getScaledUnitEditConflict(long errorId);
 }

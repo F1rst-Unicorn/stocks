@@ -46,7 +46,4 @@
                 android:layout_height="wrap_content"
                 android:inputType="textMultiLine"/>
     </com.google.android.material.textfield.TextInputLayout>
-
-
-
 </LinearLayout>

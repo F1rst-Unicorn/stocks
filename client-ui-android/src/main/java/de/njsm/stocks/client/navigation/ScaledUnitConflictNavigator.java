@@ -21,13 +21,9 @@
 
 package de.njsm.stocks.client.navigation;
 
-public interface ErrorListNavigator {
+import android.os.Bundle;
 
-    void showErrorDetails(long id);
+public interface ScaledUnitConflictNavigator extends Navigator {
 
-    void resolveLocationEditConflict(long id);
-
-    void resolveUnitEditConflict(long id);
-
-    void resolveScaledUnitEditConflict(long id);
+    long getErrorId(Bundle arguments);
 }

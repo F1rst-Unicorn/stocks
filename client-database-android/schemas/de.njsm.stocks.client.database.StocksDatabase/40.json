@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 40,
-    "identityHash": "5d6b733cc2bbbe396422dd16df341190",
+    "identityHash": "8fc98b8b1938e53d4243afa6bc00f9e4",
     "entities": [
       {
         "tableName": "updates",
@@ -1713,7 +1713,7 @@
       },
       {
         "tableName": "scaled_unit_to_edit",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `version` INTEGER NOT NULL, `transaction_time` TEXT, `scale` TEXT, `unit` INTEGER NOT NULL, `scaled_unit_id` INTEGER NOT NULL)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `version` INTEGER NOT NULL, `transaction_time` TEXT, `scale` TEXT, `unit` INTEGER NOT NULL, `scaled_unit_id` INTEGER NOT NULL, `execution_time` TEXT)",
         "fields": [
           {
             "fieldPath": "id",
@@ -1750,6 +1750,12 @@
             "columnName": "scaled_unit_id",
             "affinity": "INTEGER",
             "notNull": true
+          },
+          {
+            "fieldPath": "executionTime",
+            "columnName": "execution_time",
+            "affinity": "TEXT",
+            "notNull": false
           }
         ],
         "primaryKey": {
@@ -1848,7 +1854,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '5d6b733cc2bbbe396422dd16df341190')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '8fc98b8b1938e53d4243afa6bc00f9e4')"
     ]
   }
 }

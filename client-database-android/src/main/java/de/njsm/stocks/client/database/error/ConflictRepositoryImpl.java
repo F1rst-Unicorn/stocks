@@ -22,9 +22,12 @@
 package de.njsm.stocks.client.database.error;
 
 import de.njsm.stocks.client.business.ConflictRepository;
+import de.njsm.stocks.client.business.entities.UnitForListing;
 import de.njsm.stocks.client.business.entities.conflict.LocationEditConflictData;
+import de.njsm.stocks.client.business.entities.conflict.ScaledUnitEditConflictData;
 import de.njsm.stocks.client.business.entities.conflict.UnitEditConflictData;
 import de.njsm.stocks.client.database.LocationDbEntity;
+import de.njsm.stocks.client.database.ScaledUnitDbEntity;
 import de.njsm.stocks.client.database.UnitDbEntity;
 import io.reactivex.rxjava3.core.Observable;
 
@@ -69,5 +72,31 @@ public class ConflictRepositoryImpl implements ConflictRepository {
                     original.name(), remote.name(), unitEditEntity.name(),
                     original.abbreviation(), remote.abbreviation(), unitEditEntity.abbreviation());
         });
+    }
+
+    @Override
+    public Observable<ScaledUnitEditConflictData> getScaledUnitEditConflict(long errorId) {
+        return errorDao.observeError(errorId).map(error -> {
+            if (error.action() != ErrorEntity.Action.EDIT_SCALED_UNIT)
+                throw new IllegalArgumentException("error " + errorId + " does not belong to " + ErrorEntity.Action.EDIT_SCALED_UNIT + " but to " + error.action());
+
+            ScaledUnitEditEntity scaledUnitEditEntity = errorDao.getScaledUnitEdit(error.dataId());
+            ScaledUnitDbEntity original = errorDao.getCurrentScaledUnitAsKnownAt(scaledUnitEditEntity.id(), scaledUnitEditEntity.transactionTime());
+            ScaledUnitDbEntity remote = errorDao.getCurrentScaledUnitAsKnownAt(scaledUnitEditEntity.id(), scaledUnitEditEntity.executionTime());
+
+            UnitDbEntity originalUnit = errorDao.getCurrentUnitAsKnownAt(original.unit(), scaledUnitEditEntity.transactionTime());
+            UnitDbEntity remoteUnit = errorDao.getCurrentUnitAsKnownAt(remote.unit(), scaledUnitEditEntity.executionTime());
+            UnitDbEntity localUnit = errorDao.getCurrentUnitAsKnownAt(scaledUnitEditEntity.unit(), scaledUnitEditEntity.executionTime());
+
+            return ScaledUnitEditConflictData.create(error.id(), scaledUnitEditEntity.scaledUnitId(), scaledUnitEditEntity.version(),
+                    original.scale(), remote.scale(), scaledUnitEditEntity.scale(),
+                    getUnitForListingFromDbEntity(originalUnit),
+                    getUnitForListingFromDbEntity(remoteUnit),
+                    getUnitForListingFromDbEntity(localUnit));
+        });
+    }
+
+    private UnitForListing getUnitForListingFromDbEntity(UnitDbEntity dbEntity) {
+        return UnitForListing.create(dbEntity.id(), dbEntity.name(), dbEntity.abbreviation());
     }
 }

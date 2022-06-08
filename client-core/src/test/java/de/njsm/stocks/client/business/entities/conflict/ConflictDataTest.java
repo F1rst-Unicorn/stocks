@@ -21,6 +21,7 @@
 
 package de.njsm.stocks.client.business.entities.conflict;
 
+import de.njsm.stocks.client.business.entities.UnitForSelection;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -82,5 +83,16 @@ class ConflictDataTest {
                 "%s:\n" + original + "\n\n%s:\n" + remote + "\n\n%s:\n" + local,
                 uut.suggestedValue()
         );
+    }
+
+    @Test
+    void comparingByIdWorks() {
+        UnitForSelection original = UnitForSelection.create(1, "1");
+        UnitForSelection remote = UnitForSelection.create(1, "2");
+        UnitForSelection local = UnitForSelection.create(1, "3");
+
+        ConflictData<UnitForSelection> uut = ConflictData.create(original, remote, local, UnitForSelection::id);
+
+        assertFalse(uut.needsHandling());
     }
 }

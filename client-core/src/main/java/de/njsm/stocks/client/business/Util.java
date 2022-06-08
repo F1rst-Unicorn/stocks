@@ -22,17 +22,22 @@
 package de.njsm.stocks.client.business;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Predicate;
 
 public class Util {
 
-    public static <T> int findFirst(List<T> list, Predicate<T> predicate) {
+    public static <T> Optional<Integer> searchFirst(List<T> list, Predicate<T> predicate) {
         int i = 0;
         for (T item : list) {
             if (predicate.test(item))
-                return i;
+                return Optional.of(i);
             i++;
         }
-        throw new IllegalStateException("No matching item found");
+        return Optional.empty();
+    }
+
+    public static <T> int findFirst(List<T> list, Predicate<T> predicate) {
+        return searchFirst(list, predicate).orElseThrow(() -> new IllegalStateException("No matching item found"));
     }
 }

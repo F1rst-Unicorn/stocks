@@ -29,9 +29,9 @@ import java.util.List;
 public class BitemporalOperations {
 
     public static <E extends ServerDbEntity<E>, B extends ServerDbEntity.Builder<E, B>>
-    List<E> currentEdit(E current,
-                        EntityEditor<E, B> editor,
-                        Instant when) {
+    List<E> currentUpdate(E current,
+                          EntityEditor<E, B> editor,
+                          Instant when) {
         E deletedCurrent = current.toBuilder()
                 .transactionTimeEnd(when)
                 .build();

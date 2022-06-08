@@ -155,4 +155,11 @@ public class ViewModelModule {
     ViewModel ScaledUnitEditViewModel(ScaledUnitEditInteractor scaledUnitEditInteractor) {
         return new ScaledUnitEditViewModel(scaledUnitEditInteractor);
     }
+
+    @Provides
+    @IntoMap
+    @ViewModelKey(ScaledUnitConflictViewModel.class)
+    ViewModel ScaledUnitConflictViewModel(ScaledUnitConflictInteractor scaledUnitConflictInteractor, ErrorRetryInteractor errorRetryInteractor) {
+        return new ScaledUnitConflictViewModel(scaledUnitConflictInteractor, errorRetryInteractor);
+    }
 }

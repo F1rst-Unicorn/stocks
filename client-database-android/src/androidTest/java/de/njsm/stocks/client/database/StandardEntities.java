@@ -75,7 +75,7 @@ public class StandardEntities {
         return unitDbEntityBuilder().build();
     }
 
-    static UnitDbEntity.Builder unitDbEntityBuilder() {
+    public static UnitDbEntity.Builder unitDbEntityBuilder() {
         return initialiseBuilder(UnitDbEntity.builder())
                 .name("name")
                 .abbreviation("abbreviation");

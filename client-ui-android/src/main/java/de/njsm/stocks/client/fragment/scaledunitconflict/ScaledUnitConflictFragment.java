@@ -19,7 +19,7 @@
  *
  */
 
-package de.njsm.stocks.client.fragment.locationconflict;
+package de.njsm.stocks.client.fragment.scaledunitconflict;
 
 import android.os.Bundle;
 import android.view.*;
@@ -27,55 +27,57 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.ViewModelProvider;
 import de.njsm.stocks.client.business.entities.Identifiable;
-import de.njsm.stocks.client.business.entities.Location;
-import de.njsm.stocks.client.business.entities.LocationToEdit;
+import de.njsm.stocks.client.business.entities.ScaledUnit;
+import de.njsm.stocks.client.business.entities.ScaledUnitToEdit;
+import de.njsm.stocks.client.business.entities.UnitForSelection;
 import de.njsm.stocks.client.fragment.BottomToolbarFragment;
-import de.njsm.stocks.client.fragment.view.LocationForm;
-import de.njsm.stocks.client.navigation.LocationConflictNavigator;
-import de.njsm.stocks.client.presenter.LocationConflictViewModel;
+import de.njsm.stocks.client.fragment.view.ScaledUnitForm;
+import de.njsm.stocks.client.navigation.ScaledUnitConflictNavigator;
+import de.njsm.stocks.client.presenter.ScaledUnitConflictViewModel;
 import de.njsm.stocks.client.ui.R;
 
 import javax.inject.Inject;
+import java.util.Optional;
 
-public class LocationConflictFragment extends BottomToolbarFragment {
+public class ScaledUnitConflictFragment extends BottomToolbarFragment {
 
-    private LocationConflictViewModel locationViewModel;
+    private ScaledUnitConflictNavigator navigator;
 
-    private LocationConflictNavigator locationConflictNavigator;
+    private ScaledUnitConflictViewModel viewModel;
 
-    private LocationForm form;
+    private ScaledUnitForm form;
 
-    private Identifiable<Location> id;
+    private Identifiable<ScaledUnit> id;
 
     @NonNull
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View root = super.onCreateView(inflater, container, savedInstanceState);
-        this.form = new LocationForm(insertContent(inflater, root, R.layout.fragment_location_form), this::getString);
+        this.form = new ScaledUnitForm(insertContent(inflater, root, R.layout.fragment_scaled_unit_form), this::getString);
 
-        long errorId = locationConflictNavigator.getErrorId(requireArguments());
-        locationViewModel.getLocationEditConflict(errorId).observe(getViewLifecycleOwner(), v -> {
+        long errorId = navigator.getErrorId(requireArguments());
+
+        viewModel.getScaledUnitEditConflict(errorId).observe(getViewLifecycleOwner(), v -> {
             id = v;
-            form.setName(v.name().suggestedValue());
-            form.setDescription(String.format(v.description().suggestedValue(),
-                    getString(R.string.hint_original),
-                    getString(R.string.hint_remote),
-                    getString(R.string.hint_local)
-            ));
+            form.showScale(v.scale());
+            form.showUnits(v.availableUnits());
+            form.preSelectUnitPosition(v.currentUnitListPosition());
 
             if (v.hasNoConflict()) {
                 submit();
                 return;
             }
 
-            if (v.name().needsHandling()) {
-                form.showNameConflict(v.name());
+            if (v.scale().needsHandling()) {
+                form.showScaleConflict(v.scale());
             } else {
-                form.hideName();
+                form.hideScale();
             }
 
-            if (!v.description().needsHandling()) {
-                form.hideDescription();
+            if (v.unit().needsHandling()) {
+                form.showUnitConflict(v.unit());
+            } else {
+                form.hideUnit();
             }
         });
 
@@ -96,17 +98,22 @@ public class LocationConflictFragment extends BottomToolbarFragment {
 
     private void submit() {
         if (!form.maySubmit()) {
-            form.setNameError(R.string.error_may_not_be_empty);
+            form.setError(R.string.error_may_not_be_empty);
             return;
         }
 
-        LocationToEdit data = LocationToEdit.builder()
-                .id(id.id())
-                .name(form.getName())
-                .description(form.getDescription())
-                .build();
-        locationViewModel.editLocation(data);
-        locationConflictNavigator.back();
+        Optional<UnitForSelection> unitFromForm = form.getUnit();
+
+        unitFromForm.ifPresent(unit -> {
+            ScaledUnitToEdit editedScaledUnit = ScaledUnitToEdit.create(
+                    this.id.id(),
+                    form.getScale(),
+                    unit.id()
+            );
+
+            viewModel.edit(editedScaledUnit);
+            navigator.back();
+        });
     }
 
     @Inject
@@ -114,11 +121,11 @@ public class LocationConflictFragment extends BottomToolbarFragment {
     protected void setViewModelFactory(ViewModelProvider.Factory viewModelFactory) {
         super.setViewModelFactory(viewModelFactory);
         ViewModelProvider viewModelProvider = new ViewModelProvider(this, viewModelFactory);
-        locationViewModel = viewModelProvider.get(LocationConflictViewModel.class);
+        viewModel = viewModelProvider.get(ScaledUnitConflictViewModel.class);
     }
 
     @Inject
-    void setLocationConflictNavigator(LocationConflictNavigator locationConflictNavigator) {
-        this.locationConflictNavigator = locationConflictNavigator;
+    void setNavigator(ScaledUnitConflictNavigator navigator) {
+        this.navigator = navigator;
     }
 }

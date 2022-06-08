@@ -29,6 +29,7 @@ import de.njsm.stocks.client.fragment.locationconflict.LocationConflictFragment;
 import de.njsm.stocks.client.fragment.locationedit.LocationEditFragment;
 import de.njsm.stocks.client.fragment.locationlist.LocationListFragment;
 import de.njsm.stocks.client.fragment.scaledunitadd.ScaledUnitAddFragment;
+import de.njsm.stocks.client.fragment.scaledunitconflict.ScaledUnitConflictFragment;
 import de.njsm.stocks.client.fragment.scaledunitedit.ScaledUnitEditFragment;
 import de.njsm.stocks.client.fragment.scaledunitlist.ScaledUnitListFragment;
 import de.njsm.stocks.client.fragment.setupform.SetupFormFragment;
@@ -92,4 +93,7 @@ public abstract class FragmentModule {
 
     @ContributesAndroidInjector
     public abstract ScaledUnitEditFragment ScaledUnitEditFragment();
+
+    @ContributesAndroidInjector
+    public abstract ScaledUnitConflictFragment ScaledUnitConflictFragment();
 }

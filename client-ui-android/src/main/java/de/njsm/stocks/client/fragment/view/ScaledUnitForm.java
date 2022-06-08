@@ -24,12 +24,14 @@ package de.njsm.stocks.client.fragment.view;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.ArrayAdapter;
-import android.widget.Spinner;
 import androidx.annotation.NonNull;
 import androidx.annotation.StringRes;
 import com.google.android.material.textfield.TextInputLayout;
 import de.njsm.stocks.client.business.entities.ScaledUnitEditingFormData;
+import de.njsm.stocks.client.business.entities.UnitForListing;
 import de.njsm.stocks.client.business.entities.UnitForSelection;
+import de.njsm.stocks.client.business.entities.conflict.ConflictData;
+import de.njsm.stocks.client.presenter.UnitRenderStrategy;
 import de.njsm.stocks.client.ui.R;
 
 import java.math.BigDecimal;
@@ -43,7 +45,7 @@ public class ScaledUnitForm {
 
     private final ConflictTextField scaleField;
 
-    private final Spinner unitField;
+    private final ConflictSpinner unitField;
 
     private final ArrayAdapter<DataWrapper> unitAdapter;
 
@@ -53,7 +55,7 @@ public class ScaledUnitForm {
 
     public ScaledUnitForm(View root, Function<Integer, String> dictionary) {
         this.scaleField = new ConflictTextField(root.findViewById(R.id.fragment_scaled_unit_form_scale));
-        this.unitField = root.findViewById(R.id.fragment_scaled_unit_form_unit);
+        this.unitField = new ConflictSpinner(root.findViewById(R.id.fragment_scaled_unit_form_unit));
         this.dictionary = dictionary;
 
         scaleField.addNonEmptyValidator((a,b) -> onInputChanged(scaleField, a, b));
@@ -93,13 +95,37 @@ public class ScaledUnitForm {
     }
 
     public Optional<UnitForSelection> getUnit() {
-        return Optional.ofNullable(((DataWrapper) unitField.getSelectedItem())).map(DataWrapper::delegate);
+        return Optional.ofNullable(unitField.<DataWrapper>getSelectedItem()).map(DataWrapper::delegate);
     }
 
     public void showScaledUnit(ScaledUnitEditingFormData scaledUnitEditingFormData) {
         scaleField.setEditorContent(scaledUnitEditingFormData.scale().toPlainString());
         showUnits(scaledUnitEditingFormData.availableUnits());
         unitField.setSelection(scaledUnitEditingFormData.currentUnitListPosition());
+    }
+
+    public void showScale(ConflictData<BigDecimal> scale) {
+        scaleField.setEditorContent(scale.suggestedValue().toPlainString());
+    }
+
+    public void preSelectUnitPosition(int index) {
+        unitField.setSelection(index);
+    }
+
+    public void hideUnit() {
+        unitField.hide();
+    }
+
+    public void hideScale() {
+        scaleField.hide();
+    }
+
+    public void showScaleConflict(ConflictData<BigDecimal> scale) {
+        scaleField.showConflictInfo(scale, BigDecimal::toPlainString);
+    }
+
+    public void showUnitConflict(ConflictData<UnitForListing> unit) {
+        unitField.showConflictInfo(unit, new UnitRenderStrategy()::render);
     }
 
     private static final class DataWrapper {

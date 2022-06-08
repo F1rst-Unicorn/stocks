@@ -24,6 +24,8 @@ package de.njsm.stocks.client.business.entities.conflict;
 import com.google.auto.value.AutoValue;
 import com.google.auto.value.extension.memoized.Memoized;
 
+import java.util.function.Function;
+
 import static de.njsm.stocks.client.business.entities.conflict.ConflictData.FieldComparison.*;
 import static de.njsm.stocks.client.business.entities.conflict.SuggestionStrategy.merge;
 import static de.njsm.stocks.client.business.entities.conflict.SuggestionStrategy.select;
@@ -36,11 +38,15 @@ import static de.njsm.stocks.client.business.entities.conflict.SuggestionStrateg
 public abstract class ConflictData<T> {
 
     public static <T> ConflictData<T> create(T original, T remote, T local) {
-        return new AutoValue_ConflictData<>(original, remote, local, select());
+        return new AutoValue_ConflictData<>(original, remote, local, select(), v -> v);
+    }
+
+    public static <T> ConflictData<T> create(T original, T remote, T local, Function<T, Object> comparingBy) {
+        return new AutoValue_ConflictData<>(original, remote, local, select(), comparingBy);
     }
 
     public static ConflictData<String> createMerging(String original, String remote, String local) {
-        return new AutoValue_ConflictData<>(original, remote, local, merge());
+        return new AutoValue_ConflictData<>(original, remote, local, merge(), v -> v);
     }
 
     /**
@@ -64,6 +70,8 @@ public abstract class ConflictData<T> {
 
     abstract SuggestionStrategy<T> suggestionStrategy();
 
+    abstract Function<T, Object> comparingBy();
+
     public T suggestedValue() {
         return suggestionStrategy().suggest(this);
     }
@@ -74,14 +82,18 @@ public abstract class ConflictData<T> {
 
     @Memoized
     FieldComparison compare() {
-        if (remote().equals(local()))
-            if (original().equals(remote()))
+        Object originalComparable = comparingBy().apply(original());
+        Object remoteComparable = comparingBy().apply(remote());
+        Object localComparable = comparingBy().apply(local());
+
+        if (remoteComparable.equals(localComparable))
+            if (originalComparable.equals(remoteComparable))
                 return EQUAL;
             else
                 return BOTH_DIFFER_EQUALLY;
-        else if (remote().equals(original()))
+        else if (remoteComparable.equals(originalComparable))
             return LOCAL_DIFFERS;
-        else if (local().equals(original()))
+        else if (localComparable.equals(originalComparable))
             return REMOTE_DIFFERS;
         else
             return BOTH_DIFFER;

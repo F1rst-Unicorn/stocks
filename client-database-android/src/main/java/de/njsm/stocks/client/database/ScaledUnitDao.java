@@ -40,7 +40,8 @@ abstract class ScaledUnitDao {
 
     @Query("select scaled_unit.id, unit.abbreviation, scaled_unit.scale " +
             "from current_scaled_unit scaled_unit " +
-            "join current_unit unit on scaled_unit.unit = unit.id")
+            "join current_unit unit on scaled_unit.unit = unit.id " +
+            "order by unit.name, scaled_unit.scale")
     abstract Observable<List<ScaledUnitForListing>> getCurrentScaledUnits();
 
     @Query("select * " +

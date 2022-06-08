@@ -19,15 +19,33 @@
  *
  */
 
-package de.njsm.stocks.client.navigation;
+package de.njsm.stocks.client.business;
 
-public interface ErrorListNavigator {
+import de.njsm.stocks.client.business.entities.conflict.ScaledUnitEditConflictFormData;
+import io.reactivex.rxjava3.core.Observable;
+import io.reactivex.rxjava3.subjects.BehaviorSubject;
 
-    void showErrorDetails(long id);
+import javax.inject.Inject;
 
-    void resolveLocationEditConflict(long id);
+public class FakeScaledUnitConflictInteractor implements ScaledUnitConflictInteractor {
 
-    void resolveUnitEditConflict(long id);
+    private BehaviorSubject<ScaledUnitEditConflictFormData> data;
 
-    void resolveScaledUnitEditConflict(long id);
+    @Inject
+    FakeScaledUnitConflictInteractor() {
+        reset();
+    }
+
+    public void setData(ScaledUnitEditConflictFormData data) {
+        this.data.onNext(data);
+    }
+
+    @Override
+    public Observable<ScaledUnitEditConflictFormData> getScaledUnitEditConflict(long errorId) {
+        return data;
+    }
+
+    public void reset() {
+        data = BehaviorSubject.create();
+    }
 }

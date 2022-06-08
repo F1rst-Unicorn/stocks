@@ -142,6 +142,7 @@ public class ErrorRecorderImpl implements ErrorRecorder {
                 scaledUnitForEditing.id(),
                 scaledUnitForEditing.version(),
                 currentTransactionTime,
+                clock.get(),
                 scaledUnitForEditing.scale(),
                 scaledUnitForEditing.unit());
         long dataId = errorDao.insert(entity);

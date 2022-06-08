@@ -29,7 +29,6 @@ import de.njsm.stocks.client.business.LocationConflictInteractor;
 import de.njsm.stocks.client.business.entities.ErrorDescription;
 import de.njsm.stocks.client.business.entities.LocationEditErrorDetails;
 import de.njsm.stocks.client.business.entities.LocationToEdit;
-import de.njsm.stocks.client.business.entities.StatusCode;
 import de.njsm.stocks.client.business.entities.conflict.LocationEditConflictData;
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.core.BackpressureStrategy;
@@ -60,11 +59,8 @@ public class LocationConflictViewModel extends ViewModel {
             this.data.firstElement()
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(v -> {
-                        ErrorDescription errorToRetry = ErrorDescription.create(
+                        ErrorDescription errorToRetry = ErrorDescription.minimal(
                                 v.errorId(),
-                                StatusCode.GENERAL_ERROR,
-                                "",
-                                "",
                                 LocationEditErrorDetails.create(data.id(), data.name(), data.description())
                         );
                         errorRetryInteractor.retry(errorToRetry);

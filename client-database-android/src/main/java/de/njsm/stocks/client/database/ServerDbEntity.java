@@ -65,7 +65,7 @@ abstract class ServerDbEntity<T extends ServerDbEntity<T>> {
 
     abstract static class Builder<E extends ServerDbEntity<E>, B extends ServerDbEntity.Builder<E, B>> {
 
-        abstract B id(int v);
+        public abstract B id(int v);
 
         abstract B version(int v);
 

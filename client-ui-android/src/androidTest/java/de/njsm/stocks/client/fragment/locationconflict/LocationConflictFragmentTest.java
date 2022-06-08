@@ -84,9 +84,9 @@ public class LocationConflictFragmentTest {
                 isDescendantOfA(withId(R.id.fragment_location_form_name)),
                 withClassName(is(TextInputEditText.class.getName()))
         )).check(matches(withText(data.name().suggestedValue())));
-        onView(allOf(isDescendantOfA(withId(R.id.fragment_location_form_name)), withId(R.id.text_field_conflict_original_content))).check(matches(withText(data.name().original())));
-        onView(allOf(isDescendantOfA(withId(R.id.fragment_location_form_name)), withId(R.id.text_field_conflict_remote_content))).check(matches(withText(data.name().remote())));
-        onView(allOf(isDescendantOfA(withId(R.id.fragment_location_form_name)), withId(R.id.text_field_conflict_local_content))).check(matches(withText(data.name().local())));
+        onView(allOf(isDescendantOfA(withId(R.id.fragment_location_form_name)), withId(R.id.conflict_labels_original_content))).check(matches(withText(data.name().original())));
+        onView(allOf(isDescendantOfA(withId(R.id.fragment_location_form_name)), withId(R.id.conflict_labels_remote_content))).check(matches(withText(data.name().remote())));
+        onView(allOf(isDescendantOfA(withId(R.id.fragment_location_form_name)), withId(R.id.conflict_labels_local_content))).check(matches(withText(data.name().local())));
         String mergedDescription = String.format(data.description().suggestedValue(),
                 InstrumentationRegistry.getInstrumentation().getTargetContext().getApplicationContext().getString(R.string.hint_original),
                 InstrumentationRegistry.getInstrumentation().getTargetContext().getApplicationContext().getString(R.string.hint_remote),
@@ -127,9 +127,9 @@ public class LocationConflictFragmentTest {
                 isDescendantOfA(withId(R.id.fragment_location_form_name)),
                 withClassName(is(TextInputEditText.class.getName()))
         )).check(matches(withText(data.name().suggestedValue())));
-        onView(allOf(isDescendantOfA(withId(R.id.fragment_location_form_name)), withId(R.id.text_field_conflict_original_content))).check(matches(withText(data.name().original())));
-        onView(allOf(isDescendantOfA(withId(R.id.fragment_location_form_name)), withId(R.id.text_field_conflict_remote_content))).check(matches(withText(data.name().remote())));
-        onView(allOf(isDescendantOfA(withId(R.id.fragment_location_form_name)), withId(R.id.text_field_conflict_local_content))).check(matches(withText(data.name().local())));
+        onView(allOf(isDescendantOfA(withId(R.id.fragment_location_form_name)), withId(R.id.conflict_labels_original_content))).check(matches(withText(data.name().original())));
+        onView(allOf(isDescendantOfA(withId(R.id.fragment_location_form_name)), withId(R.id.conflict_labels_remote_content))).check(matches(withText(data.name().remote())));
+        onView(allOf(isDescendantOfA(withId(R.id.fragment_location_form_name)), withId(R.id.conflict_labels_local_content))).check(matches(withText(data.name().local())));
         onView(withId(R.id.fragment_location_form_description)).check(matches(withEffectiveVisibility(Visibility.GONE)));
     }
 

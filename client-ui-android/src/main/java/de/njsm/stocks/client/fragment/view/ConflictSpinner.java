@@ -19,15 +19,31 @@
  *
  */
 
-package de.njsm.stocks.client.navigation;
+package de.njsm.stocks.client.fragment.view;
 
-public interface ErrorListNavigator {
+import android.view.View;
+import android.widget.Spinner;
+import android.widget.SpinnerAdapter;
+import de.njsm.stocks.client.ui.R;
 
-    void showErrorDetails(long id);
+public class ConflictSpinner extends ConflictField {
 
-    void resolveLocationEditConflict(long id);
+    private final Spinner spinner;
 
-    void resolveUnitEditConflict(long id);
+    public ConflictSpinner(View root) {
+        super(root);
+        spinner = root.findViewById(R.id.spinner_conflict_spinner);
+    }
 
-    void resolveScaledUnitEditConflict(long id);
+    public void setAdapter(SpinnerAdapter adapter) {
+        spinner.setAdapter(adapter);
+    }
+
+    public void setSelection(int position) {
+        spinner.setSelection(position);
+    }
+
+    public <T> T getSelectedItem() {
+        return (T) spinner.getSelectedItem();
+    }
 }

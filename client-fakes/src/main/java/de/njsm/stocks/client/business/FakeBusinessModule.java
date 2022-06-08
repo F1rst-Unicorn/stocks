@@ -199,4 +199,13 @@ public interface FakeBusinessModule {
     static FakeScaledUnitEditInteractor FakeScaledUnitEditInteractor() {
         return new FakeScaledUnitEditInteractor();
     }
+
+    @Binds
+    ScaledUnitConflictInteractor ScaledUnitConflictInteractor(FakeScaledUnitConflictInteractor impl);
+
+    @Provides
+    @Singleton
+    static FakeScaledUnitConflictInteractor FakeScaledUnitConflictInteractor() {
+        return new FakeScaledUnitConflictInteractor();
+    }
 }

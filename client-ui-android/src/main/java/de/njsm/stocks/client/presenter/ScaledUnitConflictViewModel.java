@@ -25,49 +25,59 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.LiveDataReactiveStreams;
 import androidx.lifecycle.ViewModel;
 import de.njsm.stocks.client.business.ErrorRetryInteractor;
-import de.njsm.stocks.client.business.UnitConflictInteractor;
-import de.njsm.stocks.client.business.entities.*;
-import de.njsm.stocks.client.business.entities.conflict.UnitEditConflictData;
+import de.njsm.stocks.client.business.ScaledUnitConflictInteractor;
+import de.njsm.stocks.client.business.entities.ErrorDescription;
+import de.njsm.stocks.client.business.entities.ScaledUnitEditErrorDetails;
+import de.njsm.stocks.client.business.entities.ScaledUnitToEdit;
+import de.njsm.stocks.client.business.entities.conflict.ScaledUnitEditConflictFormData;
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.core.BackpressureStrategy;
 import io.reactivex.rxjava3.core.Observable;
 
+import javax.inject.Inject;
 
-public class UnitConflictViewModel extends ViewModel {
+public class ScaledUnitConflictViewModel extends ViewModel {
 
-    private final UnitConflictInteractor unitConflictInteractor;
+    private final ScaledUnitConflictInteractor scaledUnitConflictInteractor;
 
     private final ErrorRetryInteractor errorRetryInteractor;
 
-    private Observable<UnitEditConflictData> data;
+    private Observable<ScaledUnitEditConflictFormData> data;
 
-    UnitConflictViewModel(UnitConflictInteractor unitConflictInteractor, ErrorRetryInteractor errorRetryInteractor) {
-        this.unitConflictInteractor = unitConflictInteractor;
+    @Inject
+    ScaledUnitConflictViewModel(ScaledUnitConflictInteractor scaledUnitConflictInteractor, ErrorRetryInteractor errorRetryInteractor) {
+        this.scaledUnitConflictInteractor = scaledUnitConflictInteractor;
         this.errorRetryInteractor = errorRetryInteractor;
     }
 
-    public LiveData<UnitEditConflictData> getUnitEditConflict(long errorId) {
+
+    public LiveData<ScaledUnitEditConflictFormData> getScaledUnitEditConflict(long errorId) {
         return LiveDataReactiveStreams.fromPublisher(
                 getData(errorId).toFlowable(BackpressureStrategy.LATEST)
         );
     }
 
-    public void edit(UnitToEdit editedData) {
+    public void edit(ScaledUnitToEdit editedScaledUnit) {
         if (this.data != null)
             this.data.firstElement()
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(v -> {
                         ErrorDescription errorToRetry = ErrorDescription.minimal(
                                 v.errorId(),
-                                UnitEditErrorDetails.create(editedData.id(), editedData.name(), editedData.abbreviation())
+                                ScaledUnitEditErrorDetails.create(
+                                        editedScaledUnit.id(),
+                                        editedScaledUnit.scale(),
+                                        editedScaledUnit.unit(),
+                                        "", ""
+                                )
                         );
                         errorRetryInteractor.retry(errorToRetry);
                     });
     }
 
-    private Observable<UnitEditConflictData> getData(long errorId) {
+    private Observable<ScaledUnitEditConflictFormData> getData(long errorId) {
         if (data == null)
-            data = unitConflictInteractor.getUnitEditConflict(errorId);
+            data = scaledUnitConflictInteractor.getScaledUnitEditConflict(errorId);
         return data;
     }
 }

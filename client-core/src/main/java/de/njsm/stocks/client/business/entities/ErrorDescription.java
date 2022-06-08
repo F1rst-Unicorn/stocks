@@ -39,4 +39,8 @@ public abstract class ErrorDescription {
     public static ErrorDescription create(int id, StatusCode statusCode, String stackTrace, String errorMessage, ErrorDetails errorDetails) {
         return new AutoValue_ErrorDescription(id, statusCode, stackTrace, errorMessage, errorDetails);
     }
+
+    public static ErrorDescription minimal(int id, ErrorDetails errorDetails) {
+        return new AutoValue_ErrorDescription(id, StatusCode.GENERAL_ERROR, "", "", errorDetails);
+    }
 }

@@ -19,15 +19,19 @@
  *
  */
 
-package de.njsm.stocks.client.navigation;
+package de.njsm.stocks.client.presenter;
 
-public interface ErrorListNavigator {
+import de.njsm.stocks.client.business.entities.UnitFields;
 
-    void showErrorDetails(long id);
+import javax.inject.Inject;
 
-    void resolveLocationEditConflict(long id);
+public class UnitRenderStrategy {
 
-    void resolveUnitEditConflict(long id);
+    @Inject
+    public UnitRenderStrategy() {
+    }
 
-    void resolveScaledUnitEditConflict(long id);
+    public String render(UnitFields unit) {
+        return String.format("%s (%s)", unit.name(), unit.abbreviation());
+    }
 }
