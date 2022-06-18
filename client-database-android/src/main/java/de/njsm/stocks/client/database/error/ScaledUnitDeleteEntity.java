@@ -26,22 +26,25 @@ import androidx.room.Entity;
 import androidx.room.Ignore;
 import com.google.auto.value.AutoValue;
 import de.njsm.stocks.client.database.IdFields;
+import de.njsm.stocks.client.database.TransactionTimeFields;
 import de.njsm.stocks.client.database.VersionFields;
+
+import java.time.Instant;
 
 @AutoValue
 @Entity(tableName = "scaled_unit_to_delete")
-public abstract class ScaledUnitDeleteEntity implements IdFields, VersionFields {
+public abstract class ScaledUnitDeleteEntity implements IdFields, VersionFields, TransactionTimeFields {
 
     @ColumnInfo(name = "scaled_unit_id")
     @AutoValue.CopyAnnotations
     public abstract int scaledUnitId();
 
-    public static ScaledUnitDeleteEntity create(int id, int version, int scaledUnitId) {
-        return new AutoValue_ScaledUnitDeleteEntity(id, version, scaledUnitId);
+    public static ScaledUnitDeleteEntity create(int id, int version, Instant transactionTime, int scaledUnitId) {
+        return new AutoValue_ScaledUnitDeleteEntity(id, version, transactionTime, scaledUnitId);
     }
 
     @Ignore
-    public static ScaledUnitDeleteEntity create(int scaledUnitId, int version) {
-        return new AutoValue_ScaledUnitDeleteEntity(0, version, scaledUnitId);
+    public static ScaledUnitDeleteEntity create(int scaledUnitId, int version, Instant transactionTime) {
+        return new AutoValue_ScaledUnitDeleteEntity(0, version, transactionTime, scaledUnitId);
     }
 }

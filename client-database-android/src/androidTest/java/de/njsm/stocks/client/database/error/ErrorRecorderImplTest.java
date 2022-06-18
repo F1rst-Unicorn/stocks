@@ -291,6 +291,7 @@ public class ErrorRecorderImplTest extends DbTestCase {
         ScaledUnitEditEntity scaledUnitEditEntity = scaledUnitEdits.get(0);
         assertEquals(form.id(), scaledUnitEditEntity.id());
         assertEquals(form.version(), scaledUnitEditEntity.version());
+        assertEquals(Instant.EPOCH, scaledUnitEditEntity.transactionTime());
         assertEquals(form.scale(), scaledUnitEditEntity.scale());
         assertEquals(form.unit(), scaledUnitEditEntity.unit());
         List<ErrorEntity> errors = stocksDatabase.errorDao().getErrors();
@@ -316,6 +317,7 @@ public class ErrorRecorderImplTest extends DbTestCase {
         ScaledUnitDeleteEntity scaledUnitDeleteEntity = scaledUnitDeletes.get(0);
         assertEquals(form.id(), scaledUnitDeleteEntity.id());
         assertEquals(form.version(), scaledUnitDeleteEntity.version());
+        assertEquals(Instant.EPOCH, scaledUnitDeleteEntity.transactionTime());
         List<ErrorEntity> errors = stocksDatabase.errorDao().getErrors();
         assertEquals(1, errors.size());
         assertEquals(ErrorEntity.Action.DELETE_SCALED_UNIT, errors.get(0).action());

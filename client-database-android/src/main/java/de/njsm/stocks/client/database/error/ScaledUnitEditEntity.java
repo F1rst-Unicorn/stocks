@@ -27,24 +27,26 @@ import androidx.room.Ignore;
 import com.google.auto.value.AutoValue;
 import de.njsm.stocks.client.business.entities.ScaledUnitFields;
 import de.njsm.stocks.client.database.IdFields;
+import de.njsm.stocks.client.database.TransactionTimeFields;
 import de.njsm.stocks.client.database.VersionFields;
 
 import java.math.BigDecimal;
+import java.time.Instant;
 
 @AutoValue
 @Entity(tableName = "scaled_unit_to_edit")
-public abstract class ScaledUnitEditEntity implements IdFields, VersionFields, ScaledUnitFields {
+public abstract class ScaledUnitEditEntity implements IdFields, VersionFields, TransactionTimeFields, ScaledUnitFields {
 
     @ColumnInfo(name = "scaled_unit_id")
     @AutoValue.CopyAnnotations
     public abstract int scaledUnitId();
 
-    public static ScaledUnitEditEntity create(int id, int version, BigDecimal scale, int unit, int scaledUnitId) {
-        return new AutoValue_ScaledUnitEditEntity(id, version, scale, unit, scaledUnitId);
+    public static ScaledUnitEditEntity create(int id, int version, Instant transactionTime, BigDecimal scale, int unit, int scaledUnitId) {
+        return new AutoValue_ScaledUnitEditEntity(id, version, transactionTime, scale, unit, scaledUnitId);
     }
 
     @Ignore
-    public static ScaledUnitEditEntity create(int scaledUnitId, int version, BigDecimal scale, int unit) {
-        return new AutoValue_ScaledUnitEditEntity(0, version, scale, unit, scaledUnitId);
+    public static ScaledUnitEditEntity create(int scaledUnitId, int version, Instant transactionTime, BigDecimal scale, int unit) {
+        return new AutoValue_ScaledUnitEditEntity(0, version, transactionTime, scale, unit, scaledUnitId);
     }
 }

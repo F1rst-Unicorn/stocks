@@ -22,15 +22,16 @@
 package de.njsm.stocks.client.database.error;
 
 import de.njsm.stocks.client.business.StatusCodeException;
-import de.njsm.stocks.client.business.entities.ErrorDetails;
-import de.njsm.stocks.client.business.entities.ScaledUnitDeleteErrorDetails;
-import de.njsm.stocks.client.business.entities.ScaledUnitForDeletion;
-import de.njsm.stocks.client.database.ScaledUnitDbEntity;
-import de.njsm.stocks.client.database.StandardEntities;
-import de.njsm.stocks.client.database.UnitDbEntity;
+import de.njsm.stocks.client.business.entities.*;
+import de.njsm.stocks.client.database.*;
+import org.junit.Test;
 
+import java.time.Instant;
 import java.util.List;
 
+import static de.njsm.stocks.client.database.BitemporalOperations.currentDelete;
+import static de.njsm.stocks.client.database.Util.test;
+import static de.njsm.stocks.client.database.Util.testList;
 import static java.util.Collections.singletonList;
 
 public class ScaledUnitDeleteErrorRepositoryImplTest extends AbstractErrorRepositoryImplTest {
@@ -49,5 +50,56 @@ public class ScaledUnitDeleteErrorRepositoryImplTest extends AbstractErrorReposi
     @Override
     List<?> getErrorDetails() {
         return stocksDatabase.errorDao().getScaledUnitDeletes();
+    }
+
+    @Test
+    public void gettingErrorOfDeletedEntityWorks() {
+        Instant editTime = Instant.EPOCH.plusSeconds(5);
+        StatusCode statusCode = StatusCode.DATABASE_UNREACHABLE;
+        StatusCodeException exception = new StatusCodeException(statusCode);
+        UnitDbEntity unitDbEntity = StandardEntities.unitDbEntity();
+        ScaledUnitDbEntity scaledUnit = StandardEntities.scaledUnitDbEntityBuilder()
+                .unit(unitDbEntity.id())
+                .build();
+        ScaledUnitForDeletion scaledUnitForDeletion = ScaledUnitForDeletion.builder()
+                .id(scaledUnit.id())
+                .version(scaledUnit.version())
+                .build();
+        stocksDatabase.synchronisationDao().writeUnits(singletonList(unitDbEntity));
+        stocksDatabase.synchronisationDao().writeScaledUnits(singletonList(scaledUnit));
+        stocksDatabase.synchronisationDao().writeScaledUnits(currentDelete(scaledUnit, editTime));
+        errorRecorder.recordScaledUnitDeleteError(exception, scaledUnitForDeletion);
+        ErrorDetails data = ScaledUnitDeleteErrorDetails.create(scaledUnit.id(), scaledUnit.scale(), unitDbEntity.name(), unitDbEntity.abbreviation());
+
+        test(uut.getNumberOfErrors()).assertValue(1);
+        testList(uut.getErrors()).assertValue(v -> v.get(0).statusCode() == statusCode);
+        testList(uut.getErrors()).assertValue(v -> v.get(0).errorDetails().equals(data));
+        testList(uut.getErrors()).assertValue(v -> v.get(0).errorMessage().equals(exception.getMessage()));
+    }
+
+    @Test
+    public void gettingErrorOfInvalidatedEntityWorks() {
+        Instant editTime = Instant.EPOCH.plusSeconds(5);
+        StatusCode statusCode = StatusCode.DATABASE_UNREACHABLE;
+        StatusCodeException exception = new StatusCodeException(statusCode);
+        UnitDbEntity unitDbEntity = StandardEntities.unitDbEntity();
+        ScaledUnitDbEntity scaledUnit = StandardEntities.scaledUnitDbEntityBuilder()
+                .unit(unitDbEntity.id())
+                .build();
+        ScaledUnitForDeletion scaledUnitForDeletion = ScaledUnitForDeletion.builder()
+                .id(scaledUnit.id())
+                .version(scaledUnit.version())
+                .build();
+        stocksDatabase.synchronisationDao().writeUnits(singletonList(unitDbEntity));
+        stocksDatabase.synchronisationDao().writeScaledUnits(singletonList(scaledUnit));
+        stocksDatabase.synchronisationDao().writeScaledUnits(BitemporalOperations.sequencedDeleteOfEntireTime(scaledUnit, editTime));
+        stocksDatabase.synchronisationDao().insert(singletonList(UpdateDbEntity.create(EntityType.SCALED_UNIT, Instant.EPOCH)));
+        errorRecorder.recordScaledUnitDeleteError(exception, scaledUnitForDeletion);
+        ErrorDetails data = ScaledUnitDeleteErrorDetails.create(scaledUnit.id(), scaledUnit.scale(), unitDbEntity.name(), unitDbEntity.abbreviation());
+
+        test(uut.getNumberOfErrors()).assertValue(1);
+        testList(uut.getErrors()).assertValue(v -> v.get(0).statusCode() == statusCode);
+        testList(uut.getErrors()).assertValue(v -> v.get(0).errorDetails().equals(data));
+        testList(uut.getErrors()).assertValue(v -> v.get(0).errorMessage().equals(exception.getMessage()));
     }
 }

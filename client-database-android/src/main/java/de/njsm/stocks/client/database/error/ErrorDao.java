@@ -25,8 +25,8 @@ import androidx.room.Dao;
 import androidx.room.Insert;
 import androidx.room.Query;
 import de.njsm.stocks.client.business.entities.EntityType;
-import de.njsm.stocks.client.business.entities.ScaledUnitDeleteErrorDetails;
 import de.njsm.stocks.client.database.LocationDbEntity;
+import de.njsm.stocks.client.database.ScaledUnitDbEntity;
 import de.njsm.stocks.client.database.UnitDbEntity;
 import io.reactivex.rxjava3.core.Observable;
 
@@ -240,19 +240,6 @@ public abstract class ErrorDao {
     @Query("select * from unit_to_edit where id = :id")
     abstract UnitEditEntity getUnitEdit(long id);
 
-    @Query("select * " +
-            "from unit " +
-            "where id = :id " +
-            "and valid_time_start = (" +
-            "   select max(valid_time_start) " +
-            "   from unit " +
-            "   where id = :id " +
-            "   and valid_time_start <= " + NOW +
-            "   and transaction_time_end = " + DATABASE_INFINITY_STRING_SQL +
-            ")" +
-            "and transaction_time_end = " + DATABASE_INFINITY_STRING_SQL)
-    abstract UnitDbEntity getLatestUnitEntity(int id);
-
     @Query("select * from scaled_unit_to_add")
     abstract List<ScaledUnitAddEntity> getScaledUnitAdds();
 
@@ -291,16 +278,47 @@ public abstract class ErrorDao {
             "where id = :id")
     abstract ScaledUnitDeleteEntity getScaledUnitDelete(long id);
 
-    @Query("select scaled_unit.id as id, scaled_unit.scale as scale, unit.name as name, unit.abbreviation as abbreviation " +
+    ScaledUnitDbEntity getScaledUnitByValidOrTransactionTime(int id, Instant transactionTime) {
+        ScaledUnitDbEntity unit = getCurrentScaledUnit(id);
+        if (unit == null) {
+            unit = getLatestScaledUnitAsBestKnown(id);
+        }
+        if (unit == null) {
+            unit = getCurrentScaledUnitAsKnownAt(id, transactionTime);
+        }
+        return unit;
+    }
+
+    @Query("select * " +
+            "from current_scaled_unit " +
+            "where id = :unitId")
+    abstract ScaledUnitDbEntity getCurrentScaledUnit(int unitId);
+
+    @Query("select * " +
             "from scaled_unit " +
-            "join unit on scaled_unit.unit = unit.id " +
-            "where scaled_unit.id = :id " +
-            "and scaled_unit.version = :version " +
-            "and scaled_unit.transaction_time_end = " + DATABASE_INFINITY_STRING_SQL + " " +
-            "and unit.valid_time_start <= scaled_unit.valid_time_end " +
-            "and scaled_unit.valid_time_end <= unit.valid_time_end " +
-            "and unit.transaction_time_end = " + DATABASE_INFINITY_STRING_SQL + " ")
-    abstract ScaledUnitDeleteErrorDetails getScaledUnit(int id, int version);
+            "where id = :id " +
+            "and transaction_time_start <= :transactionTime " +
+            "and :transactionTime < transaction_time_end " +
+            "and valid_time_start = (" +
+            "   select max(valid_time_start) " +
+            "   from scaled_unit " +
+            "   where valid_time_start <= " + NOW +
+            "   and transaction_time_start <= :transactionTime " +
+            "   and :transactionTime < transaction_time_end " +
+            ")")
+    abstract ScaledUnitDbEntity getCurrentScaledUnitAsKnownAt(int id, Instant transactionTime);
+
+    @Query("select * " +
+            "from scaled_unit " +
+            "where id = :id " +
+            "and transaction_time_end = " + DATABASE_INFINITY_STRING_SQL +
+            "and valid_time_start = (" +
+            "   select max(valid_time_start) " +
+            "   from scaled_unit " +
+            "   where valid_time_start <= " + NOW +
+            "   and transaction_time_end = " + DATABASE_INFINITY_STRING_SQL +
+            ")")
+    abstract ScaledUnitDbEntity getLatestScaledUnitAsBestKnown(int id);
 
     @Query("delete from scaled_unit_to_delete where id = :id")
     abstract void deleteScaledUnitDelete(long id);

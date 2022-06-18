@@ -21,6 +21,7 @@
 
 package de.njsm.stocks.client.database.error;
 
+import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.Ignore;
 import com.google.auto.value.AutoValue;
@@ -28,17 +29,22 @@ import de.njsm.stocks.client.database.IdFields;
 import de.njsm.stocks.client.database.ScaledUnitFields;
 
 import java.math.BigDecimal;
+import java.time.Instant;
 
 @AutoValue
 @Entity(tableName = "scaled_unit_to_add")
 public abstract class ScaledUnitAddEntity implements IdFields, ScaledUnitFields {
 
-    public static ScaledUnitAddEntity create(int id, BigDecimal scale, int unit) {
-        return new AutoValue_ScaledUnitAddEntity(id, scale, unit);
+    @ColumnInfo(name = "unit_transaction_time")
+    @AutoValue.CopyAnnotations
+    public abstract Instant unitTransactionTime();
+
+    public static ScaledUnitAddEntity create(int id, BigDecimal scale, int unit, Instant unitTransactionTime) {
+        return new AutoValue_ScaledUnitAddEntity(id, scale, unit, unitTransactionTime);
     }
 
     @Ignore
-    public static ScaledUnitAddEntity create(BigDecimal scale, int unit) {
-        return new AutoValue_ScaledUnitAddEntity(0, scale, unit);
+    public static ScaledUnitAddEntity create(BigDecimal scale, int unit, Instant unitTransactionTime) {
+        return new AutoValue_ScaledUnitAddEntity(0, scale, unit, unitTransactionTime);
     }
 }

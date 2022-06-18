@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 40,
-    "identityHash": "2109bc2bed34235d7bae8b4ddba5d7eb",
+    "identityHash": "5d6b733cc2bbbe396422dd16df341190",
     "entities": [
       {
         "tableName": "updates",
@@ -1675,7 +1675,7 @@
       },
       {
         "tableName": "scaled_unit_to_add",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `scale` TEXT NOT NULL, `unit` INTEGER NOT NULL)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `scale` TEXT NOT NULL, `unit` INTEGER NOT NULL, `unit_transaction_time` TEXT)",
         "fields": [
           {
             "fieldPath": "id",
@@ -1694,6 +1694,12 @@
             "columnName": "unit",
             "affinity": "INTEGER",
             "notNull": true
+          },
+          {
+            "fieldPath": "unitTransactionTime",
+            "columnName": "unit_transaction_time",
+            "affinity": "TEXT",
+            "notNull": false
           }
         ],
         "primaryKey": {
@@ -1707,7 +1713,7 @@
       },
       {
         "tableName": "scaled_unit_to_edit",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `version` INTEGER NOT NULL, `scale` TEXT, `unit` INTEGER NOT NULL, `scaled_unit_id` INTEGER NOT NULL)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `version` INTEGER NOT NULL, `transaction_time` TEXT, `scale` TEXT, `unit` INTEGER NOT NULL, `scaled_unit_id` INTEGER NOT NULL)",
         "fields": [
           {
             "fieldPath": "id",
@@ -1720,6 +1726,12 @@
             "columnName": "version",
             "affinity": "INTEGER",
             "notNull": true
+          },
+          {
+            "fieldPath": "transactionTime",
+            "columnName": "transaction_time",
+            "affinity": "TEXT",
+            "notNull": false
           },
           {
             "fieldPath": "scale",
@@ -1751,7 +1763,7 @@
       },
       {
         "tableName": "scaled_unit_to_delete",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `version` INTEGER NOT NULL, `scaled_unit_id` INTEGER NOT NULL)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `version` INTEGER NOT NULL, `transaction_time` TEXT, `scaled_unit_id` INTEGER NOT NULL)",
         "fields": [
           {
             "fieldPath": "id",
@@ -1764,6 +1776,12 @@
             "columnName": "version",
             "affinity": "INTEGER",
             "notNull": true
+          },
+          {
+            "fieldPath": "transactionTime",
+            "columnName": "transaction_time",
+            "affinity": "TEXT",
+            "notNull": false
           },
           {
             "fieldPath": "scaledUnitId",
@@ -1830,7 +1848,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '2109bc2bed34235d7bae8b4ddba5d7eb')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '5d6b733cc2bbbe396422dd16df341190')"
     ]
   }
 }

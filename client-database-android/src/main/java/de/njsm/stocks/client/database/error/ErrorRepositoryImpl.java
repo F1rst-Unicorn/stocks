@@ -24,6 +24,7 @@ package de.njsm.stocks.client.database.error;
 import de.njsm.stocks.client.business.ErrorRepository;
 import de.njsm.stocks.client.business.entities.*;
 import de.njsm.stocks.client.database.LocationDbEntity;
+import de.njsm.stocks.client.database.ScaledUnitDbEntity;
 import de.njsm.stocks.client.database.UnitDbEntity;
 import io.reactivex.rxjava3.core.Observable;
 
@@ -125,20 +126,22 @@ public class ErrorRepositoryImpl implements ErrorRepository, ErrorEntity.ActionV
     @Override
     public ErrorDetails addScaledUnit(ErrorEntity.Action action, Long input) {
         ScaledUnitAddEntity scaledUnitAddEntity = errorDao.getScaledUnitAdd(input);
-        UnitDbEntity unit = errorDao.getLatestUnitEntity(scaledUnitAddEntity.unit());
+        UnitDbEntity unit = errorDao.getUnitByValidOrTransactionTime(scaledUnitAddEntity.unit(), scaledUnitAddEntity.unitTransactionTime());
         return ScaledUnitAddErrorDetails.create(scaledUnitAddEntity.scale(), scaledUnitAddEntity.unit(), unit.name(), unit.abbreviation());
     }
 
     @Override
     public ErrorDetails editScaledUnit(ErrorEntity.Action action, Long input) {
         ScaledUnitEditEntity entity = errorDao.getScaledUnitEdit(input);
-        UnitDbEntity unit = errorDao.getLatestUnitEntity(entity.unit());
+        UnitDbEntity unit = errorDao.getUnitByValidOrTransactionTime(entity.unit(), entity.transactionTime());
         return ScaledUnitEditErrorDetails.create(entity.id(), entity.scale(), unit.id(), unit.name(), unit.abbreviation());
     }
 
     @Override
     public ErrorDetails deleteScaledUnit(ErrorEntity.Action action, Long input) {
         ScaledUnitDeleteEntity entity = errorDao.getScaledUnitDelete(input);
-        return errorDao.getScaledUnit(entity.id(), entity.version());
+        ScaledUnitDbEntity scaledUnit = errorDao.getScaledUnitByValidOrTransactionTime(entity.scaledUnitId(), entity.transactionTime());
+        UnitDbEntity unit = errorDao.getUnitByValidOrTransactionTime(scaledUnit.unit(), entity.transactionTime());
+        return ScaledUnitDeleteErrorDetails.create(scaledUnit.id(), scaledUnit.scale(), unit.name(), unit.abbreviation());
     }
 }

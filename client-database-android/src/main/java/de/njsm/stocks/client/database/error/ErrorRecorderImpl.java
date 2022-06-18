@@ -128,7 +128,8 @@ public class ErrorRecorderImpl implements ErrorRecorder {
     @Override
     public void recordScaledUnitAddError(SubsystemException e, ScaledUnitAddForm form) {
         ExceptionData exceptionData = new ExceptionInserter().visit(e, null);
-        ScaledUnitAddEntity entity = ScaledUnitAddEntity.create(form.scale(), form.unit());
+        Instant unitTransactionTime = errorDao.getTransactionTimeOf(EntityType.UNIT);
+        ScaledUnitAddEntity entity = ScaledUnitAddEntity.create(form.scale(), form.unit(), unitTransactionTime);
         long dataId = errorDao.insert(entity);
         errorDao.insert(ErrorEntity.create(ErrorEntity.Action.ADD_SCALED_UNIT, dataId, exceptionData.exceptionType(), exceptionData.exceptionId()));
     }
@@ -136,7 +137,13 @@ public class ErrorRecorderImpl implements ErrorRecorder {
     @Override
     public void recordScaledUnitEditError(SubsystemException e, ScaledUnitForEditing scaledUnitForEditing) {
         ExceptionData exceptionData = new ExceptionInserter().visit(e, null);
-        ScaledUnitEditEntity entity = ScaledUnitEditEntity.create(scaledUnitForEditing.id(), scaledUnitForEditing.version(), scaledUnitForEditing.scale(), scaledUnitForEditing.unit());
+        Instant currentTransactionTime = errorDao.getTransactionTimeOf(EntityType.SCALED_UNIT);
+        ScaledUnitEditEntity entity = ScaledUnitEditEntity.create(
+                scaledUnitForEditing.id(),
+                scaledUnitForEditing.version(),
+                currentTransactionTime,
+                scaledUnitForEditing.scale(),
+                scaledUnitForEditing.unit());
         long dataId = errorDao.insert(entity);
         errorDao.insert(ErrorEntity.create(ErrorEntity.Action.EDIT_SCALED_UNIT, dataId, exceptionData.exceptionType(), exceptionData.exceptionId()));
     }
@@ -144,7 +151,8 @@ public class ErrorRecorderImpl implements ErrorRecorder {
     @Override
     public void recordScaledUnitDeleteError(SubsystemException exception, Versionable<ScaledUnit> scaledUnitForDeletion) {
         ExceptionData exceptionData = new ExceptionInserter().visit(exception, null);
-        ScaledUnitDeleteEntity entity = ScaledUnitDeleteEntity.create(scaledUnitForDeletion.id(), scaledUnitForDeletion.version());
+        Instant currentTransactionTime = errorDao.getTransactionTimeOf(EntityType.SCALED_UNIT);
+        ScaledUnitDeleteEntity entity = ScaledUnitDeleteEntity.create(scaledUnitForDeletion.id(), scaledUnitForDeletion.version(), currentTransactionTime);
         long dataId = errorDao.insert(entity);
         errorDao.insert(ErrorEntity.create(ErrorEntity.Action.DELETE_SCALED_UNIT, dataId, exceptionData.exceptionType(), exceptionData.exceptionId()));
     }
