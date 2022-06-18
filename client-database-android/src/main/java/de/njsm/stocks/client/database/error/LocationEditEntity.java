@@ -40,12 +40,16 @@ public abstract class LocationEditEntity implements IdFields, VersionFields, Tra
     @AutoValue.CopyAnnotations
     public abstract int locationId();
 
-    public static LocationEditEntity create(int id, int version, Instant transactionTime, String name, String description, int locationId) {
-        return new AutoValue_LocationEditEntity(id, version, transactionTime, name, description, locationId);
+    @ColumnInfo(name = "execution_time")
+    @AutoValue.CopyAnnotations
+    public abstract Instant executionTime();
+
+    public static LocationEditEntity create(int id, int version, Instant transactionTime, Instant executionTime, String name, String description, int locationId) {
+        return new AutoValue_LocationEditEntity(id, version, transactionTime, name, description, locationId, executionTime);
     }
 
     @Ignore
-    public static LocationEditEntity create(int version, Instant transactionTime, String name, String description, int locationId) {
-        return new AutoValue_LocationEditEntity(0, version, transactionTime, name, description, locationId);
+    public static LocationEditEntity create(int version, Instant transactionTime, Instant executionTime, String name, String description, int locationId) {
+        return new AutoValue_LocationEditEntity(0, version, transactionTime, name, description, locationId, executionTime);
     }
 }

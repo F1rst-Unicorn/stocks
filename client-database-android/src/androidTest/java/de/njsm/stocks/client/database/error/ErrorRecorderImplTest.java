@@ -45,7 +45,7 @@ public class ErrorRecorderImplTest extends DbTestCase {
 
     @Before
     public void setup() {
-        uut = new ErrorRecorderImpl(stocksDatabase.errorDao());
+        uut = new ErrorRecorderImpl(stocksDatabase.errorDao(), this);
 
         List<UpdateDbEntity> updates = Arrays.stream(EntityType.values())
                 .map(v -> UpdateDbEntity.create(v, Instant.EPOCH))
@@ -209,9 +209,11 @@ public class ErrorRecorderImplTest extends DbTestCase {
         assertEquals(exception.getStatusCode(), actual.statusCode());
         List<UnitDeleteEntity> unitDeleteEntities = stocksDatabase.errorDao().getUnitDeletes();
         assertEquals(1, unitDeleteEntities.size());
-        assertEquals(1, unitDeleteEntities.get(0).id());
-        assertEquals(unitForDeletion.id(), unitDeleteEntities.get(0).unitId());
-        assertEquals(unitForDeletion.version(), unitDeleteEntities.get(0).version());
+        UnitDeleteEntity unitDeleteEntity = unitDeleteEntities.get(0);
+        assertEquals(1, unitDeleteEntity.id());
+        assertEquals(unitForDeletion.id(), unitDeleteEntity.unitId());
+        assertEquals(unitForDeletion.version(), unitDeleteEntity.version());
+        assertEquals(Instant.EPOCH, unitDeleteEntity.transactionTime());
         List<ErrorEntity> errors = stocksDatabase.errorDao().getErrors();
         assertEquals(1, errors.size());
         assertEquals(ErrorEntity.Action.DELETE_UNIT, errors.get(0).action());
@@ -241,6 +243,7 @@ public class ErrorRecorderImplTest extends DbTestCase {
         assertEquals(1, unitEditEntity.id());
         assertEquals(unitForEditing.id(), unitEditEntity.unitId());
         assertEquals(unitForEditing.version(), unitEditEntity.version());
+        assertEquals(Instant.EPOCH, unitEditEntity.transactionTime());
         assertEquals(unitForEditing.name(), unitEditEntity.name());
         assertEquals(unitForEditing.abbreviation(), unitEditEntity.abbreviation());
         List<ErrorEntity> errors = stocksDatabase.errorDao().getErrors();

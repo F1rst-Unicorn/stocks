@@ -31,6 +31,7 @@ import javax.inject.Inject;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.time.Instant;
+import java.util.function.Supplier;
 
 import static de.njsm.stocks.client.database.DataMapper.map;
 import static java.util.Optional.ofNullable;
@@ -39,9 +40,12 @@ public class ErrorRecorderImpl implements ErrorRecorder {
 
     private final ErrorDao errorDao;
 
+    private final Supplier<Instant> clock;
+
     @Inject
-    ErrorRecorderImpl(ErrorDao errorDao) {
+    ErrorRecorderImpl(ErrorDao errorDao, Supplier<Instant> clock) {
         this.errorDao = errorDao;
+        this.clock = clock;
     }
 
     @Override
@@ -79,6 +83,7 @@ public class ErrorRecorderImpl implements ErrorRecorder {
         LocationEditEntity locationEditEntity = LocationEditEntity.create(
                 locationForEditing.version(),
                 currentTransactionTime,
+                clock.get(),
                 locationForEditing.name(),
                 locationForEditing.description(),
                 locationForEditing.id());
@@ -98,7 +103,8 @@ public class ErrorRecorderImpl implements ErrorRecorder {
     public void recordUnitDeleteError(SubsystemException exception, Versionable<Unit> unit) {
         ExceptionData exceptionData = new ExceptionInserter().visit(exception, null);
 
-        UnitDeleteEntity entity = UnitDeleteEntity.create(unit.id(), unit.version());
+        Instant currentTransactionTime = errorDao.getTransactionTimeOf(EntityType.UNIT);
+        UnitDeleteEntity entity = UnitDeleteEntity.create(unit.id(), unit.version(), currentTransactionTime);
         long dataId = errorDao.insert(entity);
 
         errorDao.insert(ErrorEntity.create(ErrorEntity.Action.DELETE_UNIT, dataId, exceptionData.exceptionType(), exceptionData.exceptionId()));
@@ -107,7 +113,14 @@ public class ErrorRecorderImpl implements ErrorRecorder {
     @Override
     public void recordUnitEditError(SubsystemException exception, UnitForEditing unit) {
         ExceptionData exceptionData = new ExceptionInserter().visit(exception, null);
-        UnitEditEntity entity = UnitEditEntity.create(unit.id(), unit.version(), unit.name(), unit.abbreviation());
+        Instant currentTransactionTime = errorDao.getTransactionTimeOf(EntityType.UNIT);
+        UnitEditEntity entity = UnitEditEntity.create(
+                unit.id(),
+                unit.version(),
+                currentTransactionTime,
+                clock.get(),
+                unit.name(),
+                unit.abbreviation());
         long dataId = errorDao.insert(entity);
         errorDao.insert(ErrorEntity.create(ErrorEntity.Action.EDIT_UNIT, dataId, exceptionData.exceptionType(), exceptionData.exceptionId()));
     }

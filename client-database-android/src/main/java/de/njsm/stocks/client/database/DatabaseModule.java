@@ -38,7 +38,9 @@ import de.njsm.stocks.client.execution.Scheduler;
 import io.requery.android.database.sqlite.RequerySQLiteOpenHelperFactory;
 
 import javax.inject.Singleton;
+import java.time.Instant;
 import java.util.concurrent.Executor;
+import java.util.function.Supplier;
 
 @Module
 public interface DatabaseModule {
@@ -56,6 +58,11 @@ public interface DatabaseModule {
 
     static Executor toExecutor(Scheduler scheduler) {
         return command -> scheduler.schedule(Job.create(Job.Type.DATABASE, command));
+    }
+
+    @Provides
+    static Supplier<Instant> clock() {
+        return Instant::now;
     }
 
     @Binds

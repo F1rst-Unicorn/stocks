@@ -47,7 +47,7 @@ public class ConflictRepositoryImpl implements ConflictRepository {
 
             LocationEditEntity locationEditEntity = errorDao.getLocationEdit(error.dataId());
             LocationDbEntity original = errorDao.getCurrentLocationAsKnownAt(locationEditEntity.locationId(), locationEditEntity.transactionTime());
-            LocationDbEntity remote = errorDao.getCurrentLocation(locationEditEntity.locationId());
+            LocationDbEntity remote = errorDao.getCurrentLocationAsKnownAt(locationEditEntity.locationId(), locationEditEntity.executionTime());
 
             return LocationEditConflictData.create(error.id(), locationEditEntity.locationId(), locationEditEntity.version(),
                     original.name(), remote.name(), locationEditEntity.name(),
@@ -62,8 +62,8 @@ public class ConflictRepositoryImpl implements ConflictRepository {
                 throw new IllegalArgumentException("error " + errorId + " does not belong to " + ErrorEntity.Action.EDIT_UNIT + " but to " + error.action());
 
             UnitEditEntity unitEditEntity = errorDao.getUnitEdit(error.dataId());
-            UnitDbEntity original = errorDao.getUnitEntity(unitEditEntity.unitId(), unitEditEntity.version());
-            UnitDbEntity remote = errorDao.getCurrentUnit(unitEditEntity.unitId());
+            UnitDbEntity original = errorDao.getCurrentUnitAsKnownAt(unitEditEntity.unitId(), unitEditEntity.transactionTime());
+            UnitDbEntity remote = errorDao.getCurrentUnitAsKnownAt(unitEditEntity.unitId(), unitEditEntity.executionTime());
 
             return UnitEditConflictData.create(error.id(), unitEditEntity.unitId(), unitEditEntity.version(),
                     original.name(), remote.name(), unitEditEntity.name(),

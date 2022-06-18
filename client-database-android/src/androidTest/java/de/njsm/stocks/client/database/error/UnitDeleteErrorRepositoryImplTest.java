@@ -22,14 +22,16 @@
 package de.njsm.stocks.client.database.error;
 
 import de.njsm.stocks.client.business.StatusCodeException;
-import de.njsm.stocks.client.business.entities.ErrorDetails;
-import de.njsm.stocks.client.business.entities.UnitDeleteErrorDetails;
-import de.njsm.stocks.client.business.entities.UnitForDeletion;
-import de.njsm.stocks.client.database.StandardEntities;
-import de.njsm.stocks.client.database.UnitDbEntity;
+import de.njsm.stocks.client.business.entities.*;
+import de.njsm.stocks.client.database.*;
+import org.junit.Test;
 
+import java.time.Instant;
 import java.util.List;
 
+import static de.njsm.stocks.client.database.BitemporalOperations.currentDelete;
+import static de.njsm.stocks.client.database.Util.test;
+import static de.njsm.stocks.client.database.Util.testList;
 import static java.util.Collections.singletonList;
 
 public class UnitDeleteErrorRepositoryImplTest extends AbstractErrorRepositoryImplTest {
@@ -46,5 +48,48 @@ public class UnitDeleteErrorRepositoryImplTest extends AbstractErrorRepositoryIm
     @Override
     List<?> getErrorDetails() {
         return stocksDatabase.errorDao().getUnitDeletes();
+    }
+
+    @Test
+    public void gettingErrorOfDeletedEntityWorks() {
+        Instant editTime = Instant.EPOCH.plusSeconds(1);
+        StatusCode statusCode = StatusCode.DATABASE_UNREACHABLE;
+        StatusCodeException exception = new StatusCodeException(statusCode);
+        UnitDbEntity unit = StandardEntities.unitDbEntity();
+        UnitForDeletion unitForDeletion = UnitForDeletion.builder()
+                .id(unit.id())
+                .version(unit.version())
+                .build();
+        stocksDatabase.synchronisationDao().writeUnits(singletonList(unit));
+        stocksDatabase.synchronisationDao().writeUnits(currentDelete(unit, editTime));
+        errorRecorder.recordUnitDeleteError(exception, unitForDeletion);
+        ErrorDetails data = UnitDeleteErrorDetails.create(unit.id(), unit.name(), unit.abbreviation());
+
+        test(uut.getNumberOfErrors()).assertValue(1);
+        testList(uut.getErrors()).assertValue(v -> v.get(0).statusCode() == statusCode);
+        testList(uut.getErrors()).assertValue(v -> v.get(0).errorDetails().equals(data));
+        testList(uut.getErrors()).assertValue(v -> v.get(0).errorMessage().equals(exception.getMessage()));
+    }
+
+    @Test
+    public void gettingErrorOfInvalidatedEntityWorks() {
+        Instant editTime = Instant.now();
+        StatusCode statusCode = StatusCode.DATABASE_UNREACHABLE;
+        StatusCodeException exception = new StatusCodeException(statusCode);
+        UnitDbEntity unit = StandardEntities.unitDbEntity();
+        UnitForDeletion unitForDeletion = UnitForDeletion.builder()
+                .id(unit.id())
+                .version(unit.version())
+                .build();
+        stocksDatabase.synchronisationDao().writeUnits(singletonList(unit));
+        stocksDatabase.synchronisationDao().writeUnits(BitemporalOperations.sequencedDeleteOfEntireTime(unit, editTime));
+        stocksDatabase.synchronisationDao().insert(singletonList(UpdateDbEntity.create(EntityType.UNIT, Instant.EPOCH)));
+        errorRecorder.recordUnitDeleteError(exception, unitForDeletion);
+        ErrorDetails data = UnitDeleteErrorDetails.create(unit.id(), unit.name(), unit.abbreviation());
+
+        test(uut.getNumberOfErrors()).assertValue(1);
+        testList(uut.getErrors()).assertValue(v -> v.get(0).statusCode() == statusCode);
+        testList(uut.getErrors()).assertValue(v -> v.get(0).errorDetails().equals(data));
+        testList(uut.getErrors()).assertValue(v -> v.get(0).errorMessage().equals(exception.getMessage()));
     }
 }

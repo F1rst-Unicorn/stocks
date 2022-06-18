@@ -50,7 +50,7 @@ public abstract class AbstractErrorRepositoryImplTest extends DbTestCase {
 
     @Before
     public void setup() {
-        errorRecorder = new ErrorRecorderImpl(stocksDatabase.errorDao());
+        errorRecorder = new ErrorRecorderImpl(stocksDatabase.errorDao(), this);
         uut = new ErrorRepositoryImpl(stocksDatabase.errorDao());
 
         List<UpdateDbEntity> updates = Arrays.stream(EntityType.values())

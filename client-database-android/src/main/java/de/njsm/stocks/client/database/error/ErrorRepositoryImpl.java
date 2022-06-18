@@ -94,8 +94,7 @@ public class ErrorRepositoryImpl implements ErrorRepository, ErrorEntity.ActionV
     public ErrorDetails deleteLocation(ErrorEntity.Action action, Long input) {
         LocationDeleteEntity locationDeleteEntity = errorDao.getLocationDelete(input);
         LocationDbEntity location = errorDao.getLocationByValidOrTransactionTime(locationDeleteEntity.locationId(), locationDeleteEntity.transactionTime());
-        String locationName = location.name();
-        return LocationDeleteErrorDetails.create(locationDeleteEntity.locationId(), locationName);
+        return LocationDeleteErrorDetails.create(location.id(), location.name());
     }
 
     @Override
@@ -113,7 +112,8 @@ public class ErrorRepositoryImpl implements ErrorRepository, ErrorEntity.ActionV
     @Override
     public ErrorDetails deleteUnit(ErrorEntity.Action action, Long input) {
         UnitDeleteEntity unitDeleteEntity = errorDao.getUnitDelete(input);
-        return errorDao.getUnit(unitDeleteEntity.unitId(), unitDeleteEntity.version());
+        UnitDbEntity unit = errorDao.getUnitByValidOrTransactionTime(unitDeleteEntity.unitId(), unitDeleteEntity.transactionTime());
+        return UnitDeleteErrorDetails.create(unit.id(), unit.name(), unit.abbreviation());
     }
 
     @Override

@@ -22,19 +22,14 @@
 package de.njsm.stocks.client.database.error;
 
 import de.njsm.stocks.client.business.StatusCodeException;
-import de.njsm.stocks.client.business.entities.*;
-import de.njsm.stocks.client.database.BitemporalOperations;
+import de.njsm.stocks.client.business.entities.ErrorDetails;
+import de.njsm.stocks.client.business.entities.LocationEditErrorDetails;
+import de.njsm.stocks.client.business.entities.LocationForEditing;
 import de.njsm.stocks.client.database.LocationDbEntity;
 import de.njsm.stocks.client.database.StandardEntities;
-import de.njsm.stocks.client.database.UpdateDbEntity;
-import org.junit.Test;
 
-import java.time.Instant;
 import java.util.List;
 
-import static de.njsm.stocks.client.database.BitemporalOperations.currentDelete;
-import static de.njsm.stocks.client.database.Util.test;
-import static de.njsm.stocks.client.database.Util.testList;
 import static java.util.Collections.singletonList;
 
 public class LocationEditErrorRepositoryImplTest extends AbstractErrorRepositoryImplTest {
@@ -55,52 +50,5 @@ public class LocationEditErrorRepositoryImplTest extends AbstractErrorRepository
     @Override
     List<?> getErrorDetails() {
         return stocksDatabase.errorDao().getLocationEdits();
-    }
-
-    @Test
-    public void gettingErrorOfDeletedEntityWorks() {
-        Instant editTime = Instant.EPOCH.plusSeconds(1);
-        StatusCode statusCode = StatusCode.DATABASE_UNREACHABLE;
-        StatusCodeException exception = new StatusCodeException(statusCode);
-        LocationDbEntity location = StandardEntities.locationDbEntity();
-        LocationForEditing locationForEditing = LocationForEditing.builder()
-                .id(location.id())
-                .version(location.version())
-                .name("local name")
-                .description("local description")
-                .build();
-        stocksDatabase.synchronisationDao().writeLocations(singletonList(location));
-        stocksDatabase.synchronisationDao().writeLocations(currentDelete(location, editTime));
-        errorRecorder.recordLocationEditError(exception, locationForEditing);
-        ErrorDetails data = LocationEditErrorDetails.create(location.id(), locationForEditing.name(), locationForEditing.description());
-
-        test(uut.getNumberOfErrors()).assertValue(1);
-        testList(uut.getErrors()).assertValue(v -> v.get(0).statusCode() == statusCode);
-        testList(uut.getErrors()).assertValue(v -> v.get(0).errorDetails().equals(data));
-        testList(uut.getErrors()).assertValue(v -> v.get(0).errorMessage().equals(exception.getMessage()));
-    }
-
-    @Test
-    public void gettingErrorOfInvalidatedEntityWorks() {
-        Instant editTime = Instant.now();
-        StatusCode statusCode = StatusCode.DATABASE_UNREACHABLE;
-        StatusCodeException exception = new StatusCodeException(statusCode);
-        LocationDbEntity location = StandardEntities.locationDbEntity();
-        LocationForEditing locationForEditing = LocationForEditing.builder()
-                .id(location.id())
-                .version(location.version())
-                .name("local name")
-                .description("local description")
-                .build();
-        stocksDatabase.synchronisationDao().writeLocations(singletonList(location));
-        stocksDatabase.synchronisationDao().writeLocations(BitemporalOperations.sequencedDeleteOfEntireTime(location, editTime));
-        stocksDatabase.synchronisationDao().insert(singletonList(UpdateDbEntity.create(EntityType.LOCATION, Instant.EPOCH)));
-        errorRecorder.recordLocationEditError(exception, locationForEditing);
-        ErrorDetails data = LocationEditErrorDetails.create(location.id(), locationForEditing.name(), locationForEditing.description());
-
-        test(uut.getNumberOfErrors()).assertValue(1);
-        testList(uut.getErrors()).assertValue(v -> v.get(0).statusCode() == statusCode);
-        testList(uut.getErrors()).assertValue(v -> v.get(0).errorDetails().equals(data));
-        testList(uut.getErrors()).assertValue(v -> v.get(0).errorMessage().equals(exception.getMessage()));
     }
 }

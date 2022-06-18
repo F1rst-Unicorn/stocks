@@ -30,12 +30,15 @@ import org.junit.After;
 import org.junit.Before;
 
 import java.time.Instant;
+import java.util.function.Supplier;
 
 import static java.util.Collections.singletonList;
 
-public class DbTestCase {
+public class DbTestCase implements Supplier<Instant> {
 
     protected StocksDatabase stocksDatabase;
+
+    private Instant now;
 
     @Before
     public void createDb() {
@@ -43,6 +46,7 @@ public class DbTestCase {
         stocksDatabase = Room.inMemoryDatabaseBuilder(context, StocksDatabase.class)
                 .openHelperFactory(new RequerySQLiteOpenHelperFactory())
                 .build();
+        setNow(Instant.EPOCH);
     }
 
     @After
@@ -60,5 +64,18 @@ public class DbTestCase {
         UpdateDbEntity update = UpdateDbEntity.create(EntityType.LOCATION, now);
 
         stocksDatabase.synchronisationDao().writeUpdates(singletonList(update));
+    }
+
+    @Override
+    public Instant get() {
+        return getNow();
+    }
+
+    public Instant getNow() {
+        return now;
+    }
+
+    public void setNow(Instant now) {
+        this.now = now;
     }
 }
