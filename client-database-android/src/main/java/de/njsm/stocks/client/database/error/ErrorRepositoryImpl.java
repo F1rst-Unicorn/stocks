@@ -23,6 +23,7 @@ package de.njsm.stocks.client.database.error;
 
 import de.njsm.stocks.client.business.ErrorRepository;
 import de.njsm.stocks.client.business.entities.*;
+import de.njsm.stocks.client.database.LocationDbEntity;
 import de.njsm.stocks.client.database.UnitDbEntity;
 import io.reactivex.rxjava3.core.Observable;
 
@@ -92,7 +93,8 @@ public class ErrorRepositoryImpl implements ErrorRepository, ErrorEntity.ActionV
     @Override
     public ErrorDetails deleteLocation(ErrorEntity.Action action, Long input) {
         LocationDeleteEntity locationDeleteEntity = errorDao.getLocationDelete(input);
-        String locationName = errorDao.getLocation(locationDeleteEntity.locationId(), locationDeleteEntity.version()).name();
+        LocationDbEntity location = errorDao.getLocationByValidOrTransactionTime(locationDeleteEntity.locationId(), locationDeleteEntity.transactionTime());
+        String locationName = location.name();
         return LocationDeleteErrorDetails.create(locationDeleteEntity.locationId(), locationName);
     }
 

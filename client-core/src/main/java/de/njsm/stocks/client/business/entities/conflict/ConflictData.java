@@ -28,6 +28,10 @@ import static de.njsm.stocks.client.business.entities.conflict.ConflictData.Fiel
 import static de.njsm.stocks.client.business.entities.conflict.SuggestionStrategy.merge;
 import static de.njsm.stocks.client.business.entities.conflict.SuggestionStrategy.select;
 
+/**
+ * Represent three versions of a datum which results from two conflicting
+ * edits of an entity
+ */
 @AutoValue
 public abstract class ConflictData<T> {
 
@@ -39,10 +43,23 @@ public abstract class ConflictData<T> {
         return new AutoValue_ConflictData<>(original, remote, local, merge());
     }
 
+    /**
+     * The datum assumed to be valid when the local edit occurred
+     */
     public abstract T original();
 
+    /**
+     * The datum that resulted from the other, remote program's edit of the
+     * original datum.
+     */
     public abstract T remote();
 
+    /**
+     * The datum as it was entered by this program for the local edit that
+     * caused the conflict.
+     *
+     * It has never been valid.
+     */
     public abstract T local();
 
     abstract SuggestionStrategy<T> suggestionStrategy();

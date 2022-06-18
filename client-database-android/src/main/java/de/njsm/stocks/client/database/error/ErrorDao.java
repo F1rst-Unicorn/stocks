@@ -24,12 +24,14 @@ package de.njsm.stocks.client.database.error;
 import androidx.room.Dao;
 import androidx.room.Insert;
 import androidx.room.Query;
+import de.njsm.stocks.client.business.entities.EntityType;
 import de.njsm.stocks.client.business.entities.ScaledUnitDeleteErrorDetails;
 import de.njsm.stocks.client.business.entities.UnitDeleteErrorDetails;
 import de.njsm.stocks.client.database.LocationDbEntity;
 import de.njsm.stocks.client.database.UnitDbEntity;
 import io.reactivex.rxjava3.core.Observable;
 
+import java.time.Instant;
 import java.util.List;
 
 import static de.njsm.stocks.client.database.StocksDatabase.DATABASE_INFINITY_STRING_SQL;
@@ -119,17 +121,47 @@ public abstract class ErrorDao {
     @Query("delete from location_to_edit where id = :id")
     abstract void deleteLocationEdit(long id);
 
-    @Query("select * " +
-            "from location " +
-            "where id = :id " +
-            "and version = :version " +
-            "and transaction_time_end = " + DATABASE_INFINITY_STRING_SQL)
-    abstract LocationDbEntity getLocation(int id, int version);
+    LocationDbEntity getLocationByValidOrTransactionTime(int id, Instant transactionTime) {
+        LocationDbEntity location = getCurrentLocation(id);
+        if (location == null) {
+            location = getLatestLocationAsBestKnown(id);
+        }
+        if (location == null) {
+            location = getCurrentLocationAsKnownAt(id, transactionTime);
+        }
+        return location;
+    }
 
     @Query("select * " +
             "from current_location " +
             "where id = :locationId")
     abstract LocationDbEntity getCurrentLocation(int locationId);
+
+    @Query("select * " +
+            "from location " +
+            "where id = :id " +
+            "and transaction_time_start <= :transactionTime " +
+            "and :transactionTime < transaction_time_end " +
+            "and valid_time_start = (" +
+            "   select max(valid_time_start) " +
+            "   from location " +
+            "   where valid_time_start <= " + NOW +
+            "   and transaction_time_start <= :transactionTime " +
+            "   and :transactionTime < transaction_time_end " +
+            ")")
+    abstract LocationDbEntity getCurrentLocationAsKnownAt(int id, Instant transactionTime);
+
+    @Query("select * " +
+            "from location " +
+            "where id = :id " +
+            "and transaction_time_end = " + DATABASE_INFINITY_STRING_SQL +
+            "and valid_time_start = (" +
+            "   select max(valid_time_start) " +
+            "   from location " +
+            "   where valid_time_start <= " + NOW +
+            "   and transaction_time_end = " + DATABASE_INFINITY_STRING_SQL +
+            ")")
+    abstract LocationDbEntity getLatestLocationAsBestKnown(int id);
 
     @Query("select * from unit_to_add")
     abstract List<UnitAddEntity> getUnitAdds();
@@ -250,4 +282,9 @@ public abstract class ErrorDao {
 
     @Query("delete from scaled_unit_to_delete where id = :id")
     abstract void deleteScaledUnitDelete(long id);
+
+    @Query("select last_update " +
+            "from updates " +
+            "where name = :entityType")
+    abstract Instant getTransactionTimeOf(EntityType entityType);
 }

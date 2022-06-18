@@ -24,14 +24,19 @@ package de.njsm.stocks.client.database.error;
 import de.njsm.stocks.client.business.ErrorRecorder;
 import de.njsm.stocks.client.business.ErrorRepository;
 import de.njsm.stocks.client.business.StatusCodeException;
+import de.njsm.stocks.client.business.entities.EntityType;
 import de.njsm.stocks.client.business.entities.ErrorDescription;
 import de.njsm.stocks.client.business.entities.ErrorDetails;
 import de.njsm.stocks.client.business.entities.StatusCode;
 import de.njsm.stocks.client.database.DbTestCase;
+import de.njsm.stocks.client.database.UpdateDbEntity;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.time.Instant;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static de.njsm.stocks.client.database.Util.test;
 import static de.njsm.stocks.client.database.Util.testList;
@@ -41,12 +46,17 @@ public abstract class AbstractErrorRepositoryImplTest extends DbTestCase {
 
     ErrorRecorder errorRecorder;
 
-    private ErrorRepository uut;
+    ErrorRepository uut;
 
     @Before
     public void setup() {
         errorRecorder = new ErrorRecorderImpl(stocksDatabase.errorDao());
         uut = new ErrorRepositoryImpl(stocksDatabase.errorDao());
+
+        List<UpdateDbEntity> updates = Arrays.stream(EntityType.values())
+                .map(v -> UpdateDbEntity.create(v, Instant.EPOCH))
+                .collect(Collectors.toList());
+        stocksDatabase.synchronisationDao().insert(updates);
     }
 
     abstract ErrorDetails recordError(StatusCodeException e);

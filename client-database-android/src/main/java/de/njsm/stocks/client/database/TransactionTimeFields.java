@@ -19,32 +19,16 @@
  *
  */
 
-package de.njsm.stocks.client.database.error;
+package de.njsm.stocks.client.database;
 
 import androidx.room.ColumnInfo;
-import androidx.room.Entity;
-import androidx.room.Ignore;
 import com.google.auto.value.AutoValue;
-import de.njsm.stocks.client.database.IdFields;
-import de.njsm.stocks.client.database.TransactionTimeFields;
-import de.njsm.stocks.client.database.VersionFields;
 
 import java.time.Instant;
 
-@AutoValue
-@Entity(tableName = "location_to_delete")
-public abstract class LocationDeleteEntity implements IdFields, VersionFields, TransactionTimeFields {
+public interface TransactionTimeFields {
 
-    @ColumnInfo(name = "location_id")
+    @ColumnInfo(name = "transaction_time")
     @AutoValue.CopyAnnotations
-    public abstract int locationId();
-
-    public static LocationDeleteEntity create(int id, int version, Instant transactionTime, int locationId) {
-        return new AutoValue_LocationDeleteEntity(id, version, transactionTime, locationId);
-    }
-
-    @Ignore
-    public static LocationDeleteEntity create(int locationId, int version, Instant transactionTime) {
-        return new AutoValue_LocationDeleteEntity(0, version, transactionTime, locationId);
-    }
+    Instant transactionTime();
 }

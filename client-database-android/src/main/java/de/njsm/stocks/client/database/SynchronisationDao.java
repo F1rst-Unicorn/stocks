@@ -34,7 +34,7 @@ public abstract class SynchronisationDao {
     abstract List<UpdateDbEntity> getAll();
 
     @Insert(onConflict = REPLACE)
-    abstract void insert(List<UpdateDbEntity> updates);
+    public abstract void insert(List<UpdateDbEntity> updates);
 
     @Transaction
     void writeUpdates(List<UpdateDbEntity> locations) {

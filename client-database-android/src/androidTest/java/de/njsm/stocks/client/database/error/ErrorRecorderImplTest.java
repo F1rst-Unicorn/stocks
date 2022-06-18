@@ -26,11 +26,15 @@ import de.njsm.stocks.client.business.StatusCodeException;
 import de.njsm.stocks.client.business.SubsystemException;
 import de.njsm.stocks.client.business.entities.*;
 import de.njsm.stocks.client.database.DbTestCase;
+import de.njsm.stocks.client.database.UpdateDbEntity;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.math.BigDecimal;
+import java.time.Instant;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
@@ -42,6 +46,11 @@ public class ErrorRecorderImplTest extends DbTestCase {
     @Before
     public void setup() {
         uut = new ErrorRecorderImpl(stocksDatabase.errorDao());
+
+        List<UpdateDbEntity> updates = Arrays.stream(EntityType.values())
+                .map(v -> UpdateDbEntity.create(v, Instant.EPOCH))
+                .collect(Collectors.toList());
+        stocksDatabase.synchronisationDao().insert(updates);
     }
 
     @Test
@@ -118,9 +127,11 @@ public class ErrorRecorderImplTest extends DbTestCase {
         assertEquals(exception.getStatusCode(), actual.statusCode());
         List<LocationDeleteEntity> locationDeleteEntities = stocksDatabase.errorDao().getLocationDeletes();
         assertEquals(1, locationDeleteEntities.size());
-        assertEquals(1, locationDeleteEntities.get(0).id());
-        assertEquals(locationForDeletion.id(), locationDeleteEntities.get(0).locationId());
-        assertEquals(locationForDeletion.version(), locationDeleteEntities.get(0).version());
+        LocationDeleteEntity locationDelete = locationDeleteEntities.get(0);
+        assertEquals(1, locationDelete.id());
+        assertEquals(locationForDeletion.id(), locationDelete.locationId());
+        assertEquals(locationForDeletion.version(), locationDelete.version());
+        assertEquals(Instant.EPOCH, locationDelete.transactionTime());
         List<ErrorEntity> errors = stocksDatabase.errorDao().getErrors();
         assertEquals(1, errors.size());
         assertEquals(ErrorEntity.Action.DELETE_LOCATION, errors.get(0).action());
@@ -150,6 +161,7 @@ public class ErrorRecorderImplTest extends DbTestCase {
         assertEquals(1, locationEditEntity.id());
         assertEquals(locationForEditing.id(), locationEditEntity.locationId());
         assertEquals(locationForEditing.version(), locationEditEntity.version());
+        assertEquals(Instant.EPOCH, locationEditEntity.transactionTime());
         assertEquals(locationForEditing.name(), locationEditEntity.name());
         assertEquals(locationForEditing.description(), locationEditEntity.description());
         List<ErrorEntity> errors = stocksDatabase.errorDao().getErrors();

@@ -23,10 +23,7 @@ package de.njsm.stocks.client.database;
 
 import java.math.BigDecimal;
 import java.time.Duration;
-import java.time.Instant;
 import java.time.Period;
-import java.util.Arrays;
-import java.util.List;
 
 import static de.njsm.stocks.client.business.Constants.INFINITY;
 import static java.time.Instant.EPOCH;
@@ -132,33 +129,5 @@ public class StandardEntities {
                 .transactionTimeStart(EPOCH)
                 .transactionTimeEnd(INFINITY)
                 .initiates(3);
-    }
-
-    public static <E extends ServerDbEntity<E>, B extends ServerDbEntity.Builder<E, B>>
-    List<E> bitemporalEdit(E current,
-                           EntityEditor<E, B> editor,
-                           Instant when) {
-        E deletedCurrent = current.toBuilder()
-                .transactionTimeEnd(when)
-                .build();
-        E terminatedCurrent = current.toBuilder()
-                .validTimeEnd(when)
-                .transactionTimeStart(when)
-                .build();
-        E temporaryToSatisfyTypeSystem = current.toBuilder()
-                .validTimeStart(when)
-                .transactionTimeStart(when)
-                .version(current.version() + 1).build();
-        E edited = editor.edit(temporaryToSatisfyTypeSystem.toBuilder()).build();
-
-        return Arrays.asList(
-                deletedCurrent,
-                terminatedCurrent,
-                edited
-        );
-    }
-
-    public interface EntityEditor<E extends ServerDbEntity<E>, B extends ServerDbEntity.Builder<E, B>> {
-        B edit(B builder);
     }
 }

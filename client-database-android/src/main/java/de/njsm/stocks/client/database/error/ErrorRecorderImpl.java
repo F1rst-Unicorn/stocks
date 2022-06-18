@@ -26,11 +26,11 @@ import de.njsm.stocks.client.business.ErrorRecorder;
 import de.njsm.stocks.client.business.StatusCodeException;
 import de.njsm.stocks.client.business.SubsystemException;
 import de.njsm.stocks.client.business.entities.*;
-import de.njsm.stocks.client.database.DataMapper;
 
 import javax.inject.Inject;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.time.Instant;
 
 import static de.njsm.stocks.client.database.DataMapper.map;
 import static java.util.Optional.ofNullable;
@@ -64,7 +64,8 @@ public class ErrorRecorderImpl implements ErrorRecorder {
     public void recordLocationDeleteError(SubsystemException exception, Versionable<Location> locationForDeletion) {
         ExceptionData exceptionData = new ExceptionInserter().visit(exception, null);
 
-        LocationDeleteEntity locationDeleteEntity = DataMapper.map(locationForDeletion);
+        Instant currentTransactionTime = errorDao.getTransactionTimeOf(EntityType.LOCATION);
+        LocationDeleteEntity locationDeleteEntity = LocationDeleteEntity.create(locationForDeletion.id(), locationForDeletion.version(), currentTransactionTime);
         long dataId = errorDao.insert(locationDeleteEntity);
 
         errorDao.insert(ErrorEntity.create(ErrorEntity.Action.DELETE_LOCATION, dataId, exceptionData.exceptionType(), exceptionData.exceptionId()));
@@ -74,7 +75,13 @@ public class ErrorRecorderImpl implements ErrorRecorder {
     public void recordLocationEditError(SubsystemException exception, LocationForEditing locationForEditing) {
         ExceptionData exceptionData = new ExceptionInserter().visit(exception, null);
 
-        LocationEditEntity locationEditEntity = DataMapper.map(locationForEditing);
+        Instant currentTransactionTime = errorDao.getTransactionTimeOf(EntityType.LOCATION);
+        LocationEditEntity locationEditEntity = LocationEditEntity.create(
+                locationForEditing.version(),
+                currentTransactionTime,
+                locationForEditing.name(),
+                locationForEditing.description(),
+                locationForEditing.id());
         long dataId = errorDao.insert(locationEditEntity);
 
         errorDao.insert(ErrorEntity.create(ErrorEntity.Action.EDIT_LOCATION, dataId, exceptionData.exceptionType(), exceptionData.exceptionId()));

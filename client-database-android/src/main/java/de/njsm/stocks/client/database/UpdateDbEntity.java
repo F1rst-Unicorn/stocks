@@ -32,7 +32,7 @@ import java.time.Instant;
 
 @Entity(tableName = "updates")
 @AutoValue
-abstract class UpdateDbEntity implements IdFields {
+public abstract class UpdateDbEntity implements IdFields {
 
     @ColumnInfo(name = "name")
     @NonNull
@@ -49,7 +49,7 @@ abstract class UpdateDbEntity implements IdFields {
     }
 
     @Ignore
-    static UpdateDbEntity create(EntityType table, Instant lastUpdate) {
+    public static UpdateDbEntity create(EntityType table, Instant lastUpdate) {
         return create(0, table, lastUpdate);
     }
 }

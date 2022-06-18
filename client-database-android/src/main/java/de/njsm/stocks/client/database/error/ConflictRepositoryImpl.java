@@ -46,7 +46,7 @@ public class ConflictRepositoryImpl implements ConflictRepository {
                 throw new IllegalArgumentException("error " + errorId + " does not belong to " + ErrorEntity.Action.EDIT_LOCATION + " but to " + error.action());
 
             LocationEditEntity locationEditEntity = errorDao.getLocationEdit(error.dataId());
-            LocationDbEntity original = errorDao.getLocation(locationEditEntity.locationId(), locationEditEntity.version());
+            LocationDbEntity original = errorDao.getCurrentLocationAsKnownAt(locationEditEntity.locationId(), locationEditEntity.transactionTime());
             LocationDbEntity remote = errorDao.getCurrentLocation(locationEditEntity.locationId());
 
             return LocationEditConflictData.create(error.id(), locationEditEntity.locationId(), locationEditEntity.version(),

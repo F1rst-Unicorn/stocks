@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 40,
-    "identityHash": "e982f8a8deb52e44c336c877071467ca",
+    "identityHash": "4f4735ec60631748e7bc14639579cdd1",
     "entities": [
       {
         "tableName": "updates",
@@ -293,7 +293,7 @@
       },
       {
         "tableName": "location_to_delete",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `version` INTEGER NOT NULL, `location_id` INTEGER NOT NULL)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `version` INTEGER NOT NULL, `transaction_time` TEXT, `location_id` INTEGER NOT NULL)",
         "fields": [
           {
             "fieldPath": "id",
@@ -306,6 +306,12 @@
             "columnName": "version",
             "affinity": "INTEGER",
             "notNull": true
+          },
+          {
+            "fieldPath": "transactionTime",
+            "columnName": "transaction_time",
+            "affinity": "TEXT",
+            "notNull": false
           },
           {
             "fieldPath": "locationId",
@@ -325,7 +331,7 @@
       },
       {
         "tableName": "location_to_edit",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `version` INTEGER NOT NULL, `name` TEXT NOT NULL, `description` TEXT NOT NULL, `location_id` INTEGER NOT NULL)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `version` INTEGER NOT NULL, `transaction_time` TEXT, `name` TEXT NOT NULL, `description` TEXT NOT NULL, `location_id` INTEGER NOT NULL)",
         "fields": [
           {
             "fieldPath": "id",
@@ -338,6 +344,12 @@
             "columnName": "version",
             "affinity": "INTEGER",
             "notNull": true
+          },
+          {
+            "fieldPath": "transactionTime",
+            "columnName": "transaction_time",
+            "affinity": "TEXT",
+            "notNull": false
           },
           {
             "fieldPath": "name",
@@ -1794,7 +1806,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'e982f8a8deb52e44c336c877071467ca')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '4f4735ec60631748e7bc14639579cdd1')"
     ]
   }
 }

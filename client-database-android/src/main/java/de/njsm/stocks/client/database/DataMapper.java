@@ -23,8 +23,6 @@ package de.njsm.stocks.client.database;
 
 import de.njsm.stocks.client.business.entities.*;
 import de.njsm.stocks.client.database.error.LocationAddEntity;
-import de.njsm.stocks.client.database.error.LocationDeleteEntity;
-import de.njsm.stocks.client.database.error.LocationEditEntity;
 
 public class DataMapper {
 
@@ -213,10 +211,6 @@ public class DataMapper {
                 .build();
     }
 
-    public static LocationDeleteEntity map(Versionable<Location> locationForDeletion) {
-        return LocationDeleteEntity.create(locationForDeletion.id(), locationForDeletion.version());
-    }
-
     public static LocationAddForm map(LocationAddEntity input) {
         return LocationAddForm.create(input.name(), input.description());
     }
@@ -240,14 +234,6 @@ public class DataMapper {
                 .name(location.name())
                 .description(location.description())
                 .build();
-    }
-
-    public static LocationEditEntity map(LocationForEditing locationForEditing) {
-        return LocationEditEntity.create(
-                locationForEditing.version(),
-                locationForEditing.name(),
-                locationForEditing.description(),
-                locationForEditing.id());
     }
 
     public static UnitForListing map(UnitDbEntity unitDbEntity) {

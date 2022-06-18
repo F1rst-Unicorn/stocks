@@ -28,16 +28,17 @@ import de.njsm.stocks.client.business.SubsystemException;
 import de.njsm.stocks.client.business.entities.*;
 import de.njsm.stocks.client.business.entities.conflict.LocationEditConflictData;
 import de.njsm.stocks.client.business.entities.conflict.UnitEditConflictData;
-import de.njsm.stocks.client.database.DbTestCase;
-import de.njsm.stocks.client.database.LocationDbEntity;
-import de.njsm.stocks.client.database.StandardEntities;
-import de.njsm.stocks.client.database.UnitDbEntity;
+import de.njsm.stocks.client.database.*;
 import io.reactivex.rxjava3.observers.TestObserver;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.time.Instant;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
+import static de.njsm.stocks.client.database.BitemporalOperations.currentEdit;
 import static de.njsm.stocks.client.database.Util.test;
 import static de.njsm.stocks.client.database.Util.testList;
 import static java.util.Collections.singletonList;
@@ -57,6 +58,11 @@ public class ConflictRepositoryImplTest extends DbTestCase {
         uut = new ConflictRepositoryImpl(stocksDatabase.errorDao());
         errorRecorder = new ErrorRecorderImpl(stocksDatabase.errorDao());
         errorRepository = new ErrorRepositoryImpl(stocksDatabase.errorDao());
+
+        List<UpdateDbEntity> updates = Arrays.stream(EntityType.values())
+                .map(v -> UpdateDbEntity.create(v, Instant.EPOCH))
+                .collect(Collectors.toList());
+        stocksDatabase.synchronisationDao().insert(updates);
     }
 
     @Test
@@ -83,8 +89,8 @@ public class ConflictRepositoryImplTest extends DbTestCase {
                 .name("remote name")
                 .description("remote description")
                 .build();
-        stocksDatabase.synchronisationDao().writeLocations(StandardEntities.bitemporalEdit(original,
-                (StandardEntities.EntityEditor<LocationDbEntity, LocationDbEntity.Builder>) builder ->
+        stocksDatabase.synchronisationDao().writeLocations(currentEdit(original,
+                (BitemporalOperations.EntityEditor<LocationDbEntity, LocationDbEntity.Builder>) builder ->
                         builder.name(remoteEdit.name())
                                 .description(remoteEdit.description()),
                 editTime));
@@ -122,8 +128,8 @@ public class ConflictRepositoryImplTest extends DbTestCase {
                 .name("remote name")
                 .abbreviation("remote abbreviation")
                 .build();
-        stocksDatabase.synchronisationDao().writeUnits(StandardEntities.bitemporalEdit(original,
-                (StandardEntities.EntityEditor<UnitDbEntity, UnitDbEntity.Builder>) builder ->
+        stocksDatabase.synchronisationDao().writeUnits(currentEdit(original,
+                (BitemporalOperations.EntityEditor<UnitDbEntity, UnitDbEntity.Builder>) builder ->
                         builder.name(remoteEdit.name())
                                 .abbreviation(remoteEdit.abbreviation()),
                 editTime));
