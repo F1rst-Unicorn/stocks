@@ -81,8 +81,8 @@ public class ConflictRepositoryImpl implements ConflictRepository {
                 throw new IllegalArgumentException("error " + errorId + " does not belong to " + ErrorEntity.Action.EDIT_SCALED_UNIT + " but to " + error.action());
 
             ScaledUnitEditEntity scaledUnitEditEntity = errorDao.getScaledUnitEdit(error.dataId());
-            ScaledUnitDbEntity original = errorDao.getCurrentScaledUnitAsKnownAt(scaledUnitEditEntity.id(), scaledUnitEditEntity.transactionTime());
-            ScaledUnitDbEntity remote = errorDao.getCurrentScaledUnitAsKnownAt(scaledUnitEditEntity.id(), scaledUnitEditEntity.executionTime());
+            ScaledUnitDbEntity original = errorDao.getCurrentScaledUnitAsKnownAt(scaledUnitEditEntity.scaledUnitId(), scaledUnitEditEntity.transactionTime());
+            ScaledUnitDbEntity remote = errorDao.getCurrentScaledUnitAsKnownAt(scaledUnitEditEntity.scaledUnitId(), scaledUnitEditEntity.executionTime());
 
             UnitDbEntity originalUnit = errorDao.getCurrentUnitAsKnownAt(original.unit(), scaledUnitEditEntity.transactionTime());
             UnitDbEntity remoteUnit = errorDao.getCurrentUnitAsKnownAt(remote.unit(), scaledUnitEditEntity.executionTime());

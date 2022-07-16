@@ -36,6 +36,8 @@ import de.njsm.stocks.client.database.error.ErrorRecorderImpl;
 import de.njsm.stocks.client.database.error.ErrorRepositoryImpl;
 import de.njsm.stocks.client.execution.Scheduler;
 import io.requery.android.database.sqlite.RequerySQLiteOpenHelperFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.inject.Singleton;
 import java.time.Instant;
@@ -45,14 +47,26 @@ import java.util.function.Supplier;
 @Module
 public interface DatabaseModule {
 
+    Logger LOG = LoggerFactory.getLogger(DatabaseModule.class);
+
     @Provides
     @Singleton
     static StocksDatabase provideDatabase(Application context, Scheduler scheduler) {
+        Executor executor = toExecutor(scheduler);
         return Room.databaseBuilder(context, StocksDatabase.class, "stocks.db")
-                .setQueryExecutor(toExecutor(scheduler))
-                .setTransactionExecutor(toExecutor(scheduler))
+                .setQueryExecutor(executor)
+                .setTransactionExecutor(executor)
                 .fallbackToDestructiveMigration()
                 .openHelperFactory(new RequerySQLiteOpenHelperFactory())
+                .setQueryCallback((sqlQuery, bindArgs) -> {
+                    if (Character.isUpperCase(sqlQuery.charAt(0)))
+                        return;
+
+                    if (bindArgs.isEmpty())
+                        LOG.trace(sqlQuery);
+                    else
+                        LOG.trace(sqlQuery + "; args " + bindArgs);
+                }, executor)
                 .build();
     }
 
