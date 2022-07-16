@@ -59,9 +59,6 @@ public interface DatabaseModule {
                 .fallbackToDestructiveMigration()
                 .openHelperFactory(new RequerySQLiteOpenHelperFactory())
                 .setQueryCallback((sqlQuery, bindArgs) -> {
-                    if (Character.isUpperCase(sqlQuery.charAt(0)))
-                        return;
-
                     if (bindArgs.isEmpty())
                         LOG.trace(sqlQuery);
                     else

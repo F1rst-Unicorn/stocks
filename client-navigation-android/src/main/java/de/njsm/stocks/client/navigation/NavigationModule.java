@@ -71,4 +71,7 @@ public interface NavigationModule {
 
     @Binds
     ScaledUnitConflictNavigator ScaledUnitConflictNavigator(ScaledUnitConflictNavigatorImpl impl);
+
+    @Binds
+    OutlineNavigator OutlineNavigator(OutlineNavigatorImpl impl);
 }

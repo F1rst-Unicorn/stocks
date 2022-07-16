@@ -133,4 +133,10 @@ class FakeNavigationModule {
     ScaledUnitConflictNavigator ScaledUnitConflictNavigator() {
         return mock(ScaledUnitConflictNavigator.class);
     }
+
+    @Provides
+    @Singleton
+    OutlineNavigator OutlineNavigator() {
+        return mock(OutlineNavigator.class);
+    }
 }

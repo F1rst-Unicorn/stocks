@@ -162,4 +162,11 @@ public class ViewModelModule {
     ViewModel ScaledUnitConflictViewModel(ScaledUnitConflictInteractor scaledUnitConflictInteractor, ErrorRetryInteractor errorRetryInteractor) {
         return new ScaledUnitConflictViewModel(scaledUnitConflictInteractor, errorRetryInteractor);
     }
+
+    @Provides
+    @IntoMap
+    @ViewModelKey(OutlineViewModel.class)
+    ViewModel OutlineViewModel(Synchroniser synchroniser) {
+        return new OutlineViewModel(synchroniser);
+    }
 }

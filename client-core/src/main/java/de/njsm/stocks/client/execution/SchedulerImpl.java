@@ -54,7 +54,9 @@ class SchedulerImpl implements Scheduler, SchedulerStatusReporter {
 
     @Override
     public void schedule(Job job) {
-        LOG.trace(job + " scheduled");
+        if (job.name() != Job.Type.DATABASE) {
+            LOG.trace(job + " scheduled");
+        }
         numberOfRunningJobs.onNext(counter.incrementAndGet());
 
         executor.execute(() -> {
@@ -63,10 +65,14 @@ class SchedulerImpl implements Scheduler, SchedulerStatusReporter {
                 numberOfRunningJobs.onNext(counter.decrementAndGet());
                 return;
             }
-            LOG.trace(job + " started");
+            if (job.name() != Job.Type.DATABASE) {
+                LOG.trace(job + " started");
+            }
             job.runnable().run();
             numberOfRunningJobs.onNext(counter.decrementAndGet());
-            LOG.trace(job + " stopped");
+            if (job.name() != Job.Type.DATABASE) {
+                LOG.trace(job + " stopped");
+            }
             lock.visit(job.name(), false);
         });
     }
