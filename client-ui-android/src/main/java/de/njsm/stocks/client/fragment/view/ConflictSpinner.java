@@ -28,10 +28,13 @@ import de.njsm.stocks.client.ui.R;
 
 public class ConflictSpinner extends ConflictField {
 
+    private final View root;
+
     private final Spinner spinner;
 
     public ConflictSpinner(View root) {
         super(root.findViewById(R.id.spinner_conflict_conflict));
+        this.root = root;
         spinner = root.findViewById(R.id.spinner_conflict_spinner);
     }
 
@@ -46,6 +49,7 @@ public class ConflictSpinner extends ConflictField {
     @Override
     public void hide() {
         super.hide();
+        root.setVisibility(View.GONE);
         spinner.setVisibility(View.GONE);
     }
 

@@ -28,14 +28,18 @@ import de.njsm.stocks.client.ui.R;
 
 import java.util.function.BiConsumer;
 
+import static android.view.View.GONE;
 import static de.njsm.stocks.client.fragment.view.ViewUtility.*;
 
 public class ConflictTextField extends ConflictField {
+
+    private final View root;
 
     private final TextInputLayout textInputField;
 
     public ConflictTextField(View root) {
         super(root.findViewById(R.id.text_field_conflict_conflict));
+        this.root = root;
         textInputField = root.findViewById(R.id.text_field_conflict_text_field);
     }
 
@@ -69,6 +73,7 @@ public class ConflictTextField extends ConflictField {
     @Override
     public void hide() {
         super.hide();
-        textInputField.setVisibility(View.GONE);
+        root.setVisibility(GONE);
+        textInputField.setVisibility(GONE);
     }
 }
