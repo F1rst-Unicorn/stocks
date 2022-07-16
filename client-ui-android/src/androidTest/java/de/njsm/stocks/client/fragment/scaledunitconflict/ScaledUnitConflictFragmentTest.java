@@ -153,6 +153,13 @@ public class ScaledUnitConflictFragmentTest {
         conflictInteractor.setData(data);
 
         onView(withId(R.id.fragment_scaled_unit_form_unit)).check(matches(withEffectiveVisibility(Visibility.GONE)));
+        onView(allOf(
+                isDescendantOfA(withId(R.id.fragment_scaled_unit_form_scale)),
+                withClassName(is(TextInputEditText.class.getName()))
+        )).check(matches(withText(data.scale().suggestedValue().toPlainString())));
+        onView(allOf(isDescendantOfA(withId(R.id.fragment_scaled_unit_form_scale)), withId(R.id.conflict_labels_original_content))).check(matches(withText(data.scale().original().toPlainString())));
+        onView(allOf(isDescendantOfA(withId(R.id.fragment_scaled_unit_form_scale)), withId(R.id.conflict_labels_remote_content))).check(matches(withText(data.scale().remote().toPlainString())));
+        onView(allOf(isDescendantOfA(withId(R.id.fragment_scaled_unit_form_scale)), withId(R.id.conflict_labels_local_content))).check(matches(withText(data.scale().local().toPlainString())));
     }
 
     @Test
@@ -168,6 +175,13 @@ public class ScaledUnitConflictFragmentTest {
         conflictInteractor.setData(data);
 
         onView(withId(R.id.fragment_scaled_unit_form_scale)).check(matches(withEffectiveVisibility(Visibility.GONE)));
+        onView(withId(R.id.fragment_scaled_unit_form_unit)).check(matches(allOf(
+                isDisplayed(),
+                hasDescendant(withText(data.availableUnits().get(data.currentUnitListPosition()).name()))
+        )));
+        onView(allOf(isDescendantOfA(withId(R.id.fragment_scaled_unit_form_unit)), withId(R.id.conflict_labels_original_content))).check(matches(withText(unitRenderStrategy.render(data.unit().original()))));
+        onView(allOf(isDescendantOfA(withId(R.id.fragment_scaled_unit_form_unit)), withId(R.id.conflict_labels_remote_content))).check(matches(withText(unitRenderStrategy.render(data.unit().remote()))));
+        onView(allOf(isDescendantOfA(withId(R.id.fragment_scaled_unit_form_unit)), withId(R.id.conflict_labels_local_content))).check(matches(withText(unitRenderStrategy.render(data.unit().local()))));
     }
 
     @Test

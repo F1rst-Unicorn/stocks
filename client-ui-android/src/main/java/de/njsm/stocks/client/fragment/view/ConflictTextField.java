@@ -35,7 +35,7 @@ public class ConflictTextField extends ConflictField {
     private final TextInputLayout textInputField;
 
     public ConflictTextField(View root) {
-        super(root);
+        super(root.findViewById(R.id.text_field_conflict_conflict));
         textInputField = root.findViewById(R.id.text_field_conflict_text_field);
     }
 
@@ -64,5 +64,11 @@ public class ConflictTextField extends ConflictField {
 
     public String get() {
         return stringFromForm(textInputField);
+    }
+
+    @Override
+    public void hide() {
+        super.hide();
+        textInputField.setVisibility(View.GONE);
     }
 }

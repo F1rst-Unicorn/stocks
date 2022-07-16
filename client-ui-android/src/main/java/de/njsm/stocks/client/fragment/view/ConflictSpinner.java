@@ -31,7 +31,7 @@ public class ConflictSpinner extends ConflictField {
     private final Spinner spinner;
 
     public ConflictSpinner(View root) {
-        super(root);
+        super(root.findViewById(R.id.spinner_conflict_conflict));
         spinner = root.findViewById(R.id.spinner_conflict_spinner);
     }
 
@@ -41,6 +41,12 @@ public class ConflictSpinner extends ConflictField {
 
     public void setSelection(int position) {
         spinner.setSelection(position);
+    }
+
+    @Override
+    public void hide() {
+        super.hide();
+        spinner.setVisibility(View.GONE);
     }
 
     public <T> T getSelectedItem() {
