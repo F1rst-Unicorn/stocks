@@ -30,15 +30,15 @@ import java.time.Instant;
 import java.util.List;
 
 import static de.njsm.stocks.client.database.BitemporalOperations.currentDelete;
-import static de.njsm.stocks.client.database.Util.test;
-import static de.njsm.stocks.client.database.Util.testList;
+import static de.njsm.stocks.client.database.util.Util.test;
+import static de.njsm.stocks.client.database.util.Util.testList;
 import static java.util.Collections.singletonList;
 
 public class ScaledUnitDeleteErrorRepositoryImplTest extends AbstractErrorRepositoryImplTest {
 
     ErrorDetails recordError(StatusCodeException e) {
-        UnitDbEntity unit = StandardEntities.unitDbEntity();
-        ScaledUnitDbEntity scaledUnit = StandardEntities.scaledUnitDbEntityBuilder().unit(unit.id()).build();
+        UnitDbEntity unit = standardEntities.unitDbEntity();
+        ScaledUnitDbEntity scaledUnit = standardEntities.scaledUnitDbEntityBuilder().unit(unit.id()).build();
         ScaledUnitForDeletion data = ScaledUnitForDeletion.create(scaledUnit.id(), scaledUnit.version());
         ScaledUnitDeleteErrorDetails errorDetails = ScaledUnitDeleteErrorDetails.create(scaledUnit.id(), scaledUnit.scale(), unit.name(), unit.abbreviation());
         stocksDatabase.synchronisationDao().writeUnits(singletonList(unit));
@@ -57,8 +57,8 @@ public class ScaledUnitDeleteErrorRepositoryImplTest extends AbstractErrorReposi
         Instant editTime = Instant.EPOCH.plusSeconds(5);
         StatusCode statusCode = StatusCode.DATABASE_UNREACHABLE;
         StatusCodeException exception = new StatusCodeException(statusCode);
-        UnitDbEntity unitDbEntity = StandardEntities.unitDbEntity();
-        ScaledUnitDbEntity scaledUnit = StandardEntities.scaledUnitDbEntityBuilder()
+        UnitDbEntity unitDbEntity = standardEntities.unitDbEntity();
+        ScaledUnitDbEntity scaledUnit = standardEntities.scaledUnitDbEntityBuilder()
                 .unit(unitDbEntity.id())
                 .build();
         ScaledUnitForDeletion scaledUnitForDeletion = ScaledUnitForDeletion.builder()
@@ -82,8 +82,8 @@ public class ScaledUnitDeleteErrorRepositoryImplTest extends AbstractErrorReposi
         Instant editTime = Instant.EPOCH.plusSeconds(5);
         StatusCode statusCode = StatusCode.DATABASE_UNREACHABLE;
         StatusCodeException exception = new StatusCodeException(statusCode);
-        UnitDbEntity unitDbEntity = StandardEntities.unitDbEntity();
-        ScaledUnitDbEntity scaledUnit = StandardEntities.scaledUnitDbEntityBuilder()
+        UnitDbEntity unitDbEntity = standardEntities.unitDbEntity();
+        ScaledUnitDbEntity scaledUnit = standardEntities.scaledUnitDbEntityBuilder()
                 .unit(unitDbEntity.id())
                 .build();
         ScaledUnitForDeletion scaledUnitForDeletion = ScaledUnitForDeletion.builder()

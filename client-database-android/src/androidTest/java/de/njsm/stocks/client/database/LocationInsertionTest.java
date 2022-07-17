@@ -26,14 +26,12 @@ import org.junit.runner.RunWith;
 
 import java.util.List;
 
-import static de.njsm.stocks.client.database.StandardEntities.locationDbEntityBuilder;
-
 @RunWith(AndroidJUnit4.class)
 public class LocationInsertionTest extends InsertionTest<LocationDbEntity, LocationDbEntity.Builder> {
 
     @Override
     LocationDbEntity.Builder getFreshDto() {
-        return locationDbEntityBuilder();
+        return standardEntities.locationDbEntityBuilder();
     }
 
     @Override

@@ -26,14 +26,12 @@ import org.junit.runner.RunWith;
 
 import java.util.List;
 
-import static de.njsm.stocks.client.database.StandardEntities.foodItemDbEntityBuilder;
-
 @RunWith(AndroidJUnit4.class)
 public class FoodItemInsertionTest extends InsertionTest<FoodItemDbEntity, FoodItemDbEntity.Builder> {
 
     @Override
     FoodItemDbEntity.Builder getFreshDto() {
-        return foodItemDbEntityBuilder();
+        return standardEntities.foodItemDbEntityBuilder();
     }
 
     @Override

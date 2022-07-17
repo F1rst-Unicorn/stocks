@@ -33,7 +33,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static de.njsm.stocks.client.database.StandardEntities.locationDbEntity;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -48,7 +47,7 @@ public class LocationRepositoryImplTest extends DbTestCase {
 
     @Test
     public void gettingLocationsWorks() {
-        List<LocationDbEntity> entities = Collections.singletonList(locationDbEntity());
+        List<LocationDbEntity> entities = Collections.singletonList(standardEntities.locationDbEntity());
         stocksDatabase.synchronisationDao().synchroniseLocations(entities);
         List<LocationForListing> expected = entities.stream().map(DataMapper::map).collect(Collectors.toList());
 
@@ -59,7 +58,7 @@ public class LocationRepositoryImplTest extends DbTestCase {
 
     @Test
     public void gettingSingleLocationWorks() {
-        LocationDbEntity location = locationDbEntity();
+        LocationDbEntity location = standardEntities.locationDbEntity();
         stocksDatabase.synchronisationDao().synchroniseLocations(Collections.singletonList(location));
 
         LocationForDeletion actual = uut.getEntityForDeletion(location::id);
@@ -70,7 +69,7 @@ public class LocationRepositoryImplTest extends DbTestCase {
 
     @Test
     public void gettingLocationForEditingWorks() {
-        LocationDbEntity location = locationDbEntity();
+        LocationDbEntity location = standardEntities.locationDbEntity();
         stocksDatabase.synchronisationDao().synchroniseLocations(Collections.singletonList(location));
         LocationToEdit expected = DataMapper.mapToEdit(location);
 
@@ -81,7 +80,7 @@ public class LocationRepositoryImplTest extends DbTestCase {
 
     @Test
     public void gettingLocationInBackgroundForEditingWorks() {
-        LocationDbEntity entity = locationDbEntity();
+        LocationDbEntity entity = standardEntities.locationDbEntity();
         stocksDatabase.synchronisationDao().synchroniseLocations(Collections.singletonList(entity));
         LocationToEdit expected = DataMapper.mapToEdit(entity);
 

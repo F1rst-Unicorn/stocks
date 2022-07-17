@@ -26,14 +26,12 @@ import org.junit.runner.RunWith;
 
 import java.util.List;
 
-import static de.njsm.stocks.client.database.StandardEntities.userDbEntityBuilder;
-
 @RunWith(AndroidJUnit4.class)
 public class UserInsertionTest extends InsertionTest<UserDbEntity, UserDbEntity.Builder> {
 
     @Override
     UserDbEntity.Builder getFreshDto() {
-        return userDbEntityBuilder();
+        return standardEntities.userDbEntityBuilder();
     }
 
     @Override

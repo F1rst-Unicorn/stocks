@@ -26,15 +26,12 @@ import org.junit.runner.RunWith;
 
 import java.util.List;
 
-import static de.njsm.stocks.client.database.StandardEntities.eanNumberDbEntityBuilder;
-import static de.njsm.stocks.client.database.StandardEntities.locationDbEntityBuilder;
-
 @RunWith(AndroidJUnit4.class)
 public class EanNumberInsertionTest extends InsertionTest<EanNumberDbEntity, EanNumberDbEntity.Builder> {
 
     @Override
     EanNumberDbEntity.Builder getFreshDto() {
-        return eanNumberDbEntityBuilder();
+        return standardEntities.eanNumberDbEntityBuilder();
     }
 
     @Override

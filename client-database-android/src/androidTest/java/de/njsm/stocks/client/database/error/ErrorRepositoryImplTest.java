@@ -32,8 +32,8 @@ import org.junit.Test;
 
 import java.util.List;
 
-import static de.njsm.stocks.client.database.Util.test;
-import static de.njsm.stocks.client.database.Util.testList;
+import static de.njsm.stocks.client.database.util.Util.test;
+import static de.njsm.stocks.client.database.util.Util.testList;
 
 public class ErrorRepositoryImplTest extends DbTestCase {
 

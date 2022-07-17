@@ -36,7 +36,7 @@ import static java.util.Collections.singletonList;
 public class ScaledUnitAddErrorRepositoryImplTest extends AbstractErrorRepositoryImplTest {
 
     ErrorDetails recordError(StatusCodeException e) {
-        UnitDbEntity unit = StandardEntities.unitDbEntity();
+        UnitDbEntity unit = standardEntities.unitDbEntity();
         stocksDatabase.synchronisationDao().writeUnits(singletonList(unit));
         ScaledUnitAddForm form = ScaledUnitAddForm.create(BigDecimal.ONE, unit.id());
         errorRecorder.recordScaledUnitAddError(e, form);

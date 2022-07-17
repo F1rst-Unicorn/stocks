@@ -35,7 +35,7 @@ import static java.util.Collections.singletonList;
 public class UnitEditErrorRepositoryImplTest extends AbstractErrorRepositoryImplTest {
 
     ErrorDetails recordError(StatusCodeException e) {
-        UnitDbEntity unit = StandardEntities.unitDbEntity();
+        UnitDbEntity unit = standardEntities.unitDbEntity();
         UnitForEditing unitForEditing = UnitForEditing.builder()
                 .id(unit.id())
                 .version(unit.version())

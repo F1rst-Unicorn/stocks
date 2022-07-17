@@ -21,6 +21,8 @@
 
 package de.njsm.stocks.client.database;
 
+import de.njsm.stocks.client.database.util.RandomnessProvider;
+
 import java.math.BigDecimal;
 import java.time.Duration;
 import java.time.Period;
@@ -30,99 +32,105 @@ import static java.time.Instant.EPOCH;
 
 public class StandardEntities {
 
-    public static LocationDbEntity locationDbEntity() {
+    private final RandomnessProvider randomnessProvider;
+
+    public StandardEntities(RandomnessProvider randomnessProvider) {
+        this.randomnessProvider = randomnessProvider;
+    }
+
+    public LocationDbEntity locationDbEntity() {
         return locationDbEntityBuilder().build();
     }
 
-    static LocationDbEntity.Builder locationDbEntityBuilder() {
+    LocationDbEntity.Builder locationDbEntityBuilder() {
         return initialiseBuilder(LocationDbEntity.builder())
                 .name("name")
                 .description("description");
     }
 
-    static UserDbEntity.Builder userDbEntityBuilder() {
+    UserDbEntity.Builder userDbEntityBuilder() {
         return initialiseBuilder(UserDbEntity.builder())
                 .name("name");
     }
 
-    static UserDeviceDbEntity.Builder userDeviceDbEntityBuilder() {
+    UserDeviceDbEntity.Builder userDeviceDbEntityBuilder() {
         return initialiseBuilder(UserDeviceDbEntity.builder())
                 .name("name")
-                .belongsTo(4);
+                .belongsTo(randomnessProvider.getId("user_device belongs_to"));
     }
 
-    static FoodDbEntity.Builder foodDbEntityBuilder() {
+    FoodDbEntity.Builder foodDbEntityBuilder() {
         return initialiseBuilder(FoodDbEntity.builder())
                 .name("name")
                 .toBuy(true)
                 .expirationOffset(Period.ofDays(4))
-                .location(5)
+                .location(randomnessProvider.getId("food location"))
                 .storeUnit(6)
                 .description("description");
     }
 
-    static FoodItemDbEntity.Builder foodItemDbEntityBuilder() {
+    FoodItemDbEntity.Builder foodItemDbEntityBuilder() {
         return initialiseBuilder(FoodItemDbEntity.builder())
                 .eatBy(EPOCH)
-                .ofType(4)
-                .storedIn(5)
-                .buys(6)
-                .registers(7)
-                .unit(8);
+                .ofType(randomnessProvider.getId("food_item of_type"))
+                .storedIn(randomnessProvider.getId("food_item stored_in"))
+                .buys(randomnessProvider.getId("food_item buys"))
+                .registers(randomnessProvider.getId("food_item registers"))
+                .unit(randomnessProvider.getId("food_item unit"));
     }
 
-    public static UnitDbEntity unitDbEntity() {
+    public UnitDbEntity unitDbEntity() {
         return unitDbEntityBuilder().build();
     }
 
-    public static UnitDbEntity.Builder unitDbEntityBuilder() {
+    public UnitDbEntity.Builder unitDbEntityBuilder() {
         return initialiseBuilder(UnitDbEntity.builder())
                 .name("name")
                 .abbreviation("abbreviation");
     }
 
-    public static ScaledUnitDbEntity scaledUnitDbEntity() {
+    public ScaledUnitDbEntity scaledUnitDbEntity() {
         return scaledUnitDbEntityBuilder().build();
     }
 
-    public static ScaledUnitDbEntity.Builder scaledUnitDbEntityBuilder() {
+    public ScaledUnitDbEntity.Builder scaledUnitDbEntityBuilder() {
         return initialiseBuilder(ScaledUnitDbEntity.builder())
                 .scale(BigDecimal.TEN)
-                .unit(4);
+                .unit(randomnessProvider.getId("scaled_unit unit"));
     }
 
-    static RecipeDbEntity.Builder recipeDbEntityBuilder() {
+    RecipeDbEntity.Builder recipeDbEntityBuilder() {
         return initialiseBuilder(RecipeDbEntity.builder())
                 .name("name")
                 .instructions("instructions")
                 .duration(Duration.ofDays(4));
     }
 
-    static RecipeIngredientDbEntity.Builder recipeIngredientDbEntityBuilder() {
+    RecipeIngredientDbEntity.Builder recipeIngredientDbEntityBuilder() {
         return initialiseBuilder(RecipeIngredientDbEntity.builder())
                 .amount(4)
-                .ingredient(5)
-                .unit(6)
-                .recipe(7);
+                .ingredient(randomnessProvider.getId("recipe_ingredient ingredient"))
+                .unit(randomnessProvider.getId("recipe_ingredient unit"))
+                .recipe(randomnessProvider.getId("recipe_ingredient recipe"));
     }
 
-    static RecipeProductDbEntity.Builder recipeProductDbEntityBuilder() {
+    RecipeProductDbEntity.Builder recipeProductDbEntityBuilder() {
         return initialiseBuilder(RecipeProductDbEntity.builder())
                 .amount(4)
-                .product(5)
-                .unit(6)
-                .recipe(7);
+                .product(randomnessProvider.getId("recipe_product product"))
+                .unit(randomnessProvider.getId("recipe_ingredient unit"))
+                .recipe(randomnessProvider.getId("recipe_ingredient recipe"));
     }
 
-    static EanNumberDbEntity.Builder eanNumberDbEntityBuilder() {
+    EanNumberDbEntity.Builder eanNumberDbEntityBuilder() {
         return initialiseBuilder(EanNumberDbEntity.builder())
                 .number("number")
-                .identifies(4);
+                .identifies(randomnessProvider.getId("ean_number identifies"));
     }
 
-    private static <E extends ServerDbEntity<E>, T extends ServerDbEntity.Builder<E, T>> T initialiseBuilder(T builder) {
+    private <E extends ServerDbEntity<E>, T extends ServerDbEntity.Builder<E, T>> T initialiseBuilder(T builder) {
         return builder
-                .id(1)
+                .id(randomnessProvider.getId(builder.getClass().getCanonicalName() + " id"))
                 .version(2)
                 .validTimeStart(EPOCH)
                 .validTimeEnd(INFINITY)

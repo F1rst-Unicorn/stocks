@@ -31,8 +31,7 @@ import org.junit.Test;
 
 import java.util.List;
 
-import static de.njsm.stocks.client.database.StandardEntities.scaledUnitDbEntityBuilder;
-import static de.njsm.stocks.client.database.StandardEntities.unitDbEntity;
+import static de.njsm.stocks.client.database.util.Util.testList;
 import static java.util.Collections.singletonList;
 import static org.junit.Assert.assertEquals;
 
@@ -47,20 +46,20 @@ public class ScaledUnitRepositoryImplTest extends DbTestCase {
 
     @Test
     public void gettingScaledUnitsWorks() {
-        UnitDbEntity unit = unitDbEntity();
-        ScaledUnitDbEntity scaledUnit = scaledUnitDbEntityBuilder().unit(unit.id()).build();
+        UnitDbEntity unit = standardEntities.unitDbEntity();
+        ScaledUnitDbEntity scaledUnit = standardEntities.scaledUnitDbEntityBuilder().unit(unit.id()).build();
         stocksDatabase.synchronisationDao().synchroniseUnits(singletonList(unit));
         stocksDatabase.synchronisationDao().synchroniseScaledUnits(singletonList(scaledUnit));
 
         Observable<List<ScaledUnitForListing>> actual = uut.getScaledUnits();
 
-        actual.test().awaitCount(1).assertValue(singletonList(ScaledUnitForListing.create(scaledUnit.id(), unit.abbreviation(), scaledUnit.scale())));
+        testList(actual).assertValue(singletonList(ScaledUnitForListing.create(scaledUnit.id(), unit.abbreviation(), scaledUnit.scale())));
     }
 
     @Test
     public void gettingScaledUnitForDeletionWorks() {
-        UnitDbEntity unit = unitDbEntity();
-        ScaledUnitDbEntity scaledUnit = scaledUnitDbEntityBuilder().unit(unit.id()).build();
+        UnitDbEntity unit = standardEntities.unitDbEntity();
+        ScaledUnitDbEntity scaledUnit = standardEntities.scaledUnitDbEntityBuilder().unit(unit.id()).build();
         stocksDatabase.synchronisationDao().synchroniseUnits(singletonList(unit));
         stocksDatabase.synchronisationDao().synchroniseScaledUnits(singletonList(scaledUnit));
 

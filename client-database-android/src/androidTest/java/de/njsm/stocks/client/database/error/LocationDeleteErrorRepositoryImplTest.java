@@ -25,7 +25,6 @@ import de.njsm.stocks.client.business.StatusCodeException;
 import de.njsm.stocks.client.business.entities.*;
 import de.njsm.stocks.client.database.BitemporalOperations;
 import de.njsm.stocks.client.database.LocationDbEntity;
-import de.njsm.stocks.client.database.StandardEntities;
 import de.njsm.stocks.client.database.UpdateDbEntity;
 import org.junit.Test;
 
@@ -33,14 +32,14 @@ import java.time.Instant;
 import java.util.List;
 
 import static de.njsm.stocks.client.database.BitemporalOperations.currentDelete;
-import static de.njsm.stocks.client.database.Util.test;
-import static de.njsm.stocks.client.database.Util.testList;
+import static de.njsm.stocks.client.database.util.Util.test;
+import static de.njsm.stocks.client.database.util.Util.testList;
 import static java.util.Collections.singletonList;
 
 public class LocationDeleteErrorRepositoryImplTest extends AbstractErrorRepositoryImplTest {
 
     ErrorDetails recordError(StatusCodeException e) {
-        LocationDbEntity location = StandardEntities.locationDbEntity();
+        LocationDbEntity location = standardEntities.locationDbEntity();
         LocationForDeletion locationForDeletion = LocationForDeletion.builder()
                 .id(location.id())
                 .version(location.version())
@@ -60,7 +59,7 @@ public class LocationDeleteErrorRepositoryImplTest extends AbstractErrorReposito
         Instant editTime = Instant.EPOCH.plusSeconds(1);
         StatusCode statusCode = StatusCode.DATABASE_UNREACHABLE;
         StatusCodeException exception = new StatusCodeException(statusCode);
-        LocationDbEntity location = StandardEntities.locationDbEntity();
+        LocationDbEntity location = standardEntities.locationDbEntity();
         LocationForDeletion locationForDeletion = LocationForDeletion.builder()
                 .id(location.id())
                 .version(location.version())
@@ -81,7 +80,7 @@ public class LocationDeleteErrorRepositoryImplTest extends AbstractErrorReposito
         Instant editTime = Instant.now();
         StatusCode statusCode = StatusCode.DATABASE_UNREACHABLE;
         StatusCodeException exception = new StatusCodeException(statusCode);
-        LocationDbEntity location = StandardEntities.locationDbEntity();
+        LocationDbEntity location = standardEntities.locationDbEntity();
         LocationForDeletion locationForDeletion = LocationForDeletion.builder()
                 .id(location.id())
                 .version(location.version())

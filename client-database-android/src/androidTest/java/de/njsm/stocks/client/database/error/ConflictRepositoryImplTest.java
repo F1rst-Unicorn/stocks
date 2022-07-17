@@ -39,8 +39,8 @@ import java.util.stream.Collectors;
 
 import static de.njsm.stocks.client.database.BitemporalOperations.currentDelete;
 import static de.njsm.stocks.client.database.BitemporalOperations.currentUpdate;
-import static de.njsm.stocks.client.database.Util.test;
-import static de.njsm.stocks.client.database.Util.testList;
+import static de.njsm.stocks.client.database.util.Util.test;
+import static de.njsm.stocks.client.database.util.Util.testList;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static org.junit.Assert.assertEquals;
@@ -77,7 +77,7 @@ public class ConflictRepositoryImplTest extends DbTestCase {
     @Test
     public void gettingCurrentLocationEditConflictWorks() {
         Instant editTime = Instant.EPOCH.plusSeconds(5);
-        LocationDbEntity original = StandardEntities.locationDbEntity();
+        LocationDbEntity original = standardEntities.locationDbEntity();
         stocksDatabase.synchronisationDao().writeLocations(singletonList(original));
         LocationForEditing localEdit = LocationForEditing.builder()
                 .id(original.id())
@@ -120,7 +120,7 @@ public class ConflictRepositoryImplTest extends DbTestCase {
         Instant deleteTime = Instant.EPOCH.plusSeconds(10);
         StatusCode statusCode = StatusCode.DATABASE_UNREACHABLE;
         StatusCodeException exception = new StatusCodeException(statusCode);
-        LocationDbEntity original = StandardEntities.locationDbEntity();
+        LocationDbEntity original = standardEntities.locationDbEntity();
         LocationForEditing localEdit = LocationForEditing.builder()
                 .id(original.id())
                 .version(original.version())
@@ -161,7 +161,7 @@ public class ConflictRepositoryImplTest extends DbTestCase {
     @Test
     public void gettingCurrentUnitEditConflictWorks() {
         Instant editTime = Instant.EPOCH.plusSeconds(5);
-        UnitDbEntity original = StandardEntities.unitDbEntity();
+        UnitDbEntity original = standardEntities.unitDbEntity();
         stocksDatabase.synchronisationDao().writeUnits(singletonList(original));
         UnitForEditing localEdit = UnitForEditing.builder()
                 .id(original.id())
@@ -204,7 +204,7 @@ public class ConflictRepositoryImplTest extends DbTestCase {
         Instant deleteTime = Instant.EPOCH.plusSeconds(10);
         StatusCode statusCode = StatusCode.DATABASE_UNREACHABLE;
         StatusCodeException exception = new StatusCodeException(statusCode);
-        UnitDbEntity original = StandardEntities.unitDbEntity();
+        UnitDbEntity original = standardEntities.unitDbEntity();
         UnitForEditing localEdit = UnitForEditing.builder()
                 .id(original.id())
                 .version(original.version())
@@ -245,14 +245,14 @@ public class ConflictRepositoryImplTest extends DbTestCase {
     @Test
     public void gettingCurrentScaledUnitEditConflictWorks() {
         Instant editTime = Instant.EPOCH.plusSeconds(5);
-        UnitDbEntity localUnit = StandardEntities.unitDbEntity();
-        UnitDbEntity remoteUnit = StandardEntities.unitDbEntityBuilder()
-                .id(localUnit.id() + 1)
+        UnitDbEntity localUnit = standardEntities.unitDbEntity();
+        UnitDbEntity remoteUnit = standardEntities.unitDbEntityBuilder()
+                .id(randomnessProvider.getId("remote unit id"))
                 .name("remote")
                 .abbreviation("remote")
                 .build();
         stocksDatabase.synchronisationDao().writeUnits(asList(localUnit, remoteUnit));
-        ScaledUnitDbEntity original = StandardEntities.scaledUnitDbEntityBuilder()
+        ScaledUnitDbEntity original = standardEntities.scaledUnitDbEntityBuilder()
                 .unit(localUnit.id())
                 .build();
         stocksDatabase.synchronisationDao().writeScaledUnits(singletonList(original));
@@ -295,14 +295,14 @@ public class ConflictRepositoryImplTest extends DbTestCase {
         Instant deleteTime = Instant.EPOCH.plusSeconds(10);
         StatusCode statusCode = StatusCode.DATABASE_UNREACHABLE;
         StatusCodeException exception = new StatusCodeException(statusCode);
-        UnitDbEntity localUnit = StandardEntities.unitDbEntity();
-        UnitDbEntity remoteUnit = StandardEntities.unitDbEntityBuilder()
-                .id(localUnit.id() + 1)
+        UnitDbEntity localUnit = standardEntities.unitDbEntity();
+        UnitDbEntity remoteUnit = standardEntities.unitDbEntityBuilder()
+                .id(randomnessProvider.getId("remote unit id"))
                 .name("remote")
                 .abbreviation("remote")
                 .build();
         stocksDatabase.synchronisationDao().writeUnits(asList(localUnit, remoteUnit));
-        ScaledUnitDbEntity original = StandardEntities.scaledUnitDbEntityBuilder()
+        ScaledUnitDbEntity original = standardEntities.scaledUnitDbEntityBuilder()
                 .unit(localUnit.id())
                 .build();
         ScaledUnitForEditing localEdit = ScaledUnitForEditing.create(

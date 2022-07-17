@@ -38,8 +38,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static de.njsm.stocks.client.database.Util.test;
-import static de.njsm.stocks.client.database.Util.testList;
+import static de.njsm.stocks.client.database.util.Util.test;
+import static de.njsm.stocks.client.database.util.Util.testList;
 import static org.junit.Assert.assertTrue;
 
 public abstract class AbstractErrorRepositoryImplTest extends DbTestCase {

@@ -30,14 +30,14 @@ import java.time.Instant;
 import java.util.List;
 
 import static de.njsm.stocks.client.database.BitemporalOperations.currentDelete;
-import static de.njsm.stocks.client.database.Util.test;
-import static de.njsm.stocks.client.database.Util.testList;
+import static de.njsm.stocks.client.database.util.Util.test;
+import static de.njsm.stocks.client.database.util.Util.testList;
 import static java.util.Collections.singletonList;
 
 public class UnitDeleteErrorRepositoryImplTest extends AbstractErrorRepositoryImplTest {
 
     ErrorDetails recordError(StatusCodeException e) {
-        UnitDbEntity unit = StandardEntities.unitDbEntity();
+        UnitDbEntity unit = standardEntities.unitDbEntity();
         UnitForDeletion data = UnitForDeletion.create(unit.id(), unit.version());
         UnitDeleteErrorDetails errorDetails = UnitDeleteErrorDetails.create(unit.id(), unit.name(), unit.abbreviation());
         stocksDatabase.synchronisationDao().writeUnits(singletonList(unit));
@@ -55,7 +55,7 @@ public class UnitDeleteErrorRepositoryImplTest extends AbstractErrorRepositoryIm
         Instant editTime = Instant.EPOCH.plusSeconds(1);
         StatusCode statusCode = StatusCode.DATABASE_UNREACHABLE;
         StatusCodeException exception = new StatusCodeException(statusCode);
-        UnitDbEntity unit = StandardEntities.unitDbEntity();
+        UnitDbEntity unit = standardEntities.unitDbEntity();
         UnitForDeletion unitForDeletion = UnitForDeletion.builder()
                 .id(unit.id())
                 .version(unit.version())
@@ -76,7 +76,7 @@ public class UnitDeleteErrorRepositoryImplTest extends AbstractErrorRepositoryIm
         Instant editTime = Instant.now();
         StatusCode statusCode = StatusCode.DATABASE_UNREACHABLE;
         StatusCodeException exception = new StatusCodeException(statusCode);
-        UnitDbEntity unit = StandardEntities.unitDbEntity();
+        UnitDbEntity unit = standardEntities.unitDbEntity();
         UnitForDeletion unitForDeletion = UnitForDeletion.builder()
                 .id(unit.id())
                 .version(unit.version())

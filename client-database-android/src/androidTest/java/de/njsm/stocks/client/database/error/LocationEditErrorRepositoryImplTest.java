@@ -35,7 +35,7 @@ import static java.util.Collections.singletonList;
 public class LocationEditErrorRepositoryImplTest extends AbstractErrorRepositoryImplTest {
 
     ErrorDetails recordError(StatusCodeException e) {
-        LocationDbEntity location = StandardEntities.locationDbEntity();
+        LocationDbEntity location = standardEntities.locationDbEntity();
         LocationForEditing locationForEditing = LocationForEditing.builder()
                 .id(location.id())
                 .version(location.version())

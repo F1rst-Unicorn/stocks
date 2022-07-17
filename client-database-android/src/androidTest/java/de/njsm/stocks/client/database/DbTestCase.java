@@ -25,9 +25,11 @@ import android.content.Context;
 import androidx.room.Room;
 import androidx.test.core.app.ApplicationProvider;
 import de.njsm.stocks.client.business.entities.EntityType;
+import de.njsm.stocks.client.database.util.RandomnessProvider;
 import io.requery.android.database.sqlite.RequerySQLiteOpenHelperFactory;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
 
 import java.time.Instant;
 import java.util.function.Supplier;
@@ -39,6 +41,11 @@ public class DbTestCase implements Supplier<Instant> {
     protected StocksDatabase stocksDatabase;
 
     private Instant now;
+
+    @Rule
+    public RandomnessProvider randomnessProvider = new RandomnessProvider();
+
+    protected StandardEntities standardEntities = new StandardEntities(randomnessProvider);
 
     @Before
     public void createDb() {

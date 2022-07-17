@@ -26,14 +26,12 @@ import org.junit.runner.RunWith;
 
 import java.util.List;
 
-import static de.njsm.stocks.client.database.StandardEntities.recipeIngredientDbEntityBuilder;
-
 @RunWith(AndroidJUnit4.class)
 public class RecipeIngredientInsertionTest extends InsertionTest<RecipeIngredientDbEntity, RecipeIngredientDbEntity.Builder> {
 
     @Override
     RecipeIngredientDbEntity.Builder getFreshDto() {
-        return recipeIngredientDbEntityBuilder();
+        return standardEntities.recipeIngredientDbEntityBuilder();
     }
 
     @Override

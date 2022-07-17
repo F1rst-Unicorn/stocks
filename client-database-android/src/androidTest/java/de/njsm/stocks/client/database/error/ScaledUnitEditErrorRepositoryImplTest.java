@@ -25,7 +25,6 @@ import de.njsm.stocks.client.business.StatusCodeException;
 import de.njsm.stocks.client.business.entities.ErrorDetails;
 import de.njsm.stocks.client.business.entities.ScaledUnitEditErrorDetails;
 import de.njsm.stocks.client.business.entities.ScaledUnitForEditing;
-import de.njsm.stocks.client.database.StandardEntities;
 import de.njsm.stocks.client.database.UnitDbEntity;
 
 import java.math.BigDecimal;
@@ -36,9 +35,9 @@ import static java.util.Collections.singletonList;
 public class ScaledUnitEditErrorRepositoryImplTest extends AbstractErrorRepositoryImplTest {
 
     ErrorDetails recordError(StatusCodeException e) {
-        UnitDbEntity unit = StandardEntities.unitDbEntity();
-        ScaledUnitForEditing form = ScaledUnitForEditing.create(1, 2, BigDecimal.ONE, unit.id());
-        ScaledUnitEditErrorDetails errorDetails = ScaledUnitEditErrorDetails.create(unit.id(), form.scale(), form.unit(), unit.name(), unit.abbreviation());
+        UnitDbEntity unit = standardEntities.unitDbEntity();
+        ScaledUnitForEditing form = ScaledUnitForEditing.create(randomnessProvider.getId("ScaledUnitForEditing"), 2, BigDecimal.ONE, unit.id());
+        ScaledUnitEditErrorDetails errorDetails = ScaledUnitEditErrorDetails.create(form.id(), form.scale(), form.unit(), unit.name(), unit.abbreviation());
         stocksDatabase.synchronisationDao().writeUnits(singletonList(unit));
         errorRecorder.recordScaledUnitEditError(e, form);
         return errorDetails;

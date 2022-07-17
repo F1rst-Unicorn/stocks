@@ -28,8 +28,7 @@ import io.reactivex.rxjava3.core.Observable;
 import org.junit.Before;
 import org.junit.Test;
 
-import static de.njsm.stocks.client.database.StandardEntities.scaledUnitDbEntityBuilder;
-import static de.njsm.stocks.client.database.StandardEntities.unitDbEntity;
+import static de.njsm.stocks.client.database.util.Util.test;
 import static java.util.Collections.singletonList;
 import static org.junit.Assert.assertEquals;
 
@@ -44,20 +43,20 @@ public class ScaledUnitEditRepositoryImplTest extends DbTestCase {
 
     @Test
     public void gettingScaledUnitWorks() {
-        UnitDbEntity unit = unitDbEntity();
-        ScaledUnitDbEntity scaledUnit = scaledUnitDbEntityBuilder().unit(unit.id()).build();
+        UnitDbEntity unit = standardEntities.unitDbEntity();
+        ScaledUnitDbEntity scaledUnit = standardEntities.scaledUnitDbEntityBuilder().unit(unit.id()).build();
         stocksDatabase.synchronisationDao().synchroniseUnits(singletonList(unit));
         stocksDatabase.synchronisationDao().synchroniseScaledUnits(singletonList(scaledUnit));
 
         Observable<ScaledUnitToEdit> actual = uut.getScaledUnit(scaledUnit::id);
 
-        actual.test().awaitCount(1).assertValue(ScaledUnitToEdit.create(scaledUnit.id(), scaledUnit.scale(), scaledUnit.unit()));
+        test(actual).assertValue(ScaledUnitToEdit.create(scaledUnit.id(), scaledUnit.scale(), scaledUnit.unit()));
     }
 
     @Test
     public void gettingScaledUnitWithVersionWorks() {
-        UnitDbEntity unit = unitDbEntity();
-        ScaledUnitDbEntity scaledUnit = scaledUnitDbEntityBuilder().unit(unit.id()).build();
+        UnitDbEntity unit = standardEntities.unitDbEntity();
+        ScaledUnitDbEntity scaledUnit = standardEntities.scaledUnitDbEntityBuilder().unit(unit.id()).build();
         stocksDatabase.synchronisationDao().synchroniseUnits(singletonList(unit));
         stocksDatabase.synchronisationDao().synchroniseScaledUnits(singletonList(scaledUnit));
 
