@@ -201,6 +201,144 @@ Table content after all operations:\\
 	\draw(5, 8.5) node [rotate=90] {...};
 \end{tikzpicture}
 
+\subsection{Sequenced Deletion}
+
+\begin{itemize}
+	\item 1: \texttt{currentInsert("Glass")}
+	\item 3: \texttt{currentUpdate("Jar")}
+	\item 6: \texttt{sequencedDeletion(1, i)}
+\end{itemize}
+
+
+Table content after all operations:\\
+
+\begin{tabular}{c  | c | c | c | c}
+	vt start & vt end & tt start & tt end & value\\\hline
+	1 & i & 1 & 3 & Glas \\\hline
+	1& 3 & 3 & 6 & Glas \\\hline
+	3 & i & 3 & 6 & Jar
+\end{tabular}
+\\\\
+
+\begin{tikzpicture}
+	\definecolor{brightgray}{rgb}{0.95, 0.95, 0.95}
+	\definecolor{darkgreen}{RGB}{76, 175, 80}
+	\definecolor{content1}{RGB}{163,218,165}
+	\definecolor{content2}{RGB}{118,188,121}
+	\definecolor{content3}{RGB}{192,255,195}
+	
+	\draw[step=.5cm,brightgray,very thin] (-1,-1) grid (9,9);
+	\draw[->](-0.5, 0) -- (9,0);
+	\draw[->](0, -0.5) -- (0, 9);
+	\fill[content1] (1,3) -- (1,1) -- (9,1) -- (9,3);
+	\fill[content2] (1,3) -- (3,3) -- (3,6) -- (1,6);
+	\fill[content3] (3,6) -- (3,3) -- (9,3) -- (9,6);
+	
+	\draw[darkgreen] (-0.5,-0.5) -- (9,9);
+	\draw (0,0) circle [radius=0.2];
+	\draw(-0.125, 1) -- (0.125, 1);
+	\draw(1,-0.125) -- (1,0.125);
+	
+	\draw (1,6) -- (1,1) -- (9,1);
+	\draw (1,3) -- (3,3) -- (3,6) -- (1,6);
+	\draw (3,3) -- (9,3);
+	\draw (3,6) -- (9,6);
+	
+	\draw (-0.4, 1) node {1};
+	\draw (1, -0.5) node {1};
+	\draw[darkgreen](8.25,7.5) node {now};
+	\draw (7.5, -0.5) node {valid time};
+	\draw (-0.5, 7) node [rotate=90] {transaction time};
+	
+	\draw (5,2) node {Glas};
+	\draw (2,3.5) node {Glas};
+	\draw (5, 3.5) node {Jar};
+	
+	\draw(8.5, 2) node {...};
+	\draw(8.5, 3.5) node {...};	
+\end{tikzpicture}
+
+\subsection{Sequenced Update}
+
+\begin{itemize}
+	\item 3: \texttt{sequencedUpdate(2 - 6, value2 := 0)}
+\end{itemize}
+
+
+Table content after all operations:\\
+
+\begin{tabular}{c  | c | c | c | c | c}
+	vt start & vt end & tt start & tt end & value1 & value2\\\hline
+	1 & 3 & 1 & 3 & a & 1 \\\hline
+	3 & 5 & 1 & 3 & b & 2 \\\hline
+	5 & i & 1 & 3 & c & 3 \\\hline
+	1 & 2 & 3 & i & a & 1 \\\hline
+	2 & 3 & 3 & i & a & 0 \\\hline
+	3 & 5 & 3 & i & b & 0 \\\hline
+	5 & 6 & 3 & i & c & 0 \\\hline
+	6 & i & 3 & i & c & 3
+\end{tabular}
+
+\begin{tikzpicture}
+	\definecolor{brightgray}{rgb}{0.95, 0.95, 0.95}
+	\definecolor{darkgreen}{RGB}{76, 175, 80}
+	\definecolor{content1}{RGB}{163,218,165}
+	\definecolor{content2}{RGB}{118,188,121}
+	\definecolor{content3}{RGB}{192,255,195}
+	\definecolor{content4}{RGB}{154,241,158}
+	
+	\draw[step=.5cm,brightgray,very thin] (-1,-1) grid (9,9);
+	\draw[->](-0.5, 0) -- (9,0);
+	\draw[->](0, -0.5) -- (0, 9);
+	
+	\draw (0,0) circle [radius=0.2];
+	\draw(-0.125, 1) -- (0.125, 1);
+	\draw(1,-0.125) -- (1,0.125);
+	
+	\fill [color=content1] (1,9) -- (1,3) -- (2,3) -- (2,9);
+	\fill [color=content2] (2,9) -- (2,3) -- (3,3) -- (3,9);
+	\fill [color=content4] (1,1) -- (1,3) -- (3,3) -- (3,1) -- (1,1);
+	\fill [color=content2](3,1) -- (5,1) -- (5,3) -- (3,3) -- (3,1);
+	\fill [color=content3] (5,1) -- (9,1) -- (9,3) -- (5,3);
+	\fill [color=content3] (3,9) -- (3,3) -- (5,3) -- (5,9);
+	\fill [color=content1] (5,9) -- (5,3) -- (6,3) -- (6,9);
+	\fill [color=content2] (6,9) -- (6,3) -- (9,3) -- (9,9);
+	
+	\draw[darkgreen] (-0.5,-0.5) -- (9,9);
+	
+	\draw (1,9) -- (1,3) -- (2,3) -- (2,9);
+	\draw (2,9) -- (2,3) -- (3,3) -- (3,9);
+	\draw (3,9) -- (3,3) -- (5,3) -- (5,9);
+	\draw (5,9) -- (5,3) -- (6,3) -- (6,9);
+	\draw (6,9) -- (6,3) -- (9,3);
+	\draw (1,1) -- (1,3) -- (3,3) -- (3,1) -- (1,1);
+	\draw (3,1) -- (5,1) -- (5,3) -- (3,3) -- (3,1);
+	\draw (5,1) -- (9,1);
+	
+	\draw (-0.4, 1) node {1};
+	\draw (1, -0.5) node {1};
+	\draw[darkgreen](8.25,7.5) node {now};
+	\draw (7.5, -0.5) node {valid time};
+	\draw (-0.5, 7) node [rotate=90] {transaction time};
+	
+	\draw (2,1.5) node {a1};
+	\draw (4,1.5) node {b2};
+	\draw (6,1.5) node {c3};
+	\draw (1.5, 3.5) node {a1};
+	\draw (2.5, 3.5) node {a0};
+	\draw (4, 3.5) node {b0};
+	\draw (5.5, 3.5) node {c0};
+	\draw (7.5, 3.5) node {c3};
+	
+	\draw (1.5, 8.5) node [rotate=90] {...};
+	\draw (2.5, 8.5) node [rotate=90] {...};
+	\draw (4, 8.5) node [rotate=90] {...};
+	\draw (5.5, 8.5) node [rotate=90] {...};
+	\draw (7.5, 8.5) node [rotate=90] {...};
+	\draw (8.5, 1.5) node {...};
+	\draw (8.5, 3.5) node {...};
+\end{tikzpicture}
+
 
 \chapter{}
 \section{Data Model}
