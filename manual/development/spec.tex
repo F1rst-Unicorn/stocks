@@ -3,7 +3,9 @@
 \usepackage{hyperref}
 \usepackage{graphicx}
 \usepackage{tikz}
-
+\usepackage{url}
+\usepackage{cite}
+\usepackage[english]{babel}
 \usepackage{color}
 \definecolor{keyword}{rgb}{0,0,1}		% keywords
 \definecolor{comments}{rgb}{0.2,0.5,0.25}	% comments
@@ -39,8 +41,16 @@
 
 \part{}
 \chapter{Bitemporal Data Model}
-\pagebreak
+
+stocks uses an elaborate data model allowing to reconstruct any past activity on any data it operates on. This is known as bitemporal data model. See Snodgrass' excellent book on this matter \cite{snodgrass}.
+
+In a nutshell every entity is considered to be present in the database for a period of time, called the valid time. A sausage is put into the fridge on 1.1.2020 and eaten on 3.1.2020. So it has been valid for three days. Since the purchase and the consumption has been planned for a long time, this fact has been known since 1.12.2019, which is also the date when the information has been entered into the database. This dimension of when some information has been known to the system is called transaction time.
+
+Valid time is completely under control of the users. The system can make few assumptions about what valid times are operated on. This is different for transaction time. When entering new information it receives a transaction time start of "now" and a transaction time end of "infinity". The only modification to the record then is to set the transaction time end to "now", which is done when the record is no longer considered true.
+
 \section{Operations}
+
+Below we list some common data constellations of a database entity which is modified using different bitemporal modification operations.
 
 \subsection{Current Insert}
 
@@ -75,7 +85,7 @@ Table content after all operations:\\
 	\draw (-0.4, 1) node {1};
 	\draw (1, -0.5) node {1};
 	\draw (5,2) node {Glas};
-	\draw[darkgreen](8.25,7.5) node {now};
+	\draw[white](8.25,7.5) node {now};
 	\draw(8.5, 2) node {...};
 	\draw(2, 8.5) node [rotate=90] {...};
 	\draw (7.5, -0.5) node {valid time};
@@ -317,7 +327,7 @@ Table content after all operations:\\
 	
 	\draw (-0.4, 1) node {1};
 	\draw (1, -0.5) node {1};
-	\draw[darkgreen](8.25,7.5) node {now};
+	\draw[white](8.25,7.5) node {now};
 	\draw (7.5, -0.5) node {valid time};
 	\draw (-0.5, 7) node [rotate=90] {transaction time};
 	
@@ -339,6 +349,39 @@ Table content after all operations:\\
 	\draw (8.5, 3.5) node {...};
 \end{tikzpicture}
 
+\section{Error Recording}
+
+To record an error of a failed write operation special care is needed to load foreign keys of the entity
+whose write has failed. We consider an entity $E$ that is either inserted, updated or deleted. $E$ references
+a foreign entity $F$ via a field $f$.
+
+\subsection{Insert}
+
+If an Insert operation fails, the client-local transaction time $t$ of the table of $F$ at the moment of failure will be used to load $F$. There are three steps for resolution, the first two of them may fail, depending on the state of $F$:
+
+\begin{enumerate}
+	\item Try to load $F$ at valid time "now" and transaction time "infinity".
+	\item Try to load $F$ at the latest valid time start before "now" and transaction time "infinity". This has to be done if $F$ has been current-deleted between recording the error and loading the error.
+	\item Try to load $F$ at the latest valid time start before "now" and transaction time $t$. This has to be done if $F$ has been sequenced-deleted for the entire valid time between recording the error and loading the error.
+\end{enumerate}
+
+The procedure ensures that the most recent version of $F$ is used. So if $F$ has been updated in the meantime this update will be considered when loading $F$ to display the error details. Intuitively this means we first look at $F$ now as best known, then we search to the left (valid time past) and potentially repeat a search to the left at transaction time $t$. Note that each referenced foreign entity table has to use its own client-local transaction time.
+
+\subsection{Update}
+
+This is analogous to insertion, as new foreign entities referenced may not be valid at the time the update is performed.
+
+In case the server replys that there is an update conflict we have to consider loading the data of three different versions of $E$: The original version on the server on which we based our own update, the local version representing our own intent to change $E$ and the remote version which is the version now as best known on the server. The remote version must exist or otherwise the server would have replied with a "not found" error rather than a conflict.
+
+\paragraph{Original} The original version of $E$ has successfully been entered into the database. Thus the client-local transaction time of $E$ serves as transaction time.
+
+\paragraph{Remote} The remote version of $E$ was valid when we tried to perform the update. Thus the client-local execution time serves as transaction time when resolving $F$. We accept minor clock desynchronisations which may lead to spurious failures in high-write situations which we expect to not occur.
+
+\paragraph{Local} The local version of $E$ has never been valid. At execution time the referenced $F$ could have already been sequenced-deleted, so execution time might be too late. Any $F$ which could have been selected must have been valid at the client-local transaction time of $F$ at execution time and thus it can serve as transaction time.
+
+\subsection{Delete}
+
+Loading a foreign key of a deleted entity can use the same resolution process as inserting. But instead of using the client-local transaction time of each foreign entity separately the client-local transaction time of the entity to be deleted $E$ can be used. As the entity has been successfully inserted before, all foreign keys must have been valid at this point.
 
 \chapter{}
 \section{Data Model}
@@ -425,10 +468,16 @@ stocks.example
 
 \section{Domain Language}
 
+Registration: The request to get a new device's certificate from a CSR
+
+Setup: The whole process of onboarding a new device. Includes Registration.
+
 \section{REST API}
 
 Get the server's API as \href{https://spec.openapis.org/oas/latest.html}{OpenAPI specification} at \texttt{common/src/main/resources/api/openapi-spec.yaml}.
 
 \backmatter
+\bibliographystyle{unsrt}
+\bibliography{refs}
 
 \end{document}

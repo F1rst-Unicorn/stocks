@@ -5,3 +5,7 @@
 *.lof
 *.lot
 *.out
+*.bbl
+*.bcf
+*.blg
+*.run.xml
