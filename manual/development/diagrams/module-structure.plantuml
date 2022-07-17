@@ -1,0 +1,52 @@
+' stocks is client-server program to manage a household's food stock
+' Copyright (C) 2019  The stocks developers
+'
+' This file is part of the stocks program suite.
+'
+' stocks is free software: you can redistribute it and/or modify
+' it under the terms of the GNU General Public License as published by
+' the Free Software Foundation, either version 3 of the License, or
+' (at your option) any later version.
+'
+' stocks is distributed in the hope that it will be useful,
+' but WITHOUT ANY WARRANTY; without even the implied warranty of
+' MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+' GNU General Public License for more details.
+'
+' You should have received a copy of the GNU General Public License
+' along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+@startuml
+
+package "client-core" {}
+package "client-database-android" {}
+package "client-fakes-android" {}
+package "client-fakes" {}
+package "client-crypto" {}
+package "client-ui-android" {}
+package "client-navigation-android" {}
+package "client-network" {}
+package "client-settings-android" {}
+package "common" {}
+package "client" {}
+package "server" {}
+package "server-test" {}
+
+"client-core" <-- "client-database-android"
+"client-core" <-- "client-ui-android"
+"client-core" <-- "client-fakes-android"
+"client-core" <-- "client-navigation-android"
+"client-core" <-- "client-settings-android"
+"client-core" <-- "client-crypto"
+"client-core" <-- "client-fakes"
+"client-core" <-- "client-network"
+"common" <-- "client-network"
+"common" <-- "client"
+"common" <-- "server"
+"common" <-- "server-test"
+"client-ui-android" -[#green]-> "client-fakes-android"
+"client-ui-android" <--> "client-fakes-android"
+"client-fakes" <-[#green]- "client-ui-android"
+
+
+@enduml
