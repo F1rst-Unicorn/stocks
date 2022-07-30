@@ -24,6 +24,7 @@ package de.njsm.stocks.client.database.error;
 import de.njsm.stocks.client.business.ErrorRepository;
 import de.njsm.stocks.client.business.entities.*;
 import de.njsm.stocks.client.database.LocationDbEntity;
+import de.njsm.stocks.client.database.PreservedId;
 import de.njsm.stocks.client.database.ScaledUnitDbEntity;
 import de.njsm.stocks.client.database.UnitDbEntity;
 import io.reactivex.rxjava3.core.Observable;
@@ -94,14 +95,14 @@ public class ErrorRepositoryImpl implements ErrorRepository, ErrorEntity.ActionV
     @Override
     public ErrorDetails deleteLocation(ErrorEntity.Action action, Long input) {
         LocationDeleteEntity locationDeleteEntity = errorDao.getLocationDelete(input);
-        LocationDbEntity location = errorDao.getLocationByValidOrTransactionTime(locationDeleteEntity.locationId(), locationDeleteEntity.transactionTime());
+        LocationDbEntity location = errorDao.getLocationByValidOrTransactionTime(locationDeleteEntity.location());
         return LocationDeleteErrorDetails.create(location.id(), location.name());
     }
 
     @Override
     public ErrorDetails editLocation(ErrorEntity.Action action, Long input) {
         LocationEditEntity locationEditEntity = errorDao.getLocationEdit(input);
-        return LocationEditErrorDetails.create(locationEditEntity.locationId(), locationEditEntity.name(), locationEditEntity.description());
+        return LocationEditErrorDetails.create(locationEditEntity.location().id(), locationEditEntity.name(), locationEditEntity.description());
     }
 
     @Override
@@ -113,35 +114,35 @@ public class ErrorRepositoryImpl implements ErrorRepository, ErrorEntity.ActionV
     @Override
     public ErrorDetails deleteUnit(ErrorEntity.Action action, Long input) {
         UnitDeleteEntity unitDeleteEntity = errorDao.getUnitDelete(input);
-        UnitDbEntity unit = errorDao.getUnitByValidOrTransactionTime(unitDeleteEntity.unitId(), unitDeleteEntity.transactionTime());
+        UnitDbEntity unit = errorDao.getUnitByValidOrTransactionTime(unitDeleteEntity.unit());
         return UnitDeleteErrorDetails.create(unit.id(), unit.name(), unit.abbreviation());
     }
 
     @Override
     public ErrorDetails editUnit(ErrorEntity.Action action, Long input) {
         UnitEditEntity unitEditEntity = errorDao.getUnitEdit(input);
-        return UnitEditErrorDetails.create(unitEditEntity.unitId(), unitEditEntity.name(), unitEditEntity.abbreviation());
+        return UnitEditErrorDetails.create(unitEditEntity.unit().id(), unitEditEntity.name(), unitEditEntity.abbreviation());
     }
 
     @Override
     public ErrorDetails addScaledUnit(ErrorEntity.Action action, Long input) {
         ScaledUnitAddEntity scaledUnitAddEntity = errorDao.getScaledUnitAdd(input);
-        UnitDbEntity unit = errorDao.getUnitByValidOrTransactionTime(scaledUnitAddEntity.unit(), scaledUnitAddEntity.unitTransactionTime());
-        return ScaledUnitAddErrorDetails.create(scaledUnitAddEntity.scale(), scaledUnitAddEntity.unit(), unit.name(), unit.abbreviation());
+        UnitDbEntity unit = errorDao.getUnitByValidOrTransactionTime(scaledUnitAddEntity.unit());
+        return ScaledUnitAddErrorDetails.create(scaledUnitAddEntity.scale(), scaledUnitAddEntity.unit().id(), unit.name(), unit.abbreviation());
     }
 
     @Override
     public ErrorDetails editScaledUnit(ErrorEntity.Action action, Long input) {
         ScaledUnitEditEntity entity = errorDao.getScaledUnitEdit(input);
-        UnitDbEntity unit = errorDao.getUnitByValidOrTransactionTime(entity.unit(), entity.transactionTime());
-        return ScaledUnitEditErrorDetails.create(entity.scaledUnitId(), entity.scale(), unit.id(), unit.name(), unit.abbreviation());
+        UnitDbEntity unit = errorDao.getUnitByValidOrTransactionTime(entity.unit());
+        return ScaledUnitEditErrorDetails.create(entity.scaledUnit().id(), entity.scale(), unit.id(), unit.name(), unit.abbreviation());
     }
 
     @Override
     public ErrorDetails deleteScaledUnit(ErrorEntity.Action action, Long input) {
         ScaledUnitDeleteEntity entity = errorDao.getScaledUnitDelete(input);
-        ScaledUnitDbEntity scaledUnit = errorDao.getScaledUnitByValidOrTransactionTime(entity.scaledUnitId(), entity.transactionTime());
-        UnitDbEntity unit = errorDao.getUnitByValidOrTransactionTime(scaledUnit.unit(), entity.transactionTime());
+        ScaledUnitDbEntity scaledUnit = errorDao.getScaledUnitByValidOrTransactionTime(entity.scaledUnit());
+        UnitDbEntity unit = errorDao.getUnitByValidOrTransactionTime(PreservedId.create(scaledUnit.unit(), entity.scaledUnit().transactionTime()));
         return ScaledUnitDeleteErrorDetails.create(scaledUnit.id(), scaledUnit.scale(), unit.name(), unit.abbreviation());
     }
 }

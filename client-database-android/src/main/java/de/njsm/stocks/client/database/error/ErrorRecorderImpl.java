@@ -26,6 +26,7 @@ import de.njsm.stocks.client.business.ErrorRecorder;
 import de.njsm.stocks.client.business.StatusCodeException;
 import de.njsm.stocks.client.business.SubsystemException;
 import de.njsm.stocks.client.business.entities.*;
+import de.njsm.stocks.client.database.PreservedId;
 
 import javax.inject.Inject;
 import java.io.PrintWriter;
@@ -69,7 +70,8 @@ public class ErrorRecorderImpl implements ErrorRecorder {
         ExceptionData exceptionData = new ExceptionInserter().visit(exception, null);
 
         Instant currentTransactionTime = errorDao.getTransactionTimeOf(EntityType.LOCATION);
-        LocationDeleteEntity locationDeleteEntity = LocationDeleteEntity.create(locationForDeletion.id(), locationForDeletion.version(), currentTransactionTime);
+        LocationDeleteEntity locationDeleteEntity = LocationDeleteEntity.create(locationForDeletion.version(),
+                PreservedId.create(locationForDeletion.id(), currentTransactionTime));
         long dataId = errorDao.insert(locationDeleteEntity);
 
         errorDao.insert(ErrorEntity.create(ErrorEntity.Action.DELETE_LOCATION, dataId, exceptionData.exceptionType(), exceptionData.exceptionId()));
@@ -82,11 +84,10 @@ public class ErrorRecorderImpl implements ErrorRecorder {
         Instant currentTransactionTime = errorDao.getTransactionTimeOf(EntityType.LOCATION);
         LocationEditEntity locationEditEntity = LocationEditEntity.create(
                 locationForEditing.version(),
-                currentTransactionTime,
+                PreservedId.create(locationForEditing.id(), currentTransactionTime),
                 clock.get(),
                 locationForEditing.name(),
-                locationForEditing.description(),
-                locationForEditing.id());
+                locationForEditing.description());
         long dataId = errorDao.insert(locationEditEntity);
 
         errorDao.insert(ErrorEntity.create(ErrorEntity.Action.EDIT_LOCATION, dataId, exceptionData.exceptionType(), exceptionData.exceptionId()));
@@ -104,7 +105,7 @@ public class ErrorRecorderImpl implements ErrorRecorder {
         ExceptionData exceptionData = new ExceptionInserter().visit(exception, null);
 
         Instant currentTransactionTime = errorDao.getTransactionTimeOf(EntityType.UNIT);
-        UnitDeleteEntity entity = UnitDeleteEntity.create(unit.id(), unit.version(), currentTransactionTime);
+        UnitDeleteEntity entity = UnitDeleteEntity.create(unit.version(), PreservedId.create(unit.id(), currentTransactionTime));
         long dataId = errorDao.insert(entity);
 
         errorDao.insert(ErrorEntity.create(ErrorEntity.Action.DELETE_UNIT, dataId, exceptionData.exceptionType(), exceptionData.exceptionId()));
@@ -115,9 +116,8 @@ public class ErrorRecorderImpl implements ErrorRecorder {
         ExceptionData exceptionData = new ExceptionInserter().visit(exception, null);
         Instant currentTransactionTime = errorDao.getTransactionTimeOf(EntityType.UNIT);
         UnitEditEntity entity = UnitEditEntity.create(
-                unit.id(),
                 unit.version(),
-                currentTransactionTime,
+                PreservedId.create(unit.id(), currentTransactionTime),
                 clock.get(),
                 unit.name(),
                 unit.abbreviation());
@@ -129,7 +129,7 @@ public class ErrorRecorderImpl implements ErrorRecorder {
     public void recordScaledUnitAddError(SubsystemException e, ScaledUnitAddForm form) {
         ExceptionData exceptionData = new ExceptionInserter().visit(e, null);
         Instant unitTransactionTime = errorDao.getTransactionTimeOf(EntityType.UNIT);
-        ScaledUnitAddEntity entity = ScaledUnitAddEntity.create(form.scale(), form.unit(), unitTransactionTime);
+        ScaledUnitAddEntity entity = ScaledUnitAddEntity.create(form.scale(), PreservedId.create(form.unit(), unitTransactionTime));
         long dataId = errorDao.insert(entity);
         errorDao.insert(ErrorEntity.create(ErrorEntity.Action.ADD_SCALED_UNIT, dataId, exceptionData.exceptionType(), exceptionData.exceptionId()));
     }
@@ -138,13 +138,13 @@ public class ErrorRecorderImpl implements ErrorRecorder {
     public void recordScaledUnitEditError(SubsystemException e, ScaledUnitForEditing scaledUnitForEditing) {
         ExceptionData exceptionData = new ExceptionInserter().visit(e, null);
         Instant currentTransactionTime = errorDao.getTransactionTimeOf(EntityType.SCALED_UNIT);
+        Instant currentUnitTransactionTime = errorDao.getTransactionTimeOf(EntityType.UNIT);
         ScaledUnitEditEntity entity = ScaledUnitEditEntity.create(
-                scaledUnitForEditing.id(),
                 scaledUnitForEditing.version(),
-                currentTransactionTime,
+                PreservedId.create(scaledUnitForEditing.id(), currentTransactionTime),
                 clock.get(),
                 scaledUnitForEditing.scale(),
-                scaledUnitForEditing.unit());
+                PreservedId.create(scaledUnitForEditing.unit(), currentUnitTransactionTime));
         long dataId = errorDao.insert(entity);
         errorDao.insert(ErrorEntity.create(ErrorEntity.Action.EDIT_SCALED_UNIT, dataId, exceptionData.exceptionType(), exceptionData.exceptionId()));
     }
@@ -153,7 +153,7 @@ public class ErrorRecorderImpl implements ErrorRecorder {
     public void recordScaledUnitDeleteError(SubsystemException exception, Versionable<ScaledUnit> scaledUnitForDeletion) {
         ExceptionData exceptionData = new ExceptionInserter().visit(exception, null);
         Instant currentTransactionTime = errorDao.getTransactionTimeOf(EntityType.SCALED_UNIT);
-        ScaledUnitDeleteEntity entity = ScaledUnitDeleteEntity.create(scaledUnitForDeletion.id(), scaledUnitForDeletion.version(), currentTransactionTime);
+        ScaledUnitDeleteEntity entity = ScaledUnitDeleteEntity.create(scaledUnitForDeletion.version(), PreservedId.create(scaledUnitForDeletion.id(), currentTransactionTime));
         long dataId = errorDao.insert(entity);
         errorDao.insert(ErrorEntity.create(ErrorEntity.Action.DELETE_SCALED_UNIT, dataId, exceptionData.exceptionType(), exceptionData.exceptionId()));
     }

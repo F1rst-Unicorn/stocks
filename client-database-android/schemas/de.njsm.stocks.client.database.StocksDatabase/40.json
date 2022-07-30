@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 40,
-    "identityHash": "8fc98b8b1938e53d4243afa6bc00f9e4",
+    "identityHash": "9886e40401d8fb725733db70d5389395",
     "entities": [
       {
         "tableName": "updates",
@@ -293,7 +293,7 @@
       },
       {
         "tableName": "location_to_delete",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `version` INTEGER NOT NULL, `transaction_time` TEXT, `location_id` INTEGER NOT NULL)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `version` INTEGER NOT NULL, `location_id` INTEGER, `location_transaction_time` TEXT)",
         "fields": [
           {
             "fieldPath": "id",
@@ -308,16 +308,16 @@
             "notNull": true
           },
           {
-            "fieldPath": "transactionTime",
-            "columnName": "transaction_time",
-            "affinity": "TEXT",
+            "fieldPath": "location.id",
+            "columnName": "location_id",
+            "affinity": "INTEGER",
             "notNull": false
           },
           {
-            "fieldPath": "locationId",
-            "columnName": "location_id",
-            "affinity": "INTEGER",
-            "notNull": true
+            "fieldPath": "location.transactionTime",
+            "columnName": "location_transaction_time",
+            "affinity": "TEXT",
+            "notNull": false
           }
         ],
         "primaryKey": {
@@ -331,7 +331,7 @@
       },
       {
         "tableName": "location_to_edit",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `version` INTEGER NOT NULL, `transaction_time` TEXT, `name` TEXT NOT NULL, `description` TEXT NOT NULL, `location_id` INTEGER NOT NULL, `execution_time` TEXT)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `version` INTEGER NOT NULL, `name` TEXT NOT NULL, `description` TEXT NOT NULL, `execution_time` TEXT, `location_id` INTEGER, `location_transaction_time` TEXT)",
         "fields": [
           {
             "fieldPath": "id",
@@ -344,12 +344,6 @@
             "columnName": "version",
             "affinity": "INTEGER",
             "notNull": true
-          },
-          {
-            "fieldPath": "transactionTime",
-            "columnName": "transaction_time",
-            "affinity": "TEXT",
-            "notNull": false
           },
           {
             "fieldPath": "name",
@@ -364,14 +358,20 @@
             "notNull": true
           },
           {
-            "fieldPath": "locationId",
-            "columnName": "location_id",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
             "fieldPath": "executionTime",
             "columnName": "execution_time",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "location.id",
+            "columnName": "location_id",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "location.transactionTime",
+            "columnName": "location_transaction_time",
             "affinity": "TEXT",
             "notNull": false
           }
@@ -1581,7 +1581,7 @@
       },
       {
         "tableName": "unit_to_delete",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `version` INTEGER NOT NULL, `transaction_time` TEXT, `unit_id` INTEGER NOT NULL)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `version` INTEGER NOT NULL, `unit_id` INTEGER, `unit_transaction_time` TEXT)",
         "fields": [
           {
             "fieldPath": "id",
@@ -1596,16 +1596,16 @@
             "notNull": true
           },
           {
-            "fieldPath": "transactionTime",
-            "columnName": "transaction_time",
-            "affinity": "TEXT",
+            "fieldPath": "unit.id",
+            "columnName": "unit_id",
+            "affinity": "INTEGER",
             "notNull": false
           },
           {
-            "fieldPath": "unitId",
-            "columnName": "unit_id",
-            "affinity": "INTEGER",
-            "notNull": true
+            "fieldPath": "unit.transactionTime",
+            "columnName": "unit_transaction_time",
+            "affinity": "TEXT",
+            "notNull": false
           }
         ],
         "primaryKey": {
@@ -1619,7 +1619,7 @@
       },
       {
         "tableName": "unit_to_edit",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `version` INTEGER NOT NULL, `transaction_time` TEXT, `name` TEXT NOT NULL, `abbreviation` TEXT NOT NULL, `unit_id` INTEGER NOT NULL, `execution_time` TEXT)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `version` INTEGER NOT NULL, `name` TEXT NOT NULL, `abbreviation` TEXT NOT NULL, `execution_time` TEXT, `unit_id` INTEGER, `unit_transaction_time` TEXT)",
         "fields": [
           {
             "fieldPath": "id",
@@ -1632,12 +1632,6 @@
             "columnName": "version",
             "affinity": "INTEGER",
             "notNull": true
-          },
-          {
-            "fieldPath": "transactionTime",
-            "columnName": "transaction_time",
-            "affinity": "TEXT",
-            "notNull": false
           },
           {
             "fieldPath": "name",
@@ -1652,14 +1646,20 @@
             "notNull": true
           },
           {
-            "fieldPath": "unitId",
-            "columnName": "unit_id",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
             "fieldPath": "executionTime",
             "columnName": "execution_time",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "unit.id",
+            "columnName": "unit_id",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "unit.transactionTime",
+            "columnName": "unit_transaction_time",
             "affinity": "TEXT",
             "notNull": false
           }
@@ -1675,7 +1675,7 @@
       },
       {
         "tableName": "scaled_unit_to_add",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `scale` TEXT NOT NULL, `unit` INTEGER NOT NULL, `unit_transaction_time` TEXT)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `scale` TEXT NOT NULL, `unit_id` INTEGER, `unit_transaction_time` TEXT)",
         "fields": [
           {
             "fieldPath": "id",
@@ -1690,13 +1690,13 @@
             "notNull": true
           },
           {
-            "fieldPath": "unit",
-            "columnName": "unit",
+            "fieldPath": "unit.id",
+            "columnName": "unit_id",
             "affinity": "INTEGER",
-            "notNull": true
+            "notNull": false
           },
           {
-            "fieldPath": "unitTransactionTime",
+            "fieldPath": "unit.transactionTime",
             "columnName": "unit_transaction_time",
             "affinity": "TEXT",
             "notNull": false
@@ -1713,7 +1713,7 @@
       },
       {
         "tableName": "scaled_unit_to_edit",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `version` INTEGER NOT NULL, `transaction_time` TEXT, `scale` TEXT, `unit` INTEGER NOT NULL, `scaled_unit_id` INTEGER NOT NULL, `execution_time` TEXT)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `version` INTEGER NOT NULL, `scale` TEXT NOT NULL, `execution_time` TEXT, `scaled_unit_id` INTEGER, `scaled_unit_transaction_time` TEXT, `unit_id` INTEGER, `unit_transaction_time` TEXT)",
         "fields": [
           {
             "fieldPath": "id",
@@ -1728,32 +1728,38 @@
             "notNull": true
           },
           {
-            "fieldPath": "transactionTime",
-            "columnName": "transaction_time",
-            "affinity": "TEXT",
-            "notNull": false
-          },
-          {
             "fieldPath": "scale",
             "columnName": "scale",
             "affinity": "TEXT",
-            "notNull": false
-          },
-          {
-            "fieldPath": "unit",
-            "columnName": "unit",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
-            "fieldPath": "scaledUnitId",
-            "columnName": "scaled_unit_id",
-            "affinity": "INTEGER",
             "notNull": true
           },
           {
             "fieldPath": "executionTime",
             "columnName": "execution_time",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "scaledUnit.id",
+            "columnName": "scaled_unit_id",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "scaledUnit.transactionTime",
+            "columnName": "scaled_unit_transaction_time",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "unit.id",
+            "columnName": "unit_id",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "unit.transactionTime",
+            "columnName": "unit_transaction_time",
             "affinity": "TEXT",
             "notNull": false
           }
@@ -1769,7 +1775,7 @@
       },
       {
         "tableName": "scaled_unit_to_delete",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `version` INTEGER NOT NULL, `transaction_time` TEXT, `scaled_unit_id` INTEGER NOT NULL)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `version` INTEGER NOT NULL, `scaled_unit_id` INTEGER, `scaled_unit_transaction_time` TEXT)",
         "fields": [
           {
             "fieldPath": "id",
@@ -1784,16 +1790,16 @@
             "notNull": true
           },
           {
-            "fieldPath": "transactionTime",
-            "columnName": "transaction_time",
-            "affinity": "TEXT",
+            "fieldPath": "scaledUnit.id",
+            "columnName": "scaled_unit_id",
+            "affinity": "INTEGER",
             "notNull": false
           },
           {
-            "fieldPath": "scaledUnitId",
-            "columnName": "scaled_unit_id",
-            "affinity": "INTEGER",
-            "notNull": true
+            "fieldPath": "scaledUnit.transactionTime",
+            "columnName": "scaled_unit_transaction_time",
+            "affinity": "TEXT",
+            "notNull": false
           }
         ],
         "primaryKey": {
@@ -1854,7 +1860,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '8fc98b8b1938e53d4243afa6bc00f9e4')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '9886e40401d8fb725733db70d5389395')"
     ]
   }
 }

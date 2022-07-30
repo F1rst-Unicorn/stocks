@@ -22,34 +22,32 @@
 package de.njsm.stocks.client.database.error;
 
 import androidx.room.ColumnInfo;
+import androidx.room.Embedded;
 import androidx.room.Entity;
 import androidx.room.Ignore;
 import com.google.auto.value.AutoValue;
-import de.njsm.stocks.client.database.IdFields;
-import de.njsm.stocks.client.database.TransactionTimeFields;
-import de.njsm.stocks.client.database.UnitFields;
-import de.njsm.stocks.client.database.VersionFields;
+import de.njsm.stocks.client.database.*;
 
 import java.time.Instant;
 
 @AutoValue
 @Entity(tableName = "unit_to_edit")
-public abstract class UnitEditEntity implements IdFields, VersionFields, TransactionTimeFields, UnitFields {
+public abstract class UnitEditEntity implements IdFields, VersionFields, UnitFields {
 
-    @ColumnInfo(name = "unit_id")
+    @Embedded(prefix = "unit_")
     @AutoValue.CopyAnnotations
-    public abstract int unitId();
+    public abstract PreservedId unit();
 
     @ColumnInfo(name = "execution_time")
     @AutoValue.CopyAnnotations
     public abstract Instant executionTime();
 
-    public static UnitEditEntity create(int id, int version, Instant transactionTime, Instant executionTime, String name, String abbreviation, int unitId) {
-        return new AutoValue_UnitEditEntity(id, version, transactionTime, name, abbreviation, unitId, executionTime);
+    public static UnitEditEntity create(int id, int version, PreservedId unit, Instant executionTime, String name, String abbreviation) {
+        return new AutoValue_UnitEditEntity(id, version, name, abbreviation, unit, executionTime);
     }
 
     @Ignore
-    public static UnitEditEntity create(int unitId, int version, Instant transactionTime, Instant executionTime, String name, String abbreviation) {
-        return new AutoValue_UnitEditEntity(0, version, transactionTime, name, abbreviation, unitId, executionTime);
+    public static UnitEditEntity create(int version, PreservedId unit, Instant executionTime, String name, String abbreviation) {
+        return new AutoValue_UnitEditEntity(0, version, name, abbreviation, unit, executionTime);
     }
 }

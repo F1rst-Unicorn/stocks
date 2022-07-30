@@ -21,14 +21,25 @@
 
 package de.njsm.stocks.client.database;
 
+import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import com.google.auto.value.AutoValue;
 
 import java.time.Instant;
 
-public interface TransactionTimeFields {
+@AutoValue
+public abstract class PreservedId {
+
+    @ColumnInfo(name = "id")
+    @AutoValue.CopyAnnotations
+    public abstract int id();
 
     @ColumnInfo(name = "transaction_time")
     @AutoValue.CopyAnnotations
-    Instant transactionTime();
+    @NonNull
+    public abstract Instant transactionTime();
+
+    public static PreservedId create(int id, Instant transactionTime) {
+        return new AutoValue_PreservedId(id, transactionTime);
+    }
 }

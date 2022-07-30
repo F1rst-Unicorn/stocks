@@ -21,13 +21,14 @@
 
 package de.njsm.stocks.client.database.error;
 
+import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
+import androidx.room.Embedded;
 import androidx.room.Entity;
 import androidx.room.Ignore;
 import com.google.auto.value.AutoValue;
-import de.njsm.stocks.client.business.entities.ScaledUnitFields;
 import de.njsm.stocks.client.database.IdFields;
-import de.njsm.stocks.client.database.TransactionTimeFields;
+import de.njsm.stocks.client.database.PreservedId;
 import de.njsm.stocks.client.database.VersionFields;
 
 import java.math.BigDecimal;
@@ -35,22 +36,31 @@ import java.time.Instant;
 
 @AutoValue
 @Entity(tableName = "scaled_unit_to_edit")
-public abstract class ScaledUnitEditEntity implements IdFields, VersionFields, TransactionTimeFields, ScaledUnitFields {
+public abstract class ScaledUnitEditEntity implements IdFields, VersionFields {
 
-    @ColumnInfo(name = "scaled_unit_id")
+    @Embedded(prefix = "scaled_unit_")
     @AutoValue.CopyAnnotations
-    public abstract int scaledUnitId();
+    public abstract PreservedId scaledUnit();
+
+    @ColumnInfo(name = "scale")
+    @NonNull
+    @AutoValue.CopyAnnotations
+    public abstract BigDecimal scale();
+
+    @Embedded(prefix = "unit_")
+    @AutoValue.CopyAnnotations
+    public abstract PreservedId unit();
 
     @ColumnInfo(name = "execution_time")
     @AutoValue.CopyAnnotations
     public abstract Instant executionTime();
 
-    public static ScaledUnitEditEntity create(int id, int version, Instant transactionTime, Instant executionTime, BigDecimal scale, int unit, int scaledUnitId) {
-        return new AutoValue_ScaledUnitEditEntity(id, version, transactionTime, scale, unit, scaledUnitId, executionTime);
+    public static ScaledUnitEditEntity create(int id, int version, PreservedId scaledUnit, Instant executionTime, BigDecimal scale, PreservedId unit) {
+        return new AutoValue_ScaledUnitEditEntity(id, version, scaledUnit, scale, unit, executionTime);
     }
 
     @Ignore
-    public static ScaledUnitEditEntity create(int scaledUnitId, int version, Instant transactionTime, Instant executionTime, BigDecimal scale, int unit) {
-        return new AutoValue_ScaledUnitEditEntity(0, version, transactionTime, scale, unit, scaledUnitId, executionTime);
+    public static ScaledUnitEditEntity create(int version, PreservedId scaledUnit, Instant executionTime, BigDecimal scale, PreservedId unit) {
+        return new AutoValue_ScaledUnitEditEntity(0, version, scaledUnit, scale, unit, executionTime);
     }
 }

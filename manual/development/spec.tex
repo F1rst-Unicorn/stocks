@@ -1,4 +1,4 @@
-\documentclass{memoir}
+\documentclass[a4paper]{memoir}
 
 \usepackage[linkcolor=black,colorlinks=true,citecolor=black,filecolor=black]{hyperref}
 \usepackage{graphicx}
@@ -6,6 +6,7 @@
 \usepackage{url}
 \usepackage{cite}
 \usepackage[english]{babel}
+\usepackage{geometry}
 \usepackage{color}
 \definecolor{keyword}{rgb}{0,0,1}		% keywords
 \definecolor{comments}{rgb}{0.2,0.5,0.25}	% comments
@@ -41,9 +42,9 @@
 
 \chapter{Bitemporal Data Model}
 
-stocks \cite{stocks} uses an elaborate data model allowing to reconstruct any past activity on
-any data it operates on. This is known as bitemporal data model. See Snodgrass'
-excellent book on this matter \cite{snodgrass}.
+stocks \cite{stocks} uses an elaborate data model allowing to reconstruct any
+past activity on any data it operates on. This is known as bitemporal data
+model. See Snodgrass' excellent book on this matter \cite{snodgrass}.
 
 In a nutshell every entity is considered to be present in the database for a
 period of time, called the valid time. A sausage is put into the fridge on
@@ -390,11 +391,12 @@ for resolution, the first two of them may fail, depending on the state of $F$:
 \begin{enumerate}
     \item Try to load $F$ at valid time "now" and transaction time "infinity".
     \item Try to load $F$ at the latest valid time start before "now" and
-            transaction time "infinity". This has to be done if $F$ has been current-deleted
-            between recording the error and loading the error.
+            transaction time "infinity". This has to be done if $F$ has been
+            current-deleted between recording the error and loading the error.
     \item Try to load $F$ at the latest valid time start before "now" and
-            transaction time $t$. This has to be done if $F$ has been sequenced-deleted for
-            the entire valid time between recording the error and loading the error.
+            transaction time $t$. This has to be done if $F$ has been
+            sequenced-deleted for the entire valid time between recording the
+            error and loading the error.
 \end{enumerate}
 
 The procedure ensures that the most recent version of $F$ is used. So if $F$ has
@@ -424,9 +426,9 @@ Thus the client-local transaction time of $E$ serves as transaction time.
 \paragraph{Remote}
 
 The remote version of $E$ was valid when we tried to perform the update. Thus
-the client-local execution time serves as transaction time when resolving $F$.
-We accept minor clock desynchronisations which may lead to spurious failures in
-high-write situations which we expect to not occur.
+the client-local execution time serves as transaction time when resolving $E$
+and $F$. We accept minor clock desynchronisations which may lead to spurious
+failures in high-write situations which we expect to not occur.
 
 \paragraph{Local}
 
@@ -504,9 +506,10 @@ Upon receiving a new device registration request, the sentry performs the
 following checks in order:
 
 \begin{itemize}
-    \item Check if the ticket value presented by the client is found in the database
-    \item Check the device id associated with the ticket from the database with the
-            device id from the CSR
+    \item Check if the ticket value presented by the client is found in the
+            database
+    \item Check the device id associated with the ticket from the database with
+            the  device id from the CSR
     \item Check if the remaining principals of the device match the CSR
     \item Check if the ticket has expired
 \end{itemize}

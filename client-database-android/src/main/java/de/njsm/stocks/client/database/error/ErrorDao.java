@@ -26,6 +26,7 @@ import androidx.room.Insert;
 import androidx.room.Query;
 import de.njsm.stocks.client.business.entities.EntityType;
 import de.njsm.stocks.client.database.LocationDbEntity;
+import de.njsm.stocks.client.database.PreservedId;
 import de.njsm.stocks.client.database.ScaledUnitDbEntity;
 import de.njsm.stocks.client.database.UnitDbEntity;
 import io.reactivex.rxjava3.core.Observable;
@@ -120,13 +121,13 @@ public abstract class ErrorDao {
     @Query("delete from location_to_edit where id = :id")
     abstract void deleteLocationEdit(long id);
 
-    LocationDbEntity getLocationByValidOrTransactionTime(int id, Instant transactionTime) {
-        LocationDbEntity location = getCurrentLocation(id);
+    LocationDbEntity getLocationByValidOrTransactionTime(PreservedId id) {
+        LocationDbEntity location = getCurrentLocation(id.id());
         if (location == null) {
-            location = getLatestLocationAsBestKnown(id);
+            location = getLatestLocationAsBestKnown(id.id());
         }
         if (location == null) {
-            location = getCurrentLocationAsKnownAt(id, transactionTime);
+            location = getCurrentLocationAsKnownAt(id.id(), id.transactionTime());
         }
         return location;
     }
@@ -186,13 +187,13 @@ public abstract class ErrorDao {
     @Query("select * from unit_to_delete where id = :id")
     abstract UnitDeleteEntity getUnitDelete(long id);
 
-    UnitDbEntity getUnitByValidOrTransactionTime(int id, Instant transactionTime) {
-        UnitDbEntity unit = getCurrentUnit(id);
+    UnitDbEntity getUnitByValidOrTransactionTime(PreservedId id) {
+        UnitDbEntity unit = getCurrentUnit(id.id());
         if (unit == null) {
-            unit = getLatestUnitAsBestKnown(id);
+            unit = getLatestUnitAsBestKnown(id.id());
         }
         if (unit == null) {
-            unit = getCurrentUnitAsKnownAt(id, transactionTime);
+            unit = getCurrentUnitAsKnownAt(id.id(), id.transactionTime());
         }
         return unit;
     }
@@ -280,13 +281,13 @@ public abstract class ErrorDao {
             "where id = :id")
     abstract ScaledUnitDeleteEntity getScaledUnitDelete(long id);
 
-    ScaledUnitDbEntity getScaledUnitByValidOrTransactionTime(int id, Instant transactionTime) {
-        ScaledUnitDbEntity unit = getCurrentScaledUnit(id);
+    ScaledUnitDbEntity getScaledUnitByValidOrTransactionTime(PreservedId id) {
+        ScaledUnitDbEntity unit = getCurrentScaledUnit(id.id());
         if (unit == null) {
-            unit = getLatestScaledUnitAsBestKnown(id);
+            unit = getLatestScaledUnitAsBestKnown(id.id());
         }
         if (unit == null) {
-            unit = getCurrentScaledUnitAsKnownAt(id, transactionTime);
+            unit = getCurrentScaledUnitAsKnownAt(id.id(), id.transactionTime());
         }
         return unit;
     }

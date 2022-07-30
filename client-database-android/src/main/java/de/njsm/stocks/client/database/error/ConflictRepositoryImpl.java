@@ -49,10 +49,10 @@ public class ConflictRepositoryImpl implements ConflictRepository {
                 throw new IllegalArgumentException("error " + errorId + " does not belong to " + ErrorEntity.Action.EDIT_LOCATION + " but to " + error.action());
 
             LocationEditEntity locationEditEntity = errorDao.getLocationEdit(error.dataId());
-            LocationDbEntity original = errorDao.getCurrentLocationAsKnownAt(locationEditEntity.locationId(), locationEditEntity.transactionTime());
-            LocationDbEntity remote = errorDao.getCurrentLocationAsKnownAt(locationEditEntity.locationId(), locationEditEntity.executionTime());
+            LocationDbEntity original = errorDao.getCurrentLocationAsKnownAt(locationEditEntity.location().id(), locationEditEntity.location().transactionTime());
+            LocationDbEntity remote = errorDao.getCurrentLocationAsKnownAt(locationEditEntity.location().id(), locationEditEntity.executionTime());
 
-            return LocationEditConflictData.create(error.id(), locationEditEntity.locationId(), locationEditEntity.version(),
+            return LocationEditConflictData.create(error.id(), locationEditEntity.location().id(), locationEditEntity.version(),
                     original.name(), remote.name(), locationEditEntity.name(),
                     original.description(), remote.description(), locationEditEntity.description());
         });
@@ -65,10 +65,10 @@ public class ConflictRepositoryImpl implements ConflictRepository {
                 throw new IllegalArgumentException("error " + errorId + " does not belong to " + ErrorEntity.Action.EDIT_UNIT + " but to " + error.action());
 
             UnitEditEntity unitEditEntity = errorDao.getUnitEdit(error.dataId());
-            UnitDbEntity original = errorDao.getCurrentUnitAsKnownAt(unitEditEntity.unitId(), unitEditEntity.transactionTime());
-            UnitDbEntity remote = errorDao.getCurrentUnitAsKnownAt(unitEditEntity.unitId(), unitEditEntity.executionTime());
+            UnitDbEntity original = errorDao.getCurrentUnitAsKnownAt(unitEditEntity.unit().id(), unitEditEntity.unit().transactionTime());
+            UnitDbEntity remote = errorDao.getCurrentUnitAsKnownAt(unitEditEntity.unit().id(), unitEditEntity.executionTime());
 
-            return UnitEditConflictData.create(error.id(), unitEditEntity.unitId(), unitEditEntity.version(),
+            return UnitEditConflictData.create(error.id(), unitEditEntity.unit().id(), unitEditEntity.version(),
                     original.name(), remote.name(), unitEditEntity.name(),
                     original.abbreviation(), remote.abbreviation(), unitEditEntity.abbreviation());
         });
@@ -81,14 +81,14 @@ public class ConflictRepositoryImpl implements ConflictRepository {
                 throw new IllegalArgumentException("error " + errorId + " does not belong to " + ErrorEntity.Action.EDIT_SCALED_UNIT + " but to " + error.action());
 
             ScaledUnitEditEntity scaledUnitEditEntity = errorDao.getScaledUnitEdit(error.dataId());
-            ScaledUnitDbEntity original = errorDao.getCurrentScaledUnitAsKnownAt(scaledUnitEditEntity.scaledUnitId(), scaledUnitEditEntity.transactionTime());
-            ScaledUnitDbEntity remote = errorDao.getCurrentScaledUnitAsKnownAt(scaledUnitEditEntity.scaledUnitId(), scaledUnitEditEntity.executionTime());
+            ScaledUnitDbEntity original = errorDao.getCurrentScaledUnitAsKnownAt(scaledUnitEditEntity.scaledUnit().id(), scaledUnitEditEntity.scaledUnit().transactionTime());
+            ScaledUnitDbEntity remote = errorDao.getCurrentScaledUnitAsKnownAt(scaledUnitEditEntity.scaledUnit().id(), scaledUnitEditEntity.executionTime());
 
-            UnitDbEntity originalUnit = errorDao.getCurrentUnitAsKnownAt(original.unit(), scaledUnitEditEntity.transactionTime());
+            UnitDbEntity originalUnit = errorDao.getCurrentUnitAsKnownAt(original.unit(), scaledUnitEditEntity.scaledUnit().transactionTime());
             UnitDbEntity remoteUnit = errorDao.getCurrentUnitAsKnownAt(remote.unit(), scaledUnitEditEntity.executionTime());
-            UnitDbEntity localUnit = errorDao.getCurrentUnitAsKnownAt(scaledUnitEditEntity.unit(), scaledUnitEditEntity.executionTime());
+            UnitDbEntity localUnit = errorDao.getCurrentUnitAsKnownAt(scaledUnitEditEntity.unit().id(), scaledUnitEditEntity.unit().transactionTime());
 
-            return ScaledUnitEditConflictData.create(error.id(), scaledUnitEditEntity.scaledUnitId(), scaledUnitEditEntity.version(),
+            return ScaledUnitEditConflictData.create(error.id(), scaledUnitEditEntity.scaledUnit().id(), scaledUnitEditEntity.version(),
                     original.scale(), remote.scale(), scaledUnitEditEntity.scale(),
                     getUnitForListingFromDbEntity(originalUnit),
                     getUnitForListingFromDbEntity(remoteUnit),

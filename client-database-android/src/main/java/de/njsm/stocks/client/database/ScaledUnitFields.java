@@ -35,7 +35,6 @@ public interface ScaledUnitFields {
     BigDecimal scale();
 
     @ColumnInfo(name = "unit")
-    @NonNull
     @AutoValue.CopyAnnotations
     int unit();
 

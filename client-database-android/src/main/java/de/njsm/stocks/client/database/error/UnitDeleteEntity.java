@@ -21,30 +21,28 @@
 
 package de.njsm.stocks.client.database.error;
 
-import androidx.room.ColumnInfo;
+import androidx.room.Embedded;
 import androidx.room.Entity;
 import androidx.room.Ignore;
 import com.google.auto.value.AutoValue;
 import de.njsm.stocks.client.database.IdFields;
-import de.njsm.stocks.client.database.TransactionTimeFields;
+import de.njsm.stocks.client.database.PreservedId;
 import de.njsm.stocks.client.database.VersionFields;
-
-import java.time.Instant;
 
 @AutoValue
 @Entity(tableName = "unit_to_delete")
-public abstract class UnitDeleteEntity implements IdFields, VersionFields, TransactionTimeFields {
+public abstract class UnitDeleteEntity implements IdFields, VersionFields {
 
-    @ColumnInfo(name = "unit_id")
+    @Embedded(prefix = "unit_")
     @AutoValue.CopyAnnotations
-    public abstract int unitId();
+    public abstract PreservedId unit();
 
-    public static UnitDeleteEntity create(int id, int version, Instant transactionTime, int unitId) {
-        return new AutoValue_UnitDeleteEntity(id, version, transactionTime, unitId);
+    public static UnitDeleteEntity create(int id, int version, PreservedId unit) {
+        return new AutoValue_UnitDeleteEntity(id, version, unit);
     }
 
     @Ignore
-    public static UnitDeleteEntity create(int unitId, int version, Instant transactionTime) {
-        return new AutoValue_UnitDeleteEntity(0, version, transactionTime, unitId);
+    public static UnitDeleteEntity create(int version, PreservedId unit) {
+        return new AutoValue_UnitDeleteEntity(0, version, unit);
     }
 }

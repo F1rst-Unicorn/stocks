@@ -21,30 +21,36 @@
 
 package de.njsm.stocks.client.database.error;
 
+import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
+import androidx.room.Embedded;
 import androidx.room.Entity;
 import androidx.room.Ignore;
 import com.google.auto.value.AutoValue;
 import de.njsm.stocks.client.database.IdFields;
-import de.njsm.stocks.client.database.ScaledUnitFields;
+import de.njsm.stocks.client.database.PreservedId;
 
 import java.math.BigDecimal;
-import java.time.Instant;
 
 @AutoValue
 @Entity(tableName = "scaled_unit_to_add")
-public abstract class ScaledUnitAddEntity implements IdFields, ScaledUnitFields {
+public abstract class ScaledUnitAddEntity implements IdFields {
 
-    @ColumnInfo(name = "unit_transaction_time")
+    @ColumnInfo(name = "scale")
+    @NonNull
     @AutoValue.CopyAnnotations
-    public abstract Instant unitTransactionTime();
+    public abstract BigDecimal scale();
 
-    public static ScaledUnitAddEntity create(int id, BigDecimal scale, int unit, Instant unitTransactionTime) {
-        return new AutoValue_ScaledUnitAddEntity(id, scale, unit, unitTransactionTime);
+    @Embedded(prefix = "unit_")
+    @AutoValue.CopyAnnotations
+    public abstract PreservedId unit();
+
+    public static ScaledUnitAddEntity create(int id, BigDecimal scale, PreservedId unit) {
+        return new AutoValue_ScaledUnitAddEntity(id, scale, unit);
     }
 
     @Ignore
-    public static ScaledUnitAddEntity create(BigDecimal scale, int unit, Instant unitTransactionTime) {
-        return new AutoValue_ScaledUnitAddEntity(0, scale, unit, unitTransactionTime);
+    public static ScaledUnitAddEntity create(BigDecimal scale, PreservedId unit) {
+        return new AutoValue_ScaledUnitAddEntity(0, scale, unit);
     }
 }

@@ -22,34 +22,35 @@
 package de.njsm.stocks.client.database.error;
 
 import androidx.room.ColumnInfo;
+import androidx.room.Embedded;
 import androidx.room.Entity;
 import androidx.room.Ignore;
 import com.google.auto.value.AutoValue;
 import de.njsm.stocks.client.database.IdFields;
 import de.njsm.stocks.client.database.LocationFields;
-import de.njsm.stocks.client.database.TransactionTimeFields;
+import de.njsm.stocks.client.database.PreservedId;
 import de.njsm.stocks.client.database.VersionFields;
 
 import java.time.Instant;
 
 @AutoValue
 @Entity(tableName = "location_to_edit")
-public abstract class LocationEditEntity implements IdFields, VersionFields, TransactionTimeFields, LocationFields {
+public abstract class LocationEditEntity implements IdFields, VersionFields, LocationFields {
 
-    @ColumnInfo(name = "location_id")
+    @Embedded(prefix = "location_")
     @AutoValue.CopyAnnotations
-    public abstract int locationId();
+    public abstract PreservedId location();
 
     @ColumnInfo(name = "execution_time")
     @AutoValue.CopyAnnotations
     public abstract Instant executionTime();
 
-    public static LocationEditEntity create(int id, int version, Instant transactionTime, Instant executionTime, String name, String description, int locationId) {
-        return new AutoValue_LocationEditEntity(id, version, transactionTime, name, description, locationId, executionTime);
+    public static LocationEditEntity create(int id, int version, PreservedId location, Instant executionTime, String name, String description) {
+        return new AutoValue_LocationEditEntity(id, version, name, description, location, executionTime);
     }
 
     @Ignore
-    public static LocationEditEntity create(int version, Instant transactionTime, Instant executionTime, String name, String description, int locationId) {
-        return new AutoValue_LocationEditEntity(0, version, transactionTime, name, description, locationId, executionTime);
+    public static LocationEditEntity create(int version, PreservedId location, Instant executionTime, String name, String description) {
+        return new AutoValue_LocationEditEntity(0, version, name, description, location, executionTime);
     }
 }

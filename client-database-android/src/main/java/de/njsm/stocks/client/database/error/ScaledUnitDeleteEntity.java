@@ -21,30 +21,28 @@
 
 package de.njsm.stocks.client.database.error;
 
-import androidx.room.ColumnInfo;
+import androidx.room.Embedded;
 import androidx.room.Entity;
 import androidx.room.Ignore;
 import com.google.auto.value.AutoValue;
 import de.njsm.stocks.client.database.IdFields;
-import de.njsm.stocks.client.database.TransactionTimeFields;
+import de.njsm.stocks.client.database.PreservedId;
 import de.njsm.stocks.client.database.VersionFields;
-
-import java.time.Instant;
 
 @AutoValue
 @Entity(tableName = "scaled_unit_to_delete")
-public abstract class ScaledUnitDeleteEntity implements IdFields, VersionFields, TransactionTimeFields {
+public abstract class ScaledUnitDeleteEntity implements IdFields, VersionFields {
 
-    @ColumnInfo(name = "scaled_unit_id")
+    @Embedded(prefix = "scaled_unit_")
     @AutoValue.CopyAnnotations
-    public abstract int scaledUnitId();
+    public abstract PreservedId scaledUnit();
 
-    public static ScaledUnitDeleteEntity create(int id, int version, Instant transactionTime, int scaledUnitId) {
-        return new AutoValue_ScaledUnitDeleteEntity(id, version, transactionTime, scaledUnitId);
+    public static ScaledUnitDeleteEntity create(int id, int version, PreservedId scaledUnit) {
+        return new AutoValue_ScaledUnitDeleteEntity(id, version, scaledUnit);
     }
 
     @Ignore
-    public static ScaledUnitDeleteEntity create(int scaledUnitId, int version, Instant transactionTime) {
-        return new AutoValue_ScaledUnitDeleteEntity(0, version, transactionTime, scaledUnitId);
+    public static ScaledUnitDeleteEntity create(int version, PreservedId scaledUnit) {
+        return new AutoValue_ScaledUnitDeleteEntity(0, version, scaledUnit);
     }
 }
