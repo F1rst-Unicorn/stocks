@@ -84,6 +84,9 @@ public interface NetworkModule {
     @Binds
     EntityDeleteService<ScaledUnit> ScaledUnitDeleteServiceImpl(ScaledUnitDeleteServiceImpl impl);
 
+    @Binds
+    FoodAddService FoodAddService(FoodAddServiceImpl impl);
+
     @Provides
     @Singleton
     static ServerApi serverApi(ServerEndpoint serverEndpoint) {

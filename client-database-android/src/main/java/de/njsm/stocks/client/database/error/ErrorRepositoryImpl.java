@@ -31,6 +31,7 @@ import io.reactivex.rxjava3.core.Observable;
 
 import javax.inject.Inject;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static de.njsm.stocks.client.database.DataMapper.map;
@@ -144,5 +145,22 @@ public class ErrorRepositoryImpl implements ErrorRepository, ErrorEntity.ActionV
         ScaledUnitDbEntity scaledUnit = errorDao.getScaledUnitByValidOrTransactionTime(entity.scaledUnit());
         UnitDbEntity unit = errorDao.getUnitByValidOrTransactionTime(PreservedId.create(scaledUnit.unit(), entity.scaledUnit().transactionTime()));
         return ScaledUnitDeleteErrorDetails.create(scaledUnit.id(), scaledUnit.scale(), unit.name(), unit.abbreviation());
+    }
+
+    @Override
+    public ErrorDetails addFood(ErrorEntity.Action action, Long input) {
+        FoodAddEntity entity = errorDao.getFoodAdd(input);
+        Optional<LocationDbEntity> location = entity.location().maybe().map(errorDao::getLocationByValidOrTransactionTime);
+        ScaledUnitDbEntity scaledUnit = errorDao.getScaledUnitByValidOrTransactionTime(entity.storeUnit());
+        UnitDbEntity unit = errorDao.getUnitByValidOrTransactionTime(PreservedId.create(scaledUnit.unit(), entity.storeUnit().transactionTime()));
+        return FoodAddErrorDetails.create(
+                entity.name(),
+                entity.toBuy(),
+                entity.expirationOffset(),
+                entity.location().id(),
+                entity.storeUnit().id(),
+                entity.description(),
+                location.map(LocationDbEntity::name).orElse(""),
+                FoodAddErrorDetails.StoreUnit.create(scaledUnit.scale(), unit.abbreviation()));
     }
 }

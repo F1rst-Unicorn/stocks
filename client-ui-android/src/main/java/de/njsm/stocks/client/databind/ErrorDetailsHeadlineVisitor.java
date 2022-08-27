@@ -75,4 +75,9 @@ public class ErrorDetailsHeadlineVisitor implements ErrorDetailsVisitor<Void, In
     public Integer scaledUnitDeleteErrorDetails(ScaledUnitDeleteErrorDetails scaledUnitDeleteErrorDetails, Void input) {
         return R.string.error_details_scaled_unit_delete_error_list;
     }
+
+    @Override
+    public Integer foodAddErrorDetails(FoodAddErrorDetails foodAddErrorDetails, Void input) {
+        return R.string.error_details_food_add_error_list;
+    }
 }

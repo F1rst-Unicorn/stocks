@@ -65,4 +65,8 @@ class LocationRepositoryImpl implements LocationRepository {
     public LocationForEditing getCurrentLocationBeforeEditing(Identifiable<Location> location) {
         return mapForEditing(locationDao.getLocation(location.id()));
     }
+
+    public Observable<List<LocationForSelection>> getLocationsForSelection() {
+        return locationDao.getLocationsForSelection();
+    }
 }

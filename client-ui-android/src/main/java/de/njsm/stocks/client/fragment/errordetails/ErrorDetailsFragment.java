@@ -165,5 +165,28 @@ public class ErrorDetailsFragment extends InjectableFragment {
         public String scaledUnitDeleteErrorDetails(ScaledUnitDeleteErrorDetails scaledUnitDeleteErrorDetails, Void input) {
             return scaledUnitRenderStrategy.render(scaledUnitDeleteErrorDetails);
         }
+
+
+        @Override
+        public String foodAddErrorDetails(FoodAddErrorDetails foodAddErrorDetails, Void input) {
+            StringBuffer result = new StringBuffer();
+            result.append(foodAddErrorDetails.name());
+            result.append(" (");
+
+            foodAddErrorDetails.location().ifPresent(v -> {
+                result.append(foodAddErrorDetails.locationName());
+                result.append(", ");
+            });
+
+            result.append(scaledUnitRenderStrategy.render(foodAddErrorDetails.storeUnitEntity()));
+            result.append(")");
+
+            if (!foodAddErrorDetails.description().isEmpty()) {
+                result.append("\n");
+                result.append(foodAddErrorDetails.description());
+            }
+
+            return result.toString();
+        }
     }
 }

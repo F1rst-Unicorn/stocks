@@ -120,6 +120,7 @@
     <string name="hint_remote">Other Change</string>
     <string name="hint_local">Your Change</string>
     <string name="hint_name">Name</string>
+    <string name="hint_to_buy">Put on shopping list</string>
     <string name="hint_abbreviation">Abbreviation</string>
     <string name="hint_scale">Scale</string>
     <string name="hint_unit">Unit</string>
@@ -293,6 +294,7 @@
     <string name="error_details_scaled_unit_add_error_list">Add Unit Amount</string>
     <string name="error_details_scaled_unit_edit_error_list">Edit Unit Amount</string>
     <string name="error_details_scaled_unit_delete_error_list">Delete Unit Amount</string>
+    <string name="error_details_food_add_error_list">Add Food</string>
 
     <string name="text_no_errors">Everything is fine.</string>
 

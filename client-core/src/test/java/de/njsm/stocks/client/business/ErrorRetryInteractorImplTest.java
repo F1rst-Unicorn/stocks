@@ -31,6 +31,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
+import java.time.Period;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
@@ -68,6 +69,9 @@ public class ErrorRetryInteractorImplTest {
     private EntityDeleter<ScaledUnit> scaledUnitDeleter;
 
     @Mock
+    private FoodAddInteractor foodAddInteractor;
+
+    @Mock
     private Synchroniser synchroniser;
 
     @Mock
@@ -87,6 +91,7 @@ public class ErrorRetryInteractorImplTest {
                 scaledUnitAddInteractor,
                 scaledUnitEditInteractor,
                 scaledUnitDeleter,
+                foodAddInteractor,
                 synchroniser,
                 scheduler,
                 errorRepository);
@@ -253,6 +258,31 @@ public class ErrorRetryInteractorImplTest {
         ArgumentCaptor<Identifiable<ScaledUnit>> captor = ArgumentCaptor.forClass(Identifiable.class);
         verify(scaledUnitDeleter).delete(captor.capture());
         assertEquals(scaledUnitDeleteErrorDetails.id(), captor.getValue().id());
+        verify(errorRepository).deleteError(input);
+    }
+
+    @Test
+    void retryingFoodAddingDispatches() {
+        FoodAddErrorDetails errorDetails = FoodAddErrorDetails.create(
+                "Banana",
+                true,
+                Period.ZERO,
+                1,
+                2,
+                "they are yellow",
+                "Cupboard",
+                FoodAddErrorDetails.StoreUnit.create(BigDecimal.TEN, "g"));
+        ErrorDescription input = ErrorDescription.create(1, StatusCode.DATABASE_UNREACHABLE, "", "test", errorDetails);
+
+        uut.retryInBackground(input);
+
+        FoodAddForm expected = FoodAddForm.create(errorDetails.name(),
+                errorDetails.toBuy(),
+                errorDetails.expirationOffset(),
+                errorDetails.location().orElse(null),
+                errorDetails.storeUnit(),
+                errorDetails.description());
+        verify(foodAddInteractor).add(expected);
         verify(errorRepository).deleteError(input);
     }
 }

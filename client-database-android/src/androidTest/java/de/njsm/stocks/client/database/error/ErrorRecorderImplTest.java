@@ -32,12 +32,12 @@ import org.junit.Test;
 
 import java.math.BigDecimal;
 import java.time.Instant;
+import java.time.Period;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.*;
 
 public class ErrorRecorderImplTest extends DbTestCase {
 
@@ -322,6 +322,33 @@ public class ErrorRecorderImplTest extends DbTestCase {
         List<ErrorEntity> errors = stocksDatabase.errorDao().getErrors();
         assertEquals(1, errors.size());
         assertEquals(ErrorEntity.Action.DELETE_SCALED_UNIT, errors.get(0).action());
+        assertEquals(1, errors.get(0).dataId());
+        assertEquals(ErrorEntity.ExceptionType.STATUSCODE_EXCEPTION, errors.get(0).exceptionType());
+        assertEquals(1, errors.get(0).exceptionId());
+    }
+
+    @Test
+    public void recordingErrorAddingFoodWorks() {
+        FoodAddForm form = FoodAddForm.create("Banana", true, Period.ZERO, null, 1, "they are yellow");
+        StatusCodeException exception = new StatusCodeException(StatusCode.DATABASE_UNREACHABLE);
+
+        uut.recordFoodAddError(exception, form);
+
+        assertEquals(1, stocksDatabase.errorDao().getStatusCodeErrors().size());
+        StatusCodeExceptionEntity actual = stocksDatabase.errorDao().getStatusCodeErrors().get(0);
+        assertEquals(exception.getStatusCode(), actual.statusCode());
+        List<FoodAddEntity> foodAdds = stocksDatabase.errorDao().getFoodAdds();
+        assertEquals(1, foodAdds.size());
+        FoodAddEntity foodAddEntity = foodAdds.get(0);
+        assertEquals(form.name(), foodAddEntity.name());
+        assertEquals(form.toBuy(), foodAddEntity.toBuy());
+        assertEquals(form.expirationOffset(), foodAddEntity.expirationOffset());
+        assertNull(foodAddEntity.location().id());
+        assertEquals(form.storeUnit(), foodAddEntity.storeUnit().id());
+        assertEquals(form.description(), foodAddEntity.description());
+        List<ErrorEntity> errors = stocksDatabase.errorDao().getErrors();
+        assertEquals(1, errors.size());
+        assertEquals(ErrorEntity.Action.ADD_FOOD, errors.get(0).action());
         assertEquals(1, errors.get(0).dataId());
         assertEquals(ErrorEntity.ExceptionType.STATUSCODE_EXCEPTION, errors.get(0).exceptionType());
         assertEquals(1, errors.get(0).exceptionId());

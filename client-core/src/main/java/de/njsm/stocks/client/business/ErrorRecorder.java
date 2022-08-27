@@ -44,4 +44,6 @@ public interface ErrorRecorder {
     void recordScaledUnitEditError(SubsystemException e, ScaledUnitForEditing scaledUnitForEditing);
 
     void recordScaledUnitDeleteError(SubsystemException exception, Versionable<ScaledUnit> scaledUnitForDeletion);
+
+    void recordFoodAddError(SubsystemException exception, FoodAddForm input);
 }

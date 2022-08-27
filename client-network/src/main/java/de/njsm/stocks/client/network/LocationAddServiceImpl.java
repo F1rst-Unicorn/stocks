@@ -32,7 +32,7 @@ import javax.inject.Inject;
 class LocationAddServiceImpl extends ServiceBase<LocationAddForm> implements LocationAddService {
 
     @Inject
-    public LocationAddServiceImpl(ServerApi api, CallHandler callHandler) {
+    LocationAddServiceImpl(ServerApi api, CallHandler callHandler) {
         super(api, callHandler);
     }
 

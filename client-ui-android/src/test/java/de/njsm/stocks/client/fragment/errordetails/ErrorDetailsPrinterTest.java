@@ -26,6 +26,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.math.BigDecimal;
+import java.time.Period;
 
 import static org.junit.Assert.assertEquals;
 
@@ -96,5 +97,36 @@ public class ErrorDetailsPrinterTest {
     public void scaledUnitDeleteErrorShowsScaleAndUnit() {
         ScaledUnitDeleteErrorDetails data = ScaledUnitDeleteErrorDetails.create(1, BigDecimal.TEN.pow(3), "Gramm", "g");
         assertEquals("1kg (Gramm)", uut.visit(data, null));
+    }
+
+    @Test
+    public void foodAddErrorShowsDetails() {
+        ScaledUnitDeleteErrorDetails data = ScaledUnitDeleteErrorDetails.create(1, BigDecimal.TEN.pow(3), "Gramm", "g");
+        assertEquals("1kg (Gramm)", uut.visit(data, null));
+    }
+
+    @Test
+    public void foodAddingShowsDetails() {
+        FoodAddErrorDetails data = FoodAddErrorDetails.create(
+                "Banana",
+                true,
+                Period.ZERO,
+                null,
+                2,
+                "",
+                "",
+                FoodAddErrorDetails.StoreUnit.create(BigDecimal.TEN, "g"));
+        assertEquals("Banana (10g)", uut.visit(data, null));
+
+        data = FoodAddErrorDetails.create(
+                "Banana",
+                true,
+                Period.ZERO,
+                1,
+                2,
+                "they are yellow",
+                "Cupboard",
+                FoodAddErrorDetails.StoreUnit.create(BigDecimal.TEN, "g"));
+        assertEquals("Banana (Cupboard, 10g)\nthey are yellow", uut.visit(data, null));
     }
 }

@@ -188,8 +188,8 @@
     </fragment>
     <fragment
             android:id="@+id/nav_fragment_add_food"
-            android:name="androidx.fragment.app.Fragment"
-            tools:layout="@layout/template_swipe_list">
+            android:name="de.njsm.stocks.client.fragment.foodadd.FoodAddFragment"
+            tools:layout="@layout/fragment_food_form">
     </fragment>
     <action
             android:id="@+id/action_global_nav_fragment_error_list"

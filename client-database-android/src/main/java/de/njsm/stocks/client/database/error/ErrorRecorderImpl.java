@@ -26,6 +26,7 @@ import de.njsm.stocks.client.business.ErrorRecorder;
 import de.njsm.stocks.client.business.StatusCodeException;
 import de.njsm.stocks.client.business.SubsystemException;
 import de.njsm.stocks.client.business.entities.*;
+import de.njsm.stocks.client.database.NullablePreservedId;
 import de.njsm.stocks.client.database.PreservedId;
 
 import javax.inject.Inject;
@@ -156,6 +157,21 @@ public class ErrorRecorderImpl implements ErrorRecorder {
         ScaledUnitDeleteEntity entity = ScaledUnitDeleteEntity.create(scaledUnitForDeletion.version(), PreservedId.create(scaledUnitForDeletion.id(), currentTransactionTime));
         long dataId = errorDao.insert(entity);
         errorDao.insert(ErrorEntity.create(ErrorEntity.Action.DELETE_SCALED_UNIT, dataId, exceptionData.exceptionType(), exceptionData.exceptionId()));
+    }
+
+    @Override
+    public void recordFoodAddError(SubsystemException exception, FoodAddForm input) {
+        ExceptionData exceptionData = new ExceptionInserter().visit(exception, null);
+        Instant scaledUnitTransactionTime = errorDao.getTransactionTimeOf(EntityType.SCALED_UNIT);
+        Instant locationTransactionTime = errorDao.getTransactionTimeOf(EntityType.LOCATION);
+        FoodAddEntity entity = FoodAddEntity.create(input.name(),
+                input.toBuy(),
+                input.expirationOffset(),
+                NullablePreservedId.create(input.location().orElse(null), locationTransactionTime),
+                PreservedId.create(input.storeUnit(), scaledUnitTransactionTime),
+                input.description());
+        long dataId = errorDao.insert(entity);
+        errorDao.insert(ErrorEntity.create(ErrorEntity.Action.ADD_FOOD, dataId, exceptionData.exceptionType(), exceptionData.exceptionId()));
     }
 
     @AutoValue

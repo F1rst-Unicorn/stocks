@@ -169,4 +169,11 @@ public class ViewModelModule {
     ViewModel OutlineViewModel(Synchroniser synchroniser) {
         return new OutlineViewModel(synchroniser);
     }
+
+    @Provides
+    @IntoMap
+    @ViewModelKey(FoodAddViewModel.class)
+    ViewModel FoodAddViewModel(FoodAddInteractor interactor) {
+        return new FoodAddViewModel(interactor);
+    }
 }

@@ -36,6 +36,7 @@ import static java.util.Collections.singletonList;
 
 public class UnitDeleteErrorRepositoryImplTest extends AbstractErrorRepositoryImplTest {
 
+    @Override
     ErrorDetails recordError(StatusCodeException e) {
         UnitDbEntity unit = standardEntities.unitDbEntity();
         UnitForDeletion data = UnitForDeletion.create(unit.id(), unit.version());

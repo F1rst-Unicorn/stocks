@@ -58,10 +58,10 @@ public abstract class ScaledUnitEditConflictFormData implements Identifiable<Sca
             ScaledUnitEditConflictData scaledUnit,
             List<UnitForSelection> units) {
 
-        int selectedListPosition = Util.searchFirst(units, v -> v.id() == scaledUnit.unit().suggestedValue().id())
-                .orElse(Util.searchFirst(units, v -> v.id() == scaledUnit.unit().local().id())
-                        .orElse(Util.searchFirst(units, v -> v.id() == scaledUnit.unit().remote().id())
-                                .orElse(Util.searchFirst(units, v -> v.id() == scaledUnit.unit().original().id())
+        int selectedListPosition = Util.searchFirst(units, scaledUnit.unit().suggestedValue().id())
+                .orElse(Util.searchFirst(units, scaledUnit.unit().local().id())
+                        .orElse(Util.searchFirst(units, scaledUnit.unit().remote().id())
+                                .orElse(Util.searchFirst(units, scaledUnit.unit().original().id())
                                         .orElse(0))));
 
         return new AutoValue_ScaledUnitEditConflictFormData(

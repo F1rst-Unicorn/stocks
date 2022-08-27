@@ -76,6 +76,7 @@ public class LocationAddFragment extends BottomToolbarFragment {
     }
 
     @Inject
+    @Override
     public void setViewModelFactory(ViewModelProvider.Factory viewModelFactory) {
         super.setViewModelFactory(viewModelFactory);
         ViewModelProvider viewModelProvider = new ViewModelProvider(this, viewModelFactory);
@@ -83,7 +84,7 @@ public class LocationAddFragment extends BottomToolbarFragment {
     }
 
     @Inject
-    public void setNavigator(Navigator navigator) {
+    void setNavigator(Navigator navigator) {
         this.navigator = navigator;
     }
 }

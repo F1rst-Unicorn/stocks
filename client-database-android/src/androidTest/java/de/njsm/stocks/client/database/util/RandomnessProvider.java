@@ -56,7 +56,7 @@ public class RandomnessProvider implements TestRule {
         setOfForbiddenValues.addAll(ids.values());
 
         do {
-            result = ThreadLocalRandom.current().nextInt(1, Integer.MAX_VALUE);
+            result = ThreadLocalRandom.current().nextInt(1, 1000);
         } while(setOfForbiddenValues.contains(result));
         return result;
     }

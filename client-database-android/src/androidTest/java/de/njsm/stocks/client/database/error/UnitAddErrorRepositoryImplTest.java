@@ -29,6 +29,7 @@ import java.util.List;
 
 public class UnitAddErrorRepositoryImplTest extends AbstractErrorRepositoryImplTest {
 
+    @Override
     ErrorDetails recordError(StatusCodeException e) {
         UnitAddForm form = UnitAddForm.create("Gramm", "g");
         errorRecorder.recordUnitAddError(e, form);

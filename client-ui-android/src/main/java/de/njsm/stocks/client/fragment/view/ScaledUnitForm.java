@@ -24,7 +24,6 @@ package de.njsm.stocks.client.fragment.view;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.ArrayAdapter;
-import androidx.annotation.NonNull;
 import androidx.annotation.StringRes;
 import com.google.android.material.textfield.TextInputLayout;
 import de.njsm.stocks.client.business.entities.ScaledUnitEditingFormData;
@@ -47,7 +46,7 @@ public class ScaledUnitForm {
 
     private final ConflictSpinner unitField;
 
-    private final ArrayAdapter<DataWrapper> unitAdapter;
+    private final ArrayAdapter<EntityStringDisplayWrapper<UnitForSelection>> unitAdapter;
 
     private final Function<Integer, String> dictionary;
 
@@ -69,7 +68,9 @@ public class ScaledUnitForm {
 
     public void showUnits(List<UnitForSelection> unitForSelections) {
         unitAdapter.clear();
-        unitAdapter.addAll(unitForSelections.stream().map(DataWrapper::new).collect(toList()));
+        unitAdapter.addAll(unitForSelections.stream()
+                .map(v -> new EntityStringDisplayWrapper<>(v, UnitForSelection::name))
+                .collect(toList()));
         unitAdapter.notifyDataSetChanged();
     }
 
@@ -95,7 +96,9 @@ public class ScaledUnitForm {
     }
 
     public Optional<UnitForSelection> getUnit() {
-        return Optional.ofNullable(unitField.<DataWrapper>getSelectedItem()).map(DataWrapper::delegate);
+        return Optional.ofNullable(
+                        unitField.<EntityStringDisplayWrapper<UnitForSelection>>getSelectedItem())
+                .map(EntityStringDisplayWrapper::delegate);
     }
 
     public void showScaledUnit(ScaledUnitEditingFormData scaledUnitEditingFormData) {
@@ -126,24 +129,5 @@ public class ScaledUnitForm {
 
     public void showUnitConflict(ConflictData<UnitForListing> unit) {
         unitField.showConflictInfo(unit, new UnitRenderStrategy()::render);
-    }
-
-    private static final class DataWrapper {
-
-        private final UnitForSelection delegate;
-
-        private DataWrapper(UnitForSelection delegate) {
-            this.delegate = delegate;
-        }
-
-        private UnitForSelection delegate() {
-            return delegate;
-        }
-
-        @NonNull
-        @Override
-        public String toString() {
-            return delegate.name();
-        }
     }
 }

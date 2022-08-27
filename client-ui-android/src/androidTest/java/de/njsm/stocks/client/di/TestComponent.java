@@ -30,6 +30,7 @@ import de.njsm.stocks.client.fragment.FragmentModule;
 import de.njsm.stocks.client.fragment.SwipeDownSupportTest;
 import de.njsm.stocks.client.fragment.errordetails.ErrorDetailsFragmentTest;
 import de.njsm.stocks.client.fragment.errorlist.ErrorListFragmentTest;
+import de.njsm.stocks.client.fragment.foodadd.FoodAddFragmentTest;
 import de.njsm.stocks.client.fragment.locationadd.LocationAddFragmentTest;
 import de.njsm.stocks.client.fragment.locationconflict.LocationConflictFragmentTest;
 import de.njsm.stocks.client.fragment.locationedit.LocationEditFragmentTest;
@@ -100,6 +101,8 @@ public interface TestComponent {
     void inject(ScaledUnitConflictFragmentTest test);
 
     void inject(OutlineFragmentTest test);
+
+    void inject(FoodAddFragmentTest test);
 
     @Component.Builder
     interface Builder {

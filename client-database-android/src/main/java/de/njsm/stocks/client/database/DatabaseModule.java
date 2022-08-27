@@ -141,4 +141,7 @@ public interface DatabaseModule {
 
     @Binds
     EntityDeleteRepository<ScaledUnit> ScaledUnitDeleteRepository(ScaledUnitRepositoryImpl impl);
+
+    @Binds
+    FoodAddRepository FoodAddRepository(FoodAddRepositoryImpl impl);
 }

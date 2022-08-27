@@ -332,4 +332,19 @@ public abstract class ErrorDao {
             "from updates " +
             "where name = :entityType")
     abstract Instant getTransactionTimeOf(EntityType entityType);
+
+    @Insert
+    abstract long insert(FoodAddEntity entity);
+
+    @Query("select * " +
+            "from food_to_add")
+    abstract List<FoodAddEntity> getFoodAdds();
+
+    @Query("delete from food_to_add where id = :id")
+    abstract void deleteFoodAdd(long id);
+
+    @Query("select * " +
+            "from food_to_add " +
+            "where id = :id")
+    abstract FoodAddEntity getFoodAdd(Long id);
 }

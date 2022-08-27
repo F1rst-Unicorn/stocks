@@ -32,7 +32,7 @@ public class LocationAddViewModel extends ViewModel {
     private final LocationAddInteractor locationAddInteractor;
 
     @Inject
-    public LocationAddViewModel(LocationAddInteractor locationAddInteractor) {
+    LocationAddViewModel(LocationAddInteractor locationAddInteractor) {
         this.locationAddInteractor = locationAddInteractor;
     }
 

@@ -119,6 +119,7 @@
     <string name="hint_remote">Andere Änderung</string>
     <string name="hint_local">Deine Änderung</string>
     <string name="hint_name">Name</string>
+    <string name="hint_to_buy">Auf Einkaufsliste setzen</string>
     <string name="hint_abbreviation">Abkürzung</string>
     <string name="hint_scale">Skalierung</string>
     <string name="hint_unit">Maßeinheit</string>
@@ -293,6 +294,7 @@
     <string name="error_details_scaled_unit_add_error_list">Mengeneinheit hinzufügen</string>
     <string name="error_details_scaled_unit_edit_error_list">Mengeneinheit bearbeiten</string>
     <string name="error_details_scaled_unit_delete_error_list">Mengeneinheit löschen</string>
+    <string name="error_details_food_add_error_list">Lebensmittel hinzufügen</string>
 
     <string name="text_no_errors">Alles in Ordnung.</string>
 </resources>

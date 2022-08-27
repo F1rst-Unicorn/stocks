@@ -88,4 +88,9 @@ public class ErrorDetailsDetailsVisitor implements ErrorDetailsVisitor<Void, Str
     public String scaledUnitDeleteErrorDetails(ScaledUnitDeleteErrorDetails scaledUnitDeleteErrorDetails, Void input) {
         return scaledUnitRenderStrategy.render(scaledUnitDeleteErrorDetails);
     }
+
+    @Override
+    public String foodAddErrorDetails(FoodAddErrorDetails foodAddErrorDetails, Void input) {
+        return foodAddErrorDetails.name();
+    }
 }

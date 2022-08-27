@@ -21,11 +21,18 @@
 
 package de.njsm.stocks.client.business;
 
+import de.njsm.stocks.client.business.entities.Entity;
+import de.njsm.stocks.client.business.entities.Identifiable;
+
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
 
 public class Util {
+
+    public static <E extends Entity<E>, T extends Identifiable<E>> Optional<Integer> searchFirst(List<T> list, int id) {
+        return searchFirst(list, v -> v.id() == id);
+    }
 
     public static <T> Optional<Integer> searchFirst(List<T> list, Predicate<T> predicate) {
         int i = 0;
@@ -39,5 +46,9 @@ public class Util {
 
     public static <T> int findFirst(List<T> list, Predicate<T> predicate) {
         return searchFirst(list, predicate).orElseThrow(() -> new IllegalStateException("No matching item found"));
+    }
+
+    public static <E extends Entity<E>, T extends Identifiable<E>> int findFirst(List<T> list, int id) {
+        return searchFirst(list, v -> v.id() == id).orElseThrow(() -> new IllegalStateException("No matching item found"));
     }
 }

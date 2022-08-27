@@ -46,6 +46,8 @@ class ErrorRetryInteractorImpl implements ErrorRetryInteractor, ErrorDetailsVisi
 
     private final EntityDeleter<ScaledUnit> scaledUnitDeleter;
 
+    private final FoodAddInteractor foodAddInteractor;
+
     private final Synchroniser synchroniser;
 
     private final Scheduler scheduler;
@@ -64,6 +66,7 @@ class ErrorRetryInteractorImpl implements ErrorRetryInteractor, ErrorDetailsVisi
                              ScaledUnitAddInteractor scaledUnitAddInteractor,
                              ScaledUnitEditInteractor scaledUnitEditInteractor,
                              EntityDeleter<ScaledUnit> scaledUnitDeleter,
+                             FoodAddInteractor foodAddInteractor,
                              Synchroniser synchroniser,
                              Scheduler scheduler,
                              ErrorRepository errorRepository) {
@@ -76,6 +79,7 @@ class ErrorRetryInteractorImpl implements ErrorRetryInteractor, ErrorDetailsVisi
         this.scaledUnitAddInteractor = scaledUnitAddInteractor;
         this.scaledUnitEditInteractor = scaledUnitEditInteractor;
         this.scaledUnitDeleter = scaledUnitDeleter;
+        this.foodAddInteractor = foodAddInteractor;
         this.synchroniser = synchroniser;
         this.scheduler = scheduler;
         this.errorRepository = errorRepository;
@@ -181,6 +185,19 @@ class ErrorRetryInteractorImpl implements ErrorRetryInteractor, ErrorDetailsVisi
         return null;
     }
 
+    @Override
+    public Void foodAddErrorDetails(FoodAddErrorDetails foodAddErrorDetails, Void input) {
+        FoodAddForm data = FoodAddForm.create(foodAddErrorDetails.name(),
+                foodAddErrorDetails.toBuy(),
+                foodAddErrorDetails.expirationOffset(),
+                foodAddErrorDetails.location().orElse(null),
+                foodAddErrorDetails.storeUnit(),
+                foodAddErrorDetails.description());
+
+        foodAddInteractor.add(data);
+        return null;
+    }
+
     private static final class JobTypeTranslator implements ErrorDetailsVisitor<Void, Job.Type> {
 
         @Override
@@ -231,6 +248,11 @@ class ErrorRetryInteractorImpl implements ErrorRetryInteractor, ErrorDetailsVisi
         @Override
         public Job.Type scaledUnitDeleteErrorDetails(ScaledUnitDeleteErrorDetails scaledUnitDeleteErrorDetails, Void input) {
             return Job.Type.DELETE_SCALED_UNIT;
+        }
+
+        @Override
+        public Job.Type foodAddErrorDetails(FoodAddErrorDetails foodAddErrorDetails, Void input) {
+            return Job.Type.ADD_FOOD;
         }
     }
 }

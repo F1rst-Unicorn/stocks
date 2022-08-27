@@ -124,4 +124,7 @@ public interface ServerApi {
     @DELETE("/v2/scaled-unit")
     Call<Response> deleteScaledUnit(@Query("id") int id,
                                     @Query("version") int version);
+
+    @PUT("/v3/food")
+    Call<DataResponse<Integer>> addFood(@Body FoodForInsertion data);
 }

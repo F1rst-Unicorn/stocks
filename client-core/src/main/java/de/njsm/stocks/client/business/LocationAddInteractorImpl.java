@@ -21,6 +21,7 @@
 
 package de.njsm.stocks.client.business;
 
+import com.google.common.annotations.VisibleForTesting;
 import de.njsm.stocks.client.business.entities.Job;
 import de.njsm.stocks.client.business.entities.LocationAddForm;
 import de.njsm.stocks.client.execution.Scheduler;
@@ -54,6 +55,7 @@ public class LocationAddInteractorImpl implements LocationAddInteractor {
         scheduler.schedule(Job.create(Job.Type.ADD_LOCATION, () -> addLocationInBackground(locationAddForm)));
     }
 
+    @VisibleForTesting
     void addLocationInBackground(LocationAddForm locationAddForm) {
         try {
             locationAddService.add(locationAddForm);

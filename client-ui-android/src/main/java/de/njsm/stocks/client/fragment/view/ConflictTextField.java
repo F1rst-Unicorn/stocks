@@ -40,11 +40,11 @@ public class ConflictTextField extends ConflictField {
     public ConflictTextField(View root) {
         super(root.findViewById(R.id.text_field_conflict_conflict));
         this.root = root;
-        textInputField = root.findViewById(R.id.text_field_conflict_text_field);
+        this.textInputField = root.findViewById(R.id.text_field_conflict_text_field);
     }
 
     public void setEditorHint(@StringRes int id) {
-        onEditorOf(textInputField, v -> v.setHint(id));
+        textInputField.setHint(id);
     }
 
     /**

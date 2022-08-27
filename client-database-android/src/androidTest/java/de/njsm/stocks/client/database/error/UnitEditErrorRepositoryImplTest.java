@@ -25,7 +25,6 @@ import de.njsm.stocks.client.business.StatusCodeException;
 import de.njsm.stocks.client.business.entities.ErrorDetails;
 import de.njsm.stocks.client.business.entities.UnitEditErrorDetails;
 import de.njsm.stocks.client.business.entities.UnitForEditing;
-import de.njsm.stocks.client.database.StandardEntities;
 import de.njsm.stocks.client.database.UnitDbEntity;
 
 import java.util.List;
@@ -34,6 +33,7 @@ import static java.util.Collections.singletonList;
 
 public class UnitEditErrorRepositoryImplTest extends AbstractErrorRepositoryImplTest {
 
+    @Override
     ErrorDetails recordError(StatusCodeException e) {
         UnitDbEntity unit = standardEntities.unitDbEntity();
         UnitForEditing unitForEditing = UnitForEditing.builder()

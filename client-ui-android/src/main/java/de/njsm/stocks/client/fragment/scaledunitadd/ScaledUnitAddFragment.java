@@ -26,7 +26,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.ViewModelProvider;
 import de.njsm.stocks.client.business.entities.ScaledUnitAddForm;
-import de.njsm.stocks.client.business.entities.UnitForSelection;
 import de.njsm.stocks.client.fragment.BottomToolbarFragment;
 import de.njsm.stocks.client.fragment.view.ScaledUnitForm;
 import de.njsm.stocks.client.navigation.Navigator;
@@ -34,7 +33,6 @@ import de.njsm.stocks.client.presenter.ScaledUnitAddViewModel;
 import de.njsm.stocks.client.ui.R;
 
 import javax.inject.Inject;
-import java.util.Optional;
 
 public class ScaledUnitAddFragment extends BottomToolbarFragment {
 
@@ -70,9 +68,7 @@ public class ScaledUnitAddFragment extends BottomToolbarFragment {
             return true;
         }
 
-        Optional<UnitForSelection> unitFromForm = form.getUnit();
-
-        unitFromForm.ifPresent(unit -> {
+        form.getUnit().ifPresent(unit -> {
             ScaledUnitAddForm data = ScaledUnitAddForm.create(
                     form.getScale(),
                     unit.id()
