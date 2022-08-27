@@ -43,10 +43,11 @@ public class FoodAddServiceImpl extends ServiceBase<FoodAddForm> implements Food
 
     @Override
     Call<? extends Response> buildCall(FoodAddForm input) {
+        int days = input.expirationOffset().getDays();
         FoodForInsertion networkData = FoodForInsertion.builder()
                 .name(input.name())
                 .toBuy(input.toBuy())
-                .expirationOffset(input.expirationOffset().getDays())
+                .expirationOffset(days > 0 ? days : null)
                 .location(input.location().orElse(null))
                 .storeUnit(input.storeUnit())
                 .description(input.description())

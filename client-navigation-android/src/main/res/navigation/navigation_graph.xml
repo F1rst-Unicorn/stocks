@@ -183,12 +183,45 @@
     </fragment>
     <fragment
             android:id="@+id/nav_fragment_empty_food"
-            android:name="androidx.fragment.app.Fragment"
+            android:name="de.njsm.stocks.client.fragment.emptyfood.EmptyFoodFragment"
+            android:label="@string/action_missing_food"
             tools:layout="@layout/template_swipe_list">
+        <action
+                android:id="@+id/action_nav_fragment_empty_food_to_nav_fragment_edit_food"
+                app:destination="@id/nav_fragment_edit_food">
+            <argument
+                    android:name="id"
+                    app:argType="integer"/>
+        </action>
+        <action
+                android:id="@+id/action_nav_fragment_empty_food_to_nav_fragment_food_item_list"
+                app:destination="@id/nav_fragment_food_item_list">
+            <argument
+                    android:name="id"
+                    app:argType="integer"/>
+        </action>
+        <action
+                android:id="@+id/action_nav_fragment_empty_food_to_nav_fragment_add_food"
+                app:destination="@id/nav_fragment_add_food">
+        </action>
     </fragment>
     <fragment
             android:id="@+id/nav_fragment_add_food"
             android:name="de.njsm.stocks.client.fragment.foodadd.FoodAddFragment"
+            android:label="@string/title_add_food"
+            tools:layout="@layout/fragment_food_form">
+    </fragment>
+    <fragment
+            android:id="@+id/nav_fragment_edit_food"
+            android:name="androidx.fragment.app.Fragment"
+            tools:layout="@layout/fragment_food_form">
+        <argument
+                android:name="id"
+                app:argType="integer"/>
+    </fragment>
+    <fragment
+            android:id="@+id/nav_fragment_food_item_list"
+            android:name="androidx.fragment.app.Fragment"
             tools:layout="@layout/fragment_food_form">
     </fragment>
     <action

@@ -74,4 +74,7 @@ public interface NavigationModule {
 
     @Binds
     OutlineNavigator OutlineNavigator(OutlineNavigatorImpl impl);
+
+    @Binds
+    EmptyFoodNavigator EmptyFoodNavigator(EmptyFoodNavigatorImpl impl);
 }

@@ -218,4 +218,13 @@ public interface FakeBusinessModule {
         when(result.getLocations()).thenReturn(Observable.just(LocationsForSelection.generate()));
         return result;
     }
+
+    @Binds
+    EmptyFoodInteractor EmptyFoodInteractor(FakeEmptyFoodInteractor fake);
+
+    @Provides
+    @Singleton
+    static FakeEmptyFoodInteractor FakeEmptyFoodInteractor() {
+        return new FakeEmptyFoodInteractor();
+    }
 }

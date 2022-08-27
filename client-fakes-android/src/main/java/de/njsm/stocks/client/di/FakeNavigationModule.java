@@ -139,4 +139,10 @@ class FakeNavigationModule {
     OutlineNavigator OutlineNavigator() {
         return mock(OutlineNavigator.class);
     }
+
+    @Provides
+    @Singleton
+    EmptyFoodNavigator EmptyFoodNavigator() {
+        return mock(EmptyFoodNavigator.class);
+    }
 }

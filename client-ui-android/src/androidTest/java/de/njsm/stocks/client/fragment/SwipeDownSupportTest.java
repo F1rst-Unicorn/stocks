@@ -28,6 +28,7 @@ import androidx.fragment.app.testing.FragmentScenario;
 import androidx.test.platform.app.InstrumentationRegistry;
 import de.njsm.stocks.client.Application;
 import de.njsm.stocks.client.business.Synchroniser;
+import de.njsm.stocks.client.fragment.emptyfood.EmptyFoodFragment;
 import de.njsm.stocks.client.fragment.errorlist.ErrorListFragment;
 import de.njsm.stocks.client.fragment.locationlist.LocationListFragment;
 import de.njsm.stocks.client.fragment.outline.OutlineFragment;
@@ -50,7 +51,8 @@ public class SwipeDownSupportTest {
             new TestCaseData(LocationListFragment.class, R.id.template_swipe_list_swipe),
             new TestCaseData(ErrorListFragment.class, R.id.template_swipe_list_swipe),
             new TestCaseData(UnitTabsFragment.class, R.id.fragment_tab_layout_swipe),
-            new TestCaseData(OutlineFragment.class, R.id.fragment_outline_swipe, 2)
+            new TestCaseData(OutlineFragment.class, R.id.fragment_outline_swipe, 2),
+            new TestCaseData(EmptyFoodFragment .class, R.id.template_swipe_list_swipe)
     );
 
     private Synchroniser synchroniser;

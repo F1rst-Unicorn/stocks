@@ -21,41 +21,29 @@
 
 package de.njsm.stocks.client.testdata;
 
-import dagger.Module;
-import dagger.Provides;
+import de.njsm.stocks.client.business.entities.EmptyFood;
+import io.reactivex.rxjava3.subjects.BehaviorSubject;
 
-import javax.inject.Singleton;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
-@Module
-public class DataModule {
+public class FoodsForListing {
 
-    @Provides
-    @Singleton
-    public LocationsForListing locationsForListing() {
-        return new LocationsForListing(LocationsForListing.generate());
+    private final BehaviorSubject<List<EmptyFood>> data;
+
+    public FoodsForListing(List<EmptyFood> data) {
+        this.data = BehaviorSubject.createDefault(data);
     }
 
-    @Provides
-    @Singleton
-    public ErrorDescriptions errorDescriptions() {
-        return new ErrorDescriptions(ErrorDescriptions.generate());
+    public static List<EmptyFood> getEmpty() {
+        return new ArrayList<>(Arrays.asList(
+                EmptyFood.create(1, "Banana", false),
+                EmptyFood.create(4, "Cheese", true)
+        ));
     }
 
-    @Provides
-    @Singleton
-    public UnitsForListing unitsForListing() {
-        return new UnitsForListing(UnitsForListing.generate());
-    }
-
-    @Provides
-    @Singleton
-    public ScaledUnitsForListing ScaledUnitsForListing() {
-        return new ScaledUnitsForListing(ScaledUnitsForListing.generate());
-    }
-
-    @Provides
-    @Singleton
-    public FoodsForListing FoodsForListing() {
-        return new FoodsForListing(FoodsForListing.getEmpty());
+    public BehaviorSubject<List<EmptyFood>> getData() {
+        return data;
     }
 }

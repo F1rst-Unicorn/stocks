@@ -19,28 +19,42 @@
  *
  */
 
-package de.njsm.stocks.client.database;
+package de.njsm.stocks.client.business;
 
-import androidx.room.Dao;
-import androidx.room.Query;
 import de.njsm.stocks.client.business.entities.EmptyFood;
 import io.reactivex.rxjava3.core.Observable;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
 
-@Dao
-abstract class FoodDao {
+import static java.util.Collections.emptyList;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
-    @Query("select * " +
-            "from current_food")
-    abstract List<FoodDbEntity> getAll();
+@ExtendWith(MockitoExtension.class)
+class EmptyFoodInteractorImplTest {
 
-    @Query("select id, name, to_buy as toBuy " +
-            "from current_food " +
-            "where id not in (" +
-            "   select of_type " +
-            "   from current_food_item" +
-            ") " +
-            "order by name")
-    abstract Observable<List<EmptyFood>> getCurrentEmptyFood();
+    private EmptyFoodInteractor uut;
+
+    @Mock
+    private EmptyFoodRepository repository;
+
+    @BeforeEach
+    void setUp() {
+        uut = new EmptyFoodInteractorImpl(repository);
+    }
+
+    @Test
+    void gettingPropagatesToRepository() {
+        when(repository.get()).thenReturn(Observable.just(emptyList()));
+
+        Observable<List<EmptyFood>> output = uut.get();
+
+        verify(repository).get();
+        output.test().assertValue(emptyList());
+    }
 }

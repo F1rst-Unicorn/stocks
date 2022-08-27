@@ -131,4 +131,7 @@ public interface UimockBusinessModule {
 
     @Binds
     FoodAddInteractor FoodAddInteractor(InMemoryFoodAddInteractorImpl impl);
+
+    @Binds
+    EmptyFoodInteractor EmptyFoodInteractor(InMemoryEmptyFoodInteractorImpl impl);
 }

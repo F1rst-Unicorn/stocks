@@ -19,28 +19,20 @@
  *
  */
 
-package de.njsm.stocks.client.database;
+package de.njsm.stocks.client.business.entities;
 
-import androidx.room.Dao;
-import androidx.room.Query;
-import de.njsm.stocks.client.business.entities.EmptyFood;
-import io.reactivex.rxjava3.core.Observable;
+import com.google.auto.value.AutoValue;
 
-import java.util.List;
+import java.util.IdentityHashMap;
 
-@Dao
-abstract class FoodDao {
+@AutoValue
+public abstract class EmptyFood implements Identifiable<Food> {
 
-    @Query("select * " +
-            "from current_food")
-    abstract List<FoodDbEntity> getAll();
+    public abstract String name();
 
-    @Query("select id, name, to_buy as toBuy " +
-            "from current_food " +
-            "where id not in (" +
-            "   select of_type " +
-            "   from current_food_item" +
-            ") " +
-            "order by name")
-    abstract Observable<List<EmptyFood>> getCurrentEmptyFood();
+    public abstract boolean toBuy();
+
+    public static EmptyFood create(int id, String name, boolean toBuy) {
+        return new AutoValue_EmptyFood(id, name, toBuy);
+    }
 }

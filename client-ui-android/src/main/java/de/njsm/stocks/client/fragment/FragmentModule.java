@@ -22,6 +22,7 @@ package de.njsm.stocks.client.fragment;
 
 import dagger.Module;
 import dagger.android.ContributesAndroidInjector;
+import de.njsm.stocks.client.fragment.emptyfood.EmptyFoodFragment;
 import de.njsm.stocks.client.fragment.errordetails.ErrorDetailsFragment;
 import de.njsm.stocks.client.fragment.errorlist.ErrorListFragment;
 import de.njsm.stocks.client.fragment.foodadd.FoodAddFragment;
@@ -104,4 +105,7 @@ public abstract class FragmentModule {
 
     @ContributesAndroidInjector
     public abstract FoodAddFragment FoodAddFragment();
+
+    @ContributesAndroidInjector
+    public abstract EmptyFoodFragment EmptyFoodFragment();
 }

@@ -73,6 +73,7 @@
     <string name="title_add_location">Ort hinzufügen</string>
     <string name="title_edit_location">Ort bearbeiten</string>
     <string name="title_conflict">Konflikt lösen</string>
+    <string name="title_add_food">Lebensmittel hinzufügen</string>
 
     <string name="action_users">Benutzer</string>
     <string name="action_locations">Orte</string>
@@ -130,6 +131,7 @@
     <string name="hint_no_locations">Keine Orte.\nErstelle einen mit dem + Knopf.</string>
     <string name="hint_no_units">Keine Maßeinheiten.\nErstelle eine mit dem + Knopf.</string>
     <string name="hint_no_scaled_units">Keine Mengen.\nErstelle eine mit dem + Knopf.</string>
+    <string name="hint_no_food">Keine Lebensmittel.\nErstelle eines mit dem + Knopf.</string>
 
     <string name="dialog_success">Erfolgreich</string>
     <string name="dialog_finished">Registrierung abgeschlossen</string>

@@ -19,28 +19,13 @@
  *
  */
 
-package de.njsm.stocks.client.database;
+package de.njsm.stocks.client.navigation;
 
-import androidx.room.Dao;
-import androidx.room.Query;
-import de.njsm.stocks.client.business.entities.EmptyFood;
-import io.reactivex.rxjava3.core.Observable;
+public interface EmptyFoodNavigator {
 
-import java.util.List;
+    void addFood();
 
-@Dao
-abstract class FoodDao {
+    void showFood(int id);
 
-    @Query("select * " +
-            "from current_food")
-    abstract List<FoodDbEntity> getAll();
-
-    @Query("select id, name, to_buy as toBuy " +
-            "from current_food " +
-            "where id not in (" +
-            "   select of_type " +
-            "   from current_food_item" +
-            ") " +
-            "order by name")
-    abstract Observable<List<EmptyFood>> getCurrentEmptyFood();
+    void editFood(int id);
 }

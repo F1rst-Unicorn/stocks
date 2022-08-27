@@ -21,26 +21,32 @@
 
 package de.njsm.stocks.client.database;
 
-import androidx.room.Dao;
-import androidx.room.Query;
 import de.njsm.stocks.client.business.entities.EmptyFood;
+import de.njsm.stocks.client.database.util.Util;
 import io.reactivex.rxjava3.core.Observable;
+import org.junit.Before;
+import org.junit.Test;
 
 import java.util.List;
 
-@Dao
-abstract class FoodDao {
+import static java.util.Collections.singletonList;
 
-    @Query("select * " +
-            "from current_food")
-    abstract List<FoodDbEntity> getAll();
+public class EmptyFoodRepositoryImplTest extends DbTestCase {
 
-    @Query("select id, name, to_buy as toBuy " +
-            "from current_food " +
-            "where id not in (" +
-            "   select of_type " +
-            "   from current_food_item" +
-            ") " +
-            "order by name")
-    abstract Observable<List<EmptyFood>> getCurrentEmptyFood();
+    private EmptyFoodRepositoryImpl uut;
+
+    @Before
+    public void setUp() {
+        uut = new EmptyFoodRepositoryImpl(stocksDatabase.foodDao());
+    }
+
+    @Test
+    public void gettingWorks() {
+        FoodDbEntity entity = standardEntities.foodDbEntityBuilder().build();
+        stocksDatabase.synchronisationDao().writeFood(singletonList(entity));
+
+        Observable<List<EmptyFood>> output = uut.get();
+
+        Util.testList(output).assertValue(singletonList(EmptyFood.create(entity.id(), entity.name(), entity.toBuy())));
+    }
 }

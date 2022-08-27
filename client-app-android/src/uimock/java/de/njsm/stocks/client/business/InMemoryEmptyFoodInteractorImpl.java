@@ -19,28 +19,28 @@
  *
  */
 
-package de.njsm.stocks.client.database;
+package de.njsm.stocks.client.business;
 
-import androidx.room.Dao;
-import androidx.room.Query;
 import de.njsm.stocks.client.business.entities.EmptyFood;
+import de.njsm.stocks.client.testdata.FoodsForListing;
 import io.reactivex.rxjava3.core.Observable;
+import io.reactivex.rxjava3.subjects.BehaviorSubject;
 
+import javax.inject.Inject;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
-@Dao
-abstract class FoodDao {
+class InMemoryEmptyFoodInteractorImpl implements EmptyFoodInteractor {
 
-    @Query("select * " +
-            "from current_food")
-    abstract List<FoodDbEntity> getAll();
+    private final BehaviorSubject<List<EmptyFood>> data;
 
-    @Query("select id, name, to_buy as toBuy " +
-            "from current_food " +
-            "where id not in (" +
-            "   select of_type " +
-            "   from current_food_item" +
-            ") " +
-            "order by name")
-    abstract Observable<List<EmptyFood>> getCurrentEmptyFood();
+    @Inject
+    InMemoryEmptyFoodInteractorImpl(FoodsForListing foodsForListing) {
+        this.data = foodsForListing.getData();
+    }
+
+    @Override
+    public Observable<List<EmptyFood>> get() {
+        return data.delay(1, TimeUnit.SECONDS);
+    }
 }

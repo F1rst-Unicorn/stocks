@@ -33,7 +33,7 @@ public class FakeLocationListInteractor implements LocationListInteractor {
     private final BehaviorSubject<List<LocationForListing>> data;
 
     @Inject
-    public FakeLocationListInteractor() {
+    FakeLocationListInteractor() {
         this.data = BehaviorSubject.create();
     }
 

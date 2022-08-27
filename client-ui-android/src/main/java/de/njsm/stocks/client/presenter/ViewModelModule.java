@@ -176,4 +176,11 @@ public class ViewModelModule {
     ViewModel FoodAddViewModel(FoodAddInteractor interactor) {
         return new FoodAddViewModel(interactor);
     }
+
+    @Provides
+    @IntoMap
+    @ViewModelKey(EmptyFoodViewModel.class)
+    ViewModel EmptyFoodViewModel(EmptyFoodInteractor emptyFoodInteractor, Synchroniser synchroniser) {
+        return new EmptyFoodViewModel(synchroniser, emptyFoodInteractor);
+    }
 }
