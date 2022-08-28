@@ -127,4 +127,8 @@ public interface ServerApi {
 
     @PUT("/v3/food")
     Call<DataResponse<Integer>> addFood(@Body FoodForInsertion data);
+
+    @DELETE("/v2/food")
+    Call<Response> deleteFood(@Query("id") int id,
+                              @Query("version") int version);
 }

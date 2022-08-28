@@ -26,6 +26,7 @@ import dagger.Module;
 import dagger.Provides;
 import dagger.multibindings.IntoMap;
 import de.njsm.stocks.client.business.*;
+import de.njsm.stocks.client.business.entities.Food;
 import de.njsm.stocks.client.business.entities.Location;
 import de.njsm.stocks.client.business.entities.ScaledUnit;
 import de.njsm.stocks.client.business.entities.Unit;
@@ -180,7 +181,7 @@ public class ViewModelModule {
     @Provides
     @IntoMap
     @ViewModelKey(EmptyFoodViewModel.class)
-    ViewModel EmptyFoodViewModel(EmptyFoodInteractor emptyFoodInteractor, Synchroniser synchroniser) {
-        return new EmptyFoodViewModel(synchroniser, emptyFoodInteractor);
+    ViewModel EmptyFoodViewModel(EmptyFoodInteractor emptyFoodInteractor, Synchroniser synchroniser, EntityDeleter<Food> deleter) {
+        return new EmptyFoodViewModel(synchroniser, emptyFoodInteractor, deleter);
     }
 }

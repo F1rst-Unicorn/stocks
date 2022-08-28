@@ -109,4 +109,10 @@ public class ErrorDetailsDetailsVisitorTest {
                 FoodAddErrorDetails.StoreUnit.create(BigDecimal.TEN, "g"));
         assertEquals("Banana", uut.visit(data, null));
     }
+
+    @Test
+    public void foodDeletingShowsName() {
+        FoodDeleteErrorDetails data = FoodDeleteErrorDetails.create(1, "Banana");
+        assertEquals(data.name(), uut.visit(data, null));
+    }
 }

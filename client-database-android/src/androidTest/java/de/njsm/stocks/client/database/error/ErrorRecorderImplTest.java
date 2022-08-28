@@ -353,4 +353,27 @@ public class ErrorRecorderImplTest extends DbTestCase {
         assertEquals(ErrorEntity.ExceptionType.STATUSCODE_EXCEPTION, errors.get(0).exceptionType());
         assertEquals(1, errors.get(0).exceptionId());
     }
+
+    @Test
+    public void recordingErrorDeletingFoodWorks() {
+        FoodForDeletion input = FoodForDeletion.create(2, 3);
+        StatusCodeException exception = new StatusCodeException(StatusCode.DATABASE_UNREACHABLE);
+
+        uut.recordFoodDeleteError(exception, input);
+
+        assertEquals(1, stocksDatabase.errorDao().getStatusCodeErrors().size());
+        StatusCodeExceptionEntity actual = stocksDatabase.errorDao().getStatusCodeErrors().get(0);
+        assertEquals(exception.getStatusCode(), actual.statusCode());
+        List<FoodDeleteEntity> foodDeletes = stocksDatabase.errorDao().getFoodDeletes();
+        assertEquals(1, foodDeletes.size());
+        FoodDeleteEntity foodDeleteEntity = foodDeletes.get(0);
+        assertEquals(input.id(), foodDeleteEntity.food().id());
+        assertEquals(input.version(), foodDeleteEntity.version());
+        List<ErrorEntity> errors = stocksDatabase.errorDao().getErrors();
+        assertEquals(1, errors.size());
+        assertEquals(ErrorEntity.Action.DELETE_FOOD, errors.get(0).action());
+        assertEquals(1, errors.get(0).dataId());
+        assertEquals(ErrorEntity.ExceptionType.STATUSCODE_EXCEPTION, errors.get(0).exceptionType());
+        assertEquals(1, errors.get(0).exceptionId());
+    }
 }

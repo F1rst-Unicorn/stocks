@@ -26,10 +26,7 @@ import dagger.Binds;
 import dagger.Module;
 import dagger.Provides;
 import de.njsm.stocks.client.business.*;
-import de.njsm.stocks.client.business.entities.Job;
-import de.njsm.stocks.client.business.entities.Location;
-import de.njsm.stocks.client.business.entities.ScaledUnit;
-import de.njsm.stocks.client.business.entities.Unit;
+import de.njsm.stocks.client.business.entities.*;
 import de.njsm.stocks.client.database.error.ConflictRepositoryImpl;
 import de.njsm.stocks.client.database.error.ErrorDao;
 import de.njsm.stocks.client.database.error.ErrorRecorderImpl;
@@ -151,5 +148,8 @@ public interface DatabaseModule {
     FoodAddRepository FoodAddRepository(FoodAddRepositoryImpl impl);
 
     @Binds
-    EmptyFoodRepository EmptyFoodRepository(EmptyFoodRepositoryImpl impl);
+    EmptyFoodRepository EmptyFoodRepository(FoodRepositoryImpl impl);
+
+    @Binds
+    EntityDeleteRepository<Food> FoodDeleteRepository(FoodRepositoryImpl impl);
 }

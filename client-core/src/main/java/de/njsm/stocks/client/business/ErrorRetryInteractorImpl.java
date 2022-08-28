@@ -48,6 +48,8 @@ class ErrorRetryInteractorImpl implements ErrorRetryInteractor, ErrorDetailsVisi
 
     private final FoodAddInteractor foodAddInteractor;
 
+    private final EntityDeleter<Food> foodDeleter;
+
     private final Synchroniser synchroniser;
 
     private final Scheduler scheduler;
@@ -67,6 +69,7 @@ class ErrorRetryInteractorImpl implements ErrorRetryInteractor, ErrorDetailsVisi
                              ScaledUnitEditInteractor scaledUnitEditInteractor,
                              EntityDeleter<ScaledUnit> scaledUnitDeleter,
                              FoodAddInteractor foodAddInteractor,
+                             EntityDeleter<Food> foodDeleter,
                              Synchroniser synchroniser,
                              Scheduler scheduler,
                              ErrorRepository errorRepository) {
@@ -80,6 +83,7 @@ class ErrorRetryInteractorImpl implements ErrorRetryInteractor, ErrorDetailsVisi
         this.scaledUnitEditInteractor = scaledUnitEditInteractor;
         this.scaledUnitDeleter = scaledUnitDeleter;
         this.foodAddInteractor = foodAddInteractor;
+        this.foodDeleter = foodDeleter;
         this.synchroniser = synchroniser;
         this.scheduler = scheduler;
         this.errorRepository = errorRepository;
@@ -198,6 +202,12 @@ class ErrorRetryInteractorImpl implements ErrorRetryInteractor, ErrorDetailsVisi
         return null;
     }
 
+    @Override
+    public Void foodDeleteErrorDetails(FoodDeleteErrorDetails foodDeleteErrorDetails, Void input) {
+        foodDeleter.delete(foodDeleteErrorDetails);
+        return null;
+    }
+
     private static final class JobTypeTranslator implements ErrorDetailsVisitor<Void, Job.Type> {
 
         @Override
@@ -253,6 +263,11 @@ class ErrorRetryInteractorImpl implements ErrorRetryInteractor, ErrorDetailsVisi
         @Override
         public Job.Type foodAddErrorDetails(FoodAddErrorDetails foodAddErrorDetails, Void input) {
             return Job.Type.ADD_FOOD;
+        }
+
+        @Override
+        public Job.Type foodDeleteErrorDetails(FoodDeleteErrorDetails foodDeleteErrorDetails, Void input) {
+            return Job.Type.DELETE_FOOD;
         }
     }
 }

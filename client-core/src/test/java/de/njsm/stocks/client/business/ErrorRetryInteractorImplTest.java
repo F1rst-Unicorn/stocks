@@ -72,6 +72,9 @@ public class ErrorRetryInteractorImplTest {
     private FoodAddInteractor foodAddInteractor;
 
     @Mock
+    private EntityDeleter<Food> foodDeleter;
+
+    @Mock
     private Synchroniser synchroniser;
 
     @Mock
@@ -92,6 +95,7 @@ public class ErrorRetryInteractorImplTest {
                 scaledUnitEditInteractor,
                 scaledUnitDeleter,
                 foodAddInteractor,
+                foodDeleter,
                 synchroniser,
                 scheduler,
                 errorRepository);
@@ -283,6 +287,20 @@ public class ErrorRetryInteractorImplTest {
                 errorDetails.storeUnit(),
                 errorDetails.description());
         verify(foodAddInteractor).add(expected);
+        verify(errorRepository).deleteError(input);
+    }
+
+    @Test
+    void retryingFoodDeletingDispatches() {
+        FoodDeleteErrorDetails foodDeleteErrorDetails = FoodDeleteErrorDetails.create(1, "Banana");
+        ErrorDescription input = ErrorDescription.create(1, StatusCode.DATABASE_UNREACHABLE, "", "test", foodDeleteErrorDetails);
+
+        uut.retryInBackground(input);
+
+        @SuppressWarnings("unchecked")
+        ArgumentCaptor<Identifiable<Food>> captor = ArgumentCaptor.forClass(Identifiable.class);
+        verify(foodDeleter).delete(captor.capture());
+        assertEquals(foodDeleteErrorDetails.id(), captor.getValue().id());
         verify(errorRepository).deleteError(input);
     }
 }

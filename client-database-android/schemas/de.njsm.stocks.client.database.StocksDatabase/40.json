@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 40,
-    "identityHash": "72e1aa36d6fe50f3227273c4c072a9ac",
+    "identityHash": "2e1c90a131376f373c832b02516cc031",
     "entities": [
       {
         "tableName": "updates",
@@ -1878,6 +1878,44 @@
         },
         "indices": [],
         "foreignKeys": []
+      },
+      {
+        "tableName": "food_to_delete",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `version` INTEGER NOT NULL, `food_id` INTEGER, `food_transaction_time` TEXT)",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "version",
+            "columnName": "version",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "food.id",
+            "columnName": "food_id",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "food.transactionTime",
+            "columnName": "food_transaction_time",
+            "affinity": "TEXT",
+            "notNull": false
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "id"
+          ],
+          "autoGenerate": true
+        },
+        "indices": [],
+        "foreignKeys": []
       }
     ],
     "views": [
@@ -1928,7 +1966,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '72e1aa36d6fe50f3227273c4c072a9ac')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '2e1c90a131376f373c832b02516cc031')"
     ]
   }
 }

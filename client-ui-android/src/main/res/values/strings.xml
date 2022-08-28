@@ -297,6 +297,7 @@
     <string name="error_details_scaled_unit_edit_error_list">Edit Unit Amount</string>
     <string name="error_details_scaled_unit_delete_error_list">Delete Unit Amount</string>
     <string name="error_details_food_add_error_list">Add Food</string>
+    <string name="error_details_food_delete_error_list">Delete Food</string>
 
     <string name="text_no_errors">Everything is fine.</string>
 

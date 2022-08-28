@@ -88,7 +88,7 @@ public abstract class SynchronisationDao {
     }
 
     @Insert(onConflict = REPLACE)
-    abstract void writeFood(List<FoodDbEntity> data);
+    public abstract void writeFood(List<FoodDbEntity> data);
 
     @Query("delete from food")
     abstract void deleteFood();

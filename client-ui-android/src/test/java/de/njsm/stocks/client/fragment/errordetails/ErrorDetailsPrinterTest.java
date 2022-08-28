@@ -129,4 +129,10 @@ public class ErrorDetailsPrinterTest {
                 FoodAddErrorDetails.StoreUnit.create(BigDecimal.TEN, "g"));
         assertEquals("Banana (Cupboard, 10g)\nthey are yellow", uut.visit(data, null));
     }
+
+    @Test
+    public void foodDeleteErrorShowsName() {
+        FoodDeleteErrorDetails data = FoodDeleteErrorDetails.create(1, "Banana");
+        assertEquals(data.name(), uut.visit(data, null));
+    }
 }

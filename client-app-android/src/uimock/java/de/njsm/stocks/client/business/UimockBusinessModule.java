@@ -23,10 +23,7 @@ package de.njsm.stocks.client.business;
 import dagger.Binds;
 import dagger.Module;
 import dagger.Provides;
-import de.njsm.stocks.client.business.entities.Location;
-import de.njsm.stocks.client.business.entities.ScaledUnit;
-import de.njsm.stocks.client.business.entities.SetupState;
-import de.njsm.stocks.client.business.entities.Unit;
+import de.njsm.stocks.client.business.entities.*;
 import de.njsm.stocks.client.execution.SchedulerStatusReporter;
 import io.reactivex.rxjava3.core.Observable;
 
@@ -134,4 +131,7 @@ public interface UimockBusinessModule {
 
     @Binds
     EmptyFoodInteractor EmptyFoodInteractor(InMemoryEmptyFoodInteractorImpl impl);
+
+    @Binds
+    EntityDeleter<Food> FoodDeleter(InMemoryFoodDeleterImpl impl);
 }

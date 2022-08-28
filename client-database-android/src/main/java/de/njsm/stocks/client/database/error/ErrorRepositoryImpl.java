@@ -23,10 +23,7 @@ package de.njsm.stocks.client.database.error;
 
 import de.njsm.stocks.client.business.ErrorRepository;
 import de.njsm.stocks.client.business.entities.*;
-import de.njsm.stocks.client.database.LocationDbEntity;
-import de.njsm.stocks.client.database.PreservedId;
-import de.njsm.stocks.client.database.ScaledUnitDbEntity;
-import de.njsm.stocks.client.database.UnitDbEntity;
+import de.njsm.stocks.client.database.*;
 import io.reactivex.rxjava3.core.Observable;
 
 import javax.inject.Inject;
@@ -162,5 +159,12 @@ public class ErrorRepositoryImpl implements ErrorRepository, ErrorEntity.ActionV
                 entity.description(),
                 location.map(LocationDbEntity::name).orElse(""),
                 FoodAddErrorDetails.StoreUnit.create(scaledUnit.scale(), unit.abbreviation()));
+    }
+
+    @Override
+    public ErrorDetails deleteFood(ErrorEntity.Action action, Long input) {
+        FoodDeleteEntity entity = errorDao.getFoodDelete(input);
+        FoodDbEntity food = errorDao.getFoodByValidOrTransactionTime(entity.food());
+        return FoodDeleteErrorDetails.create(food.id(), food.name());
     }
 }

@@ -24,6 +24,7 @@ package de.njsm.stocks.client.business;
 import dagger.Binds;
 import dagger.Module;
 import dagger.Provides;
+import de.njsm.stocks.client.business.entities.Food;
 import de.njsm.stocks.client.business.entities.Location;
 import de.njsm.stocks.client.business.entities.ScaledUnit;
 import de.njsm.stocks.client.business.entities.Unit;
@@ -119,4 +120,7 @@ public interface BusinessModule {
 
     @Binds
     EmptyFoodInteractor EmptyFoodInteractor(EmptyFoodInteractorImpl impl);
+
+    @Binds
+    EntityDeleter<Food> FoodDeleter(FoodDeleterImpl impl);
 }

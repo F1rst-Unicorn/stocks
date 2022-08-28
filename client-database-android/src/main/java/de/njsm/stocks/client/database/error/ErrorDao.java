@@ -25,10 +25,7 @@ import androidx.room.Dao;
 import androidx.room.Insert;
 import androidx.room.Query;
 import de.njsm.stocks.client.business.entities.EntityType;
-import de.njsm.stocks.client.database.LocationDbEntity;
-import de.njsm.stocks.client.database.PreservedId;
-import de.njsm.stocks.client.database.ScaledUnitDbEntity;
-import de.njsm.stocks.client.database.UnitDbEntity;
+import de.njsm.stocks.client.database.*;
 import io.reactivex.rxjava3.core.Observable;
 
 import java.time.Instant;
@@ -347,4 +344,63 @@ public abstract class ErrorDao {
             "from food_to_add " +
             "where id = :id")
     abstract FoodAddEntity getFoodAdd(Long id);
+
+    @Query("select * " +
+            "from food_to_delete")
+    abstract List<FoodDeleteEntity> getFoodDeletes();
+
+    @Insert
+    abstract long insert(FoodDeleteEntity entity);
+
+    @Query("delete from food_to_delete where id = :id")
+    abstract void deleteFoodDelete(Long id);
+
+    @Query("select * " +
+            "from food_to_delete " +
+            "where id = :id")
+    abstract FoodDeleteEntity getFoodDelete(Long id);
+
+    public FoodDbEntity getFoodByValidOrTransactionTime(PreservedId id) {
+        FoodDbEntity food = getCurrentFood(id.id());
+        if (food == null) {
+            food = getLatestFoodAsBestKnown(id.id());
+        }
+        if (food == null) {
+            food = getCurrentFoodAsKnownAt(id.id(), id.transactionTime());
+        }
+        return food;
+    }
+
+    @Query("select * " +
+            "from current_food " +
+            "where id = :id")
+    abstract FoodDbEntity getCurrentFood(int id);
+
+    @Query("select * " +
+            "from food " +
+            "where id = :id " +
+            "and transaction_time_end = " + DATABASE_INFINITY_STRING_SQL +
+            "and valid_time_start = (" +
+            "   select max(valid_time_start) " +
+            "   from food " +
+            "   where id = :id" +
+            "   and valid_time_start <= " + NOW +
+            "   and transaction_time_end = " + DATABASE_INFINITY_STRING_SQL +
+            ")")
+    abstract FoodDbEntity getLatestFoodAsBestKnown(int id);
+
+    @Query("select * " +
+            "from food " +
+            "where id = :id " +
+            "and transaction_time_start <= :transactionTime " +
+            "and :transactionTime < transaction_time_end " +
+            "and valid_time_start = (" +
+            "   select max(valid_time_start) " +
+            "   from food " +
+            "   where id = :id" +
+            "   and valid_time_start <= " + NOW +
+            "   and transaction_time_start <= :transactionTime " +
+            "   and :transactionTime < transaction_time_end " +
+            ")")
+    abstract FoodDbEntity getCurrentFoodAsKnownAt(int id, Instant transactionTime);
 }

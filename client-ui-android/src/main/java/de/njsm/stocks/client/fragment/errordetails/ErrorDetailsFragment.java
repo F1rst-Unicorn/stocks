@@ -188,5 +188,10 @@ public class ErrorDetailsFragment extends InjectableFragment {
 
             return result.toString();
         }
+
+        @Override
+        public String foodDeleteErrorDetails(FoodDeleteErrorDetails foodDeleteErrorDetails, Void input) {
+            return foodDeleteErrorDetails.name();
+        }
     }
 }

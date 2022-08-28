@@ -62,5 +62,6 @@ public class ErrorDetailsHeadlineVisitorTest {
                 "they are yellow",
                 "",
                 FoodAddErrorDetails.StoreUnit.create(BigDecimal.TEN, "g")), null));
+        assertEquals(R.string.error_details_food_delete_error_list, (long) uut.visit(FoodDeleteErrorDetails.create(1, "Banana"), null));
     }
 }

@@ -59,7 +59,11 @@ public class StandardEntities {
                 .belongsTo(randomnessProvider.getId("user_device belongs_to"));
     }
 
-    FoodDbEntity.Builder foodDbEntityBuilder() {
+    public FoodDbEntity foodDbEntity() {
+        return foodDbEntityBuilder().build();
+    }
+
+    public FoodDbEntity.Builder foodDbEntityBuilder() {
         return initialiseBuilder(FoodDbEntity.builder())
                 .name("name")
                 .toBuy(true)

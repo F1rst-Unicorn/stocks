@@ -21,15 +21,18 @@
 
 package de.njsm.stocks.client.fragment.emptyfood;
 
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.lifecycle.ViewModelProvider;
 import de.njsm.stocks.client.business.entities.EmptyFood;
 import de.njsm.stocks.client.fragment.BottomToolbarFragment;
+import de.njsm.stocks.client.fragment.listswipe.SwipeCallback;
 import de.njsm.stocks.client.fragment.view.FoodOutlineViewHolder;
 import de.njsm.stocks.client.fragment.view.TemplateSwipeList;
 import de.njsm.stocks.client.navigation.EmptyFoodNavigator;
@@ -61,11 +64,21 @@ public class EmptyFoodFragment extends BottomToolbarFragment {
         foodListAdapter = new FoodAdapter(this::onItemClicked, this::onItemLongClicked);
         viewModel.getFood().observe(getViewLifecycleOwner(), this::onListDataReceived);
 
-        templateSwipeList.initialiseList(requireContext(), foodListAdapter);
+        SwipeCallback callback = new SwipeCallback(
+                ContextCompat.getDrawable(requireActivity(), R.drawable.ic_delete_white_24dp),
+                new ColorDrawable(ContextCompat.getColor(requireActivity(), R.color.colorAccent)),
+                this::onItemSwipedRight
+        );
+
+        templateSwipeList.initialiseListWithSwiper(requireContext(), foodListAdapter, callback);
         templateSwipeList.bindFloatingActionButton(this::onAddItem);
         templateSwipeList.bindSwipeDown(this::onSwipeDown);
 
         return root;
+    }
+
+    private void onItemSwipedRight(int listItemIndex) {
+        viewModel.delete(listItemIndex);
     }
 
     private void onItemClicked(View listItem) {

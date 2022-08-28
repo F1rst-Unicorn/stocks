@@ -21,32 +21,33 @@
 
 package de.njsm.stocks.client.database;
 
-import androidx.room.Dao;
-import androidx.room.Query;
+import de.njsm.stocks.client.business.EmptyFoodRepository;
+import de.njsm.stocks.client.business.EntityDeleteRepository;
 import de.njsm.stocks.client.business.entities.EmptyFood;
-import de.njsm.stocks.client.business.entities.FoodForDeletion;
+import de.njsm.stocks.client.business.entities.Food;
+import de.njsm.stocks.client.business.entities.Identifiable;
+import de.njsm.stocks.client.business.entities.Versionable;
 import io.reactivex.rxjava3.core.Observable;
 
+import javax.inject.Inject;
 import java.util.List;
 
-@Dao
-abstract class FoodDao {
+class FoodRepositoryImpl implements EmptyFoodRepository, EntityDeleteRepository<Food> {
 
-    @Query("select * " +
-            "from current_food")
-    abstract List<FoodDbEntity> getAll();
+    private final FoodDao foodDao;
 
-    @Query("select id, name, to_buy as toBuy " +
-            "from current_food " +
-            "where id not in (" +
-            "   select of_type " +
-            "   from current_food_item" +
-            ") " +
-            "order by name")
-    abstract Observable<List<EmptyFood>> getCurrentEmptyFood();
+    @Inject
+    FoodRepositoryImpl(FoodDao foodDao) {
+        this.foodDao = foodDao;
+    }
 
-    @Query("select * " +
-            "from current_food " +
-            "where id = :id")
-    abstract FoodForDeletion getForDeletion(int id);
+    @Override
+    public Observable<List<EmptyFood>> get() {
+        return foodDao.getCurrentEmptyFood();
+    }
+
+    @Override
+    public Versionable<Food> getEntityForDeletion(Identifiable<Food> id) {
+        return foodDao.getForDeletion(id.id());
+    }
 }

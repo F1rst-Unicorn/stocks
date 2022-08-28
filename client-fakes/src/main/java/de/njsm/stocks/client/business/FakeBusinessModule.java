@@ -24,6 +24,7 @@ package de.njsm.stocks.client.business;
 import dagger.Binds;
 import dagger.Module;
 import dagger.Provides;
+import de.njsm.stocks.client.business.entities.Food;
 import de.njsm.stocks.client.business.entities.Location;
 import de.njsm.stocks.client.business.entities.ScaledUnit;
 import de.njsm.stocks.client.business.entities.Unit;
@@ -226,5 +227,12 @@ public interface FakeBusinessModule {
     @Singleton
     static FakeEmptyFoodInteractor FakeEmptyFoodInteractor() {
         return new FakeEmptyFoodInteractor();
+    }
+
+    @Provides
+    @Singleton
+    @SuppressWarnings("unchecked")
+    static EntityDeleter<Food> foodDeleter() {
+        return mock(EntityDeleter.class);
     }
 }

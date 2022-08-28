@@ -25,8 +25,10 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.LiveDataReactiveStreams;
 import androidx.lifecycle.ViewModel;
 import de.njsm.stocks.client.business.EmptyFoodInteractor;
+import de.njsm.stocks.client.business.EntityDeleter;
 import de.njsm.stocks.client.business.Synchroniser;
 import de.njsm.stocks.client.business.entities.EmptyFood;
+import de.njsm.stocks.client.business.entities.Food;
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.core.BackpressureStrategy;
 import io.reactivex.rxjava3.core.Observable;
@@ -40,11 +42,14 @@ public class EmptyFoodViewModel extends ViewModel {
 
     private final EmptyFoodInteractor emptyFoodInteractor;
 
+    private final EntityDeleter<Food> deleter;
+
     private Observable<List<EmptyFood>> data;
 
-    public EmptyFoodViewModel(Synchroniser synchroniser, EmptyFoodInteractor emptyFoodInteractor) {
+    public EmptyFoodViewModel(Synchroniser synchroniser, EmptyFoodInteractor emptyFoodInteractor, EntityDeleter<Food> deleter) {
         this.synchroniser = synchroniser;
         this.emptyFoodInteractor = emptyFoodInteractor;
+        this.deleter = deleter;
     }
 
     public void synchronise() {
@@ -54,6 +59,10 @@ public class EmptyFoodViewModel extends ViewModel {
     public LiveData<List<EmptyFood>> getFood() {
         return LiveDataReactiveStreams.fromPublisher(
                 getData().toFlowable(BackpressureStrategy.LATEST));
+    }
+
+    public void delete(int listItemIndex) {
+        performOnCurrentData(list -> deleter.delete(list.get(listItemIndex)));
     }
 
     public void resolveId(int listItemIndex, Consumer<Integer> callback) {

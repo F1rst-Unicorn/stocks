@@ -19,34 +19,33 @@
  *
  */
 
-package de.njsm.stocks.client.database;
+package de.njsm.stocks.client.business;
 
-import androidx.room.Dao;
-import androidx.room.Query;
 import de.njsm.stocks.client.business.entities.EmptyFood;
-import de.njsm.stocks.client.business.entities.FoodForDeletion;
-import io.reactivex.rxjava3.core.Observable;
+import de.njsm.stocks.client.business.entities.Food;
+import de.njsm.stocks.client.business.entities.Identifiable;
+import de.njsm.stocks.client.testdata.FoodsForListing;
+import io.reactivex.rxjava3.subjects.BehaviorSubject;
 
+import javax.inject.Inject;
+import java.util.ArrayList;
 import java.util.List;
 
-@Dao
-abstract class FoodDao {
+class InMemoryFoodDeleterImpl implements EntityDeleter<Food> {
 
-    @Query("select * " +
-            "from current_food")
-    abstract List<FoodDbEntity> getAll();
+    private final BehaviorSubject<List<EmptyFood>> data;
 
-    @Query("select id, name, to_buy as toBuy " +
-            "from current_food " +
-            "where id not in (" +
-            "   select of_type " +
-            "   from current_food_item" +
-            ") " +
-            "order by name")
-    abstract Observable<List<EmptyFood>> getCurrentEmptyFood();
+    @Inject
+    InMemoryFoodDeleterImpl(FoodsForListing foodsForListing) {
+        this.data = foodsForListing.getData();
+    }
 
-    @Query("select * " +
-            "from current_food " +
-            "where id = :id")
-    abstract FoodForDeletion getForDeletion(int id);
+    @Override
+    public void delete(Identifiable<Food> location) {
+        data.firstElement().subscribe(list -> {
+            List<EmptyFood> newList = new ArrayList<>(list);
+            newList.removeIf(v -> v.id() == location.id());
+            data.onNext(newList);
+        });
+    }
 }

@@ -23,7 +23,7 @@ package de.njsm.stocks.client.database.error;
 
 import de.njsm.stocks.client.business.StatusCodeException;
 import de.njsm.stocks.client.business.entities.*;
-import de.njsm.stocks.client.database.LocationDbEntity;
+import de.njsm.stocks.client.database.FoodDbEntity;
 import de.njsm.stocks.client.database.UpdateDbEntity;
 import org.junit.Test;
 
@@ -36,64 +36,56 @@ import static de.njsm.stocks.client.database.util.Util.test;
 import static de.njsm.stocks.client.database.util.Util.testList;
 import static java.util.Collections.singletonList;
 
-public class LocationDeleteErrorRepositoryImplTest extends AbstractErrorRepositoryImplTest {
+public class FoodDeleteErrorRepositoryImplTest extends AbstractErrorRepositoryImplTest {
 
     ErrorDetails recordError(StatusCodeException e) {
-        LocationDbEntity location = standardEntities.locationDbEntity();
-        LocationForDeletion locationForDeletion = LocationForDeletion.builder()
-                .id(location.id())
-                .version(location.version())
-                .build();
-        stocksDatabase.synchronisationDao().writeLocations(singletonList(location));
-        errorRecorder.recordLocationDeleteError(e, locationForDeletion);
-        return LocationDeleteErrorDetails.create(location.id(), location.name());
+        FoodDbEntity food = standardEntities.foodDbEntity();
+        stocksDatabase.synchronisationDao().writeFood(singletonList(food));
+        FoodForDeletion data = FoodForDeletion.create(food.id(), food.version());
+        FoodDeleteErrorDetails errorDetails = FoodDeleteErrorDetails.create(food.id(), food.name());
+        errorRecorder.recordFoodDeleteError(e, data);
+        return errorDetails;
     }
 
     @Override
     List<?> getErrorDetails() {
-        return stocksDatabase.errorDao().getLocationDeletes();
+        return stocksDatabase.errorDao().getFoodDeletes();
     }
 
     @Test
     public void gettingErrorOfDeletedEntityWorks() {
-        Instant editTime = Instant.EPOCH.plusSeconds(1);
+        Instant editTime = Instant.EPOCH.plusSeconds(5);
         StatusCode statusCode = StatusCode.DATABASE_UNREACHABLE;
         StatusCodeException exception = new StatusCodeException(statusCode);
-        LocationDbEntity location = standardEntities.locationDbEntity();
-        LocationForDeletion locationForDeletion = LocationForDeletion.builder()
-                .id(location.id())
-                .version(location.version())
-                .build();
-        stocksDatabase.synchronisationDao().writeLocations(singletonList(location));
-        stocksDatabase.synchronisationDao().writeLocations(currentDelete(location, editTime));
-        errorRecorder.recordLocationDeleteError(exception, locationForDeletion);
-        ErrorDetails data = LocationDeleteErrorDetails.create(location.id(), location.name());
+        FoodDbEntity food = standardEntities.foodDbEntity();
+        FoodForDeletion data = FoodForDeletion.create(food.id(), food.version());
+        stocksDatabase.synchronisationDao().writeFood(singletonList(food));
+        stocksDatabase.synchronisationDao().writeFood(currentDelete(food, editTime));
+        errorRecorder.recordFoodDeleteError(exception, data);
+        ErrorDetails errorDetails = FoodDeleteErrorDetails.create(food.id(), food.name());
 
         test(uut.getNumberOfErrors()).assertValue(1);
         testList(uut.getErrors()).assertValue(v -> v.get(0).statusCode() == statusCode);
-        testList(uut.getErrors()).assertValue(v -> v.get(0).errorDetails().equals(data));
+        testList(uut.getErrors()).assertValue(v -> v.get(0).errorDetails().equals(errorDetails));
         testList(uut.getErrors()).assertValue(v -> v.get(0).errorMessage().equals(exception.getMessage()));
     }
 
     @Test
     public void gettingErrorOfInvalidatedEntityWorks() {
-        Instant editTime = Instant.now();
+        Instant editTime = Instant.EPOCH.plusSeconds(5);
         StatusCode statusCode = StatusCode.DATABASE_UNREACHABLE;
         StatusCodeException exception = new StatusCodeException(statusCode);
-        LocationDbEntity location = standardEntities.locationDbEntity();
-        LocationForDeletion locationForDeletion = LocationForDeletion.builder()
-                .id(location.id())
-                .version(location.version())
-                .build();
-        stocksDatabase.synchronisationDao().writeLocations(singletonList(location));
-        stocksDatabase.synchronisationDao().writeLocations(sequencedDeleteOfEntireTime(location, editTime));
-        stocksDatabase.synchronisationDao().insert(singletonList(UpdateDbEntity.create(EntityType.LOCATION, Instant.EPOCH)));
-        errorRecorder.recordLocationDeleteError(exception, locationForDeletion);
-        ErrorDetails data = LocationDeleteErrorDetails.create(location.id(), location.name());
+        FoodDbEntity food = standardEntities.foodDbEntity();
+        FoodForDeletion data = FoodForDeletion.create(food.id(), food.version());
+        stocksDatabase.synchronisationDao().writeFood(singletonList(food));
+        stocksDatabase.synchronisationDao().writeFood(sequencedDeleteOfEntireTime(food, editTime));
+        stocksDatabase.synchronisationDao().insert(singletonList(UpdateDbEntity.create(EntityType.FOOD, Instant.EPOCH)));
+        errorRecorder.recordFoodDeleteError(exception, data);
+        ErrorDetails errorDetails = FoodDeleteErrorDetails.create(food.id(), food.name());
 
         test(uut.getNumberOfErrors()).assertValue(1);
         testList(uut.getErrors()).assertValue(v -> v.get(0).statusCode() == statusCode);
-        testList(uut.getErrors()).assertValue(v -> v.get(0).errorDetails().equals(data));
+        testList(uut.getErrors()).assertValue(v -> v.get(0).errorDetails().equals(errorDetails));
         testList(uut.getErrors()).assertValue(v -> v.get(0).errorMessage().equals(exception.getMessage()));
     }
 }

@@ -80,4 +80,9 @@ public class ErrorDetailsHeadlineVisitor implements ErrorDetailsVisitor<Void, In
     public Integer foodAddErrorDetails(FoodAddErrorDetails foodAddErrorDetails, Void input) {
         return R.string.error_details_food_add_error_list;
     }
+
+    @Override
+    public Integer foodDeleteErrorDetails(FoodDeleteErrorDetails foodDeleteErrorDetails, Void input) {
+        return R.string.error_details_food_delete_error_list;
+    }
 }

@@ -19,26 +19,31 @@
  *
  */
 
-package de.njsm.stocks.client.database;
+package de.njsm.stocks.client.network;
 
-import de.njsm.stocks.client.business.EmptyFoodRepository;
-import de.njsm.stocks.client.business.entities.EmptyFood;
-import io.reactivex.rxjava3.core.Observable;
+
+import de.njsm.stocks.client.business.EntityDeleteService;
+import de.njsm.stocks.client.business.entities.Food;
+import de.njsm.stocks.client.business.entities.Versionable;
+import de.njsm.stocks.common.api.Response;
+import retrofit2.Call;
 
 import javax.inject.Inject;
-import java.util.List;
 
-class EmptyFoodRepositoryImpl implements EmptyFoodRepository {
-
-    private final FoodDao foodDao;
+public class FoodDeleteServiceImpl extends ServiceBase<Versionable<Food>> implements EntityDeleteService<Food> {
 
     @Inject
-    EmptyFoodRepositoryImpl(FoodDao foodDao) {
-        this.foodDao = foodDao;
+    FoodDeleteServiceImpl(ServerApi api, CallHandler callHandler) {
+        super(api, callHandler);
     }
 
     @Override
-    public Observable<List<EmptyFood>> get() {
-        return foodDao.getCurrentEmptyFood();
+    Call<Response> buildCall(Versionable<Food> entityForDeletion) {
+        return api.deleteFood(entityForDeletion.id(), entityForDeletion.version());
+    }
+
+    @Override
+    public void delete(Versionable<Food> entityForDeletion) {
+        perform(entityForDeletion);
     }
 }

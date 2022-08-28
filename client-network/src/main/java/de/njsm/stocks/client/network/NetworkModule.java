@@ -27,10 +27,7 @@ import dagger.Binds;
 import dagger.Module;
 import dagger.Provides;
 import de.njsm.stocks.client.business.*;
-import de.njsm.stocks.client.business.entities.Location;
-import de.njsm.stocks.client.business.entities.ScaledUnit;
-import de.njsm.stocks.client.business.entities.ServerEndpoint;
-import de.njsm.stocks.client.business.entities.Unit;
+import de.njsm.stocks.client.business.entities.*;
 import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
 import retrofit2.converter.jackson.JacksonConverterFactory;
@@ -86,6 +83,9 @@ public interface NetworkModule {
 
     @Binds
     FoodAddService FoodAddService(FoodAddServiceImpl impl);
+
+    @Binds
+    EntityDeleteService<Food> foodDeleteService(FoodDeleteServiceImpl impl);
 
     @Provides
     @Singleton
