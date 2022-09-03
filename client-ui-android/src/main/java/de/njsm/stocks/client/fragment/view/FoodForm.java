@@ -26,7 +26,8 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.ArrayAdapter;
 import com.google.android.material.textfield.TextInputLayout;
 import de.njsm.stocks.client.business.entities.LocationForSelection;
-import de.njsm.stocks.client.business.entities.UnitForSelection;
+import de.njsm.stocks.client.business.entities.ScaledUnitForListing;
+import de.njsm.stocks.client.presenter.ScaledUnitRenderStrategy;
 import de.njsm.stocks.client.ui.R;
 
 import java.time.Period;
@@ -51,7 +52,7 @@ public class FoodForm {
 
     private final ConflictSpinner storeUnitField;
 
-    private final ArrayAdapter<EntityStringDisplayWrapper<UnitForSelection>> unitAdapter;
+    private final ArrayAdapter<EntityStringDisplayWrapper<ScaledUnitForListing>> unitAdapter;
 
     private final TextInputLayout descriptionField;
 
@@ -107,10 +108,11 @@ public class FoodForm {
         locationAdapter.notifyDataSetChanged();
     }
 
-    public void showUnits(List<UnitForSelection> unitsForSelection) {
+    public void showUnits(List<ScaledUnitForListing> unitsForSelection) {
         unitAdapter.clear();
+        ScaledUnitRenderStrategy renderStrategy = new ScaledUnitRenderStrategy();
         unitAdapter.addAll(unitsForSelection.stream()
-                .map(v -> new EntityStringDisplayWrapper<>(v, UnitForSelection::name))
+                .map(v -> new EntityStringDisplayWrapper<>(v, renderStrategy::render))
                 .collect(toList()));
         unitAdapter.notifyDataSetChanged();
     }
@@ -150,9 +152,9 @@ public class FoodForm {
                 .map(EntityStringDisplayWrapper::delegate);
     }
 
-    public Optional<UnitForSelection> getStoreUnit() {
+    public Optional<ScaledUnitForListing> getStoreUnit() {
         return Optional.ofNullable(
-                        storeUnitField.<EntityStringDisplayWrapper<UnitForSelection>>getSelectedItem())
+                        storeUnitField.<EntityStringDisplayWrapper<ScaledUnitForListing>>getSelectedItem())
                 .map(EntityStringDisplayWrapper::delegate);
     }
 

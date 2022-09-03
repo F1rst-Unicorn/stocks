@@ -22,10 +22,7 @@
 package de.njsm.stocks.client.business;
 
 import com.google.common.annotations.VisibleForTesting;
-import de.njsm.stocks.client.business.entities.FoodAddForm;
-import de.njsm.stocks.client.business.entities.Job;
-import de.njsm.stocks.client.business.entities.LocationForSelection;
-import de.njsm.stocks.client.business.entities.UnitForSelection;
+import de.njsm.stocks.client.business.entities.*;
 import de.njsm.stocks.client.execution.Scheduler;
 import io.reactivex.rxjava3.core.Observable;
 import org.slf4j.Logger;
@@ -63,7 +60,7 @@ class FoodAddInteractorImpl implements FoodAddInteractor {
     }
 
     @Override
-    public Observable<List<UnitForSelection>> getUnits() {
+    public Observable<List<ScaledUnitForListing>> getUnits() {
         return foodAddRepository.getUnits();
     }
 

@@ -22,14 +22,14 @@
 package de.njsm.stocks.client.business;
 
 import de.njsm.stocks.client.business.entities.LocationForSelection;
-import de.njsm.stocks.client.business.entities.UnitForSelection;
+import de.njsm.stocks.client.business.entities.ScaledUnitForListing;
 import io.reactivex.rxjava3.core.Observable;
 
 import java.util.List;
 
 public interface FoodAddRepository {
 
-    Observable<List<UnitForSelection>> getUnits();
+    Observable<List<ScaledUnitForListing>> getUnits();
 
     Observable<List<LocationForSelection>> getLocations();
 }

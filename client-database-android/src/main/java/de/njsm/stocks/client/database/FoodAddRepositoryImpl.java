@@ -23,7 +23,7 @@ package de.njsm.stocks.client.database;
 
 import de.njsm.stocks.client.business.FoodAddRepository;
 import de.njsm.stocks.client.business.entities.LocationForSelection;
-import de.njsm.stocks.client.business.entities.UnitForSelection;
+import de.njsm.stocks.client.business.entities.ScaledUnitForListing;
 import io.reactivex.rxjava3.core.Observable;
 
 import javax.inject.Inject;
@@ -31,19 +31,19 @@ import java.util.List;
 
 public class FoodAddRepositoryImpl implements FoodAddRepository {
 
-    private final UnitRepositoryImpl unitRepository;
+    private final ScaledUnitRepositoryImpl scaledUnitRepository;
 
     private final LocationRepositoryImpl locationRepository;
 
     @Inject
-    FoodAddRepositoryImpl(UnitRepositoryImpl unitRepository, LocationRepositoryImpl locationRepository) {
-        this.unitRepository = unitRepository;
+    FoodAddRepositoryImpl(ScaledUnitRepositoryImpl scaledUnitRepository, LocationRepositoryImpl locationRepository) {
+        this.scaledUnitRepository = scaledUnitRepository;
         this.locationRepository = locationRepository;
     }
 
     @Override
-    public Observable<List<UnitForSelection>> getUnits() {
-        return unitRepository.getUnitsForSelection();
+    public Observable<List<ScaledUnitForListing>> getUnits() {
+        return scaledUnitRepository.getScaledUnitsForSelection();
     }
 
     @Override

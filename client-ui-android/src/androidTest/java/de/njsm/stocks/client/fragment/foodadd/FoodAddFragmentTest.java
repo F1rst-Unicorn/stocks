@@ -31,7 +31,7 @@ import de.njsm.stocks.client.business.FoodAddInteractor;
 import de.njsm.stocks.client.business.entities.FoodAddForm;
 import de.njsm.stocks.client.navigation.Navigator;
 import de.njsm.stocks.client.testdata.LocationsForSelection;
-import de.njsm.stocks.client.testdata.UnitsForSelection;
+import de.njsm.stocks.client.testdata.ScaledUnitsForListing;
 import de.njsm.stocks.client.ui.R;
 import io.reactivex.rxjava3.core.Observable;
 import org.junit.After;
@@ -68,7 +68,7 @@ public class FoodAddFragmentTest {
         ((Application) InstrumentationRegistry.getInstrumentation().getTargetContext().getApplicationContext()).getDaggerRoot().inject(this);
         reset(navigator);
         reset(foodAddInteractor);
-        when(foodAddInteractor.getUnits()).thenReturn(Observable.just(UnitsForSelection.generate()));
+        when(foodAddInteractor.getUnits()).thenReturn(Observable.just(ScaledUnitsForListing.generate()));
         when(foodAddInteractor.getLocations()).thenReturn(Observable.just(LocationsForSelection.generate()));
         scenario = FragmentScenario.launchInContainer(FoodAddFragment.class, new Bundle(), R.style.StocksTheme);
     }
@@ -105,7 +105,7 @@ public class FoodAddFragmentTest {
         onView(withId(R.id.fragment_food_form_location)).perform(click());
         onData(anything()).atPosition(1 + findFirst(LocationsForSelection.generate(), form.location().get())).perform(click());
         onView(withId(R.id.fragment_food_form_store_unit)).perform(click());
-        onData(anything()).atPosition(findFirst(UnitsForSelection.generate(), form.storeUnit())).perform(click());
+        onData(anything()).atPosition(findFirst(ScaledUnitsForListing.generate(), form.storeUnit())).perform(click());
         onView(allOf(
                 isDescendantOfA(withId(R.id.fragment_food_form_description)),
                 withClassName(is(TextInputEditText.class.getName()))
@@ -152,7 +152,7 @@ public class FoodAddFragmentTest {
                 false,
                 Period.ofDays(1),
                 LocationsForSelection.generate().get(2).id(),
-                UnitsForSelection.generate().get(1).id(),
+                ScaledUnitsForListing.generate().get(1).id(),
                 "they are yellow");
     }
 }

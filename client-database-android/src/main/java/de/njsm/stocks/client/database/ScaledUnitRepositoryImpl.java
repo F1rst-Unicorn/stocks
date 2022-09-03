@@ -22,10 +22,7 @@
 package de.njsm.stocks.client.database;
 
 import de.njsm.stocks.client.business.ScaledUnitRepository;
-import de.njsm.stocks.client.business.entities.Identifiable;
-import de.njsm.stocks.client.business.entities.ScaledUnit;
-import de.njsm.stocks.client.business.entities.ScaledUnitForDeletion;
-import de.njsm.stocks.client.business.entities.ScaledUnitForListing;
+import de.njsm.stocks.client.business.entities.*;
 import io.reactivex.rxjava3.core.Observable;
 
 import javax.inject.Inject;
@@ -48,5 +45,10 @@ public class ScaledUnitRepositoryImpl implements ScaledUnitRepository {
     @Override
     public ScaledUnitForDeletion getEntityForDeletion(Identifiable<ScaledUnit> id) {
         return scaledUnitDao.getScaledUnitForDeletion(id.id());
+    }
+
+    public Observable<List<ScaledUnitForListing>> getScaledUnitsForSelection() {
+        return scaledUnitDao.getCurrentScaledUnits()
+                .distinctUntilChanged();
     }
 }

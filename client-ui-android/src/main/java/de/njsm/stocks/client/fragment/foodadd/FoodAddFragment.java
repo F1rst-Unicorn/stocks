@@ -71,13 +71,13 @@ public class FoodAddFragment extends BottomToolbarFragment {
             return true;
         }
 
-        form.getStoreUnit().ifPresent(unit -> {
+        form.getStoreUnit().ifPresent(storeUnit -> {
             FoodAddForm data = FoodAddForm.create(
                     form.getName(),
                     form.getToBuy(),
                     form.getExpirationOffset(),
                     form.getLocation().map(LocationForSelection::id).orElse(null),
-                    unit.id(),
+                    storeUnit.id(),
                     form.getDescription()
             );
             foodAddViewModel.add(data);

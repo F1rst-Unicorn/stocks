@@ -23,9 +23,9 @@ package de.njsm.stocks.client.business;
 
 import de.njsm.stocks.client.business.entities.FoodAddForm;
 import de.njsm.stocks.client.business.entities.LocationForSelection;
-import de.njsm.stocks.client.business.entities.UnitForSelection;
+import de.njsm.stocks.client.business.entities.ScaledUnitForListing;
 import de.njsm.stocks.client.testdata.LocationsForSelection;
-import de.njsm.stocks.client.testdata.UnitsForSelection;
+import de.njsm.stocks.client.testdata.ScaledUnitsForListing;
 import io.reactivex.rxjava3.core.Observable;
 
 import javax.inject.Inject;
@@ -42,8 +42,8 @@ class InMemoryFoodAddInteractorImpl implements FoodAddInteractor {
     }
 
     @Override
-    public Observable<List<UnitForSelection>> getUnits() {
-        return Observable.just(UnitsForSelection.generate());
+    public Observable<List<ScaledUnitForListing>> getUnits() {
+        return Observable.just(ScaledUnitsForListing.generate());
     }
 
     @Override

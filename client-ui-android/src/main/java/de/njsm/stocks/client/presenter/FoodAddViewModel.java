@@ -27,7 +27,7 @@ import androidx.lifecycle.ViewModel;
 import de.njsm.stocks.client.business.FoodAddInteractor;
 import de.njsm.stocks.client.business.entities.FoodAddForm;
 import de.njsm.stocks.client.business.entities.LocationForSelection;
-import de.njsm.stocks.client.business.entities.UnitForSelection;
+import de.njsm.stocks.client.business.entities.ScaledUnitForListing;
 import io.reactivex.rxjava3.core.BackpressureStrategy;
 
 import javax.inject.Inject;
@@ -46,7 +46,7 @@ public class FoodAddViewModel extends ViewModel {
         interactor.add(data);
     }
 
-    public LiveData<List<UnitForSelection>> getUnits() {
+    public LiveData<List<ScaledUnitForListing>> getUnits() {
         return LiveDataReactiveStreams.fromPublisher(
                 interactor.getUnits().toFlowable(BackpressureStrategy.LATEST)
         );

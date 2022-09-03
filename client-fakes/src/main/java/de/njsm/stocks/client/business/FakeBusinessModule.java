@@ -30,6 +30,7 @@ import de.njsm.stocks.client.business.entities.ScaledUnit;
 import de.njsm.stocks.client.business.entities.Unit;
 import de.njsm.stocks.client.execution.Scheduler;
 import de.njsm.stocks.client.testdata.LocationsForSelection;
+import de.njsm.stocks.client.testdata.ScaledUnitsForListing;
 import de.njsm.stocks.client.testdata.UnitsForSelection;
 import io.reactivex.rxjava3.core.Observable;
 
@@ -215,7 +216,7 @@ public interface FakeBusinessModule {
     @Singleton
     static FoodAddInteractor FoodAddInteractor() {
         FoodAddInteractor result = mock(FoodAddInteractor.class);
-        when(result.getUnits()).thenReturn(Observable.just(UnitsForSelection.generate()));
+        when(result.getUnits()).thenReturn(Observable.just(ScaledUnitsForListing.generate()));
         when(result.getLocations()).thenReturn(Observable.just(LocationsForSelection.generate()));
         return result;
     }
