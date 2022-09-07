@@ -19,18 +19,26 @@
  *
  */
 
-package de.njsm.stocks.client.business;
+package de.njsm.stocks.client.navigation;
 
-import de.njsm.stocks.client.business.entities.ScaledUnit;
-import de.njsm.stocks.client.business.entities.ScaledUnitForListing;
-import de.njsm.stocks.client.business.entities.ScaledUnitForSelection;
-import io.reactivex.rxjava3.core.Observable;
+import android.os.Bundle;
+import de.njsm.stocks.client.business.entities.Food;
+import de.njsm.stocks.client.business.entities.Identifiable;
+import org.junit.Test;
 
-import java.util.List;
+import static org.junit.Assert.assertEquals;
 
-public interface ScaledUnitRepository extends EntityDeleteRepository<ScaledUnit> {
+public class FoodEditNavigatorImplTest extends NavigationTest {
 
-    Observable<List<ScaledUnitForListing>> getScaledUnits();
+    @Test
+    public void argumentIsExtracted() {
+        FoodEditNavigatorImpl uut = new FoodEditNavigatorImpl(navigationArgConsumer);
+        Bundle input = new Bundle();
+        int expected = 42;
+        input.putInt("id", expected);
 
-    Observable<List<ScaledUnitForSelection>> getScaledUnitsForSelection();
+        Identifiable<Food> actual = uut.getId(input);
+
+        assertEquals(expected, actual.id());
+    }
 }

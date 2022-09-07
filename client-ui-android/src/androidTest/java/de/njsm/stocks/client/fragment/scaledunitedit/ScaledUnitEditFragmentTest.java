@@ -82,6 +82,7 @@ public class ScaledUnitEditFragmentTest {
     public void tearDown() {
         verifyNoMoreInteractions(navigator);
         reset(navigator);
+        scaledUnitEditInteractor.reset();
     }
 
     @Test

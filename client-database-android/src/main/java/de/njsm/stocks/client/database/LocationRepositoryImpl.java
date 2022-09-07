@@ -66,6 +66,7 @@ class LocationRepositoryImpl implements LocationRepository {
         return mapForEditing(locationDao.getLocation(location.id()));
     }
 
+    @Override
     public Observable<List<LocationForSelection>> getLocationsForSelection() {
         return locationDao.getLocationsForSelection();
     }

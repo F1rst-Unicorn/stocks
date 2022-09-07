@@ -152,4 +152,7 @@ public interface DatabaseModule {
 
     @Binds
     EntityDeleteRepository<Food> FoodDeleteRepository(FoodRepositoryImpl impl);
+
+    @Binds
+    FoodEditRepository FoodEditRepository(FoodEditRepositoryImpl impl);
 }

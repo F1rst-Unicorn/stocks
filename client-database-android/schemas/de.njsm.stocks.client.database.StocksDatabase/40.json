@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 40,
-    "identityHash": "2e1c90a131376f373c832b02516cc031",
+    "identityHash": "ac5af843c294011814a3277e2ba17077",
     "entities": [
       {
         "tableName": "updates",
@@ -599,7 +599,7 @@
       },
       {
         "tableName": "food",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`name` TEXT NOT NULL, `to_buy` INTEGER NOT NULL, `expiration_offset` INTEGER NOT NULL, `location` INTEGER, `storeUnit` INTEGER NOT NULL, `description` TEXT NOT NULL, `id` INTEGER NOT NULL, `version` INTEGER NOT NULL, `valid_time_start` TEXT NOT NULL, `valid_time_end` TEXT NOT NULL, `transaction_time_start` TEXT NOT NULL, `transaction_time_end` TEXT NOT NULL, `initiates` INTEGER NOT NULL, PRIMARY KEY(`id`, `version`, `transaction_time_start`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`name` TEXT NOT NULL, `to_buy` INTEGER NOT NULL, `expiration_offset` INTEGER NOT NULL, `location` INTEGER, `store_unit` INTEGER NOT NULL, `description` TEXT NOT NULL, `id` INTEGER NOT NULL, `version` INTEGER NOT NULL, `valid_time_start` TEXT NOT NULL, `valid_time_end` TEXT NOT NULL, `transaction_time_start` TEXT NOT NULL, `transaction_time_end` TEXT NOT NULL, `initiates` INTEGER NOT NULL, PRIMARY KEY(`id`, `version`, `transaction_time_start`))",
         "fields": [
           {
             "fieldPath": "name",
@@ -627,7 +627,7 @@
           },
           {
             "fieldPath": "storeUnit",
-            "columnName": "storeUnit",
+            "columnName": "store_unit",
             "affinity": "INTEGER",
             "notNull": true
           },
@@ -1966,7 +1966,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '2e1c90a131376f373c832b02516cc031')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'ac5af843c294011814a3277e2ba17077')"
     ]
   }
 }

@@ -26,7 +26,7 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.ArrayAdapter;
 import com.google.android.material.textfield.TextInputLayout;
 import de.njsm.stocks.client.business.entities.LocationForSelection;
-import de.njsm.stocks.client.business.entities.ScaledUnitForListing;
+import de.njsm.stocks.client.business.entities.ScaledUnitForSelection;
 import de.njsm.stocks.client.presenter.ScaledUnitRenderStrategy;
 import de.njsm.stocks.client.ui.R;
 
@@ -35,6 +35,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
 
+import static de.njsm.stocks.client.fragment.view.ViewUtility.setText;
 import static de.njsm.stocks.client.fragment.view.ViewUtility.stringFromForm;
 import static java.util.stream.Collectors.toList;
 
@@ -52,7 +53,7 @@ public class FoodForm {
 
     private final ConflictSpinner storeUnitField;
 
-    private final ArrayAdapter<EntityStringDisplayWrapper<ScaledUnitForListing>> unitAdapter;
+    private final ArrayAdapter<EntityStringDisplayWrapper<ScaledUnitForSelection>> unitAdapter;
 
     private final TextInputLayout descriptionField;
 
@@ -99,6 +100,18 @@ public class FoodForm {
             textInputLayout.setError(null);
     }
 
+    public void setName(String name) {
+        nameField.setEditorContent(name);
+    }
+
+    public void setExpirationOffset(Period expirationOffset) {
+        expirationOffsetField.setEditorContent(String.valueOf(expirationOffset.getDays()));
+    }
+
+    public void setDescription(String description) {
+        setText(descriptionField, description);
+    }
+
     public void showLocations(List<LocationForSelection> locationsForSelection) {
         locationAdapter.clear();
         locationAdapter.add(locationSentinel);
@@ -108,13 +121,23 @@ public class FoodForm {
         locationAdapter.notifyDataSetChanged();
     }
 
-    public void showUnits(List<ScaledUnitForListing> unitsForSelection) {
+    public void showLocations(List<LocationForSelection> locations, Optional<Integer> currentLocationListPosition) {
+        showLocations(locations);
+        locationField.setSelection(currentLocationListPosition.map(v -> v + 1).orElse(0));
+    }
+
+    public void showUnits(List<ScaledUnitForSelection> unitsForSelection) {
         unitAdapter.clear();
         ScaledUnitRenderStrategy renderStrategy = new ScaledUnitRenderStrategy();
         unitAdapter.addAll(unitsForSelection.stream()
                 .map(v -> new EntityStringDisplayWrapper<>(v, renderStrategy::render))
                 .collect(toList()));
         unitAdapter.notifyDataSetChanged();
+    }
+
+    public void showUnits(List<ScaledUnitForSelection> storeUnits, int currentStoreUnitListPosition) {
+        showUnits(storeUnits);
+        storeUnitField.setSelection(currentStoreUnitListPosition);
     }
 
     public boolean maySubmit() {
@@ -152,13 +175,17 @@ public class FoodForm {
                 .map(EntityStringDisplayWrapper::delegate);
     }
 
-    public Optional<ScaledUnitForListing> getStoreUnit() {
+    public Optional<ScaledUnitForSelection> getStoreUnit() {
         return Optional.ofNullable(
-                        storeUnitField.<EntityStringDisplayWrapper<ScaledUnitForListing>>getSelectedItem())
+                        storeUnitField.<EntityStringDisplayWrapper<ScaledUnitForSelection>>getSelectedItem())
                 .map(EntityStringDisplayWrapper::delegate);
     }
 
     public String getDescription() {
         return stringFromForm(descriptionField);
+    }
+
+    public void hideToBuy() {
+        toBuyField.hide();
     }
 }

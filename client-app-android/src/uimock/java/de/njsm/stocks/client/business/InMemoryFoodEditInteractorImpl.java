@@ -22,37 +22,44 @@
 package de.njsm.stocks.client.business;
 
 import de.njsm.stocks.client.business.entities.*;
-import de.njsm.stocks.client.testdata.ScaledUnitsForListing;
-import de.njsm.stocks.client.testdata.UnitsForSelection;
+import de.njsm.stocks.client.testdata.FoodsForListing;
+import de.njsm.stocks.client.testdata.LocationsForSelection;
+import de.njsm.stocks.client.testdata.ScaledUnitsForSelection;
 import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.subjects.BehaviorSubject;
 
 import javax.inject.Inject;
+import java.time.Period;
 import java.util.List;
+import java.util.Optional;
 
-class InMemoryScaledUnitEditInteractorImpl implements ScaledUnitEditInteractor {
+class InMemoryFoodEditInteractorImpl implements FoodEditInteractor {
 
-    private final BehaviorSubject<List<ScaledUnitForListing>> data;
+    private final BehaviorSubject<List<EmptyFood>> data;
 
     @Inject
-    InMemoryScaledUnitEditInteractorImpl(ScaledUnitsForListing unitsForListing) {
-        this.data = unitsForListing.getData();
+    InMemoryFoodEditInteractorImpl(FoodsForListing foodsForListing) {
+        this.data = foodsForListing.getData();
     }
 
     @Override
-    public Observable<ScaledUnitEditingFormData> getFormData(Identifiable<ScaledUnit> id) {
+    public Observable<FoodEditingFormData> getFormData(Identifiable<Food> id) {
         return data.firstElement().map(list -> {
-            ScaledUnitForListing item = list.stream().filter(v -> v.id() == id.id()).findAny().get();
-            return ScaledUnitEditingFormData.create(
+            EmptyFood item = list.stream().filter(v -> v.id() == id.id()).findAny().get();
+            return FoodEditingFormData.create(
                     id.id(),
-                    item.scale(),
-                    UnitsForSelection.generate(),
-                    UnitsForSelection.generate().size() / 2
+                    item.name(),
+                    Period.ofDays(3),
+                    LocationsForSelection.generate(),
+                    Optional.of(LocationsForSelection.generate().size() / 2),
+                    ScaledUnitsForSelection.generate(),
+                    ScaledUnitsForSelection.generate().size() / 2,
+                    "This is a fixed description"
             );
         }).toObservable();
     }
 
     @Override
-    public void edit(ScaledUnitToEdit editedScaledUnit) {
+    public void edit(FoodToEdit editedScaledUnit) {
     }
 }

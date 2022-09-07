@@ -19,18 +19,24 @@
  *
  */
 
-package de.njsm.stocks.client.business;
+package de.njsm.stocks.client.navigation;
 
-import de.njsm.stocks.client.business.entities.ScaledUnit;
-import de.njsm.stocks.client.business.entities.ScaledUnitForListing;
-import de.njsm.stocks.client.business.entities.ScaledUnitForSelection;
-import io.reactivex.rxjava3.core.Observable;
+import android.os.Bundle;
+import de.njsm.stocks.client.business.entities.Food;
+import de.njsm.stocks.client.business.entities.Identifiable;
+import de.njsm.stocks.client.fragment.foodedit.FoodEditFragmentArgs;
 
-import java.util.List;
+import javax.inject.Inject;
 
-public interface ScaledUnitRepository extends EntityDeleteRepository<ScaledUnit> {
+class FoodEditNavigatorImpl extends BaseNavigator implements FoodEditNavigator {
 
-    Observable<List<ScaledUnitForListing>> getScaledUnits();
+    @Inject
+    FoodEditNavigatorImpl(NavigationArgConsumer navigationArgConsumer) {
+        super(navigationArgConsumer);
+    }
 
-    Observable<List<ScaledUnitForSelection>> getScaledUnitsForSelection();
+    @Override
+    public Identifiable<Food> getId(Bundle arguments) {
+        return () -> FoodEditFragmentArgs.fromBundle(arguments).getId();
+    }
 }

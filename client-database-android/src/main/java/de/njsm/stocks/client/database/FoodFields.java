@@ -50,7 +50,7 @@ public interface FoodFields {
     @AutoValue.CopyAnnotations
     Integer location();
 
-    @ColumnInfo(name = "storeUnit")
+    @ColumnInfo(name = "store_unit")
     @NonNull
     @AutoValue.CopyAnnotations
     int storeUnit();

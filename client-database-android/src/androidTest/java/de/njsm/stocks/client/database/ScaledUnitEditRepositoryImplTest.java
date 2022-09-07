@@ -23,10 +23,13 @@ package de.njsm.stocks.client.database;
 
 import de.njsm.stocks.client.business.ScaledUnitEditRepository;
 import de.njsm.stocks.client.business.entities.ScaledUnitForEditing;
+import de.njsm.stocks.client.business.entities.ScaledUnitForSelection;
 import de.njsm.stocks.client.business.entities.ScaledUnitToEdit;
 import io.reactivex.rxjava3.core.Observable;
 import org.junit.Before;
 import org.junit.Test;
+
+import java.util.List;
 
 import static de.njsm.stocks.client.database.util.Util.test;
 import static java.util.Collections.singletonList;

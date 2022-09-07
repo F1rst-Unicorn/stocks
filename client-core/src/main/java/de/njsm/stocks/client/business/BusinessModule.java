@@ -123,4 +123,7 @@ public interface BusinessModule {
 
     @Binds
     EntityDeleter<Food> FoodDeleter(FoodDeleterImpl impl);
+
+    @Binds
+    FoodEditInteractor FoodEditInteractor(FoodEditInteractorImpl impl);
 }

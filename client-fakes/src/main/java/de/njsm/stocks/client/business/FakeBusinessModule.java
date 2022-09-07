@@ -30,7 +30,7 @@ import de.njsm.stocks.client.business.entities.ScaledUnit;
 import de.njsm.stocks.client.business.entities.Unit;
 import de.njsm.stocks.client.execution.Scheduler;
 import de.njsm.stocks.client.testdata.LocationsForSelection;
-import de.njsm.stocks.client.testdata.ScaledUnitsForListing;
+import de.njsm.stocks.client.testdata.ScaledUnitsForSelection;
 import de.njsm.stocks.client.testdata.UnitsForSelection;
 import io.reactivex.rxjava3.core.Observable;
 
@@ -216,7 +216,7 @@ public interface FakeBusinessModule {
     @Singleton
     static FoodAddInteractor FoodAddInteractor() {
         FoodAddInteractor result = mock(FoodAddInteractor.class);
-        when(result.getUnits()).thenReturn(Observable.just(ScaledUnitsForListing.generate()));
+        when(result.getUnits()).thenReturn(Observable.just(ScaledUnitsForSelection.generate()));
         when(result.getLocations()).thenReturn(Observable.just(LocationsForSelection.generate()));
         return result;
     }
@@ -235,5 +235,14 @@ public interface FakeBusinessModule {
     @SuppressWarnings("unchecked")
     static EntityDeleter<Food> foodDeleter() {
         return mock(EntityDeleter.class);
+    }
+
+    @Binds
+    FoodEditInteractor FoodEditInteractor(FakeFoodEditInteractor fake);
+
+    @Provides
+    @Singleton
+    static FakeFoodEditInteractor FakeFoodEditInteractor() {
+        return new FakeFoodEditInteractor();
     }
 }

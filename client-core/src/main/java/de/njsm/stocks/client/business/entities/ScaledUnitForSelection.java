@@ -19,18 +19,29 @@
  *
  */
 
-package de.njsm.stocks.client.business;
+package de.njsm.stocks.client.business.entities;
 
-import de.njsm.stocks.client.business.entities.ScaledUnit;
-import de.njsm.stocks.client.business.entities.ScaledUnitForListing;
-import de.njsm.stocks.client.business.entities.ScaledUnitForSelection;
-import io.reactivex.rxjava3.core.Observable;
+import com.google.auto.value.AutoValue;
+import com.google.auto.value.extension.memoized.Memoized;
 
-import java.util.List;
+import java.math.BigDecimal;
 
-public interface ScaledUnitRepository extends EntityDeleteRepository<ScaledUnit> {
+@AutoValue
+public abstract class ScaledUnitForSelection implements Identifiable<ScaledUnit>, ScaledUnitSummaryFields {
 
-    Observable<List<ScaledUnitForListing>> getScaledUnits();
+    @Override
+    @Memoized
+    public UnitPrefix unitPrefix() {
+        return ScaledUnitSummaryFields.super.unitPrefix();
+    }
 
-    Observable<List<ScaledUnitForSelection>> getScaledUnitsForSelection();
+    @Override
+    @Memoized
+    public BigDecimal prefixedScale() {
+        return ScaledUnitSummaryFields.super.prefixedScale();
+    }
+
+    public static ScaledUnitForSelection create(int id, String abbreviation, BigDecimal scale) {
+        return new AutoValue_ScaledUnitForSelection(id, scale, abbreviation);
+    }
 }

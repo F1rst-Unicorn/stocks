@@ -74,6 +74,7 @@
     <string name="title_edit_location">Ort bearbeiten</string>
     <string name="title_conflict">Konflikt lösen</string>
     <string name="title_add_food">Lebensmittel hinzufügen</string>
+    <string name="title_edit_food">Lebensmittel bearbeiten</string>
 
     <string name="action_users">Benutzer</string>
     <string name="action_locations">Orte</string>

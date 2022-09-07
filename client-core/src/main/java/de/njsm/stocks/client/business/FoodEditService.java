@@ -21,16 +21,9 @@
 
 package de.njsm.stocks.client.business;
 
-import de.njsm.stocks.client.business.entities.ScaledUnit;
-import de.njsm.stocks.client.business.entities.ScaledUnitForListing;
-import de.njsm.stocks.client.business.entities.ScaledUnitForSelection;
-import io.reactivex.rxjava3.core.Observable;
+import de.njsm.stocks.client.business.entities.FoodForEditing;
 
-import java.util.List;
+public interface FoodEditService {
 
-public interface ScaledUnitRepository extends EntityDeleteRepository<ScaledUnit> {
-
-    Observable<List<ScaledUnitForListing>> getScaledUnits();
-
-    Observable<List<ScaledUnitForSelection>> getScaledUnitsForSelection();
+    void edit(FoodForEditing food);
 }

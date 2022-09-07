@@ -60,7 +60,7 @@ class FoodAddInteractorImpl implements FoodAddInteractor {
     }
 
     @Override
-    public Observable<List<ScaledUnitForListing>> getUnits() {
+    public Observable<List<ScaledUnitForSelection>> getUnits() {
         return foodAddRepository.getUnits();
     }
 

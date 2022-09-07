@@ -47,8 +47,9 @@ public class ScaledUnitRepositoryImpl implements ScaledUnitRepository {
         return scaledUnitDao.getScaledUnitForDeletion(id.id());
     }
 
-    public Observable<List<ScaledUnitForListing>> getScaledUnitsForSelection() {
-        return scaledUnitDao.getCurrentScaledUnits()
+    @Override
+    public Observable<List<ScaledUnitForSelection>> getScaledUnitsForSelection() {
+        return scaledUnitDao.getScaledUnitsForSelection()
                 .distinctUntilChanged();
     }
 }

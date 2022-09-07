@@ -23,10 +23,7 @@ package de.njsm.stocks.client.database;
 
 import androidx.room.Dao;
 import androidx.room.Query;
-import de.njsm.stocks.client.business.entities.ScaledUnitForDeletion;
-import de.njsm.stocks.client.business.entities.ScaledUnitForEditing;
-import de.njsm.stocks.client.business.entities.ScaledUnitForListing;
-import de.njsm.stocks.client.business.entities.ScaledUnitToEdit;
+import de.njsm.stocks.client.business.entities.*;
 import io.reactivex.rxjava3.core.Observable;
 
 import java.util.List;
@@ -58,4 +55,10 @@ abstract class ScaledUnitDao {
             "from current_scaled_unit " +
             "where id = :id")
     abstract ScaledUnitForDeletion getScaledUnitForDeletion(int id);
+
+    @Query("select scaled_unit.id, unit.abbreviation, scaled_unit.scale " +
+            "from current_scaled_unit scaled_unit " +
+            "join current_unit unit on scaled_unit.unit = unit.id " +
+            "order by unit.name, scaled_unit.scale")
+    abstract Observable<List<ScaledUnitForSelection>> getScaledUnitsForSelection();
 }

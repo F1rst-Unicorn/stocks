@@ -19,18 +19,27 @@
  *
  */
 
-package de.njsm.stocks.client.business;
+package de.njsm.stocks.client.business.entities;
 
-import de.njsm.stocks.client.business.entities.ScaledUnit;
-import de.njsm.stocks.client.business.entities.ScaledUnitForListing;
-import de.njsm.stocks.client.business.entities.ScaledUnitForSelection;
-import io.reactivex.rxjava3.core.Observable;
+import com.google.auto.value.AutoValue;
 
-import java.util.List;
+import java.time.Period;
+import java.util.Optional;
 
-public interface ScaledUnitRepository extends EntityDeleteRepository<ScaledUnit> {
+@AutoValue
+public abstract class FoodForEditing implements Versionable<Food> {
 
-    Observable<List<ScaledUnitForListing>> getScaledUnits();
+    public abstract String name();
 
-    Observable<List<ScaledUnitForSelection>> getScaledUnitsForSelection();
+    public abstract Period expirationOffset();
+
+    public abstract Optional<Integer> location();
+
+    public abstract int storeUnit();
+
+    public abstract String description();
+
+    public static FoodForEditing create(int id, int version, String name, Period expirationOffset, Optional<Integer> location, int storeUnit, String description) {
+        return new AutoValue_FoodForEditing(id, version, name, expirationOffset, location, storeUnit, description);
+    }
 }

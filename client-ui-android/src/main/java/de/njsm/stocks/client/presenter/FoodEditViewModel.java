@@ -24,41 +24,40 @@ package de.njsm.stocks.client.presenter;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.LiveDataReactiveStreams;
 import androidx.lifecycle.ViewModel;
-import de.njsm.stocks.client.business.ScaledUnitEditInteractor;
+import de.njsm.stocks.client.business.FoodEditInteractor;
+import de.njsm.stocks.client.business.entities.Food;
+import de.njsm.stocks.client.business.entities.FoodEditingFormData;
+import de.njsm.stocks.client.business.entities.FoodToEdit;
 import de.njsm.stocks.client.business.entities.Identifiable;
-import de.njsm.stocks.client.business.entities.ScaledUnit;
-import de.njsm.stocks.client.business.entities.ScaledUnitEditingFormData;
-import de.njsm.stocks.client.business.entities.ScaledUnitToEdit;
 import io.reactivex.rxjava3.core.BackpressureStrategy;
 import io.reactivex.rxjava3.core.Observable;
 
 import javax.inject.Inject;
 
-public class ScaledUnitEditViewModel extends ViewModel {
+public class FoodEditViewModel extends ViewModel {
 
-    private final ScaledUnitEditInteractor scaledUnitEditInteractor;
+    private final FoodEditInteractor interactor;
 
-    private Observable<ScaledUnitEditingFormData> data;
+    private Observable<FoodEditingFormData> data;
 
     @Inject
-    ScaledUnitEditViewModel(ScaledUnitEditInteractor scaledUnitEditInteractor) {
-        this.scaledUnitEditInteractor = scaledUnitEditInteractor;
+    FoodEditViewModel(FoodEditInteractor interactor) {
+        this.interactor = interactor;
     }
 
+    public void edit(FoodToEdit data) {
+        interactor.edit(data);
+    }
 
-    public LiveData<ScaledUnitEditingFormData> getFormData(Identifiable<ScaledUnit> id) {
+    public LiveData<FoodEditingFormData> getFormData(Identifiable<Food> id) {
         return LiveDataReactiveStreams.fromPublisher(
                 getData(id).toFlowable(BackpressureStrategy.LATEST)
         );
     }
 
-    public void edit(ScaledUnitToEdit editedScaledUnit) {
-        scaledUnitEditInteractor.edit(editedScaledUnit);
-    }
-
-    private Observable<ScaledUnitEditingFormData> getData(Identifiable<ScaledUnit> id) {
+    private Observable<FoodEditingFormData> getData(Identifiable<Food> id) {
         if (data == null)
-            data = scaledUnitEditInteractor.getFormData(id);
+            data = interactor.getFormData(id);
         return data;
     }
 }

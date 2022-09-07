@@ -24,6 +24,7 @@ package de.njsm.stocks.client.database;
 import de.njsm.stocks.client.business.ScaledUnitRepository;
 import de.njsm.stocks.client.business.entities.ScaledUnit;
 import de.njsm.stocks.client.business.entities.ScaledUnitForListing;
+import de.njsm.stocks.client.business.entities.ScaledUnitForSelection;
 import de.njsm.stocks.client.business.entities.Versionable;
 import io.reactivex.rxjava3.core.Observable;
 import org.junit.Before;
@@ -31,6 +32,7 @@ import org.junit.Test;
 
 import java.util.List;
 
+import static de.njsm.stocks.client.database.util.Util.test;
 import static de.njsm.stocks.client.database.util.Util.testList;
 import static java.util.Collections.singletonList;
 import static org.junit.Assert.assertEquals;
@@ -67,5 +69,17 @@ public class ScaledUnitRepositoryImplTest extends DbTestCase {
 
         assertEquals(scaledUnit.id(), actual.id());
         assertEquals(scaledUnit.version(), actual.version());
+    }
+
+    @Test
+    public void gettingScaledUnitsForSelectionWorks() {
+        UnitDbEntity unit = standardEntities.unitDbEntity();
+        ScaledUnitDbEntity scaledUnit = standardEntities.scaledUnitDbEntityBuilder().unit(unit.id()).build();
+        stocksDatabase.synchronisationDao().synchroniseUnits(singletonList(unit));
+        stocksDatabase.synchronisationDao().synchroniseScaledUnits(singletonList(scaledUnit));
+
+        Observable<List<ScaledUnitForSelection>> actual = uut.getScaledUnitsForSelection();
+
+        test(actual).assertValue(singletonList(ScaledUnitForSelection.create(scaledUnit.id(), unit.abbreviation(), scaledUnit.scale())));
     }
 }

@@ -48,4 +48,6 @@ public interface ErrorRecorder {
     void recordFoodAddError(SubsystemException exception, FoodAddForm input);
 
     void recordFoodDeleteError(SubsystemException exception, Versionable<Food> input);
+
+    void recordFoodEditError(SubsystemException exception, FoodForEditing expected);
 }

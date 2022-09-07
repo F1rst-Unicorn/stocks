@@ -77,4 +77,7 @@ public interface NavigationModule {
 
     @Binds
     EmptyFoodNavigator EmptyFoodNavigator(EmptyFoodNavigatorImpl impl);
+
+    @Binds
+    FoodEditNavigator FoodEditNavigator(FoodEditNavigatorImpl impl);
 }

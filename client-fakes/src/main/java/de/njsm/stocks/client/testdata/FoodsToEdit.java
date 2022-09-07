@@ -19,18 +19,31 @@
  *
  */
 
-package de.njsm.stocks.client.business;
+package de.njsm.stocks.client.testdata;
 
-import de.njsm.stocks.client.business.entities.ScaledUnit;
-import de.njsm.stocks.client.business.entities.ScaledUnitForListing;
+
+import de.njsm.stocks.client.business.entities.FoodEditingFormData;
+import de.njsm.stocks.client.business.entities.LocationForSelection;
 import de.njsm.stocks.client.business.entities.ScaledUnitForSelection;
-import io.reactivex.rxjava3.core.Observable;
 
+import java.time.Period;
 import java.util.List;
+import java.util.Optional;
 
-public interface ScaledUnitRepository extends EntityDeleteRepository<ScaledUnit> {
+public class FoodsToEdit {
 
-    Observable<List<ScaledUnitForListing>> getScaledUnits();
-
-    Observable<List<ScaledUnitForSelection>> getScaledUnitsForSelection();
+    public static FoodEditingFormData generate() {
+        List<ScaledUnitForSelection> units = ScaledUnitsForSelection.generate();
+        List<LocationForSelection> locations = LocationsForSelection.generate();
+        return FoodEditingFormData.create(
+                3,
+                "Banana",
+                Period.ofDays(4),
+                locations,
+                Optional.of(locations.size() / 2),
+                units,
+                units.size() / 2,
+                "They are yellow"
+        );
+    }
 }

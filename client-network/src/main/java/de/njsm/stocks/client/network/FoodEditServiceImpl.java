@@ -19,35 +19,35 @@
  *
  */
 
-package de.njsm.stocks.client.business;
+package de.njsm.stocks.client.network;
 
-import de.njsm.stocks.client.business.entities.FoodAddForm;
-import de.njsm.stocks.client.business.entities.LocationForSelection;
-import de.njsm.stocks.client.business.entities.ScaledUnitForSelection;
-import de.njsm.stocks.client.testdata.LocationsForSelection;
-import de.njsm.stocks.client.testdata.ScaledUnitsForSelection;
-import io.reactivex.rxjava3.core.Observable;
+import de.njsm.stocks.client.business.FoodEditService;
+import de.njsm.stocks.client.business.entities.FoodForEditing;
+import de.njsm.stocks.common.api.Response;
+import retrofit2.Call;
 
 import javax.inject.Inject;
-import java.util.List;
 
-class InMemoryFoodAddInteractorImpl implements FoodAddInteractor {
+class FoodEditServiceImpl extends ServiceBase<FoodForEditing> implements FoodEditService {
 
     @Inject
-    InMemoryFoodAddInteractorImpl() {
+    FoodEditServiceImpl(ServerApi api, CallHandler callHandler) {
+        super(api, callHandler);
     }
 
     @Override
-    public void add(FoodAddForm form) {
+    public void edit(FoodForEditing food) {
+        perform(food);
     }
 
     @Override
-    public Observable<List<ScaledUnitForSelection>> getUnits() {
-        return Observable.just(ScaledUnitsForSelection.generate());
-    }
-
-    @Override
-    public Observable<List<LocationForSelection>> getLocations() {
-        return Observable.just(LocationsForSelection.generate());
+    Call<Response> buildCall(FoodForEditing input) {
+        return api.editFood(input.id(),
+                input.version(),
+                input.name(),
+                input.expirationOffset().getDays(),
+                input.location().orElse(null),
+                input.description(),
+                input.storeUnit());
     }
 }

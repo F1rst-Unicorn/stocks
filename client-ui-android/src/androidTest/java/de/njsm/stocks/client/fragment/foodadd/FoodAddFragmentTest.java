@@ -32,6 +32,7 @@ import de.njsm.stocks.client.business.entities.FoodAddForm;
 import de.njsm.stocks.client.navigation.Navigator;
 import de.njsm.stocks.client.testdata.LocationsForSelection;
 import de.njsm.stocks.client.testdata.ScaledUnitsForListing;
+import de.njsm.stocks.client.testdata.ScaledUnitsForSelection;
 import de.njsm.stocks.client.ui.R;
 import io.reactivex.rxjava3.core.Observable;
 import org.junit.After;
@@ -68,7 +69,7 @@ public class FoodAddFragmentTest {
         ((Application) InstrumentationRegistry.getInstrumentation().getTargetContext().getApplicationContext()).getDaggerRoot().inject(this);
         reset(navigator);
         reset(foodAddInteractor);
-        when(foodAddInteractor.getUnits()).thenReturn(Observable.just(ScaledUnitsForListing.generate()));
+        when(foodAddInteractor.getUnits()).thenReturn(Observable.just(ScaledUnitsForSelection.generate()));
         when(foodAddInteractor.getLocations()).thenReturn(Observable.just(LocationsForSelection.generate()));
         scenario = FragmentScenario.launchInContainer(FoodAddFragment.class, new Bundle(), R.style.StocksTheme);
     }

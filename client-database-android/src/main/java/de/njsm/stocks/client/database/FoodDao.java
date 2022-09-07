@@ -49,4 +49,14 @@ abstract class FoodDao {
             "from current_food " +
             "where id = :id")
     abstract FoodForDeletion getForDeletion(int id);
+
+    @Query("select * " +
+            "from current_food " +
+            "where id = :id")
+    abstract Observable<FoodDbEntity> getToEdit(int id);
+
+    @Query("select * from " +
+            "current_food " +
+            "where id = :id")
+    abstract FoodDbEntity getForEditing(int id);
 }

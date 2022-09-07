@@ -184,4 +184,11 @@ public class ViewModelModule {
     ViewModel EmptyFoodViewModel(EmptyFoodInteractor emptyFoodInteractor, Synchroniser synchroniser, EntityDeleter<Food> deleter) {
         return new EmptyFoodViewModel(synchroniser, emptyFoodInteractor, deleter);
     }
+
+    @Provides
+    @IntoMap
+    @ViewModelKey(FoodEditViewModel.class)
+    ViewModel FoodEditViewModel(FoodEditInteractor interactor) {
+        return new FoodEditViewModel(interactor);
+    }
 }

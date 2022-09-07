@@ -21,35 +21,66 @@
 
 package de.njsm.stocks.client.database;
 
-import de.njsm.stocks.client.business.FoodAddRepository;
+import de.njsm.stocks.client.business.FoodEditRepository;
 import de.njsm.stocks.client.business.LocationRepository;
 import de.njsm.stocks.client.business.ScaledUnitRepository;
-import de.njsm.stocks.client.business.entities.LocationForSelection;
-import de.njsm.stocks.client.business.entities.ScaledUnitForSelection;
+import de.njsm.stocks.client.business.entities.*;
 import io.reactivex.rxjava3.core.Observable;
 
 import javax.inject.Inject;
 import java.util.List;
+import java.util.Optional;
 
-public class FoodAddRepositoryImpl implements FoodAddRepository {
+class FoodEditRepositoryImpl implements FoodEditRepository {
+
+    private final FoodDao foodDao;
 
     private final ScaledUnitRepository scaledUnitRepository;
 
     private final LocationRepository locationRepository;
 
     @Inject
-    FoodAddRepositoryImpl(ScaledUnitRepository scaledUnitRepository, LocationRepository locationRepository) {
+    FoodEditRepositoryImpl(FoodDao foodDao, ScaledUnitRepository scaledUnitRepository, LocationRepository locationRepository) {
+        this.foodDao = foodDao;
         this.scaledUnitRepository = scaledUnitRepository;
         this.locationRepository = locationRepository;
     }
 
     @Override
-    public Observable<List<ScaledUnitForSelection>> getUnits() {
+    public Observable<FoodToEdit> getFood(Identifiable<Food> food) {
+        return foodDao.getToEdit(food.id()).map(v ->
+            FoodToEdit.create(
+                    v.id(),
+                    v.name(),
+                    v.expirationOffset(),
+                    v.location(),
+                    v.storeUnit(),
+                    v.description()
+            )
+        );
+    }
+
+    @Override
+    public Observable<List<ScaledUnitForSelection>> getScaledUnitsForSelection() {
         return scaledUnitRepository.getScaledUnitsForSelection();
     }
 
     @Override
     public Observable<List<LocationForSelection>> getLocations() {
         return locationRepository.getLocationsForSelection();
+    }
+
+    @Override
+    public FoodForEditing getFoodForSending(Identifiable<Food> editedFood) {
+        FoodDbEntity entity = foodDao.getForEditing(editedFood.id());
+        return FoodForEditing.create(
+                entity.id(),
+                entity.version(),
+                entity.name(),
+                entity.expirationOffset(),
+                Optional.ofNullable(entity.location()),
+                entity.storeUnit(),
+                entity.description()
+        );
     }
 }

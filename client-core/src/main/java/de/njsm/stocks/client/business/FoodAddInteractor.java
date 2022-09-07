@@ -23,7 +23,7 @@ package de.njsm.stocks.client.business;
 
 import de.njsm.stocks.client.business.entities.FoodAddForm;
 import de.njsm.stocks.client.business.entities.LocationForSelection;
-import de.njsm.stocks.client.business.entities.ScaledUnitForListing;
+import de.njsm.stocks.client.business.entities.ScaledUnitForSelection;
 import io.reactivex.rxjava3.core.Observable;
 
 import java.util.List;
@@ -32,7 +32,7 @@ public interface FoodAddInteractor {
 
     void add(FoodAddForm form);
 
-    Observable<List<ScaledUnitForListing>> getUnits();
+    Observable<List<ScaledUnitForSelection>> getUnits();
 
     Observable<List<LocationForSelection>> getLocations();
 }

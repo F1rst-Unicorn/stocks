@@ -183,6 +183,11 @@ public class ErrorRecorderImpl implements ErrorRecorder {
         errorDao.insert(ErrorEntity.create(ErrorEntity.Action.DELETE_FOOD, dataId, exceptionData.exceptionType(), exceptionData.exceptionId()));
     }
 
+    @Override
+    public void recordFoodEditError(SubsystemException exception, FoodForEditing expected) {
+        throw new UnsupportedOperationException("TODO");
+    }
+
     @AutoValue
     abstract static class ExceptionData {
 

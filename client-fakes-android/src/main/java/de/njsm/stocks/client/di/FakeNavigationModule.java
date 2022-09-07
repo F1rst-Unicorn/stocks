@@ -145,4 +145,10 @@ class FakeNavigationModule {
     EmptyFoodNavigator EmptyFoodNavigator() {
         return mock(EmptyFoodNavigator.class);
     }
+
+    @Provides
+    @Singleton
+    FoodEditNavigator FoodEditNavigator() {
+        return mock(FoodEditNavigator.class);
+    }
 }

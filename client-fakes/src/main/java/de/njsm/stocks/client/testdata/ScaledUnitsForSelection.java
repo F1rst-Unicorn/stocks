@@ -19,18 +19,23 @@
  *
  */
 
-package de.njsm.stocks.client.business;
+package de.njsm.stocks.client.testdata;
 
-import de.njsm.stocks.client.business.entities.ScaledUnit;
-import de.njsm.stocks.client.business.entities.ScaledUnitForListing;
+
 import de.njsm.stocks.client.business.entities.ScaledUnitForSelection;
-import io.reactivex.rxjava3.core.Observable;
 
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
-public interface ScaledUnitRepository extends EntityDeleteRepository<ScaledUnit> {
+public class ScaledUnitsForSelection {
 
-    Observable<List<ScaledUnitForListing>> getScaledUnits();
-
-    Observable<List<ScaledUnitForSelection>> getScaledUnitsForSelection();
+    public static List<ScaledUnitForSelection> generate() {
+        return new ArrayList<>(Arrays.asList(
+                ScaledUnitForSelection.create(1, "l", BigDecimal.valueOf(3)),
+                ScaledUnitForSelection.create(2, "g", BigDecimal.valueOf(1000)),
+                ScaledUnitForSelection.create(4, "Bottle", BigDecimal.valueOf(1))
+        ));
+    }
 }

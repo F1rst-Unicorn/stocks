@@ -213,7 +213,8 @@
     </fragment>
     <fragment
             android:id="@+id/nav_fragment_edit_food"
-            android:name="androidx.fragment.app.Fragment"
+            android:name="de.njsm.stocks.client.fragment.foodedit.FoodEditFragment"
+            android:label="@string/title_edit_food"
             tools:layout="@layout/fragment_food_form">
         <argument
                 android:name="id"

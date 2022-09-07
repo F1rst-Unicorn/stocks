@@ -131,4 +131,14 @@ public interface ServerApi {
     @DELETE("/v2/food")
     Call<Response> deleteFood(@Query("id") int id,
                               @Query("version") int version);
+
+    @FormUrlEncoded
+    @PUT("/v2/food/edit")
+    Call<Response> editFood(@Query("id") int id,
+                            @Query("version") int version,
+                            @Query("new") String newName,
+                            @Query("expirationOffset") int expirationOffset,
+                            @Query("location") Integer location,
+                            @Field("description") String description,
+                            @Query("storeunit") int storeUnit);
 }
