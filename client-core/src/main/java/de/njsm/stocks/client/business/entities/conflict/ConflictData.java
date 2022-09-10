@@ -62,9 +62,7 @@ public abstract class ConflictData<T> {
 
     /**
      * The datum as it was entered by this program for the local edit that
-     * caused the conflict.
-     *
-     * It has never been valid.
+     * caused the conflict. It has never been valid.
      */
     public abstract T local();
 
@@ -78,6 +76,14 @@ public abstract class ConflictData<T> {
 
     public boolean needsHandling() {
         return compare() == BOTH_DIFFER;
+    }
+
+    public <Mapped> ConflictData<Mapped> map(Function<T, Mapped> mapper) {
+        return ConflictData.create(
+                mapper.apply(original()),
+                mapper.apply(remote()),
+                mapper.apply(local())
+        );
     }
 
     @Memoized

@@ -19,20 +19,10 @@
  *
  */
 
-package de.njsm.stocks.client.business;
+package de.njsm.stocks.client.navigation;
 
-import de.njsm.stocks.client.business.entities.conflict.FoodEditConflictData;
-import de.njsm.stocks.client.business.entities.conflict.LocationEditConflictData;
-import de.njsm.stocks.client.business.entities.conflict.ScaledUnitEditConflictData;
-import de.njsm.stocks.client.business.entities.conflict.UnitEditConflictData;
-import io.reactivex.rxjava3.core.Observable;
+import android.os.Bundle;
 
-public interface ConflictRepository {
-    Observable<LocationEditConflictData> getLocationEditConflict(long errorId);
-
-    Observable<UnitEditConflictData> getUnitEditConflict(long errorId);
-
-    Observable<ScaledUnitEditConflictData> getScaledUnitEditConflict(long errorId);
-
-    Observable<FoodEditConflictData> getFoodEditConflict(long errorId);
+public interface FoodConflictNavigator extends Navigator {
+    long getErrorId(Bundle arguments);
 }

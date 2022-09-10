@@ -76,4 +76,14 @@ public class ErrorListNavigatorImplTest extends NavigationTest {
         ErrorListFragmentDirections.ActionNavFragmentErrorListToNavFragmentScaledUnitConflict direction = navigationArgConsumer.getLastArgument(ErrorListFragmentDirections.ActionNavFragmentErrorListToNavFragmentScaledUnitConflict.class);
         assertThat(direction.getId(), is(input));
     }
+
+    @Test
+    public void goingToFoodConflictResolutionNavigates() {
+        long input = 3;
+
+        uut.resolveFoodEditConflict(input);
+
+        ErrorListFragmentDirections.ActionNavFragmentErrorListToNavFragmentFoodConflict direction = navigationArgConsumer.getLastArgument(ErrorListFragmentDirections.ActionNavFragmentErrorListToNavFragmentFoodConflict.class);
+        assertThat(direction.getId(), is(input));
+    }
 }

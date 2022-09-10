@@ -126,4 +126,7 @@ public interface BusinessModule {
 
     @Binds
     FoodEditInteractor FoodEditInteractor(FoodEditInteractorImpl impl);
+
+    @Binds
+    FoodConflictInteractor FoodConflictInteractor(FoodConflictInteractorImpl impl);
 }

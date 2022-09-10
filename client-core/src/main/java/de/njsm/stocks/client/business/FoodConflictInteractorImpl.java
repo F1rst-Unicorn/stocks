@@ -21,31 +21,31 @@
 
 package de.njsm.stocks.client.business;
 
-import de.njsm.stocks.client.business.entities.UnitForSelection;
-import de.njsm.stocks.client.business.entities.conflict.ScaledUnitEditConflictData;
-import de.njsm.stocks.client.business.entities.conflict.ScaledUnitEditConflictFormData;
+import de.njsm.stocks.client.business.entities.LocationForSelection;
+import de.njsm.stocks.client.business.entities.ScaledUnitForSelection;
+import de.njsm.stocks.client.business.entities.conflict.FoodEditConflictFormData;
 import io.reactivex.rxjava3.core.Observable;
 
 import javax.inject.Inject;
 import java.util.List;
 
-class ScaledUnitConflictInteractorImpl implements ScaledUnitConflictInteractor {
+class FoodConflictInteractorImpl implements FoodConflictInteractor {
 
-    private final ScaledUnitEditRepository scaledUnitEditRepository;
-
+    private final FoodEditRepository repository;
     private final ConflictRepository conflictRepository;
 
     @Inject
-    ScaledUnitConflictInteractorImpl(ScaledUnitEditRepository scaledUnitEditRepository, ConflictRepository conflictRepository) {
-        this.scaledUnitEditRepository = scaledUnitEditRepository;
+    FoodConflictInteractorImpl(FoodEditRepository repository, ConflictRepository conflictRepository) {
+        this.repository = repository;
         this.conflictRepository = conflictRepository;
     }
 
     @Override
-    public Observable<ScaledUnitEditConflictFormData> getScaledUnitEditConflict(long errorId) {
-        Observable<List<UnitForSelection>> units = scaledUnitEditRepository.getUnitsForSelection();
-        Observable<ScaledUnitEditConflictData> scaledUnitData = conflictRepository.getScaledUnitEditConflict(errorId);
+    public Observable<FoodEditConflictFormData> getEditConflict(long errorId) {
+        Observable<List<ScaledUnitForSelection>> storeUnits = repository.getScaledUnitsForSelection();
+        Observable<List<LocationForSelection>> locations = repository.getLocations();
 
-        return scaledUnitData.zipWith(units, ScaledUnitEditConflictFormData::create);
+        return Observable.zip(conflictRepository.getFoodEditConflict(errorId),
+                locations, storeUnits, FoodEditConflictFormData::create);
     }
 }

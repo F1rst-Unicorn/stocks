@@ -31,6 +31,7 @@ import de.njsm.stocks.client.business.FakeUnitConflictInteractor;
 import de.njsm.stocks.client.business.entities.ErrorDescription;
 import de.njsm.stocks.client.business.entities.UnitEditErrorDetails;
 import de.njsm.stocks.client.business.entities.conflict.UnitEditConflictData;
+import de.njsm.stocks.client.fragment.TestUtility;
 import de.njsm.stocks.client.navigation.UnitConflictNavigator;
 import de.njsm.stocks.client.ui.R;
 import org.junit.After;
@@ -50,7 +51,7 @@ import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
-public class UnitConflictFragmentTest {
+public class UnitConflictFragmentTest implements TestUtility {
 
     private FragmentScenario<UnitConflictFragment> scenario;
 
@@ -80,30 +81,15 @@ public class UnitConflictFragmentTest {
         UnitEditConflictData data = UnitEditConflictData.create(1, 42, 43, "name original", "name remote", "name local", "abbreviation original", "abbreviation remote", "abbreviation local");
         unitConflictInteractor.setData(data);
 
-        onView(allOf(
-                isDescendantOfA(withId(R.id.fragment_unit_form_name)),
-                withClassName(is(TextInputEditText.class.getName()))
-        )).check(matches(withText(data.name().suggestedValue())));
-        onView(allOf(isDescendantOfA(withId(R.id.fragment_unit_form_name)), withId(R.id.conflict_labels_original_content))).check(matches(withText(data.name().original())));
-        onView(allOf(isDescendantOfA(withId(R.id.fragment_unit_form_name)), withId(R.id.conflict_labels_remote_content))).check(matches(withText(data.name().remote())));
-        onView(allOf(isDescendantOfA(withId(R.id.fragment_unit_form_name)), withId(R.id.conflict_labels_local_content))).check(matches(withText(data.name().local())));
-        onView(allOf(
-                isDescendantOfA(withId(R.id.fragment_unit_form_abbreviation)),
-                withClassName(is(TextInputEditText.class.getName()))
-        )).check(matches(withText(data.abbreviation().suggestedValue())));
-        onView(allOf(isDescendantOfA(withId(R.id.fragment_unit_form_abbreviation)), withId(R.id.conflict_labels_original_content))).check(matches(withText(data.abbreviation().original())));
-        onView(allOf(isDescendantOfA(withId(R.id.fragment_unit_form_abbreviation)), withId(R.id.conflict_labels_remote_content))).check(matches(withText(data.abbreviation().remote())));
-        onView(allOf(isDescendantOfA(withId(R.id.fragment_unit_form_abbreviation)), withId(R.id.conflict_labels_local_content))).check(matches(withText(data.abbreviation().local())));
+        checkTextField(R.id.fragment_unit_form_name, data.name());
+        checkTextField(R.id.fragment_unit_form_abbreviation, data.abbreviation());
     }
 
     @Test
     public void submissionWorks() {
         UnitEditConflictData data = UnitEditConflictData.create(1, 42, 43, "name original", "name remote", "name local", "abbreviation original", "abbreviation remote", "abbreviation local");
         unitConflictInteractor.setData(data);
-        onView(allOf(
-                isDescendantOfA(withId(R.id.fragment_unit_form_name)),
-                withClassName(is(TextInputEditText.class.getName()))
-        )).check(matches(withText(data.name().suggestedValue())));
+        waitForUi(data);
 
         scenario.onFragment(v -> v.onOptionsItemSelected(menuItem(v.requireContext(), R.id.menu_check)));
 
@@ -121,13 +107,7 @@ public class UnitConflictFragmentTest {
         UnitEditConflictData data = UnitEditConflictData.create(1, 42, 43, "name original", "name remote", "name local", "abbreviation", "abbreviation", "abbreviation");
         unitConflictInteractor.setData(data);
 
-        onView(allOf(
-                isDescendantOfA(withId(R.id.fragment_unit_form_name)),
-                withClassName(is(TextInputEditText.class.getName()))
-        )).check(matches(withText(data.name().suggestedValue())));
-        onView(allOf(isDescendantOfA(withId(R.id.fragment_unit_form_name)), withId(R.id.conflict_labels_original_content))).check(matches(withText(data.name().original())));
-        onView(allOf(isDescendantOfA(withId(R.id.fragment_unit_form_name)), withId(R.id.conflict_labels_remote_content))).check(matches(withText(data.name().remote())));
-        onView(allOf(isDescendantOfA(withId(R.id.fragment_unit_form_name)), withId(R.id.conflict_labels_local_content))).check(matches(withText(data.name().local())));
+        checkTextField(R.id.fragment_unit_form_name, data.name());
         onView(withId(R.id.fragment_unit_form_abbreviation)).check(matches(withEffectiveVisibility(Visibility.GONE)));
     }
 
@@ -136,14 +116,8 @@ public class UnitConflictFragmentTest {
         UnitEditConflictData data = UnitEditConflictData.create(1, 42, 43, "name", "name", "name", "abbreviation original", "abbreviation remote", "abbreviation local");
         unitConflictInteractor.setData(data);
 
-        onView(allOf(
-                isDescendantOfA(withId(R.id.fragment_unit_form_abbreviation)),
-                withClassName(is(TextInputEditText.class.getName()))
-        )).check(matches(withText(data.abbreviation().suggestedValue())));
-        onView(allOf(isDescendantOfA(withId(R.id.fragment_unit_form_abbreviation)), withId(R.id.conflict_labels_original_content))).check(matches(withText(data.abbreviation().original())));
-        onView(allOf(isDescendantOfA(withId(R.id.fragment_unit_form_abbreviation)), withId(R.id.conflict_labels_remote_content))).check(matches(withText(data.abbreviation().remote())));
-        onView(allOf(isDescendantOfA(withId(R.id.fragment_unit_form_abbreviation)), withId(R.id.conflict_labels_local_content))).check(matches(withText(data.abbreviation().local())));
         onView(withId(R.id.fragment_unit_form_name)).check(matches(withEffectiveVisibility(Visibility.GONE)));
+        checkTextField(R.id.fragment_unit_form_abbreviation, data.abbreviation());
     }
 
     @Test
@@ -151,14 +125,7 @@ public class UnitConflictFragmentTest {
         UnitEditConflictData data = UnitEditConflictData.create(1, 42, 43, "name", "name", "name", "abbreviation", "abbreviation", "abbreviation");
         unitConflictInteractor.setData(data);
 
-        onView(allOf(
-                isDescendantOfA(withId(R.id.fragment_unit_form_name)),
-                withClassName(is(TextInputEditText.class.getName()))
-        )).check(matches(withText(data.name().suggestedValue())));
-        onView(allOf(
-                isDescendantOfA(withId(R.id.fragment_unit_form_abbreviation)),
-                withClassName(is(TextInputEditText.class.getName()))
-        )).check(matches(withText(data.abbreviation().suggestedValue())));
+        waitForUi(data);
 
         ArgumentCaptor<ErrorDescription> captor = ArgumentCaptor.forClass(ErrorDescription.class);
         verify(errorRetryInteractor, timeout(1000)).retry(captor.capture());
@@ -167,6 +134,13 @@ public class UnitConflictFragmentTest {
         assertEquals(data.name().suggestedValue(), actual.name());
         assertEquals(data.abbreviation().suggestedValue(), actual.abbreviation());
         verify(navigator).back();
+    }
+
+    private static void waitForUi(UnitEditConflictData data) {
+        onView(allOf(
+                isDescendantOfA(withId(R.id.fragment_unit_form_name)),
+                withClassName(is(TextInputEditText.class.getName()))
+        )).check(matches(withText(data.name().suggestedValue())));
     }
 
     @Inject

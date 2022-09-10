@@ -42,7 +42,7 @@ public class StandardEntities {
         return locationDbEntityBuilder().build();
     }
 
-    LocationDbEntity.Builder locationDbEntityBuilder() {
+    public LocationDbEntity.Builder locationDbEntityBuilder() {
         return initialiseBuilder(LocationDbEntity.builder())
                 .name("name")
                 .description("description");

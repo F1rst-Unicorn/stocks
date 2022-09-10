@@ -31,6 +31,7 @@ import de.njsm.stocks.client.business.FakeLocationConflictInteractor;
 import de.njsm.stocks.client.business.entities.ErrorDescription;
 import de.njsm.stocks.client.business.entities.LocationEditErrorDetails;
 import de.njsm.stocks.client.business.entities.conflict.LocationEditConflictData;
+import de.njsm.stocks.client.fragment.TestUtility;
 import de.njsm.stocks.client.navigation.LocationConflictNavigator;
 import de.njsm.stocks.client.ui.R;
 import org.junit.After;
@@ -50,7 +51,7 @@ import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
-public class LocationConflictFragmentTest {
+public class LocationConflictFragmentTest implements TestUtility {
 
     private FragmentScenario<LocationConflictFragment> scenario;
 
@@ -80,32 +81,15 @@ public class LocationConflictFragmentTest {
         LocationEditConflictData data = LocationEditConflictData.create(1, 42, 43, "name original", "name remote", "name local", "description original", "description remote", "description local");
         locationConflictInteractor.setData(data);
 
-        onView(allOf(
-                isDescendantOfA(withId(R.id.fragment_location_form_name)),
-                withClassName(is(TextInputEditText.class.getName()))
-        )).check(matches(withText(data.name().suggestedValue())));
-        onView(allOf(isDescendantOfA(withId(R.id.fragment_location_form_name)), withId(R.id.conflict_labels_original_content))).check(matches(withText(data.name().original())));
-        onView(allOf(isDescendantOfA(withId(R.id.fragment_location_form_name)), withId(R.id.conflict_labels_remote_content))).check(matches(withText(data.name().remote())));
-        onView(allOf(isDescendantOfA(withId(R.id.fragment_location_form_name)), withId(R.id.conflict_labels_local_content))).check(matches(withText(data.name().local())));
-        String mergedDescription = String.format(data.description().suggestedValue(),
-                InstrumentationRegistry.getInstrumentation().getTargetContext().getApplicationContext().getString(R.string.hint_original),
-                InstrumentationRegistry.getInstrumentation().getTargetContext().getApplicationContext().getString(R.string.hint_remote),
-                InstrumentationRegistry.getInstrumentation().getTargetContext().getApplicationContext().getString(R.string.hint_local)
-        );
-        onView(allOf(
-                isDescendantOfA(withId(R.id.fragment_location_form_description)),
-                withClassName(is(TextInputEditText.class.getName()))
-        )).check(matches(withText(mergedDescription)));
+        checkTextField(R.id.fragment_location_form_name, data.name());
+        checkMergingTextField(R.id.fragment_location_form_description, data.description());
     }
 
     @Test
     public void submissionWorks() {
         LocationEditConflictData data = LocationEditConflictData.create(1, 42, 43, "name original", "name remote", "name local", "description", "description", "description local");
         locationConflictInteractor.setData(data);
-        onView(allOf(
-                isDescendantOfA(withId(R.id.fragment_location_form_name)),
-                withClassName(is(TextInputEditText.class.getName()))
-        )).check(matches(withText(data.name().suggestedValue())));
+        waitForUi(data);
 
         scenario.onFragment(v -> v.onOptionsItemSelected(menuItem(v.requireContext(), R.id.menu_check)));
 
@@ -123,13 +107,7 @@ public class LocationConflictFragmentTest {
         LocationEditConflictData data = LocationEditConflictData.create(1, 42, 43, "name original", "name remote", "name local", "description", "description", "description");
         locationConflictInteractor.setData(data);
 
-        onView(allOf(
-                isDescendantOfA(withId(R.id.fragment_location_form_name)),
-                withClassName(is(TextInputEditText.class.getName()))
-        )).check(matches(withText(data.name().suggestedValue())));
-        onView(allOf(isDescendantOfA(withId(R.id.fragment_location_form_name)), withId(R.id.conflict_labels_original_content))).check(matches(withText(data.name().original())));
-        onView(allOf(isDescendantOfA(withId(R.id.fragment_location_form_name)), withId(R.id.conflict_labels_remote_content))).check(matches(withText(data.name().remote())));
-        onView(allOf(isDescendantOfA(withId(R.id.fragment_location_form_name)), withId(R.id.conflict_labels_local_content))).check(matches(withText(data.name().local())));
+        checkTextField(R.id.fragment_location_form_name, data.name());
         onView(withId(R.id.fragment_location_form_description)).check(matches(withEffectiveVisibility(Visibility.GONE)));
     }
 
@@ -139,15 +117,7 @@ public class LocationConflictFragmentTest {
         locationConflictInteractor.setData(data);
 
         onView(withId(R.id.fragment_location_form_name)).check(matches(withEffectiveVisibility(Visibility.GONE)));
-        String mergedDescription = String.format(data.description().suggestedValue(),
-                InstrumentationRegistry.getInstrumentation().getTargetContext().getApplicationContext().getString(R.string.hint_original),
-                InstrumentationRegistry.getInstrumentation().getTargetContext().getApplicationContext().getString(R.string.hint_remote),
-                InstrumentationRegistry.getInstrumentation().getTargetContext().getApplicationContext().getString(R.string.hint_local)
-        );
-        onView(allOf(
-                isDescendantOfA(withId(R.id.fragment_location_form_description)),
-                withClassName(is(TextInputEditText.class.getName()))
-        )).check(matches(withText(mergedDescription)));
+        checkMergingTextField(R.id.fragment_location_form_description, data.description());
     }
 
     @Test
@@ -155,14 +125,7 @@ public class LocationConflictFragmentTest {
         LocationEditConflictData data = LocationEditConflictData.create(1, 42, 43, "name", "name", "name", "description", "description", "description");
         locationConflictInteractor.setData(data);
 
-        onView(allOf(
-                isDescendantOfA(withId(R.id.fragment_location_form_name)),
-                withClassName(is(TextInputEditText.class.getName()))
-        )).check(matches(withText(data.name().suggestedValue())));
-        onView(allOf(
-                isDescendantOfA(withId(R.id.fragment_location_form_description)),
-                withClassName(is(TextInputEditText.class.getName()))
-        )).check(matches(withText(data.description().suggestedValue())));
+        waitForUi(data);
 
         ArgumentCaptor<ErrorDescription> captor = ArgumentCaptor.forClass(ErrorDescription.class);
         verify(errorRetryInteractor, timeout(1000)).retry(captor.capture());
@@ -171,6 +134,13 @@ public class LocationConflictFragmentTest {
         assertEquals(data.name().suggestedValue(), actual.name());
         assertEquals(data.description().suggestedValue(), actual.description());
         verify(navigator).back();
+    }
+
+    private static void waitForUi(LocationEditConflictData data) {
+        onView(allOf(
+                isDescendantOfA(withId(R.id.fragment_location_form_name)),
+                withClassName(is(TextInputEditText.class.getName()))
+        )).check(matches(withText(data.name().suggestedValue())));
     }
 
     @Inject

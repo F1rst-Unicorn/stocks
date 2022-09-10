@@ -22,7 +22,7 @@
 package de.njsm.stocks.client.business.entities.conflict;
 
 import com.google.auto.value.AutoValue;
-import de.njsm.stocks.client.business.Util;
+import de.njsm.stocks.client.business.ListSearcher;
 import de.njsm.stocks.client.business.entities.Identifiable;
 import de.njsm.stocks.client.business.entities.ScaledUnit;
 import de.njsm.stocks.client.business.entities.UnitForListing;
@@ -58,11 +58,7 @@ public abstract class ScaledUnitEditConflictFormData implements Identifiable<Sca
             ScaledUnitEditConflictData scaledUnit,
             List<UnitForSelection> units) {
 
-        int selectedListPosition = Util.searchFirst(units, scaledUnit.unit().suggestedValue().id())
-                .orElse(Util.searchFirst(units, scaledUnit.unit().local().id())
-                        .orElse(Util.searchFirst(units, scaledUnit.unit().remote().id())
-                                .orElse(Util.searchFirst(units, scaledUnit.unit().original().id())
-                                        .orElse(0))));
+        int selectedListPosition = ListSearcher.searchFirst(units, scaledUnit.unit()).orElse(0);
 
         return new AutoValue_ScaledUnitEditConflictFormData(
                 scaledUnit.id(),

@@ -311,7 +311,7 @@ public class ErrorRetryInteractorImplTest {
 
     @Test
     void retryingFoodEditingDispatches() {
-        FoodEditErrorDetails errorDetails = FoodEditErrorDetails.create(1, 2, "Banana", Period.ofDays(3), 4, 5, "yellow");
+        FoodEditErrorDetails errorDetails = FoodEditErrorDetails.create(1, "Banana", Period.ofDays(3), 4, 5, "yellow");
         ErrorDescription input = ErrorDescription.create(1, StatusCode.DATABASE_UNREACHABLE, "", "test", errorDetails);
         FoodToEdit expected = FoodToEdit.create(errorDetails.id(), errorDetails.name(), errorDetails.expirationOffset(), errorDetails.location(), errorDetails.storeUnit(), errorDetails.description());
 

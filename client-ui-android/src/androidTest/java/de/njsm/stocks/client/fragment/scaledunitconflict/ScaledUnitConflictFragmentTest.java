@@ -34,6 +34,7 @@ import de.njsm.stocks.client.business.entities.UnitForListing;
 import de.njsm.stocks.client.business.entities.UnitForSelection;
 import de.njsm.stocks.client.business.entities.conflict.ScaledUnitEditConflictData;
 import de.njsm.stocks.client.business.entities.conflict.ScaledUnitEditConflictFormData;
+import de.njsm.stocks.client.fragment.TestUtility;
 import de.njsm.stocks.client.navigation.ScaledUnitConflictNavigator;
 import de.njsm.stocks.client.presenter.UnitRenderStrategy;
 import de.njsm.stocks.client.ui.R;
@@ -57,7 +58,7 @@ import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
-public class ScaledUnitConflictFragmentTest {
+public class ScaledUnitConflictFragmentTest implements TestUtility {
 
     private FragmentScenario<ScaledUnitConflictFragment> scenario;
 
@@ -98,20 +99,8 @@ public class ScaledUnitConflictFragmentTest {
         );
         conflictInteractor.setData(data);
 
-        onView(allOf(
-                isDescendantOfA(withId(R.id.fragment_scaled_unit_form_scale)),
-                withClassName(is(TextInputEditText.class.getName()))
-        )).check(matches(withText(data.scale().suggestedValue().toPlainString())));
-        onView(allOf(isDescendantOfA(withId(R.id.fragment_scaled_unit_form_scale)), withId(R.id.conflict_labels_original_content))).check(matches(withText(data.scale().original().toPlainString())));
-        onView(allOf(isDescendantOfA(withId(R.id.fragment_scaled_unit_form_scale)), withId(R.id.conflict_labels_remote_content))).check(matches(withText(data.scale().remote().toPlainString())));
-        onView(allOf(isDescendantOfA(withId(R.id.fragment_scaled_unit_form_scale)), withId(R.id.conflict_labels_local_content))).check(matches(withText(data.scale().local().toPlainString())));
-        onView(withId(R.id.fragment_scaled_unit_form_unit)).check(matches(allOf(
-                isDisplayed(),
-                hasDescendant(withText(data.availableUnits().get(data.currentUnitListPosition()).name()))
-        )));
-        onView(allOf(isDescendantOfA(withId(R.id.fragment_scaled_unit_form_unit)), withId(R.id.conflict_labels_original_content))).check(matches(withText(unitRenderStrategy.render(data.unit().original()))));
-        onView(allOf(isDescendantOfA(withId(R.id.fragment_scaled_unit_form_unit)), withId(R.id.conflict_labels_remote_content))).check(matches(withText(unitRenderStrategy.render(data.unit().remote()))));
-        onView(allOf(isDescendantOfA(withId(R.id.fragment_scaled_unit_form_unit)), withId(R.id.conflict_labels_local_content))).check(matches(withText(unitRenderStrategy.render(data.unit().local()))));
+        checkTextField(R.id.fragment_scaled_unit_form_scale, data.scale().map(BigDecimal::toPlainString));
+        checkSpinner(R.id.fragment_scaled_unit_form_unit, data.availableUnits().get(data.currentUnitListPosition()).name(), data.unit().map(unitRenderStrategy::render));
     }
 
     @Test
@@ -152,14 +141,8 @@ public class ScaledUnitConflictFragmentTest {
         );
         conflictInteractor.setData(data);
 
+        checkTextField(R.id.fragment_scaled_unit_form_scale, data.scale().map(BigDecimal::toPlainString));
         onView(withId(R.id.fragment_scaled_unit_form_unit)).check(matches(withEffectiveVisibility(Visibility.GONE)));
-        onView(allOf(
-                isDescendantOfA(withId(R.id.fragment_scaled_unit_form_scale)),
-                withClassName(is(TextInputEditText.class.getName()))
-        )).check(matches(withText(data.scale().suggestedValue().toPlainString())));
-        onView(allOf(isDescendantOfA(withId(R.id.fragment_scaled_unit_form_scale)), withId(R.id.conflict_labels_original_content))).check(matches(withText(data.scale().original().toPlainString())));
-        onView(allOf(isDescendantOfA(withId(R.id.fragment_scaled_unit_form_scale)), withId(R.id.conflict_labels_remote_content))).check(matches(withText(data.scale().remote().toPlainString())));
-        onView(allOf(isDescendantOfA(withId(R.id.fragment_scaled_unit_form_scale)), withId(R.id.conflict_labels_local_content))).check(matches(withText(data.scale().local().toPlainString())));
     }
 
     @Test
@@ -175,13 +158,7 @@ public class ScaledUnitConflictFragmentTest {
         conflictInteractor.setData(data);
 
         onView(withId(R.id.fragment_scaled_unit_form_scale)).check(matches(withEffectiveVisibility(Visibility.GONE)));
-        onView(withId(R.id.fragment_scaled_unit_form_unit)).check(matches(allOf(
-                isDisplayed(),
-                hasDescendant(withText(data.availableUnits().get(data.currentUnitListPosition()).name()))
-        )));
-        onView(allOf(isDescendantOfA(withId(R.id.fragment_scaled_unit_form_unit)), withId(R.id.conflict_labels_original_content))).check(matches(withText(unitRenderStrategy.render(data.unit().original()))));
-        onView(allOf(isDescendantOfA(withId(R.id.fragment_scaled_unit_form_unit)), withId(R.id.conflict_labels_remote_content))).check(matches(withText(unitRenderStrategy.render(data.unit().remote()))));
-        onView(allOf(isDescendantOfA(withId(R.id.fragment_scaled_unit_form_unit)), withId(R.id.conflict_labels_local_content))).check(matches(withText(unitRenderStrategy.render(data.unit().local()))));
+        checkSpinner(R.id.fragment_scaled_unit_form_unit, data.availableUnits().get(data.currentUnitListPosition()).name(), data.unit().map(unitRenderStrategy::render));
     }
 
     @Test

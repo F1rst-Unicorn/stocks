@@ -171,6 +171,6 @@ public class ErrorRepositoryImpl implements ErrorRepository, ErrorEntity.ActionV
     @Override
     public ErrorDetails editFood(ErrorEntity.Action action, Long input) {
         FoodEditEntity entity = errorDao.getFoodEdit(input);
-        return FoodEditErrorDetails.create(entity.food().id(), entity.version(), entity.name(), entity.expirationOffset(), entity.location().maybe().map(PreservedId::id), entity.storeUnit().id(), entity.description());
+        return FoodEditErrorDetails.create(entity.food().id(), entity.name(), entity.expirationOffset(), entity.location().maybe().map(PreservedId::id), entity.storeUnit().id(), entity.description());
     }
 }

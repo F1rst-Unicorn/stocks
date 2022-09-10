@@ -76,8 +76,8 @@ public abstract class FoodDbEntity extends ServerDbEntity<FoodDbEntity> implemen
     abstract Builder toBuilder();
 
     @AutoValue.Builder
-    abstract static class Builder extends ServerDbEntity.Builder<FoodDbEntity, Builder> implements FoodFields.Builder<FoodDbEntity, Builder> {
+    public abstract static class Builder extends ServerDbEntity.Builder<FoodDbEntity, Builder> implements FoodFields.Builder<FoodDbEntity, Builder> {
 
-        abstract FoodDbEntity build();
+        public abstract FoodDbEntity build();
     }
 }

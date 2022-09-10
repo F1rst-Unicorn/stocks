@@ -22,16 +22,24 @@
 package de.njsm.stocks.client.database.error;
 
 import de.njsm.stocks.client.business.ConflictRepository;
+import de.njsm.stocks.client.business.entities.LocationForListing;
+import de.njsm.stocks.client.business.entities.ScaledUnitForListing;
 import de.njsm.stocks.client.business.entities.UnitForListing;
+import de.njsm.stocks.client.business.entities.conflict.FoodEditConflictData;
 import de.njsm.stocks.client.business.entities.conflict.LocationEditConflictData;
 import de.njsm.stocks.client.business.entities.conflict.ScaledUnitEditConflictData;
 import de.njsm.stocks.client.business.entities.conflict.UnitEditConflictData;
+import de.njsm.stocks.client.database.FoodDbEntity;
 import de.njsm.stocks.client.database.LocationDbEntity;
 import de.njsm.stocks.client.database.ScaledUnitDbEntity;
 import de.njsm.stocks.client.database.UnitDbEntity;
 import io.reactivex.rxjava3.core.Observable;
 
+import javax.crypto.spec.OAEPParameterSpec;
 import javax.inject.Inject;
+import java.util.Optional;
+
+import static java.util.Optional.ofNullable;
 
 public class ConflictRepositoryImpl implements ConflictRepository {
 
@@ -93,6 +101,42 @@ public class ConflictRepositoryImpl implements ConflictRepository {
                     getUnitForListingFromDbEntity(originalUnit),
                     getUnitForListingFromDbEntity(remoteUnit),
                     getUnitForListingFromDbEntity(localUnit));
+        });
+    }
+
+    @Override
+    public Observable<FoodEditConflictData> getFoodEditConflict(long errorId) {
+        return errorDao.observeError(errorId).map(error -> {
+            if (error.action() != ErrorEntity.Action.EDIT_FOOD)
+                throw new IllegalArgumentException("error " + errorId + " does not belong to " + ErrorEntity.Action.EDIT_FOOD + " but to " + error.action());
+
+            FoodEditEntity local = errorDao.getFoodEdit(error.dataId());
+            FoodDbEntity original = errorDao.getCurrentFoodAsKnownAt(local.food().id(), local.food().transactionTime());
+            FoodDbEntity remote = errorDao.getCurrentFoodAsKnownAt(local.food().id(), local.executionTime());
+
+            Optional<LocationForListing> originalLocation = ofNullable(original.location()).map(v -> errorDao.getCurrentLocationAsKnownAt(v, local.location().transactionTime()))
+                    .map(v -> LocationForListing.create(v.id(), v.name()));
+            Optional<LocationForListing> remoteLocation = ofNullable(remote.location()).map(v -> errorDao.getCurrentLocationAsKnownAt(v, local.executionTime()))
+                    .map(v -> LocationForListing.create(v.id(), v.name()));
+            Optional<LocationForListing> localLocation = local.location().maybe().map(v -> errorDao.getCurrentLocationAsKnownAt(v.id(), v.transactionTime()))
+                    .map(v -> LocationForListing.create(v.id(), v.name()));
+
+            ScaledUnitDbEntity originalScaledUnit = errorDao.getCurrentScaledUnitAsKnownAt(original.storeUnit(), local.storeUnit().transactionTime());
+            ScaledUnitDbEntity remoteScaledUnit = errorDao.getCurrentScaledUnitAsKnownAt(remote.storeUnit(), local.executionTime());
+            ScaledUnitDbEntity localScaledUnit = errorDao.getCurrentScaledUnitAsKnownAt(local.storeUnit().id(), local.storeUnit().transactionTime());
+
+            UnitDbEntity originalUnit = errorDao.getCurrentUnitAsKnownAt(originalScaledUnit.unit(), local.storeUnit().transactionTime());
+            UnitDbEntity remoteUnit = errorDao.getCurrentUnitAsKnownAt(remoteScaledUnit.unit(), local.executionTime());
+            UnitDbEntity localUnit = errorDao.getCurrentUnitAsKnownAt(localScaledUnit.unit(), local.storeUnit().transactionTime());
+
+            return FoodEditConflictData.create(error.id(), local.food().id(), local.version(),
+                    original.name(), remote.name(), local.name(),
+                    original.expirationOffset(), remote.expirationOffset(), local.expirationOffset(),
+                    originalLocation, remoteLocation, localLocation,
+                    ScaledUnitForListing.create(originalScaledUnit.id(), originalUnit.abbreviation(), originalScaledUnit.scale()),
+                    ScaledUnitForListing.create(remoteScaledUnit.id(), remoteUnit.abbreviation(), remoteScaledUnit.scale()),
+                    ScaledUnitForListing.create(localScaledUnit.id(), localUnit.abbreviation(), localScaledUnit.scale()),
+                    original.description(), remote.description(), local.description());
         });
     }
 

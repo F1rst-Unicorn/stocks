@@ -53,6 +53,7 @@ import static androidx.test.espresso.action.ViewActions.*;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.*;
 import static de.njsm.stocks.client.fragment.Util.menuItem;
+import static java.util.Optional.empty;
 import static org.hamcrest.CoreMatchers.allOf;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.Matchers.anything;
@@ -135,7 +136,7 @@ public class FoodEditFragmentTest {
     public void editingIsPropagated() {
         int unitPosition = 2;
         ScaledUnitForSelection unit = ScaledUnitsForSelection.generate().get(unitPosition);
-        FoodToEdit expected = FoodToEdit.create(dataToEdit.id(), "Sausage", Period.ofDays(0), null, unit.id(), "German ones");
+        FoodToEdit expected = FoodToEdit.create(dataToEdit.id(), "Sausage", Period.ofDays(0), empty(), unit.id(), "German ones");
         onView(allOf(
                 isDescendantOfA(withId(R.id.fragment_food_form_name)),
                 withClassName(is(TextInputEditText.class.getName()))

@@ -48,7 +48,7 @@ import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.*;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.*;
-import static de.njsm.stocks.client.business.Util.findFirst;
+import static de.njsm.stocks.client.business.ListSearcher.findFirst;
 import static de.njsm.stocks.client.fragment.Util.menuItem;
 import static org.hamcrest.CoreMatchers.allOf;
 import static org.hamcrest.CoreMatchers.is;

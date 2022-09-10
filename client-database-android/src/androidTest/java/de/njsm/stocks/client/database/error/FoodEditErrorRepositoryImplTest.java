@@ -40,7 +40,7 @@ public class FoodEditErrorRepositoryImplTest extends AbstractErrorRepositoryImpl
         LocationDbEntity location = standardEntities.locationDbEntity();
         UnitDbEntity unit = standardEntities.unitDbEntity();
         FoodForEditing form = FoodForEditing.create(randomnessProvider.getId("FoodForEditing"), 2, "Banana", Period.ofDays(3), Optional.of(location.id()), unit.id(), "yellow");
-        FoodEditErrorDetails errorDetails = FoodEditErrorDetails.create(form.id(), form.version(), form.name(), form.expirationOffset(), form.location(), form.storeUnit(), form.description());
+        FoodEditErrorDetails errorDetails = FoodEditErrorDetails.create(form.id(), form.name(), form.expirationOffset(), form.location(), form.storeUnit(), form.description());
         stocksDatabase.synchronisationDao().writeUnits(singletonList(unit));
         stocksDatabase.synchronisationDao().writeLocations(singletonList(location));
         errorRecorder.recordFoodEditError(e, form);

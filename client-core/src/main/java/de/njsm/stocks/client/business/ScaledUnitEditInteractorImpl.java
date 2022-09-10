@@ -55,7 +55,7 @@ class ScaledUnitEditInteractorImpl implements ScaledUnitEditInteractor {
         Observable<ScaledUnitToEdit> scaledUnitToEdit = repository.getScaledUnit(id);
 
         return units.zipWith(scaledUnitToEdit, (unitList, scaledUnit) -> {
-            int position = Util.findFirst(unitList, scaledUnit.unit());
+            int position = ListSearcher.findFirst(unitList, scaledUnit.unit());
             return ScaledUnitEditingFormData.create(scaledUnit.id(), scaledUnit.scale(), unitList, position);
         });
     }

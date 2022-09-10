@@ -25,8 +25,11 @@ import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.ArrayAdapter;
 import com.google.android.material.textfield.TextInputLayout;
+import de.njsm.stocks.client.business.entities.LocationForListing;
 import de.njsm.stocks.client.business.entities.LocationForSelection;
+import de.njsm.stocks.client.business.entities.ScaledUnitForListing;
 import de.njsm.stocks.client.business.entities.ScaledUnitForSelection;
+import de.njsm.stocks.client.business.entities.conflict.ConflictData;
 import de.njsm.stocks.client.presenter.ScaledUnitRenderStrategy;
 import de.njsm.stocks.client.ui.R;
 
@@ -104,8 +107,16 @@ public class FoodForm {
         nameField.setEditorContent(name);
     }
 
+    public void setName(ConflictData<String> name) {
+        setName(name.suggestedValue());
+    }
+
     public void setExpirationOffset(Period expirationOffset) {
         expirationOffsetField.setEditorContent(String.valueOf(expirationOffset.getDays()));
+    }
+
+    public void setExpirationOffset(ConflictData<Period> expirationOffset) {
+        setExpirationOffset(expirationOffset.suggestedValue());
     }
 
     public void setDescription(String description) {
@@ -185,7 +196,43 @@ public class FoodForm {
         return stringFromForm(descriptionField);
     }
 
+    public void hideName() {
+        nameField.hide();
+    }
+
     public void hideToBuy() {
         toBuyField.hide();
+    }
+
+    public void hideExpirationOffset() {
+        expirationOffsetField.hide();
+    }
+
+    public void hideLocation() {
+        locationField.hide();
+    }
+
+    public void hideStoreUnit() {
+        storeUnitField.hide();
+    }
+
+    public void showNameConflict(ConflictData<String> name) {
+        nameField.showConflictInfo(name);
+    }
+
+    public void showExpirationOffsetConflict(ConflictData<Period> expirationOffset) {
+        expirationOffsetField.showConflictInfo(expirationOffset.map(Period::getDays).map(String::valueOf));
+    }
+
+    public void showLocationConflict(ConflictData<Optional<LocationForListing>> location) {
+        locationField.showConflictInfo(location.map(v -> v.map(LocationForListing::name).orElse("---")));
+    }
+
+    public void showStoreUnitConflict(ConflictData<ScaledUnitForListing> storeUnit) {
+        storeUnitField.showConflictInfo(storeUnit, new ScaledUnitRenderStrategy()::render);
+    }
+
+    public void hideDescription() {
+        descriptionField.setVisibility(View.GONE);
     }
 }
