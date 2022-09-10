@@ -50,6 +50,8 @@ class ErrorRetryInteractorImpl implements ErrorRetryInteractor, ErrorDetailsVisi
 
     private final EntityDeleter<Food> foodDeleter;
 
+    private final FoodEditInteractor foodEditInteractor;
+
     private final Synchroniser synchroniser;
 
     private final Scheduler scheduler;
@@ -70,6 +72,7 @@ class ErrorRetryInteractorImpl implements ErrorRetryInteractor, ErrorDetailsVisi
                              EntityDeleter<ScaledUnit> scaledUnitDeleter,
                              FoodAddInteractor foodAddInteractor,
                              EntityDeleter<Food> foodDeleter,
+                             FoodEditInteractor foodEditInteractor,
                              Synchroniser synchroniser,
                              Scheduler scheduler,
                              ErrorRepository errorRepository) {
@@ -84,6 +87,7 @@ class ErrorRetryInteractorImpl implements ErrorRetryInteractor, ErrorDetailsVisi
         this.scaledUnitDeleter = scaledUnitDeleter;
         this.foodAddInteractor = foodAddInteractor;
         this.foodDeleter = foodDeleter;
+        this.foodEditInteractor = foodEditInteractor;
         this.synchroniser = synchroniser;
         this.scheduler = scheduler;
         this.errorRepository = errorRepository;
@@ -203,6 +207,19 @@ class ErrorRetryInteractorImpl implements ErrorRetryInteractor, ErrorDetailsVisi
     }
 
     @Override
+    public Void foodEditErrorDetails(FoodEditErrorDetails foodEditErrorDetails, Void input) {
+        FoodToEdit data = FoodToEdit.create(foodEditErrorDetails.id(),
+                foodEditErrorDetails.name(),
+                foodEditErrorDetails.expirationOffset(),
+                foodEditErrorDetails.location(),
+                foodEditErrorDetails.storeUnit(),
+                foodEditErrorDetails.description());
+
+        foodEditInteractor.edit(data);
+        return null;
+    }
+
+    @Override
     public Void foodDeleteErrorDetails(FoodDeleteErrorDetails foodDeleteErrorDetails, Void input) {
         foodDeleter.delete(foodDeleteErrorDetails);
         return null;
@@ -268,6 +285,11 @@ class ErrorRetryInteractorImpl implements ErrorRetryInteractor, ErrorDetailsVisi
         @Override
         public Job.Type foodDeleteErrorDetails(FoodDeleteErrorDetails foodDeleteErrorDetails, Void input) {
             return Job.Type.DELETE_FOOD;
+        }
+
+        @Override
+        public Job.Type foodEditErrorDetails(FoodEditErrorDetails foodEditErrorDetails, Void input) {
+            return Job.Type.EDIT_FOOD;
         }
     }
 }

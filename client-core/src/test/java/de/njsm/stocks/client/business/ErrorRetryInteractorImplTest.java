@@ -34,7 +34,8 @@ import java.math.BigDecimal;
 import java.time.Period;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
 
 @ExtendWith(MockitoExtension.class)
 public class ErrorRetryInteractorImplTest {
@@ -75,6 +76,9 @@ public class ErrorRetryInteractorImplTest {
     private EntityDeleter<Food> foodDeleter;
 
     @Mock
+    private FoodEditInteractor foodEditInteractor;
+
+    @Mock
     private Synchroniser synchroniser;
 
     @Mock
@@ -96,6 +100,7 @@ public class ErrorRetryInteractorImplTest {
                 scaledUnitDeleter,
                 foodAddInteractor,
                 foodDeleter,
+                foodEditInteractor,
                 synchroniser,
                 scheduler,
                 errorRepository);
@@ -301,6 +306,18 @@ public class ErrorRetryInteractorImplTest {
         ArgumentCaptor<Identifiable<Food>> captor = ArgumentCaptor.forClass(Identifiable.class);
         verify(foodDeleter).delete(captor.capture());
         assertEquals(foodDeleteErrorDetails.id(), captor.getValue().id());
+        verify(errorRepository).deleteError(input);
+    }
+
+    @Test
+    void retryingFoodEditingDispatches() {
+        FoodEditErrorDetails errorDetails = FoodEditErrorDetails.create(1, 2, "Banana", Period.ofDays(3), 4, 5, "yellow");
+        ErrorDescription input = ErrorDescription.create(1, StatusCode.DATABASE_UNREACHABLE, "", "test", errorDetails);
+        FoodToEdit expected = FoodToEdit.create(errorDetails.id(), errorDetails.name(), errorDetails.expirationOffset(), errorDetails.location(), errorDetails.storeUnit(), errorDetails.description());
+
+        uut.retryInBackground(input);
+
+        verify(foodEditInteractor).edit(expected);
         verify(errorRepository).deleteError(input);
     }
 }

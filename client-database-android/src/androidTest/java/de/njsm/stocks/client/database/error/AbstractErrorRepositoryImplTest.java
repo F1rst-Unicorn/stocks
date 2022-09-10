@@ -59,6 +59,10 @@ public abstract class AbstractErrorRepositoryImplTest extends DbTestCase {
         stocksDatabase.synchronisationDao().insert(updates);
     }
 
+    /**
+     * Insert the error entity and all related server entities into the database
+     * @return The expected error details of the recorded error
+     */
     abstract ErrorDetails recordError(StatusCodeException e);
 
     abstract List<?> getErrorDetails();

@@ -135,4 +135,10 @@ public class ErrorDetailsPrinterTest {
         FoodDeleteErrorDetails data = FoodDeleteErrorDetails.create(1, "Banana");
         assertEquals(data.name(), uut.visit(data, null));
     }
+
+    @Test
+    public void foodEditErrorShowsName() {
+        FoodEditErrorDetails data = FoodEditErrorDetails.create(1, 2, "Banana", Period.ofDays(3), 4, 5, "yellow");
+        assertEquals(data.name(), uut.visit(data, null));
+    }
 }

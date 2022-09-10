@@ -98,4 +98,9 @@ public class ErrorDetailsDetailsVisitor implements ErrorDetailsVisitor<Void, Str
     public String foodDeleteErrorDetails(FoodDeleteErrorDetails foodDeleteErrorDetails, Void input) {
         return foodDeleteErrorDetails.name();
     }
+
+    @Override
+    public String foodEditErrorDetails(FoodEditErrorDetails foodEditErrorDetails, Void input) {
+        return foodEditErrorDetails.name();
+    }
 }

@@ -28,7 +28,7 @@ import java.time.Period;
 import java.util.Optional;
 
 @AutoValue
-public abstract class FoodToEdit implements Identifiable<Food> {
+public abstract class FoodEditErrorDetails implements Versionable<Food>, ErrorDetails {
 
     public abstract String name();
 
@@ -40,15 +40,16 @@ public abstract class FoodToEdit implements Identifiable<Food> {
 
     public abstract String description();
 
-    public static FoodToEdit create(int id, String name, Period expirationOffset, @Nullable Integer location, int storeUnit, String description) {
-        return new AutoValue_FoodToEdit(id, name, expirationOffset, Optional.ofNullable(location), storeUnit, description);
+    public static FoodEditErrorDetails create(int id, int version, String name, Period expirationOffset, @Nullable Integer location, int storeUnit, String description) {
+        return new AutoValue_FoodEditErrorDetails(id, version, name, expirationOffset, Optional.ofNullable(location), storeUnit, description);
     }
 
-    public static FoodToEdit create(int id, String name, Period expirationOffset, Optional<Integer> location, int storeUnit, String description) {
-        return new AutoValue_FoodToEdit(id, name, expirationOffset, location, storeUnit, description);
+    public static FoodEditErrorDetails create(int id, int version, String name, Period expirationOffset, Optional<Integer> location, int storeUnit, String description) {
+        return new AutoValue_FoodEditErrorDetails(id, version, name, expirationOffset, location, storeUnit, description);
     }
 
-    public FoodForEditing withVersion(int version) {
-        return FoodForEditing.create(id(), version, name(), expirationOffset(), location(), storeUnit(), description());
+    @Override
+    public <I, O> O accept(ErrorDetailsVisitor<I, O> visitor, I input) {
+        return visitor.foodEditErrorDetails(this, input);
     }
 }

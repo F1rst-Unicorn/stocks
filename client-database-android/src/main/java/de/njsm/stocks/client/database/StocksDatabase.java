@@ -56,6 +56,7 @@ import java.time.format.DateTimeFormatter;
                 ScaledUnitDeleteEntity.class,
                 FoodAddEntity.class,
                 FoodDeleteEntity.class,
+                FoodEditEntity.class,
         },
         views = {
                 CurrentLocationDbView.class,

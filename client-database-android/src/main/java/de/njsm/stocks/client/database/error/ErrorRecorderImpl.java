@@ -184,8 +184,22 @@ public class ErrorRecorderImpl implements ErrorRecorder {
     }
 
     @Override
-    public void recordFoodEditError(SubsystemException exception, FoodForEditing expected) {
-        throw new UnsupportedOperationException("TODO");
+    public void recordFoodEditError(SubsystemException e, FoodForEditing foodForEditing) {
+        ExceptionData exceptionData = new ExceptionInserter().visit(e, null);
+        Instant currentTransactionTime = errorDao.getTransactionTimeOf(EntityType.FOOD);
+        Instant currentLocationTransactionTime = errorDao.getTransactionTimeOf(EntityType.LOCATION);
+        Instant currentUnitTransactionTime = errorDao.getTransactionTimeOf(EntityType.UNIT);
+        FoodEditEntity entity = FoodEditEntity.create(
+                foodForEditing.version(),
+                PreservedId.create(foodForEditing.id(), currentTransactionTime),
+                foodForEditing.name(),
+                foodForEditing.expirationOffset(),
+                NullablePreservedId.create(foodForEditing.location().orElse(null), currentLocationTransactionTime),
+                PreservedId.create(foodForEditing.storeUnit(), currentUnitTransactionTime),
+                foodForEditing.description(),
+                clock.get());
+        long dataId = errorDao.insert(entity);
+        errorDao.insert(ErrorEntity.create(ErrorEntity.Action.EDIT_FOOD, dataId, exceptionData.exceptionType(), exceptionData.exceptionId()));
     }
 
     @AutoValue

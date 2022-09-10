@@ -63,5 +63,6 @@ public class ErrorDetailsHeadlineVisitorTest {
                 "",
                 FoodAddErrorDetails.StoreUnit.create(BigDecimal.TEN, "g")), null));
         assertEquals(R.string.error_details_food_delete_error_list, (long) uut.visit(FoodDeleteErrorDetails.create(1, "Banana"), null));
+        assertEquals(R.string.error_details_food_edit_error_list, (long) uut.visit(FoodEditErrorDetails.create(1, 2, "Banana", Period.ofDays(3), 4, 5, "yellow"), null));
     }
 }

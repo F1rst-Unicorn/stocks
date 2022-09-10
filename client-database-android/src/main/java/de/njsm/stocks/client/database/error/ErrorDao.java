@@ -403,4 +403,20 @@ public abstract class ErrorDao {
             "   and :transactionTime < transaction_time_end " +
             ")")
     abstract FoodDbEntity getCurrentFoodAsKnownAt(int id, Instant transactionTime);
+
+    @Query("select * " +
+            "from food_to_edit")
+    abstract List<FoodEditEntity> getFoodEdits();
+
+    @Insert
+    abstract long insert(FoodEditEntity entity);
+
+    @Query("select * " +
+            "from food_to_edit " +
+            "where id = :id")
+    abstract FoodEditEntity getFoodEdit(Long id);
+
+    @Query("delete from food_to_edit " +
+            "where id = :id")
+    abstract void deleteFoodEdit(Long id);
 }

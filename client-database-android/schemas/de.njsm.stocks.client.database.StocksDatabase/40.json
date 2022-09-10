@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 40,
-    "identityHash": "ac5af843c294011814a3277e2ba17077",
+    "identityHash": "a86b42011caf724aa622ad89e573aa8a",
     "entities": [
       {
         "tableName": "updates",
@@ -1916,6 +1916,92 @@
         },
         "indices": [],
         "foreignKeys": []
+      },
+      {
+        "tableName": "food_to_edit",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `version` INTEGER NOT NULL, `name` TEXT NOT NULL, `expiration_offset` INTEGER NOT NULL, `description` TEXT NOT NULL, `execution_time` TEXT, `food_id` INTEGER, `food_transaction_time` TEXT, `location_id` INTEGER, `location_transaction_time` TEXT NOT NULL, `store_unit_id` INTEGER NOT NULL, `store_unit_transaction_time` TEXT NOT NULL)",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "version",
+            "columnName": "version",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "name",
+            "columnName": "name",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "expirationOffset",
+            "columnName": "expiration_offset",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "description",
+            "columnName": "description",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "executionTime",
+            "columnName": "execution_time",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "food.id",
+            "columnName": "food_id",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "food.transactionTime",
+            "columnName": "food_transaction_time",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "location.id",
+            "columnName": "location_id",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "location.transactionTime",
+            "columnName": "location_transaction_time",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "storeUnit.id",
+            "columnName": "store_unit_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "storeUnit.transactionTime",
+            "columnName": "store_unit_transaction_time",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "id"
+          ],
+          "autoGenerate": true
+        },
+        "indices": [],
+        "foreignKeys": []
       }
     ],
     "views": [
@@ -1966,7 +2052,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'ac5af843c294011814a3277e2ba17077')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'a86b42011caf724aa622ad89e573aa8a')"
     ]
   }
 }

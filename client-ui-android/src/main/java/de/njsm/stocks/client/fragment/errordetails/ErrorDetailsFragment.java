@@ -193,5 +193,10 @@ public class ErrorDetailsFragment extends InjectableFragment {
         public String foodDeleteErrorDetails(FoodDeleteErrorDetails foodDeleteErrorDetails, Void input) {
             return foodDeleteErrorDetails.name();
         }
+
+        @Override
+        public String foodEditErrorDetails(FoodEditErrorDetails foodEditErrorDetails, Void input) {
+            return foodEditErrorDetails.name();
+        }
     }
 }

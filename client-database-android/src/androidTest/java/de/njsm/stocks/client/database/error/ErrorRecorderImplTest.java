@@ -26,6 +26,7 @@ import de.njsm.stocks.client.business.StatusCodeException;
 import de.njsm.stocks.client.business.SubsystemException;
 import de.njsm.stocks.client.business.entities.*;
 import de.njsm.stocks.client.database.DbTestCase;
+import de.njsm.stocks.client.database.PreservedId;
 import de.njsm.stocks.client.database.UpdateDbEntity;
 import org.junit.Before;
 import org.junit.Test;
@@ -35,6 +36,7 @@ import java.time.Instant;
 import java.time.Period;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static org.junit.Assert.*;
@@ -372,6 +374,36 @@ public class ErrorRecorderImplTest extends DbTestCase {
         List<ErrorEntity> errors = stocksDatabase.errorDao().getErrors();
         assertEquals(1, errors.size());
         assertEquals(ErrorEntity.Action.DELETE_FOOD, errors.get(0).action());
+        assertEquals(1, errors.get(0).dataId());
+        assertEquals(ErrorEntity.ExceptionType.STATUSCODE_EXCEPTION, errors.get(0).exceptionType());
+        assertEquals(1, errors.get(0).exceptionId());
+    }
+
+    @Test
+    public void recordingErrorEditingFoodWorks() {
+        FoodForEditing form = FoodForEditing.create(1, 2, "Banana", Period.ofDays(3), Optional.of(4), 5, "yellow");
+        StatusCodeException exception = new StatusCodeException(StatusCode.DATABASE_UNREACHABLE);
+
+        uut.recordFoodEditError(exception, form);
+
+        assertEquals(1, stocksDatabase.errorDao().getStatusCodeErrors().size());
+        StatusCodeExceptionEntity actual = stocksDatabase.errorDao().getStatusCodeErrors().get(0);
+        assertEquals(exception.getStatusCode(), actual.statusCode());
+        List<FoodEditEntity> foodEdits = stocksDatabase.errorDao().getFoodEdits();
+        assertEquals(1, foodEdits.size());
+        FoodEditEntity foodEditEntity = foodEdits.get(0);
+        assertEquals(form.id(), foodEditEntity.food().id());
+        assertEquals(form.version(), foodEditEntity.version());
+        assertEquals(Instant.EPOCH, foodEditEntity.food().transactionTime());
+        assertEquals(getNow(), foodEditEntity.executionTime());
+        assertEquals(form.name(), foodEditEntity.name());
+        assertEquals(form.expirationOffset(), foodEditEntity.expirationOffset());
+        assertEquals(form.location(), foodEditEntity.location().maybe().map(PreservedId::id));
+        assertEquals(form.storeUnit(), foodEditEntity.storeUnit().id());
+        assertEquals(form.description(), foodEditEntity.description());
+        List<ErrorEntity> errors = stocksDatabase.errorDao().getErrors();
+        assertEquals(1, errors.size());
+        assertEquals(ErrorEntity.Action.EDIT_FOOD, errors.get(0).action());
         assertEquals(1, errors.get(0).dataId());
         assertEquals(ErrorEntity.ExceptionType.STATUSCODE_EXCEPTION, errors.get(0).exceptionType());
         assertEquals(1, errors.get(0).exceptionId());
