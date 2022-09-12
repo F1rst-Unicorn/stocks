@@ -32,11 +32,10 @@ import org.junit.Before;
 import org.junit.Rule;
 
 import java.time.Instant;
-import java.util.function.Supplier;
 
 import static java.util.Collections.singletonList;
 
-public class DbTestCase implements Supplier<Instant> {
+public class DbTestCase implements Clock {
 
     protected StocksDatabase stocksDatabase;
 

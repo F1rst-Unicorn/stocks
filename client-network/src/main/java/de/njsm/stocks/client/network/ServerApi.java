@@ -137,7 +137,7 @@ public interface ServerApi {
     Call<Response> editFood(@Query("id") int id,
                             @Query("version") int version,
                             @Query("new") String newName,
-                            @Query("expirationOffset") int expirationOffset,
+                            @Query("expirationoffset") int expirationOffset,
                             @Query("location") Integer location,
                             @Field("description") String description,
                             @Query("storeunit") int storeUnit);

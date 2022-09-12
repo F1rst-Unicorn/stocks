@@ -63,21 +63,21 @@ abstract class ServerDbEntity<T extends ServerDbEntity<T>> {
 
     abstract <B extends Builder<T, B>> B toBuilder();
 
-    abstract static class Builder<E extends ServerDbEntity<E>, B extends ServerDbEntity.Builder<E, B>> {
+    public abstract static class Builder<E extends ServerDbEntity<E>, B extends ServerDbEntity.Builder<E, B>> {
 
         public abstract B id(int v);
 
-        abstract B version(int v);
+        public abstract B version(int v);
 
-        abstract B validTimeStart(Instant v);
+        public abstract B validTimeStart(Instant v);
 
-        abstract B validTimeEnd(Instant v);
+        public abstract B validTimeEnd(Instant v);
 
-        abstract B transactionTimeStart(Instant v);
+        public abstract B transactionTimeStart(Instant v);
 
-        abstract B transactionTimeEnd(Instant v);
+        public abstract B transactionTimeEnd(Instant v);
 
-        abstract B initiates(int v);
+        public abstract B initiates(int v);
 
         abstract E build();
     }

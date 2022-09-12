@@ -50,7 +50,7 @@ public class ErrorRecorderImplTest extends DbTestCase {
         uut = new ErrorRecorderImpl(stocksDatabase.errorDao(), this);
 
         List<UpdateDbEntity> updates = Arrays.stream(EntityType.values())
-                .map(v -> UpdateDbEntity.create(v, Instant.EPOCH))
+                .map(v -> UpdateDbEntity.create(v, Instant.ofEpochSecond(randomnessProvider.getId(v + " update time"))))
                 .collect(Collectors.toList());
         stocksDatabase.synchronisationDao().insert(updates);
     }
@@ -133,7 +133,7 @@ public class ErrorRecorderImplTest extends DbTestCase {
         assertEquals(1, locationDelete.id());
         assertEquals(locationForDeletion.id(), locationDelete.location().id());
         assertEquals(locationForDeletion.version(), locationDelete.version());
-        assertEquals(Instant.EPOCH, locationDelete.location().transactionTime());
+        assertEquals(stocksDatabase.errorDao().getTransactionTimeOf(EntityType.LOCATION), locationDelete.location().transactionTime());
         List<ErrorEntity> errors = stocksDatabase.errorDao().getErrors();
         assertEquals(1, errors.size());
         assertEquals(ErrorEntity.Action.DELETE_LOCATION, errors.get(0).action());
@@ -163,9 +163,10 @@ public class ErrorRecorderImplTest extends DbTestCase {
         assertEquals(1, locationEditEntity.id());
         assertEquals(locationForEditing.id(), locationEditEntity.location().id());
         assertEquals(locationForEditing.version(), locationEditEntity.version());
-        assertEquals(Instant.EPOCH, locationEditEntity.location().transactionTime());
+        assertEquals(stocksDatabase.errorDao().getTransactionTimeOf(EntityType.LOCATION), locationEditEntity.location().transactionTime());
         assertEquals(locationForEditing.name(), locationEditEntity.name());
         assertEquals(locationForEditing.description(), locationEditEntity.description());
+        assertEquals(getNow(), locationEditEntity.executionTime());
         List<ErrorEntity> errors = stocksDatabase.errorDao().getErrors();
         assertEquals(1, errors.size());
         assertEquals(ErrorEntity.Action.EDIT_LOCATION, errors.get(0).action());
@@ -215,7 +216,7 @@ public class ErrorRecorderImplTest extends DbTestCase {
         assertEquals(1, unitDeleteEntity.id());
         assertEquals(unitForDeletion.id(), unitDeleteEntity.unit().id());
         assertEquals(unitForDeletion.version(), unitDeleteEntity.version());
-        assertEquals(Instant.EPOCH, unitDeleteEntity.unit().transactionTime());
+        assertEquals(stocksDatabase.errorDao().getTransactionTimeOf(EntityType.UNIT), unitDeleteEntity.unit().transactionTime());
         List<ErrorEntity> errors = stocksDatabase.errorDao().getErrors();
         assertEquals(1, errors.size());
         assertEquals(ErrorEntity.Action.DELETE_UNIT, errors.get(0).action());
@@ -245,9 +246,10 @@ public class ErrorRecorderImplTest extends DbTestCase {
         assertEquals(1, unitEditEntity.id());
         assertEquals(unitForEditing.id(), unitEditEntity.unit().id());
         assertEquals(unitForEditing.version(), unitEditEntity.version());
-        assertEquals(Instant.EPOCH, unitEditEntity.unit().transactionTime());
+        assertEquals(stocksDatabase.errorDao().getTransactionTimeOf(EntityType.UNIT), unitEditEntity.unit().transactionTime());
         assertEquals(unitForEditing.name(), unitEditEntity.name());
         assertEquals(unitForEditing.abbreviation(), unitEditEntity.abbreviation());
+        assertEquals(getNow(), unitEditEntity.executionTime());
         List<ErrorEntity> errors = stocksDatabase.errorDao().getErrors();
         assertEquals(1, errors.size());
         assertEquals(ErrorEntity.Action.EDIT_UNIT, errors.get(0).action());
@@ -270,6 +272,7 @@ public class ErrorRecorderImplTest extends DbTestCase {
         assertEquals(1, scaledUnitAdds.size());
         assertEquals(form.scale(), scaledUnitAdds.get(0).scale());
         assertEquals(form.unit(), scaledUnitAdds.get(0).unit().id());
+        assertEquals(stocksDatabase.errorDao().getTransactionTimeOf(EntityType.UNIT), scaledUnitAdds.get(0).unit().transactionTime());
         List<ErrorEntity> errors = stocksDatabase.errorDao().getErrors();
         assertEquals(1, errors.size());
         assertEquals(ErrorEntity.Action.ADD_SCALED_UNIT, errors.get(0).action());
@@ -293,10 +296,11 @@ public class ErrorRecorderImplTest extends DbTestCase {
         ScaledUnitEditEntity scaledUnitEditEntity = scaledUnitEdits.get(0);
         assertEquals(form.id(), scaledUnitEditEntity.scaledUnit().id());
         assertEquals(form.version(), scaledUnitEditEntity.version());
-        assertEquals(Instant.EPOCH, scaledUnitEditEntity.scaledUnit().transactionTime());
+        assertEquals(stocksDatabase.errorDao().getTransactionTimeOf(EntityType.SCALED_UNIT), scaledUnitEditEntity.scaledUnit().transactionTime());
         assertEquals(getNow(), scaledUnitEditEntity.executionTime());
         assertEquals(form.scale(), scaledUnitEditEntity.scale());
         assertEquals(form.unit(), scaledUnitEditEntity.unit().id());
+        assertEquals(stocksDatabase.errorDao().getTransactionTimeOf(EntityType.UNIT), scaledUnitEditEntity.unit().transactionTime());
         List<ErrorEntity> errors = stocksDatabase.errorDao().getErrors();
         assertEquals(1, errors.size());
         assertEquals(ErrorEntity.Action.EDIT_SCALED_UNIT, errors.get(0).action());
@@ -320,7 +324,7 @@ public class ErrorRecorderImplTest extends DbTestCase {
         ScaledUnitDeleteEntity scaledUnitDeleteEntity = scaledUnitDeletes.get(0);
         assertEquals(form.id(), scaledUnitDeleteEntity.scaledUnit().id());
         assertEquals(form.version(), scaledUnitDeleteEntity.version());
-        assertEquals(Instant.EPOCH, scaledUnitDeleteEntity.scaledUnit().transactionTime());
+        assertEquals(stocksDatabase.errorDao().getTransactionTimeOf(EntityType.SCALED_UNIT), scaledUnitDeleteEntity.scaledUnit().transactionTime());
         List<ErrorEntity> errors = stocksDatabase.errorDao().getErrors();
         assertEquals(1, errors.size());
         assertEquals(ErrorEntity.Action.DELETE_SCALED_UNIT, errors.get(0).action());
@@ -346,7 +350,9 @@ public class ErrorRecorderImplTest extends DbTestCase {
         assertEquals(form.toBuy(), foodAddEntity.toBuy());
         assertEquals(form.expirationOffset(), foodAddEntity.expirationOffset());
         assertNull(foodAddEntity.location().id());
+        assertEquals(stocksDatabase.errorDao().getTransactionTimeOf(EntityType.LOCATION), foodAddEntity.location().transactionTime());
         assertEquals(form.storeUnit(), foodAddEntity.storeUnit().id());
+        assertEquals(stocksDatabase.errorDao().getTransactionTimeOf(EntityType.SCALED_UNIT), foodAddEntity.storeUnit().transactionTime());
         assertEquals(form.description(), foodAddEntity.description());
         List<ErrorEntity> errors = stocksDatabase.errorDao().getErrors();
         assertEquals(1, errors.size());
@@ -370,6 +376,7 @@ public class ErrorRecorderImplTest extends DbTestCase {
         assertEquals(1, foodDeletes.size());
         FoodDeleteEntity foodDeleteEntity = foodDeletes.get(0);
         assertEquals(input.id(), foodDeleteEntity.food().id());
+        assertEquals(stocksDatabase.errorDao().getTransactionTimeOf(EntityType.FOOD), foodDeleteEntity.food().transactionTime());
         assertEquals(input.version(), foodDeleteEntity.version());
         List<ErrorEntity> errors = stocksDatabase.errorDao().getErrors();
         assertEquals(1, errors.size());
@@ -394,12 +401,14 @@ public class ErrorRecorderImplTest extends DbTestCase {
         FoodEditEntity foodEditEntity = foodEdits.get(0);
         assertEquals(form.id(), foodEditEntity.food().id());
         assertEquals(form.version(), foodEditEntity.version());
-        assertEquals(Instant.EPOCH, foodEditEntity.food().transactionTime());
+        assertEquals(stocksDatabase.errorDao().getTransactionTimeOf(EntityType.FOOD), foodEditEntity.food().transactionTime());
         assertEquals(getNow(), foodEditEntity.executionTime());
         assertEquals(form.name(), foodEditEntity.name());
         assertEquals(form.expirationOffset(), foodEditEntity.expirationOffset());
         assertEquals(form.location(), foodEditEntity.location().maybe().map(PreservedId::id));
+        assertEquals(stocksDatabase.errorDao().getTransactionTimeOf(EntityType.LOCATION), foodEditEntity.location().transactionTime());
         assertEquals(form.storeUnit(), foodEditEntity.storeUnit().id());
+        assertEquals(stocksDatabase.errorDao().getTransactionTimeOf(EntityType.SCALED_UNIT), foodEditEntity.storeUnit().transactionTime());
         assertEquals(form.description(), foodEditEntity.description());
         List<ErrorEntity> errors = stocksDatabase.errorDao().getErrors();
         assertEquals(1, errors.size());

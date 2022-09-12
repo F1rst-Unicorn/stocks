@@ -46,7 +46,7 @@ class FoodEditServiceImpl extends ServiceBase<FoodForEditing> implements FoodEdi
                 input.version(),
                 input.name(),
                 input.expirationOffset().getDays(),
-                input.location().orElse(null),
+                input.location().orElse(0),
                 input.description(),
                 input.storeUnit());
     }

@@ -39,7 +39,6 @@ import org.slf4j.LoggerFactory;
 import javax.inject.Singleton;
 import java.time.Instant;
 import java.util.concurrent.Executor;
-import java.util.function.Supplier;
 
 @Module
 public interface DatabaseModule {
@@ -69,7 +68,7 @@ public interface DatabaseModule {
     }
 
     @Provides
-    static Supplier<Instant> clock() {
+    static Clock clock() {
         return Instant::now;
     }
 

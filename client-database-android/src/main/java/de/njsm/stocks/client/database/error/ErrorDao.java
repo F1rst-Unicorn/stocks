@@ -142,7 +142,8 @@ public abstract class ErrorDao {
             "and valid_time_start = (" +
             "   select max(valid_time_start) " +
             "   from location " +
-            "   where valid_time_start <= " + NOW +
+            "   where id = :id " +
+            "   and valid_time_start <= " + NOW +
             "   and transaction_time_start <= :transactionTime " +
             "   and :transactionTime < transaction_time_end " +
             ")")
@@ -155,7 +156,8 @@ public abstract class ErrorDao {
             "and valid_time_start = (" +
             "   select max(valid_time_start) " +
             "   from location " +
-            "   where valid_time_start <= " + NOW +
+            "   where id = :id " +
+            "   and valid_time_start <= " + NOW +
             "   and transaction_time_end = " + DATABASE_INFINITY_STRING_SQL +
             ")")
     abstract LocationDbEntity getLatestLocationAsBestKnown(int id);

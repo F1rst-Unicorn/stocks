@@ -218,7 +218,7 @@ components:
           minimum: 1
           description: |
             An id referencing the location where this food type is usually
-            stored in.
+            stored in. Set to 0 to have no default location.
         toBuy:
           type: boolean
           description: Is this food type marked to buy.
@@ -844,7 +844,8 @@ paths:
         - name: location
           in: query
           description: |
-            The id referencing the default location for this food to set.
+            The id referencing the default location for this food to set. Set to
+            0 to have no default location.
           required: false
           schema:
             type: integer

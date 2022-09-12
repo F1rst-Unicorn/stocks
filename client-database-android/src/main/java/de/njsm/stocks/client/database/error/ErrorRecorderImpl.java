@@ -26,6 +26,7 @@ import de.njsm.stocks.client.business.ErrorRecorder;
 import de.njsm.stocks.client.business.StatusCodeException;
 import de.njsm.stocks.client.business.SubsystemException;
 import de.njsm.stocks.client.business.entities.*;
+import de.njsm.stocks.client.database.Clock;
 import de.njsm.stocks.client.database.NullablePreservedId;
 import de.njsm.stocks.client.database.PreservedId;
 
@@ -33,7 +34,6 @@ import javax.inject.Inject;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.time.Instant;
-import java.util.function.Supplier;
 
 import static de.njsm.stocks.client.database.DataMapper.map;
 import static java.util.Optional.ofNullable;
@@ -42,10 +42,10 @@ public class ErrorRecorderImpl implements ErrorRecorder {
 
     private final ErrorDao errorDao;
 
-    private final Supplier<Instant> clock;
+    private final Clock clock;
 
     @Inject
-    ErrorRecorderImpl(ErrorDao errorDao, Supplier<Instant> clock) {
+    ErrorRecorderImpl(ErrorDao errorDao, Clock clock) {
         this.errorDao = errorDao;
         this.clock = clock;
     }
@@ -188,14 +188,14 @@ public class ErrorRecorderImpl implements ErrorRecorder {
         ExceptionData exceptionData = new ExceptionInserter().visit(e, null);
         Instant currentTransactionTime = errorDao.getTransactionTimeOf(EntityType.FOOD);
         Instant currentLocationTransactionTime = errorDao.getTransactionTimeOf(EntityType.LOCATION);
-        Instant currentUnitTransactionTime = errorDao.getTransactionTimeOf(EntityType.UNIT);
+        Instant currentStoreUnitTransactionTime = errorDao.getTransactionTimeOf(EntityType.SCALED_UNIT);
         FoodEditEntity entity = FoodEditEntity.create(
                 foodForEditing.version(),
                 PreservedId.create(foodForEditing.id(), currentTransactionTime),
                 foodForEditing.name(),
                 foodForEditing.expirationOffset(),
                 NullablePreservedId.create(foodForEditing.location().orElse(null), currentLocationTransactionTime),
-                PreservedId.create(foodForEditing.storeUnit(), currentUnitTransactionTime),
+                PreservedId.create(foodForEditing.storeUnit(), currentStoreUnitTransactionTime),
                 foodForEditing.description(),
                 clock.get());
         long dataId = errorDao.insert(entity);
