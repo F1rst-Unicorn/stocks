@@ -31,7 +31,7 @@ import de.njsm.stocks.client.business.FakeScaledUnitListInteractor;
 import de.njsm.stocks.client.business.entities.ScaledUnit;
 import de.njsm.stocks.client.business.entities.ScaledUnitForListing;
 import de.njsm.stocks.client.navigation.ScaledUnitListNavigator;
-import de.njsm.stocks.client.presenter.ScaledUnitRenderStrategy;
+import de.njsm.stocks.client.presenter.UnitAmountRenderStrategy;
 import de.njsm.stocks.client.testdata.ScaledUnitsForListing;
 import de.njsm.stocks.client.ui.R;
 import org.junit.After;
@@ -66,7 +66,7 @@ public class ScaledUnitListFragmentTest {
 
     private EntityDeleter<ScaledUnit> scaledUnitDeleter;
 
-    private ScaledUnitRenderStrategy scaledUnitRenderStrategy;
+    private UnitAmountRenderStrategy unitAmountRenderStrategy;
 
     @Before
     public void setUp() {
@@ -86,7 +86,7 @@ public class ScaledUnitListFragmentTest {
 
         for (ScaledUnitForListing item : ScaledUnitsForListing.generate()) {
             onView(withId(R.id.template_swipe_list_list))
-                    .check(matches(withChild(allOf(withText(scaledUnitRenderStrategy.render(item))))));
+                    .check(matches(withChild(allOf(withText(unitAmountRenderStrategy.render(item))))));
         }
     }
 
@@ -150,7 +150,7 @@ public class ScaledUnitListFragmentTest {
     }
 
     @Inject
-    void setScaledUnitRenderStrategy(ScaledUnitRenderStrategy scaledUnitRenderStrategy) {
-        this.scaledUnitRenderStrategy = scaledUnitRenderStrategy;
+    void setScaledUnitRenderStrategy(UnitAmountRenderStrategy unitAmountRenderStrategy) {
+        this.unitAmountRenderStrategy = unitAmountRenderStrategy;
     }
 }

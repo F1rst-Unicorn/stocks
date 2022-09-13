@@ -32,19 +32,24 @@ public abstract class ScaledUnitEditErrorDetails implements ScaledUnitFields, Fu
     public abstract int id();
 
     @Override
-    @Memoized
-    public UnitPrefix unitPrefix() {
-        return FullScaledUnitSummaryFields.super.unitPrefix();
+    public BigDecimal scale() {
+        return FullScaledUnitSummaryFields.super.scale();
     }
 
     @Override
     @Memoized
-    public BigDecimal prefixedScale() {
-        return FullScaledUnitSummaryFields.super.prefixedScale();
+    public UnitPrefix decimalPrefix() {
+        return FullScaledUnitSummaryFields.super.decimalPrefix();
+    }
+
+    @Override
+    @Memoized
+    public BigDecimal prefixedAmount() {
+        return FullScaledUnitSummaryFields.super.prefixedAmount();
     }
 
     public static ScaledUnitEditErrorDetails create(int id, BigDecimal scale, int unit, String name, String abbreviation) {
-        return new AutoValue_ScaledUnitEditErrorDetails(scale, unit, abbreviation, name, id);
+        return new AutoValue_ScaledUnitEditErrorDetails(unit, scale, abbreviation, name, id);
     }
 
     @Override

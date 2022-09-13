@@ -28,6 +28,8 @@ import io.reactivex.rxjava3.core.Observable;
 import javax.inject.Inject;
 import java.util.List;
 
+import static java.util.stream.Collectors.toList;
+
 public class ScaledUnitRepositoryImpl implements ScaledUnitRepository {
 
     private final ScaledUnitDao scaledUnitDao;
@@ -39,7 +41,10 @@ public class ScaledUnitRepositoryImpl implements ScaledUnitRepository {
 
     @Override
     public Observable<List<ScaledUnitForListing>> getScaledUnits() {
-        return scaledUnitDao.getCurrentScaledUnits();
+        return scaledUnitDao.getCurrentScaledUnits()
+                .map(v -> v.stream().map(w ->
+                        ScaledUnitForListing.create(w.id(), w.abbreviation(), w.scale()))
+                        .collect(toList()));
     }
 
     @Override
@@ -50,6 +55,9 @@ public class ScaledUnitRepositoryImpl implements ScaledUnitRepository {
     @Override
     public Observable<List<ScaledUnitForSelection>> getScaledUnitsForSelection() {
         return scaledUnitDao.getScaledUnitsForSelection()
-                .distinctUntilChanged();
+                .distinctUntilChanged()
+                .map(v -> v.stream().map(w ->
+                                ScaledUnitForSelection.create(w.id(), w.abbreviation(), w.scale()))
+                        .collect(toList()));
     }
 }

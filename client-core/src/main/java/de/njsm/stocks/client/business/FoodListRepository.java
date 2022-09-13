@@ -19,29 +19,15 @@
  *
  */
 
-package de.njsm.stocks.client.business.entities;
+package de.njsm.stocks.client.business;
 
-import com.google.auto.value.AutoValue;
-import com.google.auto.value.extension.memoized.Memoized;
+import de.njsm.stocks.client.business.entities.FoodForListing;
+import de.njsm.stocks.client.business.entities.Identifiable;
+import de.njsm.stocks.client.business.entities.Location;
+import io.reactivex.rxjava3.core.Observable;
 
-import java.math.BigDecimal;
+import java.util.List;
 
-@AutoValue
-public abstract class ScaledUnitForSelection implements Identifiable<ScaledUnit>, ScaledUnitSummaryFields {
-
-    @Override
-    @Memoized
-    public UnitPrefix decimalPrefix() {
-        return ScaledUnitSummaryFields.super.decimalPrefix();
-    }
-
-    @Override
-    @Memoized
-    public BigDecimal prefixedAmount() {
-        return ScaledUnitSummaryFields.super.prefixedAmount();
-    }
-
-    public static ScaledUnitForSelection create(int id, String abbreviation, BigDecimal scale) {
-        return new AutoValue_ScaledUnitForSelection(id, scale, abbreviation);
-    }
+public interface FoodListRepository {
+    Observable<List<FoodForListing>> getFoodBy(Identifiable<Location> location);
 }

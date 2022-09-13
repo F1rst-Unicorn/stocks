@@ -22,20 +22,20 @@
 package de.njsm.stocks.client.fragment.errorlist;
 
 import de.njsm.stocks.client.business.entities.*;
-import de.njsm.stocks.client.presenter.ScaledUnitRenderStrategy;
+import de.njsm.stocks.client.presenter.UnitAmountRenderStrategy;
 import de.njsm.stocks.client.presenter.UnitRenderStrategy;
 
 import javax.inject.Inject;
 
 public class ErrorDetailsDetailsVisitor implements ErrorDetailsVisitor<Void, String> {
 
-    private final ScaledUnitRenderStrategy scaledUnitRenderStrategy;
+    private final UnitAmountRenderStrategy unitAmountRenderStrategy;
 
     private final UnitRenderStrategy unitRenderStrategy;
 
     @Inject
     ErrorDetailsDetailsVisitor() {
-        this.scaledUnitRenderStrategy = new ScaledUnitRenderStrategy();
+        this.unitAmountRenderStrategy = new UnitAmountRenderStrategy();
         this.unitRenderStrategy = new UnitRenderStrategy();
     }
 
@@ -76,17 +76,17 @@ public class ErrorDetailsDetailsVisitor implements ErrorDetailsVisitor<Void, Str
 
     @Override
     public String scaledUnitAddErrorDetails(ScaledUnitAddErrorDetails scaledUnitAddErrorDetails, Void input) {
-        return scaledUnitRenderStrategy.render(scaledUnitAddErrorDetails);
+        return unitAmountRenderStrategy.render(scaledUnitAddErrorDetails);
     }
 
     @Override
     public String scaledUnitEditErrorDetails(ScaledUnitEditErrorDetails scaledUnitEditErrorDetails, Void input) {
-        return scaledUnitRenderStrategy.render(scaledUnitEditErrorDetails);
+        return unitAmountRenderStrategy.render(scaledUnitEditErrorDetails);
     }
 
     @Override
     public String scaledUnitDeleteErrorDetails(ScaledUnitDeleteErrorDetails scaledUnitDeleteErrorDetails, Void input) {
-        return scaledUnitRenderStrategy.render(scaledUnitDeleteErrorDetails);
+        return unitAmountRenderStrategy.render(scaledUnitDeleteErrorDetails);
     }
 
     @Override

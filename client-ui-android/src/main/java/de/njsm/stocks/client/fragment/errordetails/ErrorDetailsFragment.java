@@ -33,7 +33,7 @@ import de.njsm.stocks.client.databind.StatusCodeTranslator;
 import de.njsm.stocks.client.fragment.InjectableFragment;
 import de.njsm.stocks.client.navigation.ErrorDetailsNavigator;
 import de.njsm.stocks.client.presenter.ErrorDetailsViewModel;
-import de.njsm.stocks.client.presenter.ScaledUnitRenderStrategy;
+import de.njsm.stocks.client.presenter.UnitAmountRenderStrategy;
 import de.njsm.stocks.client.ui.R;
 
 import javax.inject.Inject;
@@ -106,10 +106,10 @@ public class ErrorDetailsFragment extends InjectableFragment {
 
     static final class ErrorDetailsPrinter implements ErrorDetailsVisitor<Void, String> {
 
-        private final ScaledUnitRenderStrategy scaledUnitRenderStrategy;
+        private final UnitAmountRenderStrategy unitAmountRenderStrategy;
 
         ErrorDetailsPrinter() {
-            scaledUnitRenderStrategy = new ScaledUnitRenderStrategy();
+            unitAmountRenderStrategy = new UnitAmountRenderStrategy();
         }
 
         @Override
@@ -153,17 +153,17 @@ public class ErrorDetailsFragment extends InjectableFragment {
 
         @Override
         public String scaledUnitAddErrorDetails(ScaledUnitAddErrorDetails scaledUnitAddErrorDetails, Void input) {
-            return scaledUnitRenderStrategy.render(scaledUnitAddErrorDetails);
+            return unitAmountRenderStrategy.render(scaledUnitAddErrorDetails);
         }
 
         @Override
         public String scaledUnitEditErrorDetails(ScaledUnitEditErrorDetails scaledUnitEditErrorDetails, Void input) {
-            return scaledUnitRenderStrategy.render(scaledUnitEditErrorDetails);
+            return unitAmountRenderStrategy.render(scaledUnitEditErrorDetails);
         }
 
         @Override
         public String scaledUnitDeleteErrorDetails(ScaledUnitDeleteErrorDetails scaledUnitDeleteErrorDetails, Void input) {
-            return scaledUnitRenderStrategy.render(scaledUnitDeleteErrorDetails);
+            return unitAmountRenderStrategy.render(scaledUnitDeleteErrorDetails);
         }
 
 
@@ -178,7 +178,7 @@ public class ErrorDetailsFragment extends InjectableFragment {
                 result.append(", ");
             });
 
-            result.append(scaledUnitRenderStrategy.render(foodAddErrorDetails.storeUnitEntity()));
+            result.append(unitAmountRenderStrategy.render(foodAddErrorDetails.storeUnitEntity()));
             result.append(")");
 
             if (!foodAddErrorDetails.description().isEmpty()) {

@@ -29,7 +29,7 @@ import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 import de.njsm.stocks.client.business.entities.ScaledUnitForListing;
 import de.njsm.stocks.client.fragment.view.TextWithPrefixIconViewHolder;
-import de.njsm.stocks.client.presenter.ScaledUnitRenderStrategy;
+import de.njsm.stocks.client.presenter.UnitAmountRenderStrategy;
 import de.njsm.stocks.client.ui.R;
 
 import java.util.List;
@@ -42,11 +42,11 @@ public class ScaledUnitListAdapter extends RecyclerView.Adapter<TextWithPrefixIc
 
     private final View.OnClickListener onClickListener;
 
-    private final ScaledUnitRenderStrategy scaledUnitRenderStrategy;
+    private final UnitAmountRenderStrategy unitAmountRenderStrategy;
 
     public ScaledUnitListAdapter(View.OnClickListener onClickListener) {
         this.onClickListener = onClickListener;
-        scaledUnitRenderStrategy = new ScaledUnitRenderStrategy();
+        unitAmountRenderStrategy = new UnitAmountRenderStrategy();
     }
 
     public void setData(List<ScaledUnitForListing> newList) {
@@ -67,7 +67,7 @@ public class ScaledUnitListAdapter extends RecyclerView.Adapter<TextWithPrefixIc
     @Override
     public void onBindViewHolder(@NonNull TextWithPrefixIconViewHolder holder, int position) {
         ScaledUnitForListing item = scaledUnits.get(position);
-        holder.setText(scaledUnitRenderStrategy.render(item));
+        holder.setText(unitAmountRenderStrategy.render(item));
     }
 
     @Override

@@ -32,6 +32,7 @@ import de.njsm.stocks.client.business.entities.EmptyFood;
 import de.njsm.stocks.client.business.entities.Food;
 import de.njsm.stocks.client.business.entities.Identifiable;
 import de.njsm.stocks.client.navigation.EmptyFoodNavigator;
+import de.njsm.stocks.client.presenter.UnitAmountRenderStrategy;
 import de.njsm.stocks.client.testdata.FoodsForListing;
 import de.njsm.stocks.client.ui.R;
 import org.junit.After;
@@ -63,10 +64,13 @@ public class EmptyFoodFragmentTest {
 
     private EntityDeleter<Food> deleter;
 
+    private UnitAmountRenderStrategy unitAmountRenderStrategy;
+
     @Before
     public void setUp() {
         ((Application) InstrumentationRegistry.getInstrumentation().getTargetContext().getApplicationContext()).getDaggerRoot().inject(this);
         scenario = FragmentScenario.launchInContainer(EmptyFoodFragment.class, new Bundle(), R.style.StocksTheme);
+        unitAmountRenderStrategy = new UnitAmountRenderStrategy();
     }
 
     @After
@@ -105,6 +109,9 @@ public class EmptyFoodFragmentTest {
             onView(recyclerView(R.id.template_swipe_list_list)
                     .atPositionOnView(position, R.id.item_food_outline_shopping_flag))
                     .check(matches(withEffectiveVisibility(expectedShoppingCartVisibility)));
+            onView(recyclerView(R.id.template_swipe_list_list)
+                    .atPositionOnView(position, R.id.item_food_outline_count))
+                    .check(matches(withText(unitAmountRenderStrategy.render(item.storedAmount()))));
             position++;
         }
     }

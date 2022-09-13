@@ -29,6 +29,7 @@ import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 import de.njsm.stocks.client.business.entities.EmptyFood;
 import de.njsm.stocks.client.fragment.view.FoodOutlineViewHolder;
+import de.njsm.stocks.client.presenter.UnitAmountRenderStrategy;
 import de.njsm.stocks.client.ui.R;
 
 import java.util.List;
@@ -43,9 +44,12 @@ public class FoodAdapter extends RecyclerView.Adapter<FoodOutlineViewHolder> {
 
     private final View.OnLongClickListener onLongClickListener;
 
+    private final UnitAmountRenderStrategy unitAmountRenderStrategy;
+
     public FoodAdapter(View.OnClickListener onClickListener, View.OnLongClickListener onLongClickListener) {
         this.onClickListener = onClickListener;
         this.onLongClickListener = onLongClickListener;
+        unitAmountRenderStrategy = new UnitAmountRenderStrategy();
     }
 
     public void setData(List<EmptyFood> newList) {
@@ -63,7 +67,6 @@ public class FoodAdapter extends RecyclerView.Adapter<FoodOutlineViewHolder> {
         v.setOnLongClickListener(onLongClickListener);
         FoodOutlineViewHolder result = new FoodOutlineViewHolder(v);
         result.hideExpirationDate();
-        result.setAmount(0);
         return result;
     }
 
@@ -72,6 +75,7 @@ public class FoodAdapter extends RecyclerView.Adapter<FoodOutlineViewHolder> {
         EmptyFood item = foods.get(position);
         holder.setName(item.name());
         holder.showToBuy(item.toBuy());
+        holder.setAmount(unitAmountRenderStrategy.render(item.storedAmount()));
     }
 
     @Override

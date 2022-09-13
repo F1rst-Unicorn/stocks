@@ -23,7 +23,6 @@ package de.njsm.stocks.client.database;
 
 import androidx.room.Dao;
 import androidx.room.Query;
-import de.njsm.stocks.client.business.entities.EmptyFood;
 import de.njsm.stocks.client.business.entities.FoodForDeletion;
 import io.reactivex.rxjava3.core.Observable;
 
@@ -36,14 +35,16 @@ abstract class FoodDao {
             "from current_food")
     abstract List<FoodDbEntity> getAll();
 
-    @Query("select id, name, to_buy as toBuy " +
-            "from current_food " +
-            "where id not in (" +
+    @Query("select f.id, f.name, f.to_buy as toBuy, u.abbreviation as unitAbbreviation " +
+            "from current_food f " +
+            "join current_scaled_unit s on f.store_unit = s.id " +
+            "join current_unit u on s.unit = u.id " +
+            "where f.id not in (" +
             "   select of_type " +
             "   from current_food_item" +
             ") " +
-            "order by name")
-    abstract Observable<List<EmptyFood>> getCurrentEmptyFood();
+            "order by f.name")
+    abstract Observable<List<EmptyFoodRecord>> getCurrentEmptyFood();
 
     @Query("select * " +
             "from current_food " +

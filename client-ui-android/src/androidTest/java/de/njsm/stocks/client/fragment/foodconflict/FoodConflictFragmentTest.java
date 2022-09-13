@@ -32,7 +32,7 @@ import de.njsm.stocks.client.business.entities.*;
 import de.njsm.stocks.client.business.entities.conflict.*;
 import de.njsm.stocks.client.fragment.TestUtility;
 import de.njsm.stocks.client.navigation.FoodConflictNavigator;
-import de.njsm.stocks.client.presenter.ScaledUnitRenderStrategy;
+import de.njsm.stocks.client.presenter.UnitAmountRenderStrategy;
 import de.njsm.stocks.client.ui.R;
 import org.junit.After;
 import org.junit.Before;
@@ -65,11 +65,11 @@ public class FoodConflictFragmentTest implements TestUtility {
 
     private ErrorRetryInteractor errorRetryInteractor;
 
-    private ScaledUnitRenderStrategy unitRenderStrategy;
+    private UnitAmountRenderStrategy unitRenderStrategy;
 
     @Before
     public void setup() {
-        unitRenderStrategy = new ScaledUnitRenderStrategy();
+        unitRenderStrategy = new UnitAmountRenderStrategy();
         ((Application) InstrumentationRegistry.getInstrumentation().getTargetContext().getApplicationContext()).getDaggerRoot().inject(this);
         conflictInteractor.reset();
         reset(navigator);

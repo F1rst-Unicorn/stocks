@@ -129,4 +129,7 @@ public interface BusinessModule {
 
     @Binds
     FoodConflictInteractor FoodConflictInteractor(FoodConflictInteractorImpl impl);
+
+    @Binds
+    FoodByLocationListInteractor FoodByLocationListInteractor(FoodByLocationListInteractorImpl impl);
 }

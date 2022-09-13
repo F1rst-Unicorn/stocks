@@ -52,8 +52,8 @@ public class FoodOutlineViewHolder extends RecyclerView.ViewHolder {
         shoppingCart.setVisibility(show ? View.VISIBLE : View.GONE);
     }
 
-    public void setAmount(int amount) {
-        this.amount.setText(String.valueOf(amount));
+    public void setAmount(String amount) {
+        this.amount.setText(amount);
     }
 
     public void hideExpirationDate() {

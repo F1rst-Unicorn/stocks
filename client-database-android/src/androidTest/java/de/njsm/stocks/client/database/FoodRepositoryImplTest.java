@@ -23,6 +23,7 @@ package de.njsm.stocks.client.database;
 
 import de.njsm.stocks.client.business.entities.EmptyFood;
 import de.njsm.stocks.client.business.entities.Food;
+import de.njsm.stocks.client.business.entities.NoStoredAmount;
 import de.njsm.stocks.client.business.entities.Versionable;
 import de.njsm.stocks.client.database.util.Util;
 import io.reactivex.rxjava3.core.Observable;
@@ -45,12 +46,21 @@ public class FoodRepositoryImplTest extends DbTestCase {
 
     @Test
     public void gettingWorks() {
-        FoodDbEntity entity = standardEntities.foodDbEntity();
+        UnitDbEntity unit = standardEntities.unitDbEntity();
+        stocksDatabase.synchronisationDao().writeUnits(singletonList(unit));
+        ScaledUnitDbEntity scaledUnit = standardEntities.scaledUnitDbEntityBuilder()
+                .unit(unit.id())
+                .build();
+        stocksDatabase.synchronisationDao().writeScaledUnits(singletonList(scaledUnit));
+        FoodDbEntity entity = standardEntities.foodDbEntityBuilder()
+                .storeUnit(scaledUnit.id())
+                .build();
         stocksDatabase.synchronisationDao().writeFood(singletonList(entity));
 
         Observable<List<EmptyFood>> output = uut.get();
 
-        Util.testList(output).assertValue(singletonList(EmptyFood.create(entity.id(), entity.name(), entity.toBuy())));
+        Util.testList(output).assertValue(singletonList(
+                EmptyFood.create(entity.id(), entity.name(), entity.toBuy(), NoStoredAmount.create(unit.abbreviation()))));
     }
 
     @Test

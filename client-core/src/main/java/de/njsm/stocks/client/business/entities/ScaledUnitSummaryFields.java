@@ -22,52 +22,10 @@
 package de.njsm.stocks.client.business.entities;
 
 import java.math.BigDecimal;
-import java.math.MathContext;
 
-import static de.njsm.stocks.client.business.entities.UnitPrefix.OTHER;
-import static de.njsm.stocks.client.business.entities.UnitPrefix.THOUSAND;
-import static java.math.BigDecimal.ZERO;
+public interface ScaledUnitSummaryFields extends UnitAmount {
 
-public interface ScaledUnitSummaryFields {
-
-    BigDecimal scale();
-
-    String abbreviation();
-
-    default UnitPrefix unitPrefix() {
-        return computeUnitPrefix(scale());
-    }
-
-    default BigDecimal prefixedScale() {
-        return scale().divide(unitPrefix().getFactor());
-    }
-
-    static UnitPrefix computeUnitPrefix(BigDecimal input) {
-        int exponent = computeExponent(input);
-        int index = -exponent + 8;
-
-        if (0 <= index && index < UnitPrefix.values().length - 1)
-            return UnitPrefix.values()[index];
-        else
-            return OTHER;
-    }
-
-    static int computeExponent(BigDecimal input) {
-        int result = 0;
-        if (input.compareTo(ZERO) == 0)
-            return result;
-
-        BigDecimal iterator = input;
-        while (iterator.compareTo(THOUSAND) >= 0) {
-            result++;
-            iterator = iterator.divide(THOUSAND, MathContext.UNLIMITED);
-        }
-
-        while (iterator.compareTo(BigDecimal.ONE) < 0) {
-            result--;
-            iterator = iterator.multiply(THOUSAND);
-        }
-
-        return result;
+    default BigDecimal scale() {
+        return amount();
     }
 }

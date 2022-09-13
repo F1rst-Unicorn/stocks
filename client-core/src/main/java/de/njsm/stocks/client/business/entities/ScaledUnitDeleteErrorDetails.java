@@ -31,14 +31,14 @@ public abstract class ScaledUnitDeleteErrorDetails implements ErrorDetails, Iden
 
     @Override
     @Memoized
-    public UnitPrefix unitPrefix() {
-        return FullScaledUnitSummaryFields.super.unitPrefix();
+    public UnitPrefix decimalPrefix() {
+        return FullScaledUnitSummaryFields.super.decimalPrefix();
     }
 
     @Override
     @Memoized
-    public BigDecimal prefixedScale() {
-        return FullScaledUnitSummaryFields.super.prefixedScale();
+    public BigDecimal prefixedAmount() {
+        return FullScaledUnitSummaryFields.super.prefixedAmount();
     }
 
     public static ScaledUnitDeleteErrorDetails create(int id, BigDecimal scale, String name, String abbreviation) {

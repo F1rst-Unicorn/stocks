@@ -23,14 +23,13 @@ package de.njsm.stocks.client.database;
 
 import de.njsm.stocks.client.business.EmptyFoodRepository;
 import de.njsm.stocks.client.business.EntityDeleteRepository;
-import de.njsm.stocks.client.business.entities.EmptyFood;
-import de.njsm.stocks.client.business.entities.Food;
-import de.njsm.stocks.client.business.entities.Identifiable;
-import de.njsm.stocks.client.business.entities.Versionable;
+import de.njsm.stocks.client.business.entities.*;
 import io.reactivex.rxjava3.core.Observable;
 
 import javax.inject.Inject;
 import java.util.List;
+
+import static java.util.stream.Collectors.toList;
 
 class FoodRepositoryImpl implements EmptyFoodRepository, EntityDeleteRepository<Food> {
 
@@ -43,7 +42,10 @@ class FoodRepositoryImpl implements EmptyFoodRepository, EntityDeleteRepository<
 
     @Override
     public Observable<List<EmptyFood>> get() {
-        return foodDao.getCurrentEmptyFood();
+        return foodDao.getCurrentEmptyFood()
+                .map(v -> v.stream().map(f ->
+                        EmptyFood.create(f.id(), f.name(), f.toBuy(), NoStoredAmount.create(f.unitAbbreviation()))
+                        ).collect(toList()));
     }
 
     @Override

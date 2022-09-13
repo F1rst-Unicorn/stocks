@@ -31,14 +31,14 @@ public abstract class ScaledUnitForListing implements Identifiable<ScaledUnit>, 
 
     @Override
     @Memoized
-    public UnitPrefix unitPrefix() {
-        return ScaledUnitSummaryFields.super.unitPrefix();
+    public UnitPrefix decimalPrefix() {
+        return ScaledUnitSummaryFields.super.decimalPrefix();
     }
 
     @Override
     @Memoized
-    public BigDecimal prefixedScale() {
-        return ScaledUnitSummaryFields.super.prefixedScale();
+    public BigDecimal prefixedAmount() {
+        return ScaledUnitSummaryFields.super.prefixedAmount();
     }
 
     public static ScaledUnitForListing create(int id, String abbreviation, BigDecimal scale) {

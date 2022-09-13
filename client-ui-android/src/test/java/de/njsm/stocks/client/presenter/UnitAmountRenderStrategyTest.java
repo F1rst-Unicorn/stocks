@@ -31,9 +31,9 @@ import java.util.Locale;
 
 import static org.junit.Assert.assertEquals;
 
-public class ScaledUnitRenderStrategyTest {
+public class UnitAmountRenderStrategyTest {
 
-    private ScaledUnitRenderStrategy uut = new ScaledUnitRenderStrategy();
+    private UnitAmountRenderStrategy uut = new UnitAmountRenderStrategy();
 
     private Locale backup;
 

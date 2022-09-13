@@ -33,7 +33,7 @@ import de.njsm.stocks.client.business.entities.FoodToEdit;
 import de.njsm.stocks.client.business.entities.LocationForSelection;
 import de.njsm.stocks.client.business.entities.ScaledUnitForSelection;
 import de.njsm.stocks.client.navigation.FoodEditNavigator;
-import de.njsm.stocks.client.presenter.ScaledUnitRenderStrategy;
+import de.njsm.stocks.client.presenter.UnitAmountRenderStrategy;
 import de.njsm.stocks.client.testdata.FoodsToEdit;
 import de.njsm.stocks.client.testdata.LocationsForSelection;
 import de.njsm.stocks.client.testdata.ScaledUnitsForSelection;
@@ -90,7 +90,7 @@ public class FoodEditFragmentTest {
 
     @Test
     public void uiIsShown() {
-        ScaledUnitRenderStrategy renderStrategy = new ScaledUnitRenderStrategy();
+        UnitAmountRenderStrategy renderStrategy = new UnitAmountRenderStrategy();
 
         onView(allOf(
                 isDescendantOfA(withId(R.id.fragment_food_form_name)),

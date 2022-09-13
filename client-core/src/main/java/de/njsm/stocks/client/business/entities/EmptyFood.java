@@ -23,8 +23,6 @@ package de.njsm.stocks.client.business.entities;
 
 import com.google.auto.value.AutoValue;
 
-import java.util.IdentityHashMap;
-
 @AutoValue
 public abstract class EmptyFood implements Identifiable<Food> {
 
@@ -32,7 +30,9 @@ public abstract class EmptyFood implements Identifiable<Food> {
 
     public abstract boolean toBuy();
 
-    public static EmptyFood create(int id, String name, boolean toBuy) {
-        return new AutoValue_EmptyFood(id, name, toBuy);
+    public abstract NoStoredAmount storedAmount();
+
+    public static EmptyFood create(int id, String name, boolean toBuy, NoStoredAmount storedAmount) {
+        return new AutoValue_EmptyFood(id, name, toBuy, storedAmount);
     }
 }

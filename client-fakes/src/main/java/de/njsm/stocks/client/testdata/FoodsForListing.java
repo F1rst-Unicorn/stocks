@@ -22,6 +22,7 @@
 package de.njsm.stocks.client.testdata;
 
 import de.njsm.stocks.client.business.entities.EmptyFood;
+import de.njsm.stocks.client.business.entities.NoStoredAmount;
 import io.reactivex.rxjava3.subjects.BehaviorSubject;
 
 import java.util.ArrayList;
@@ -38,8 +39,8 @@ public class FoodsForListing {
 
     public static List<EmptyFood> getEmpty() {
         return new ArrayList<>(Arrays.asList(
-                EmptyFood.create(1, "Banana", false),
-                EmptyFood.create(4, "Cheese", true)
+                EmptyFood.create(1, "Banana", false, NoStoredAmount.create("p")),
+                EmptyFood.create(4, "Cheese", true, NoStoredAmount.create("g"))
         ));
     }
 

@@ -19,29 +19,23 @@
  *
  */
 
-package de.njsm.stocks.client.business.entities;
+package de.njsm.stocks.client.database;
 
+import androidx.room.ColumnInfo;
 import com.google.auto.value.AutoValue;
-import com.google.auto.value.extension.memoized.Memoized;
-
-import java.math.BigDecimal;
 
 @AutoValue
-public abstract class ScaledUnitForSelection implements Identifiable<ScaledUnit>, ScaledUnitSummaryFields {
+abstract class EmptyFoodRecord {
 
-    @Override
-    @Memoized
-    public UnitPrefix decimalPrefix() {
-        return ScaledUnitSummaryFields.super.decimalPrefix();
-    }
+    public abstract int id();
 
-    @Override
-    @Memoized
-    public BigDecimal prefixedAmount() {
-        return ScaledUnitSummaryFields.super.prefixedAmount();
-    }
+    public abstract String name();
 
-    public static ScaledUnitForSelection create(int id, String abbreviation, BigDecimal scale) {
-        return new AutoValue_ScaledUnitForSelection(id, scale, abbreviation);
+    public abstract boolean toBuy();
+
+    public abstract String unitAbbreviation();
+
+    public static EmptyFoodRecord create(int id, String name, boolean toBuy, String unitAbbreviation) {
+        return new AutoValue_EmptyFoodRecord(id, name, toBuy, unitAbbreviation);
     }
 }

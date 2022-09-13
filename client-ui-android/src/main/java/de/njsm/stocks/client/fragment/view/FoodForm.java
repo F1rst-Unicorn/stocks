@@ -30,7 +30,7 @@ import de.njsm.stocks.client.business.entities.LocationForSelection;
 import de.njsm.stocks.client.business.entities.ScaledUnitForListing;
 import de.njsm.stocks.client.business.entities.ScaledUnitForSelection;
 import de.njsm.stocks.client.business.entities.conflict.ConflictData;
-import de.njsm.stocks.client.presenter.ScaledUnitRenderStrategy;
+import de.njsm.stocks.client.presenter.UnitAmountRenderStrategy;
 import de.njsm.stocks.client.ui.R;
 
 import java.time.Period;
@@ -139,7 +139,7 @@ public class FoodForm {
 
     public void showUnits(List<ScaledUnitForSelection> unitsForSelection) {
         unitAdapter.clear();
-        ScaledUnitRenderStrategy renderStrategy = new ScaledUnitRenderStrategy();
+        UnitAmountRenderStrategy renderStrategy = new UnitAmountRenderStrategy();
         unitAdapter.addAll(unitsForSelection.stream()
                 .map(v -> new EntityStringDisplayWrapper<>(v, renderStrategy::render))
                 .collect(toList()));
@@ -229,7 +229,7 @@ public class FoodForm {
     }
 
     public void showStoreUnitConflict(ConflictData<ScaledUnitForListing> storeUnit) {
-        storeUnitField.showConflictInfo(storeUnit, new ScaledUnitRenderStrategy()::render);
+        storeUnitField.showConflictInfo(storeUnit, new UnitAmountRenderStrategy()::render);
     }
 
     public void hideDescription() {

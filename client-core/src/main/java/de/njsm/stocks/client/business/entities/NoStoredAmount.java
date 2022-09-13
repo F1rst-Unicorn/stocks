@@ -27,31 +27,26 @@ import com.google.auto.value.extension.memoized.Memoized;
 import java.math.BigDecimal;
 
 @AutoValue
-public abstract class ScaledUnitAddErrorDetails implements ScaledUnitFields, FullScaledUnitSummaryFields, ErrorDetails {
+public abstract class NoStoredAmount implements UnitAmount {
 
     @Override
-    public BigDecimal scale() {
-        return FullScaledUnitSummaryFields.super.scale();
+    public BigDecimal amount() {
+        return BigDecimal.ZERO;
     }
 
     @Override
     @Memoized
     public UnitPrefix decimalPrefix() {
-        return FullScaledUnitSummaryFields.super.decimalPrefix();
+        return UnitAmount.super.decimalPrefix();
     }
 
     @Override
     @Memoized
     public BigDecimal prefixedAmount() {
-        return FullScaledUnitSummaryFields.super.prefixedAmount();
+        return UnitAmount.super.prefixedAmount();
     }
 
-    public static ScaledUnitAddErrorDetails create(BigDecimal scale, int unit, String name, String abbreviation) {
-        return new AutoValue_ScaledUnitAddErrorDetails(unit, scale, abbreviation, name);
-    }
-
-    @Override
-    public <I, O> O accept(ErrorDetailsVisitor<I, O> visitor, I input) {
-        return visitor.scaledUnitAddErrorDetails(this, input);
+    public static NoStoredAmount create(String abbreviation) {
+        return new AutoValue_NoStoredAmount(abbreviation);
     }
 }

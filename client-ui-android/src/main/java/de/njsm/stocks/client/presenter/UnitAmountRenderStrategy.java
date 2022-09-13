@@ -23,27 +23,28 @@ package de.njsm.stocks.client.presenter;
 
 import de.njsm.stocks.client.business.entities.FullScaledUnitSummaryFields;
 import de.njsm.stocks.client.business.entities.ScaledUnitSummaryFields;
+import de.njsm.stocks.client.business.entities.UnitAmount;
 
 import javax.inject.Inject;
 import java.math.BigDecimal;
 import java.text.FieldPosition;
 import java.text.NumberFormat;
 
-public class ScaledUnitRenderStrategy {
+public class UnitAmountRenderStrategy {
 
     @Inject
-    public ScaledUnitRenderStrategy() {
+    public UnitAmountRenderStrategy() {
     }
 
-    public String render(ScaledUnitSummaryFields scaledUnit) {
-        if (scaledUnit.unitPrefix().getSymbol().isEmpty())
-            return toLocaleString(scaledUnit.prefixedScale())
+    public String render(UnitAmount scaledUnit) {
+        if (scaledUnit.decimalPrefix().getSymbol().isEmpty())
+            return toLocaleString(scaledUnit.prefixedAmount())
                     + spaceForFullWordAbbreviation(scaledUnit.abbreviation())
                     + scaledUnit.abbreviation();
         else
-            return toLocaleString(scaledUnit.prefixedScale())
+            return toLocaleString(scaledUnit.prefixedAmount())
                     + spaceForFullWordAbbreviation(scaledUnit.abbreviation())
-                    + scaledUnit.unitPrefix().getSymbol()
+                    + scaledUnit.decimalPrefix().getSymbol()
                     + spaceForFullWordAbbreviation(scaledUnit.abbreviation())
                     + scaledUnit.abbreviation();
     }

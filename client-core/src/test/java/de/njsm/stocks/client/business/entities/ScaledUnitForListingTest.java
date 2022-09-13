@@ -38,8 +38,8 @@ class ScaledUnitForListingTest {
     @Test
     void noneScaleIsComputed() {
         ScaledUnitForListing uut = create(1, "g", ZERO);
-        assertEquals(UnitPrefix.NONE, uut.unitPrefix());
-        assertEquals(ZERO, uut.prefixedScale());
+        assertEquals(UnitPrefix.NONE, uut.decimalPrefix());
+        assertEquals(ZERO, uut.prefixedAmount());
 
         testOneUnitPrefix(ONE, NONE);
     }
@@ -66,21 +66,21 @@ class ScaledUnitForListingTest {
 
     private void testOneUnitPrefix(BigDecimal base, UnitPrefix expected) {
         ScaledUnitForListing uut = create(1, "g", base);
-        assertEquals(expected, uut.unitPrefix());
-        assertEquals(0, ONE.compareTo(uut.prefixedScale()), base + " is different from " + uut.prefixedScale());
+        assertEquals(expected, uut.decimalPrefix());
+        assertEquals(0, ONE.compareTo(uut.prefixedAmount()), base + " is different from " + uut.prefixedAmount());
 
         uut = create(1, "g", base.multiply(TEN));
-        assertEquals(expected, uut.unitPrefix());
-        assertEquals(0, TEN.compareTo(uut.prefixedScale()), base.multiply(TEN) + " is different from " + uut.prefixedScale());
+        assertEquals(expected, uut.decimalPrefix());
+        assertEquals(0, TEN.compareTo(uut.prefixedAmount()), base.multiply(TEN) + " is different from " + uut.prefixedAmount());
 
         uut = create(1, "g", base.multiply(HUNDRED));
-        assertEquals(expected, uut.unitPrefix());
-        assertEquals(0, HUNDRED.compareTo(uut.prefixedScale()), base.multiply(HUNDRED) + " is different from " + uut.prefixedScale());
+        assertEquals(expected, uut.decimalPrefix());
+        assertEquals(0, HUNDRED.compareTo(uut.prefixedAmount()), base.multiply(HUNDRED) + " is different from " + uut.prefixedAmount());
 
         uut = create(1, "g", base.multiply(THOUSAND));
-        assertNotEquals(expected, uut.unitPrefix());
+        assertNotEquals(expected, uut.decimalPrefix());
 
-        if (uut.unitPrefix() != OTHER)  // OTHER doesn't scale correctly
-            assertEquals(0, ONE.compareTo(uut.prefixedScale()), ONE + " is different from " + uut.prefixedScale());
+        if (uut.decimalPrefix() != OTHER)  // OTHER doesn't scale correctly
+            assertEquals(0, ONE.compareTo(uut.prefixedAmount()), ONE + " is different from " + uut.prefixedAmount());
     }
 }
