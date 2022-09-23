@@ -24,6 +24,7 @@ package de.njsm.stocks.client.business.entities;
 import com.google.auto.value.AutoValue;
 
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.List;
 
 @AutoValue
@@ -35,9 +36,13 @@ public abstract class FoodForListing implements Identifiable<Food> {
 
     public abstract LocalDate nextEatByDate();
 
-    public abstract List<StoredAmount> storedAmounts();
+    public abstract List<UnitAmount> storedAmounts();
 
-    public static FoodForListing create(int id, String name, boolean toBuy, LocalDate nextEatByDate, List<StoredAmount> storedAmounts) {
+    public static FoodForListing create(int id, String name, boolean toBuy, LocalDate nextEatByDate, List<UnitAmount> storedAmounts) {
         return new AutoValue_FoodForListing(id, name, toBuy, nextEatByDate, storedAmounts);
+    }
+
+    public static FoodForListing create(FoodForListingBaseData food, List<UnitAmount> storedAmounts) {
+        return new AutoValue_FoodForListing(food.id(), food.name(), food.toBuy(), food.nextEatByDate().atZone(ZoneId.systemDefault()).toLocalDate(), storedAmounts);
     }
 }

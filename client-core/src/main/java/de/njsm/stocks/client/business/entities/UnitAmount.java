@@ -42,6 +42,14 @@ public interface UnitAmount {
         return amount().divide(decimalPrefix().getFactor());
     }
 
+    static UnitAmount of(BigDecimal amount, String abbreviation) {
+        if (amount.compareTo(ZERO) == 0) {
+            return NoStoredAmount.create(abbreviation);
+        } else {
+            return StoredAmount.create(amount, abbreviation);
+        }
+    }
+
     static UnitPrefix computeUnitPrefix(BigDecimal input) {
         int exponent = computeExponent(input);
         int index = -exponent + 8;

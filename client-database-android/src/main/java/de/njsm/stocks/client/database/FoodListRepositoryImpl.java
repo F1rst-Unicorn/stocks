@@ -19,18 +19,34 @@
  *
  */
 
-package de.njsm.stocks.client.business;
+package de.njsm.stocks.client.database;
 
+import de.njsm.stocks.client.business.FoodListRepository;
 import de.njsm.stocks.client.business.entities.FoodForListingBaseData;
 import de.njsm.stocks.client.business.entities.Identifiable;
 import de.njsm.stocks.client.business.entities.Location;
 import de.njsm.stocks.client.business.entities.StoredFoodAmount;
 import io.reactivex.rxjava3.core.Observable;
 
+import javax.inject.Inject;
 import java.util.List;
 
-public interface FoodListRepository {
-    Observable<List<FoodForListingBaseData>> getFoodBy(Identifiable<Location> location);
+class FoodListRepositoryImpl implements FoodListRepository {
 
-    Observable<List<StoredFoodAmount>> getFoodAmountsIn(Identifiable<Location> location);
+    private final FoodDao foodDao;
+
+    @Inject
+    FoodListRepositoryImpl(FoodDao foodDao) {
+        this.foodDao = foodDao;
+    }
+
+    @Override
+    public Observable<List<FoodForListingBaseData>> getFoodBy(Identifiable<Location> location) {
+        return foodDao.getCurrentFoodBy(location.id());
+    }
+
+    @Override
+    public Observable<List<StoredFoodAmount>> getFoodAmountsIn(Identifiable<Location> location) {
+        return foodDao.getAmountsStoredIn(location.id());
+    }
 }

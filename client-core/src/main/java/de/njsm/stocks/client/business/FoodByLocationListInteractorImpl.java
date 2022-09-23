@@ -21,13 +21,19 @@
 
 package de.njsm.stocks.client.business;
 
-import de.njsm.stocks.client.business.entities.FoodForListing;
-import de.njsm.stocks.client.business.entities.Identifiable;
-import de.njsm.stocks.client.business.entities.Location;
+import de.njsm.stocks.client.business.entities.*;
 import io.reactivex.rxjava3.core.Observable;
 
 import javax.inject.Inject;
+import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
+
+import static java.math.BigDecimal.ZERO;
+import static java.math.BigDecimal.valueOf;
+import static java.util.Comparator.comparing;
+import static java.util.stream.Collectors.groupingBy;
+import static java.util.stream.Collectors.toList;
 
 class FoodByLocationListInteractorImpl implements FoodByLocationListInteractor {
 
@@ -40,6 +46,31 @@ class FoodByLocationListInteractorImpl implements FoodByLocationListInteractor {
 
     @Override
     public Observable<List<FoodForListing>> getFoodBy(Identifiable<Location> location) {
-        return repository.getFoodBy(location);
+        return repository.getFoodBy(location).zipWith(repository.getFoodAmountsIn(location), FoodByLocationListInteractorImpl::regroup);
+    }
+
+    private static List<FoodForListing> regroup(List<FoodForListingBaseData> food, List<StoredFoodAmount> amounts) {
+        Map<Integer, List<FoodForListingBaseData>> foodById = food.stream().collect(groupingBy(FoodForListingBaseData::id));
+        Map<Integer, List<StoredFoodAmount>> amountsByFoodId = amounts.stream().collect(groupingBy(StoredFoodAmount::foodId));
+
+        return foodById.values().stream().map(v -> v.get(0))
+                .map(v -> regroupSingleFood(v, amountsByFoodId.get(v.id())))
+                .sorted(comparing(FoodForListing::nextEatByDate))
+                .collect(toList());
+    }
+
+    private static FoodForListing regroupSingleFood(FoodForListingBaseData food, List<StoredFoodAmount> storedFoodAmounts) {
+        List<UnitAmount> amountsSummedByUnit = storedFoodAmounts.stream().collect(groupingBy(StoredFoodAmount::unitId))
+                .values().stream()
+                .map(FoodByLocationListInteractorImpl::addAmountsOfSameUnit)
+                .collect(toList());
+        return FoodForListing.create(food, amountsSummedByUnit);
+    }
+
+    private static UnitAmount addAmountsOfSameUnit(List<StoredFoodAmount> singleUnitAmounts) {
+        BigDecimal amount = singleUnitAmounts.stream()
+                .map(v -> v.scale().multiply(valueOf(v.numberOfFoodItemsWithSameScaledUnit())))
+                .reduce(ZERO, BigDecimal::add);
+        return UnitAmount.of(amount, singleUnitAmounts.get(0).abbreviation());
     }
 }

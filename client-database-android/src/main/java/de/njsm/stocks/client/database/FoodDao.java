@@ -23,7 +23,7 @@ package de.njsm.stocks.client.database;
 
 import androidx.room.Dao;
 import androidx.room.Query;
-import de.njsm.stocks.client.business.entities.FoodForDeletion;
+import de.njsm.stocks.client.business.entities.*;
 import io.reactivex.rxjava3.core.Observable;
 
 import java.util.List;
@@ -56,8 +56,33 @@ abstract class FoodDao {
             "where id = :id")
     abstract Observable<FoodDbEntity> getToEdit(int id);
 
-    @Query("select * from " +
-            "current_food " +
+    @Query("select * " +
+            "from current_food " +
             "where id = :id")
     abstract FoodDbEntity getForEditing(int id);
+
+    @Query("with least_eat_by_date as (" +
+                "select of_type as of_type, min(eat_by) as eat_by " +
+                "from current_food_item " +
+                "where stored_in = :location " +
+                "group by of_type" +
+            ") " +
+            "select f.id, f.name, f.to_buy as toBuy, d.eat_by as nextEatByDate " +
+            "from current_food f " +
+            "join least_eat_by_date d on f.id = d.of_type " +
+            "where exists (select 1 " +
+                "from current_food_item i " +
+                "where i.of_type = f.id and " +
+                "i.stored_in = :location" +
+            ")")
+    public abstract Observable<List<FoodForListingBaseData>> getCurrentFoodBy(int location);
+
+    @Query("select i.of_type as foodId, s.id as scaledUnitId, u.id as unitId, " +
+            "count(1) as numberOfFoodItemsWithSameScaledUnit, s.scale as scale, u.abbreviation as abbreviation " +
+            "from current_food_item i " +
+            "join current_scaled_unit s on i.unit = s.id " +
+            "join current_unit u on s.unit = u.id " +
+            "where i.stored_in = :location " +
+            "group by i.of_type, s.id, u.id, s.scale, u.abbreviation")
+    public abstract Observable<List<StoredFoodAmount>> getAmountsStoredIn(int location);
 }

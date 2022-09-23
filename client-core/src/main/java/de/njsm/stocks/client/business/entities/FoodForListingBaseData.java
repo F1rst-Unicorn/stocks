@@ -22,26 +22,19 @@
 package de.njsm.stocks.client.business.entities;
 
 import com.google.auto.value.AutoValue;
-import com.google.auto.value.extension.memoized.Memoized;
 
-import java.math.BigDecimal;
+import java.time.Instant;
 
 @AutoValue
-public abstract class StoredAmount implements UnitAmount {
+public abstract class FoodForListingBaseData implements Identifiable<Food> {
 
-    @Override
-    @Memoized
-    public UnitPrefix decimalPrefix() {
-        return UnitAmount.super.decimalPrefix();
-    }
+    public abstract String name();
 
-    @Override
-    @Memoized
-    public BigDecimal prefixedAmount() {
-        return UnitAmount.super.prefixedAmount();
-    }
+    public abstract boolean toBuy();
 
-    public static StoredAmount create(BigDecimal amount, String abbreviation) {
-        return new AutoValue_StoredAmount(amount, abbreviation);
+    public abstract Instant nextEatByDate();
+
+    public static FoodForListingBaseData create(int id, String name, boolean toBuy, Instant nextEatByDate) {
+        return new AutoValue_FoodForListingBaseData(id, name, toBuy, nextEatByDate);
     }
 }

@@ -19,29 +19,23 @@
  *
  */
 
-package de.njsm.stocks.client.business.entities;
+package de.njsm.stocks.client.database;
 
-import com.google.auto.value.AutoValue;
-import com.google.auto.value.extension.memoized.Memoized;
+import org.junit.Before;
 
-import java.math.BigDecimal;
+import static java.util.Collections.singletonList;
 
-@AutoValue
-public abstract class StoredAmount implements UnitAmount {
+public class FoodListRepositoryImplTestBase extends DbTestCase {
 
-    @Override
-    @Memoized
-    public UnitPrefix decimalPrefix() {
-        return UnitAmount.super.decimalPrefix();
-    }
+    FoodListRepositoryImpl uut;
 
-    @Override
-    @Memoized
-    public BigDecimal prefixedAmount() {
-        return UnitAmount.super.prefixedAmount();
-    }
+    LocationDbEntity location;
 
-    public static StoredAmount create(BigDecimal amount, String abbreviation) {
-        return new AutoValue_StoredAmount(amount, abbreviation);
+    @Before
+    public void createTestData() {
+        uut = new FoodListRepositoryImpl(stocksDatabase.foodDao());
+
+        location = standardEntities.locationDbEntity();
+        stocksDatabase.synchronisationDao().writeLocations(singletonList(location));
     }
 }
