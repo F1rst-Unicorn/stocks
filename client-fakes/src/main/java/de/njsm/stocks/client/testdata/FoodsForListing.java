@@ -22,12 +22,19 @@
 package de.njsm.stocks.client.testdata;
 
 import de.njsm.stocks.client.business.entities.EmptyFood;
+import de.njsm.stocks.client.business.entities.FoodForListing;
 import de.njsm.stocks.client.business.entities.NoStoredAmount;
+import de.njsm.stocks.client.business.entities.UnitAmount;
 import io.reactivex.rxjava3.subjects.BehaviorSubject;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
+
+import static java.math.BigDecimal.ONE;
+import static java.math.BigDecimal.TEN;
+import static java.util.Arrays.asList;
+import static java.util.Collections.singletonList;
 
 public class FoodsForListing {
 
@@ -38,9 +45,21 @@ public class FoodsForListing {
     }
 
     public static List<EmptyFood> getEmpty() {
-        return new ArrayList<>(Arrays.asList(
+        return new ArrayList<>(asList(
                 EmptyFood.create(1, "Banana", false, NoStoredAmount.create("p")),
                 EmptyFood.create(4, "Cheese", true, NoStoredAmount.create("g"))
+        ));
+    }
+
+    public static List<FoodForListing> get() {
+        return new ArrayList<>(asList(
+                FoodForListing.create(1, "Banana", false, LocalDate.of(1970, 1, 1), singletonList(
+                        UnitAmount.of(TEN, "piece")
+                )),
+                FoodForListing.create(1, "Cinnamon", false, LocalDate.of(2100, 12, 31), asList(
+                        UnitAmount.of(TEN, "piece"),
+                        UnitAmount.of(ONE, "jar")
+                ))
         ));
     }
 

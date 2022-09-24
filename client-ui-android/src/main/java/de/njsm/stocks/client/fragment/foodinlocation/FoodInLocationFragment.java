@@ -19,7 +19,7 @@
  *
  */
 
-package de.njsm.stocks.client.fragment.emptyfood;
+package de.njsm.stocks.client.fragment.foodinlocation;
 
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -30,27 +30,33 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.lifecycle.ViewModelProvider;
-import de.njsm.stocks.client.business.entities.EmptyFood;
+import de.njsm.stocks.client.business.Clock;
+import de.njsm.stocks.client.business.entities.FoodForListing;
+import de.njsm.stocks.client.business.entities.Identifiable;
+import de.njsm.stocks.client.business.entities.Location;
+import de.njsm.stocks.client.business.entities.LocationName;
 import de.njsm.stocks.client.fragment.BottomToolbarFragment;
 import de.njsm.stocks.client.fragment.listswipe.SwipeCallback;
 import de.njsm.stocks.client.fragment.view.FoodOutlineViewHolder;
 import de.njsm.stocks.client.fragment.view.TemplateSwipeList;
-import de.njsm.stocks.client.navigation.EmptyFoodNavigator;
-import de.njsm.stocks.client.presenter.EmptyFoodViewModel;
+import de.njsm.stocks.client.navigation.FoodByLocationNavigator;
+import de.njsm.stocks.client.presenter.FoodByLocationListViewModel;
 import de.njsm.stocks.client.ui.R;
 
 import javax.inject.Inject;
 import java.util.List;
 
-public class EmptyFoodFragment extends BottomToolbarFragment {
+public class FoodInLocationFragment extends BottomToolbarFragment {
 
-    private EmptyFoodNavigator navigator;
+    private FoodByLocationNavigator navigator;
 
-    private EmptyFoodViewModel viewModel;
+    private FoodByLocationListViewModel viewModel;
 
     private TemplateSwipeList templateSwipeList;
 
-    private EmptyFoodAdapter foodListAdapter;
+    private FoodByLocationAdapter foodListAdapter;
+
+    private Clock clock;
 
     @Override
     @NonNull
@@ -61,8 +67,10 @@ public class EmptyFoodFragment extends BottomToolbarFragment {
         templateSwipeList = new TemplateSwipeList(swipeList);
         templateSwipeList.setLoading();
 
-        foodListAdapter = new EmptyFoodAdapter(this::onItemClicked, this::onItemLongClicked);
-        viewModel.getFood().observe(getViewLifecycleOwner(), this::onListDataReceived);
+        Identifiable<Location> location = navigator.getId(requireArguments());
+        foodListAdapter = new FoodByLocationAdapter(this::onItemClicked, this::onItemLongClicked, getResources(), requireActivity().getTheme(), clock);
+        viewModel.getFood(location).observe(getViewLifecycleOwner(), this::onListDataReceived);
+        viewModel.getLocation(location).observe(getViewLifecycleOwner(), this::setTitle);
 
         SwipeCallback callback = new SwipeCallback(
                 ContextCompat.getDrawable(requireActivity(), R.drawable.ic_delete_white_24dp),
@@ -92,13 +100,17 @@ public class EmptyFoodFragment extends BottomToolbarFragment {
         return true;
     }
 
-    private void onListDataReceived(List<EmptyFood> data) {
+    private void onListDataReceived(List<FoodForListing> data) {
         if (data.isEmpty()) {
-            templateSwipeList.setEmpty(R.string.hint_no_food);
+            templateSwipeList.setEmpty(R.string.hint_no_food_in_location);
         } else {
             templateSwipeList.setList();
         }
         foodListAdapter.setData(data);
+    }
+
+    private void setTitle(LocationName title) {
+        requireActivity().setTitle(title.name());
     }
 
     private void onSwipeDown() {
@@ -114,11 +126,16 @@ public class EmptyFoodFragment extends BottomToolbarFragment {
     protected void setViewModelFactory(ViewModelProvider.Factory viewModelFactory) {
         super.setViewModelFactory(viewModelFactory);
         ViewModelProvider viewModelProvider = new ViewModelProvider(this, viewModelFactory);
-        viewModel = viewModelProvider.get(EmptyFoodViewModel.class);
+        viewModel = viewModelProvider.get(FoodByLocationListViewModel.class);
     }
 
     @Inject
-    void setNavigator(EmptyFoodNavigator navigator) {
+    void setNavigator(FoodByLocationNavigator navigator) {
         this.navigator = navigator;
+    }
+
+    @Inject
+    void setClock(Clock clock) {
+        this.clock = clock;
     }
 }

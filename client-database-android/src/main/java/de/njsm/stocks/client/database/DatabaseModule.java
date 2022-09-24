@@ -37,7 +37,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.inject.Singleton;
-import java.time.Instant;
 import java.util.concurrent.Executor;
 
 @Module
@@ -65,11 +64,6 @@ public interface DatabaseModule {
 
     static Executor toExecutor(Scheduler scheduler) {
         return command -> scheduler.schedule(Job.create(Job.Type.DATABASE, command));
-    }
-
-    @Provides
-    static Clock clock() {
-        return Instant::now;
     }
 
     @Binds

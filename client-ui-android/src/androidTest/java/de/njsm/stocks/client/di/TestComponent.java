@@ -34,6 +34,7 @@ import de.njsm.stocks.client.fragment.errorlist.ErrorListFragmentTest;
 import de.njsm.stocks.client.fragment.foodadd.FoodAddFragmentTest;
 import de.njsm.stocks.client.fragment.foodconflict.FoodConflictFragmentTest;
 import de.njsm.stocks.client.fragment.foodedit.FoodEditFragmentTest;
+import de.njsm.stocks.client.fragment.foodinlocation.FoodInLocationFragmentTest;
 import de.njsm.stocks.client.fragment.locationadd.LocationAddFragmentTest;
 import de.njsm.stocks.client.fragment.locationconflict.LocationConflictFragmentTest;
 import de.njsm.stocks.client.fragment.locationedit.LocationEditFragmentTest;
@@ -62,6 +63,7 @@ import javax.inject.Singleton;
         TestActivityModule.class,
         FakeBusinessModule.class,
         FakeExecutionModule.class,
+        FakePrimitiveModule.class,
 })
 public interface TestComponent {
 
@@ -112,6 +114,8 @@ public interface TestComponent {
     void inject(FoodEditFragmentTest test);
 
     void inject(FoodConflictFragmentTest test);
+
+    void inject(FoodInLocationFragmentTest test);
 
     @Component.Builder
     interface Builder {

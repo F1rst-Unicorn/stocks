@@ -33,7 +33,7 @@ public class FoodListRepositoryImplTestBase extends DbTestCase {
 
     @Before
     public void createTestData() {
-        uut = new FoodListRepositoryImpl(stocksDatabase.foodDao());
+        uut = new FoodListRepositoryImpl(stocksDatabase.foodDao(), stocksDatabase.locationDao());
 
         location = standardEntities.locationDbEntity();
         stocksDatabase.synchronisationDao().writeLocations(singletonList(location));

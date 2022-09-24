@@ -19,24 +19,26 @@
  *
  */
 
-package de.njsm.stocks.client.business;
+package de.njsm.stocks.client.presenter;
 
-import de.njsm.stocks.client.business.entities.*;
-import io.reactivex.rxjava3.core.Observable;
+import org.junit.Before;
+import org.junit.Test;
 
-import java.util.List;
+import java.time.LocalDate;
 
-/**
- * At every consistent state of the client database it must hold that
- * for each {@link FoodForListingBaseData} b in the result list of {@link #getFoodBy(Identifiable)}}
- * there exists a {@link StoredFoodAmount} a in the result list of {@link #getFoodAmountsIn(Identifiable)}
- * such that {@code b.id() == a.foodId()}
- */
-public interface FoodListRepository {
+import static org.junit.Assert.assertEquals;
 
-    Observable<List<FoodForListingBaseData>> getFoodBy(Identifiable<Location> location);
+public class DateRenderStrategyTest {
 
-    Observable<List<StoredFoodAmount>> getFoodAmountsIn(Identifiable<Location> location);
+    private DateRenderStrategy uut;
 
-    Observable<LocationName> getLocationName(Identifiable<Location> location);
+    @Before
+    public void setUp() {
+        uut = new DateRenderStrategy();
+    }
+
+    @Test
+    public void itWorks() {
+        assertEquals("29.02.2020", uut.render(LocalDate.of(2020, 2, 29)));
+    }
 }

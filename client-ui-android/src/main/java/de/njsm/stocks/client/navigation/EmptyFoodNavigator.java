@@ -21,11 +21,4 @@
 
 package de.njsm.stocks.client.navigation;
 
-public interface EmptyFoodNavigator {
-
-    void addFood();
-
-    void showFood(int id);
-
-    void editFood(int id);
-}
+public interface EmptyFoodNavigator extends FoodNavigator {}

@@ -19,10 +19,19 @@
  *
  */
 
-package de.njsm.stocks.client.database;
+package de.njsm.stocks.client.di;
+
+import dagger.Module;
+import dagger.Provides;
+import de.njsm.stocks.client.business.Clock;
 
 import java.time.Instant;
 
-public interface Clock {
-    Instant get();
+@Module
+public interface FakePrimitiveModule {
+
+    @Provides
+    static Clock clock() {
+        return Instant::now;
+    }
 }

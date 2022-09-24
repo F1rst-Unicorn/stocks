@@ -19,24 +19,32 @@
  *
  */
 
-package de.njsm.stocks.client.business;
+package de.njsm.stocks.client.presenter;
 
-import de.njsm.stocks.client.business.entities.*;
-import io.reactivex.rxjava3.core.Observable;
+import android.text.format.DateUtils;
 
-import java.util.List;
+import javax.inject.Inject;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 
-/**
- * At every consistent state of the client database it must hold that
- * for each {@link FoodForListingBaseData} b in the result list of {@link #getFoodBy(Identifiable)}}
- * there exists a {@link StoredFoodAmount} a in the result list of {@link #getFoodAmountsIn(Identifiable)}
- * such that {@code b.id() == a.foodId()}
- */
-public interface FoodListRepository {
+public class DateRenderStrategy {
 
-    Observable<List<FoodForListingBaseData>> getFoodBy(Identifiable<Location> location);
+    private static final java.time.format.DateTimeFormatter FORMAT = DateTimeFormatter.ofPattern("dd.MM.yyyy");
 
-    Observable<List<StoredFoodAmount>> getFoodAmountsIn(Identifiable<Location> location);
+    @Inject
+    public DateRenderStrategy() {
+    }
 
-    Observable<LocationName> getLocationName(Identifiable<Location> location);
+    public String render(LocalDate date) {
+        return FORMAT.format(date);
+    }
+
+    public CharSequence renderRelative(LocalDate date, Instant now) {
+        return DateUtils.getRelativeTimeSpanString(
+                date.atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli(),
+                now.toEpochMilli(),
+                0L, DateUtils.FORMAT_ABBREV_ALL);
+    }
 }

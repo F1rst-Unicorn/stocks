@@ -19,19 +19,19 @@
  *
  */
 
-package de.njsm.stocks.client.fragment.emptyfood;
+package de.njsm.stocks.client.fragment.foodinlocation;
 
 import android.os.Bundle;
 import androidx.fragment.app.testing.FragmentScenario;
-import androidx.test.espresso.matcher.ViewMatchers;
 import androidx.test.platform.app.InstrumentationRegistry;
 import de.njsm.stocks.client.Application;
 import de.njsm.stocks.client.business.EntityDeleter;
-import de.njsm.stocks.client.business.FakeEmptyFoodInteractor;
-import de.njsm.stocks.client.business.entities.EmptyFood;
+import de.njsm.stocks.client.business.FakeFoodByLocationListInteractor;
 import de.njsm.stocks.client.business.entities.Food;
+import de.njsm.stocks.client.business.entities.FoodForListing;
 import de.njsm.stocks.client.business.entities.Identifiable;
-import de.njsm.stocks.client.navigation.EmptyFoodNavigator;
+import de.njsm.stocks.client.navigation.FoodByLocationNavigator;
+import de.njsm.stocks.client.presenter.DateRenderStrategy;
 import de.njsm.stocks.client.presenter.UnitAmountRenderStrategy;
 import de.njsm.stocks.client.testdata.FoodsForListing;
 import de.njsm.stocks.client.ui.R;
@@ -41,6 +41,7 @@ import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 
 import javax.inject.Inject;
+import java.time.Instant;
 import java.util.List;
 
 import static androidx.test.espresso.Espresso.onView;
@@ -49,28 +50,30 @@ import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.*;
 import static de.njsm.stocks.client.Matchers.recyclerView;
 import static java.util.Collections.emptyList;
-import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.allOf;
+import static org.hamcrest.Matchers.is;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.verify;
 
-public class EmptyFoodFragmentTest {
+public class FoodInLocationFragmentTest {
 
-    private FragmentScenario<EmptyFoodFragment> scenario;
+    private FragmentScenario<FoodInLocationFragment> scenario;
 
-    private EmptyFoodNavigator navigator;
+    private FoodByLocationNavigator navigator;
 
-    private FakeEmptyFoodInteractor emptyFoodInteractor;
+    private FakeFoodByLocationListInteractor foodByLocationListInteractor;
 
     private EntityDeleter<Food> deleter;
 
     private UnitAmountRenderStrategy unitAmountRenderStrategy;
+    private DateRenderStrategy dateRenderStrategy;
 
     @Before
     public void setUp() {
         ((Application) InstrumentationRegistry.getInstrumentation().getTargetContext().getApplicationContext()).getDaggerRoot().inject(this);
-        scenario = FragmentScenario.launchInContainer(EmptyFoodFragment.class, new Bundle(), R.style.StocksTheme);
+        scenario = FragmentScenario.launchInContainer(FoodInLocationFragment.class, new Bundle(), R.style.StocksTheme);
         unitAmountRenderStrategy = new UnitAmountRenderStrategy();
+        dateRenderStrategy = new DateRenderStrategy();
     }
 
     @After
@@ -89,18 +92,18 @@ public class EmptyFoodFragmentTest {
 
     @Test
     public void emptyListShowsText() {
-        emptyFoodInteractor.setData(emptyList());
+        foodByLocationListInteractor.setData(emptyList());
 
         onView(withId(R.id.template_swipe_list_empty_text))
-                .check(matches(allOf(withEffectiveVisibility(ViewMatchers.Visibility.VISIBLE), withText(R.string.hint_no_food))));
+                .check(matches(allOf(withEffectiveVisibility(Visibility.VISIBLE), withText(R.string.hint_no_food_in_location))));
     }
 
     @Test
     public void foodIsListed() {
-        emptyFoodInteractor.setData(FoodsForListing.getEmpty());
+        foodByLocationListInteractor.setData(FoodsForListing.get());
 
         int position = 0;
-        for (EmptyFood item : FoodsForListing.getEmpty()) {
+        for (FoodForListing item : FoodsForListing.get()) {
             onView(recyclerView(R.id.template_swipe_list_list)
                     .atPositionOnView(position, R.id.item_food_outline_name))
                     .check(matches(withText(item.name())));
@@ -111,10 +114,10 @@ public class EmptyFoodFragmentTest {
                     .check(matches(withEffectiveVisibility(expectedShoppingCartVisibility)));
             onView(recyclerView(R.id.template_swipe_list_list)
                     .atPositionOnView(position, R.id.item_food_outline_date))
-                    .check(matches(withEffectiveVisibility(Visibility.GONE)));
+                    .check(matches(withText(dateRenderStrategy.renderRelative(item.nextEatByDate(), Instant.now()).toString())));
             onView(recyclerView(R.id.template_swipe_list_list)
                     .atPositionOnView(position, R.id.item_food_outline_count))
-                    .check(matches(withText(unitAmountRenderStrategy.render(item.storedAmount()))));
+                    .check(matches(withText(unitAmountRenderStrategy.render(item.storedAmounts()))));
             position++;
         }
     }
@@ -122,8 +125,8 @@ public class EmptyFoodFragmentTest {
     @Test
     public void clickingOnItemNavigates() {
         int itemIndex = 1;
-        List<EmptyFood> data = FoodsForListing.getEmpty();
-        emptyFoodInteractor.setData(data);
+        List<FoodForListing> data = FoodsForListing.get();
+        foodByLocationListInteractor.setData(data);
 
         onView(recyclerView(R.id.template_swipe_list_list).atPosition(itemIndex)).perform(click());
 
@@ -133,8 +136,8 @@ public class EmptyFoodFragmentTest {
     @Test
     public void longClickingOnItemNavigates() {
         int itemIndex = 1;
-        List<EmptyFood> data = FoodsForListing.getEmpty();
-        emptyFoodInteractor.setData(data);
+        List<FoodForListing> data = FoodsForListing.get();
+        foodByLocationListInteractor.setData(data);
 
         onView(recyclerView(R.id.template_swipe_list_list).atPosition(itemIndex)).perform(longClick());
 
@@ -144,8 +147,8 @@ public class EmptyFoodFragmentTest {
     @Test
     public void rightSwipingDeletes() {
         int itemIndex = 1;
-        List<EmptyFood> data = FoodsForListing.getEmpty();
-        emptyFoodInteractor.setData(data);
+        List<FoodForListing> data = FoodsForListing.get();
+        foodByLocationListInteractor.setData(data);
 
         onView(recyclerView(R.id.template_swipe_list_list).atPosition(itemIndex)).perform(swipeRight());
 
@@ -156,13 +159,13 @@ public class EmptyFoodFragmentTest {
     }
 
     @Inject
-    void setNavigator(EmptyFoodNavigator navigator) {
+    void setNavigator(FoodByLocationNavigator navigator) {
         this.navigator = navigator;
     }
 
     @Inject
-    void setEmptyFoodInteractor(FakeEmptyFoodInteractor emptyFoodInteractor) {
-        this.emptyFoodInteractor = emptyFoodInteractor;
+    void setFoodByLocationListInteractor(FakeFoodByLocationListInteractor foodByLocationListInteractor) {
+        this.foodByLocationListInteractor = foodByLocationListInteractor;
     }
 
     @Inject

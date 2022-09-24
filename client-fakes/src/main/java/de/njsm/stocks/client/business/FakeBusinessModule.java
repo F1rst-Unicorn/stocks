@@ -254,4 +254,13 @@ public interface FakeBusinessModule {
     static FakeFoodConflictInteractor FakeFoodConflictInteractor() {
         return new FakeFoodConflictInteractor();
     }
+
+    @Binds
+    FoodByLocationListInteractor FoodByLocationListInteractor(FakeFoodByLocationListInteractor fake);
+
+    @Provides
+    @Singleton
+    static FakeFoodByLocationListInteractor FakeFoodInLocationInteractor() {
+        return new FakeFoodByLocationListInteractor();
+    }
 }

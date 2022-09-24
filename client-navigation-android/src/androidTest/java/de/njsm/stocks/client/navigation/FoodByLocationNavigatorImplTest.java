@@ -21,21 +21,35 @@
 
 package de.njsm.stocks.client.navigation;
 
+import android.os.Bundle;
 import androidx.navigation.ActionOnlyNavDirections;
+import de.njsm.stocks.client.business.entities.Identifiable;
+import de.njsm.stocks.client.business.entities.Location;
 import de.njsm.stocks.client.fragment.emptyfood.EmptyFoodFragmentDirections;
+import de.njsm.stocks.client.fragment.foodinlocation.FoodInLocationFragmentDirections;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertEquals;
 
-public class EmptyFoodNavigatorImplTest extends NavigationTest {
+public class FoodByLocationNavigatorImplTest extends NavigationTest {
 
-    private EmptyFoodNavigator uut;
+    private FoodByLocationNavigator uut;
 
     @Before
     public void setUp() {
-        uut = new EmptyFoodNavigatorImpl(navigationArgConsumer);
+        uut = new FoodByLocationNavigatorImpl(navigationArgConsumer);
+    }
+
+    @Test
+    public void argumentIsExtracted() {
+        Bundle input = new Bundle();
+        int expected = 42;
+        input.putInt("id", expected);
+
+        Identifiable<Location> actual = uut.getId(input);
+
+        assertEquals(expected, actual.id());
     }
 
     @Test
@@ -44,8 +58,8 @@ public class EmptyFoodNavigatorImplTest extends NavigationTest {
 
         uut.showFood(expected);
 
-        EmptyFoodFragmentDirections.ActionNavFragmentEmptyFoodToNavFragmentFoodItemList actual = navigationArgConsumer.getLastArgument(EmptyFoodFragmentDirections.ActionNavFragmentEmptyFoodToNavFragmentFoodItemList.class);
-        assertThat(actual.getId(), is(expected));
+        FoodInLocationFragmentDirections.ActionNavFragmentLocationContentToNavFragmentFoodItemList actual = navigationArgConsumer.getLastArgument(FoodInLocationFragmentDirections.ActionNavFragmentLocationContentToNavFragmentFoodItemList.class);
+        assertEquals(actual.getId(), expected);
     }
 
     @Test
@@ -54,8 +68,8 @@ public class EmptyFoodNavigatorImplTest extends NavigationTest {
 
         uut.editFood(expected);
 
-        EmptyFoodFragmentDirections.ActionNavFragmentEmptyFoodToNavFragmentEditFood actual = navigationArgConsumer.getLastArgument(EmptyFoodFragmentDirections.ActionNavFragmentEmptyFoodToNavFragmentEditFood.class);
-        assertThat(actual.getId(), is(expected));
+        FoodInLocationFragmentDirections.ActionNavFragmentLocationContentToNavFragmentEditFood actual = navigationArgConsumer.getLastArgument(FoodInLocationFragmentDirections.ActionNavFragmentLocationContentToNavFragmentEditFood.class);
+        assertEquals(actual.getId(), expected);
     }
 
     @Test
@@ -63,6 +77,6 @@ public class EmptyFoodNavigatorImplTest extends NavigationTest {
         uut.addFood();
 
         ActionOnlyNavDirections actual = navigationArgConsumer.getLastArgument(ActionOnlyNavDirections.class);
-        assertThat(actual.getActionId(), is(R.id.action_nav_fragment_empty_food_to_nav_fragment_add_food));
+        assertEquals(actual.getActionId(), R.id.action_nav_fragment_location_content_to_nav_fragment_add_food);
     }
 }

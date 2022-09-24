@@ -29,6 +29,8 @@ import javax.inject.Inject;
 import java.math.BigDecimal;
 import java.text.FieldPosition;
 import java.text.NumberFormat;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class UnitAmountRenderStrategy {
 
@@ -51,6 +53,12 @@ public class UnitAmountRenderStrategy {
 
     public String render(FullScaledUnitSummaryFields scaledUnit) {
         return String.format("%s (%s)", render((ScaledUnitSummaryFields) scaledUnit), scaledUnit.name());
+    }
+
+    public String render(List<? extends UnitAmount> unitAmounts) {
+        return unitAmounts.stream()
+                .map(this::render)
+                .collect(Collectors.joining(", "));
     }
 
     private String spaceForFullWordAbbreviation(String abbreviation) {

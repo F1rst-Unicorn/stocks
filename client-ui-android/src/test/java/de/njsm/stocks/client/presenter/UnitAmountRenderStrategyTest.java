@@ -29,6 +29,7 @@ import org.junit.Test;
 import java.math.BigDecimal;
 import java.util.Locale;
 
+import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
 
 public class UnitAmountRenderStrategyTest {
@@ -71,5 +72,13 @@ public class UnitAmountRenderStrategyTest {
     @Test
     public void upperCaseUnitWithPrefixInsertsSpace() {
         assertEquals("5 k Bottle", uut.render(ScaledUnitForListing.create(1, "Bottle", BigDecimal.valueOf(5000))));
+    }
+
+    @Test
+    public void listIsRenderedByJoining() {
+        assertEquals("5kg, 1piece", uut.render(asList(
+                ScaledUnitForListing.create(1, "g", BigDecimal.valueOf(5000)),
+                ScaledUnitForListing.create(1, "piece", BigDecimal.valueOf(1))
+        )));
     }
 }

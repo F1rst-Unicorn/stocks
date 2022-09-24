@@ -31,6 +31,4 @@ public class Util {
     public static MenuItem menuItem(Context context, @IdRes int action) {
         return new ActionMenuItem(context, 0, action, 0, 0, "");
     }
-
-
 }

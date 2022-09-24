@@ -24,6 +24,7 @@ package de.njsm.stocks.client.business;
 import de.njsm.stocks.client.business.entities.FoodForListing;
 import de.njsm.stocks.client.business.entities.Identifiable;
 import de.njsm.stocks.client.business.entities.Location;
+import de.njsm.stocks.client.business.entities.LocationName;
 import io.reactivex.rxjava3.core.Observable;
 
 import java.util.List;
@@ -31,4 +32,6 @@ import java.util.List;
 public interface FoodByLocationListInteractor {
 
     Observable<List<FoodForListing>> getFoodBy(Identifiable<Location> location);
+
+    Observable<LocationName> getLocation(Identifiable<Location> location);
 }

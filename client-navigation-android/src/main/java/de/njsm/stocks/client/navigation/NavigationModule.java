@@ -83,4 +83,7 @@ public interface NavigationModule {
 
     @Binds
     FoodConflictNavigator FoodConflictNavigator(FoodConflictNavigatorImpl impl);
+
+    @Binds
+    FoodByLocationNavigator FoodByLocationNavigator(FoodByLocationNavigatorImpl impl);
 }

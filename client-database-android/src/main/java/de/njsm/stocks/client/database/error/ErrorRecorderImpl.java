@@ -22,11 +22,11 @@
 package de.njsm.stocks.client.database.error;
 
 import com.google.auto.value.AutoValue;
+import de.njsm.stocks.client.business.Clock;
 import de.njsm.stocks.client.business.ErrorRecorder;
 import de.njsm.stocks.client.business.StatusCodeException;
 import de.njsm.stocks.client.business.SubsystemException;
 import de.njsm.stocks.client.business.entities.*;
-import de.njsm.stocks.client.database.Clock;
 import de.njsm.stocks.client.database.NullablePreservedId;
 import de.njsm.stocks.client.database.PreservedId;
 

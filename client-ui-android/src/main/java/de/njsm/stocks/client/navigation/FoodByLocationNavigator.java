@@ -19,24 +19,13 @@
  *
  */
 
-package de.njsm.stocks.client.business;
+package de.njsm.stocks.client.navigation;
 
-import de.njsm.stocks.client.business.entities.*;
-import io.reactivex.rxjava3.core.Observable;
+import android.os.Bundle;
+import de.njsm.stocks.client.business.entities.Identifiable;
+import de.njsm.stocks.client.business.entities.Location;
 
-import java.util.List;
+public interface FoodByLocationNavigator extends FoodNavigator {
 
-/**
- * At every consistent state of the client database it must hold that
- * for each {@link FoodForListingBaseData} b in the result list of {@link #getFoodBy(Identifiable)}}
- * there exists a {@link StoredFoodAmount} a in the result list of {@link #getFoodAmountsIn(Identifiable)}
- * such that {@code b.id() == a.foodId()}
- */
-public interface FoodListRepository {
-
-    Observable<List<FoodForListingBaseData>> getFoodBy(Identifiable<Location> location);
-
-    Observable<List<StoredFoodAmount>> getFoodAmountsIn(Identifiable<Location> location);
-
-    Observable<LocationName> getLocationName(Identifiable<Location> location);
+    Identifiable<Location> getId(Bundle arguments);
 }

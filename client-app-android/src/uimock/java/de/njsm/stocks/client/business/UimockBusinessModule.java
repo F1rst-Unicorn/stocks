@@ -140,4 +140,7 @@ public interface UimockBusinessModule {
 
     @Binds
     FoodConflictInteractor InMemoryFoodConflictInteractorImpl(InMemoryFoodConflictInteractorImpl impl);
+
+    @Binds
+    FoodByLocationListInteractor InMemoryFoodByLocationInteractorImpl(InMemoryFoodByLocationListInteractorImpl impl);
 }

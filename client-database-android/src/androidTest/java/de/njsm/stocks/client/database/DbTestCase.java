@@ -24,6 +24,7 @@ package de.njsm.stocks.client.database;
 import android.content.Context;
 import androidx.room.Room;
 import androidx.test.core.app.ApplicationProvider;
+import de.njsm.stocks.client.business.Clock;
 import de.njsm.stocks.client.business.entities.EntityType;
 import de.njsm.stocks.client.database.util.RandomnessProvider;
 import io.requery.android.database.sqlite.RequerySQLiteOpenHelperFactory;

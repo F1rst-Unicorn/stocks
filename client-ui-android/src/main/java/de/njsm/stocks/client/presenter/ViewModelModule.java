@@ -198,4 +198,11 @@ public class ViewModelModule {
     ViewModel FoodConflictViewModel(FoodConflictInteractor conflictInteractor, ErrorRetryInteractor errorRetryInteractor) {
         return new FoodConflictViewModel(conflictInteractor, errorRetryInteractor);
     }
+
+    @Provides
+    @IntoMap
+    @ViewModelKey(FoodByLocationListViewModel.class)
+    ViewModel FoodByLocationListViewModel(FoodByLocationListInteractor foodByLocationListInteractor, Synchroniser synchroniser, EntityDeleter<Food> deleter) {
+        return new FoodByLocationListViewModel(synchroniser, foodByLocationListInteractor, deleter);
+    }
 }

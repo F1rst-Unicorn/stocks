@@ -49,6 +49,11 @@ class FoodByLocationListInteractorImpl implements FoodByLocationListInteractor {
         return repository.getFoodBy(location).zipWith(repository.getFoodAmountsIn(location), FoodByLocationListInteractorImpl::regroup);
     }
 
+    @Override
+    public Observable<LocationName> getLocation(Identifiable<Location> location) {
+        return repository.getLocationName(location);
+    }
+
     private static List<FoodForListing> regroup(List<FoodForListingBaseData> food, List<StoredFoodAmount> amounts) {
         Map<Integer, List<FoodForListingBaseData>> foodById = food.stream().collect(groupingBy(FoodForListingBaseData::id));
         Map<Integer, List<StoredFoodAmount>> amountsByFoodId = amounts.stream().collect(groupingBy(StoredFoodAmount::foodId));

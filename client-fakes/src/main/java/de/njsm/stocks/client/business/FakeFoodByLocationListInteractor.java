@@ -19,40 +19,38 @@
  *
  */
 
-package de.njsm.stocks.client.database;
+package de.njsm.stocks.client.business;
 
-import de.njsm.stocks.client.business.FoodListRepository;
-import de.njsm.stocks.client.business.entities.*;
+import de.njsm.stocks.client.business.entities.FoodForListing;
+import de.njsm.stocks.client.business.entities.Identifiable;
+import de.njsm.stocks.client.business.entities.Location;
+import de.njsm.stocks.client.business.entities.LocationName;
 import io.reactivex.rxjava3.core.Observable;
+import io.reactivex.rxjava3.subjects.BehaviorSubject;
 
 import javax.inject.Inject;
 import java.util.List;
 
-class FoodListRepositoryImpl implements FoodListRepository {
+public class FakeFoodByLocationListInteractor implements FoodByLocationListInteractor {
 
-    private final FoodDao foodDao;
-
-    private final LocationDao locationDao;
+    private final BehaviorSubject<List<FoodForListing>> data;
 
     @Inject
-    FoodListRepositoryImpl(FoodDao foodDao, LocationDao locationDao) {
-        this.foodDao = foodDao;
-        this.locationDao = locationDao;
+    FakeFoodByLocationListInteractor() {
+        this.data = BehaviorSubject.create();
+    }
+
+    public void setData(List<FoodForListing> data) {
+        this.data.onNext(data);
     }
 
     @Override
-    public Observable<List<FoodForListingBaseData>> getFoodBy(Identifiable<Location> location) {
-        return foodDao.getCurrentFoodBy(location.id());
+    public Observable<List<FoodForListing>> getFoodBy(Identifiable<Location> location) {
+        return data;
     }
 
     @Override
-    public Observable<List<StoredFoodAmount>> getFoodAmountsIn(Identifiable<Location> location) {
-        return foodDao.getAmountsStoredIn(location.id());
-    }
-
-    @Override
-    public Observable<LocationName> getLocationName(Identifiable<Location> location) {
-        return locationDao.getCurrentLocation(location.id())
-                .map(v -> LocationName.create(v.name()));
+    public Observable<LocationName> getLocation(Identifiable<Location> location) {
+        return Observable.just(LocationName.create("Fridge"));
     }
 }

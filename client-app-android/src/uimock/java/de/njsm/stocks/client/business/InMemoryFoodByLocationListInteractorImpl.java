@@ -21,22 +21,29 @@
 
 package de.njsm.stocks.client.business;
 
-import de.njsm.stocks.client.business.entities.*;
+import de.njsm.stocks.client.business.entities.FoodForListing;
+import de.njsm.stocks.client.business.entities.Identifiable;
+import de.njsm.stocks.client.business.entities.Location;
+import de.njsm.stocks.client.business.entities.LocationName;
+import de.njsm.stocks.client.testdata.FoodsForListing;
 import io.reactivex.rxjava3.core.Observable;
 
+import javax.inject.Inject;
 import java.util.List;
 
-/**
- * At every consistent state of the client database it must hold that
- * for each {@link FoodForListingBaseData} b in the result list of {@link #getFoodBy(Identifiable)}}
- * there exists a {@link StoredFoodAmount} a in the result list of {@link #getFoodAmountsIn(Identifiable)}
- * such that {@code b.id() == a.foodId()}
- */
-public interface FoodListRepository {
+class InMemoryFoodByLocationListInteractorImpl implements FoodByLocationListInteractor {
 
-    Observable<List<FoodForListingBaseData>> getFoodBy(Identifiable<Location> location);
+    @Inject
+    InMemoryFoodByLocationListInteractorImpl() {
+    }
 
-    Observable<List<StoredFoodAmount>> getFoodAmountsIn(Identifiable<Location> location);
+    @Override
+    public Observable<List<FoodForListing>> getFoodBy(Identifiable<Location> location) {
+        return Observable.just(FoodsForListing.get());
+    }
 
-    Observable<LocationName> getLocationName(Identifiable<Location> location);
+    @Override
+    public Observable<LocationName> getLocation(Identifiable<Location> location) {
+        return Observable.just(LocationName.create("Fridge"));
+    }
 }

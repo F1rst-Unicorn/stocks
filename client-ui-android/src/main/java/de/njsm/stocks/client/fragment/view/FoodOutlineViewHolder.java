@@ -21,6 +21,7 @@
 
 package de.njsm.stocks.client.fragment.view;
 
+import android.graphics.drawable.Drawable;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -36,11 +37,17 @@ public class FoodOutlineViewHolder extends RecyclerView.ViewHolder {
 
     private final TextView amount;
 
+    private final TextView nextEatByDate;
+
+    private final ImageView nextEatByIcon;
+
     public FoodOutlineViewHolder(@NonNull View itemView) {
         super(itemView);
         name = itemView.findViewById(R.id.item_food_outline_name);
         shoppingCart = itemView.findViewById(R.id.item_food_outline_shopping_flag);
         amount = itemView.findViewById(R.id.item_food_outline_count);
+        nextEatByDate = itemView.findViewById(R.id.item_food_outline_date);
+        nextEatByIcon = itemView.findViewById(R.id.item_food_outline_icon);
         itemView.setTag(this);
     }
 
@@ -57,7 +64,15 @@ public class FoodOutlineViewHolder extends RecyclerView.ViewHolder {
     }
 
     public void hideExpirationDate() {
-        itemView.findViewById(R.id.item_food_outline_icon).setVisibility(View.GONE);
-        itemView.findViewById(R.id.item_food_outline_date).setVisibility(View.GONE);
+        nextEatByIcon.setVisibility(View.GONE);
+        nextEatByDate.setVisibility(View.GONE);
+    }
+
+    public void setExpirationDate(CharSequence date) {
+        nextEatByDate.setText(date);
+    }
+
+    public void setExpirationWarningLevel(Drawable level) {
+        nextEatByIcon.setImageDrawable(level);
     }
 }

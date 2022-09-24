@@ -40,6 +40,7 @@ import javax.inject.Singleton;
         ViewModelModule.class,
         FragmentModule.class,
         ActivityModule.class,
+        FakePrimitiveModule.class,
 })
 public interface TestComponent {
 

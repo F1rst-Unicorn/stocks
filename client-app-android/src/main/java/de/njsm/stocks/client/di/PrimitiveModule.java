@@ -26,16 +26,20 @@ import dagger.Module;
 import dagger.Provides;
 import de.njsm.stocks.client.Application;
 import de.njsm.stocks.client.business.CertificateStore;
+import de.njsm.stocks.client.business.Clock;
 import de.njsm.stocks.client.business.Settings;
 import de.njsm.stocks.client.business.entities.ServerEndpoint;
 import de.njsm.stocks.client.runtime.FileInteractor;
 
+import javax.inject.Singleton;
 import java.io.*;
+import java.time.Instant;
 
 @Module
 public interface PrimitiveModule {
 
     @Provides
+    @Singleton
     static FileInteractor fileInteractor(Application a) {
         return new FileInteractor() {
             @Override
@@ -60,7 +64,14 @@ public interface PrimitiveModule {
     }
 
     @Provides
+    @Singleton
     static ServerEndpoint serverEndpoint(Settings settings, CertificateStore certificateStore) {
         return ServerEndpoint.create(settings.getServerName(), settings.getServerPort(), certificateStore.getTrustManager(), certificateStore.getKeyManager());
+    }
+
+    @Provides
+    @Singleton
+    static Clock clock() {
+        return Instant::now;
     }
 }

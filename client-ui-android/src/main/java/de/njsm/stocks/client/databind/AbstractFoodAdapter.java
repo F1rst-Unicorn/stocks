@@ -19,7 +19,7 @@
  *
  */
 
-package de.njsm.stocks.client.fragment.emptyfood;
+package de.njsm.stocks.client.databind;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,7 +27,8 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
-import de.njsm.stocks.client.business.entities.EmptyFood;
+import de.njsm.stocks.client.business.entities.Entity;
+import de.njsm.stocks.client.business.entities.Identifiable;
 import de.njsm.stocks.client.fragment.view.FoodOutlineViewHolder;
 import de.njsm.stocks.client.presenter.UnitAmountRenderStrategy;
 import de.njsm.stocks.client.ui.R;
@@ -36,24 +37,24 @@ import java.util.List;
 
 import static de.njsm.stocks.client.fragment.util.ListDiffer.byId;
 
-public class FoodAdapter extends RecyclerView.Adapter<FoodOutlineViewHolder> {
+public abstract class AbstractFoodAdapter<E extends Entity<E>, T extends Identifiable<E>> extends RecyclerView.Adapter<FoodOutlineViewHolder> {
 
-    private List<EmptyFood> foods;
+    private List<T> foods;
 
     private final View.OnClickListener onClickListener;
 
     private final View.OnLongClickListener onLongClickListener;
 
-    private final UnitAmountRenderStrategy unitAmountRenderStrategy;
+    protected final UnitAmountRenderStrategy unitAmountRenderStrategy;
 
-    public FoodAdapter(View.OnClickListener onClickListener, View.OnLongClickListener onLongClickListener) {
+    protected AbstractFoodAdapter(View.OnClickListener onClickListener, View.OnLongClickListener onLongClickListener) {
         this.onClickListener = onClickListener;
         this.onLongClickListener = onLongClickListener;
         unitAmountRenderStrategy = new UnitAmountRenderStrategy();
     }
 
-    public void setData(List<EmptyFood> newList) {
-        List<EmptyFood> oldList = foods;
+    public void setData(List<T> newList) {
+        List<T> oldList = foods;
         foods = newList;
         DiffUtil.calculateDiff(byId(oldList, newList), true).dispatchUpdatesTo(this);
     }
@@ -65,18 +66,16 @@ public class FoodAdapter extends RecyclerView.Adapter<FoodOutlineViewHolder> {
                 .inflate(R.layout.item_food_outline, parent, false);
         v.setOnClickListener(onClickListener);
         v.setOnLongClickListener(onLongClickListener);
-        FoodOutlineViewHolder result = new FoodOutlineViewHolder(v);
-        result.hideExpirationDate();
-        return result;
+        return new FoodOutlineViewHolder(v);
     }
 
     @Override
     public void onBindViewHolder(@NonNull FoodOutlineViewHolder holder, int position) {
-        EmptyFood item = foods.get(position);
-        holder.setName(item.name());
-        holder.showToBuy(item.toBuy());
-        holder.setAmount(unitAmountRenderStrategy.render(item.storedAmount()));
+        T item = foods.get(position);
+        onBindViewHolder(holder, item);
     }
+
+    protected abstract void onBindViewHolder(FoodOutlineViewHolder holder, T item);
 
     @Override
     public int getItemCount() {
