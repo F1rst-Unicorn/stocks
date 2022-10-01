@@ -21,34 +21,33 @@
 
 package de.njsm.stocks.client.business;
 
-import de.njsm.stocks.client.business.entities.*;
+import de.njsm.stocks.client.business.entities.FoodForListing;
+import de.njsm.stocks.client.business.entities.FoodForListingBaseData;
+import de.njsm.stocks.client.business.entities.StoredFoodAmount;
+import de.njsm.stocks.client.business.entities.UnitAmount;
 import io.reactivex.rxjava3.core.Observable;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.Instant;
 import java.util.List;
 
-import static de.njsm.stocks.client.business.Matchers.equalBy;
 import static java.math.BigDecimal.valueOf;
 import static java.util.Collections.singletonList;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@ExtendWith(MockitoExtension.class)
-class FoodByLocationListInteractorImplTest {
+class AllPresentFoodListInteractorImplTest {
 
-    private FoodByLocationListInteractorImpl uut;
+    private AllPresentFoodListInteractor uut;
 
     @Mock
     private FoodListRepository repository;
 
     @BeforeEach
     void setUp() {
-        uut = new FoodByLocationListInteractorImpl(repository, new FoodRegrouper());
+        uut = new AllPresentFoodListInteractorImpl(repository, new FoodRegrouper());
     }
 
     @Test
@@ -56,14 +55,13 @@ class FoodByLocationListInteractorImplTest {
         FoodForListingBaseData food = FoodForListingBaseData.create(1, "Banana", false, Instant.EPOCH);
         StoredFoodAmount amount = StoredFoodAmount.create(food.id(), 2, 3, valueOf(1), "piece", 1);
         FoodForListing expected = FoodForListing.create(food, singletonList(UnitAmount.of(valueOf(1), amount.abbreviation())));
-        Identifiable<Location> id = () -> 42;
-        when(repository.getFoodBy(equalBy(id))).thenReturn(Observable.just(singletonList(food)));
-        when(repository.getFoodAmountsIn(equalBy(id))).thenReturn(Observable.just(singletonList(amount)));
+        when(repository.getFood()).thenReturn(Observable.just(singletonList(food)));
+        when(repository.getFoodAmounts()).thenReturn(Observable.just(singletonList(amount)));
 
-        Observable<List<FoodForListing>> actual = uut.getFoodBy(id);
+        Observable<List<FoodForListing>> actual = uut.getFood();
 
         actual.test().assertValue(singletonList(expected));
-        verify(repository).getFoodBy(equalBy(id));
-        verify(repository).getFoodAmountsIn(equalBy(id));
+        verify(repository).getFood();
+        verify(repository).getFoodAmounts();
     }
 }

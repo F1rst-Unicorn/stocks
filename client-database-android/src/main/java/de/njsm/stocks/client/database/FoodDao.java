@@ -72,8 +72,8 @@ abstract class FoodDao {
             "join least_eat_by_date d on f.id = d.of_type " +
             "where exists (select 1 " +
                 "from current_food_item i " +
-                "where i.of_type = f.id and " +
-                "i.stored_in = :location" +
+                "where i.of_type = f.id " +
+                "and i.stored_in = :location" +
             ")")
     public abstract Observable<List<FoodForListingBaseData>> getCurrentFoodBy(int location);
 
@@ -85,4 +85,26 @@ abstract class FoodDao {
             "where i.stored_in = :location " +
             "group by i.of_type, s.id, u.id, s.scale, u.abbreviation")
     public abstract Observable<List<StoredFoodAmount>> getAmountsStoredIn(int location);
+
+    @Query("with least_eat_by_date as (" +
+                "select of_type as of_type, min(eat_by) as eat_by " +
+                "from current_food_item " +
+                "group by of_type" +
+            ") " +
+            "select f.id, f.name, f.to_buy as toBuy, d.eat_by as nextEatByDate " +
+            "from current_food f " +
+            "join least_eat_by_date d on f.id = d.of_type " +
+            "where exists (select 1 " +
+                "from current_food_item i " +
+                "where i.of_type = f.id " +
+            ")")
+    public abstract Observable<List<FoodForListingBaseData>> getCurrentFood();
+
+    @Query("select i.of_type as foodId, s.id as scaledUnitId, u.id as unitId, " +
+            "count(1) as numberOfFoodItemsWithSameScaledUnit, s.scale as scale, u.abbreviation as abbreviation " +
+            "from current_food_item i " +
+            "join current_scaled_unit s on i.unit = s.id " +
+            "join current_unit u on s.unit = u.id " +
+            "group by i.of_type, s.id, u.id, s.scale, u.abbreviation")
+    public abstract Observable<List<StoredFoodAmount>> getAmounts();
 }

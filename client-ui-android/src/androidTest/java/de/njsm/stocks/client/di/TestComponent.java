@@ -28,6 +28,7 @@ import de.njsm.stocks.client.execution.FakeExecutionModule;
 import de.njsm.stocks.client.fragment.BottomToolbarFragmentTest;
 import de.njsm.stocks.client.fragment.FragmentModule;
 import de.njsm.stocks.client.fragment.SwipeDownSupportTest;
+import de.njsm.stocks.client.fragment.allfood.AllFoodFragmentTest;
 import de.njsm.stocks.client.fragment.emptyfood.EmptyFoodFragmentTest;
 import de.njsm.stocks.client.fragment.errordetails.ErrorDetailsFragmentTest;
 import de.njsm.stocks.client.fragment.errorlist.ErrorListFragmentTest;
@@ -116,6 +117,8 @@ public interface TestComponent {
     void inject(FoodConflictFragmentTest test);
 
     void inject(FoodInLocationFragmentTest test);
+
+    void inject(AllFoodFragmentTest test);
 
     @Component.Builder
     interface Builder {

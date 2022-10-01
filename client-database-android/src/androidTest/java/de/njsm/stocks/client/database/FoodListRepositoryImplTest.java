@@ -104,4 +104,40 @@ public class FoodListRepositoryImplTest extends FoodListRepositoryImplTestBase {
 
         testList(actual).assertValue(singletonList(FoodForListingBaseData.create(food.id(), food.name(), food.toBuy(), foodItemAffectingResultEatBy.eatBy())));
     }
+
+    @Test
+    public void foodWithoutItemInAnyLocationIsNotReturned() {
+        Observable<List<FoodForListingBaseData>> actual = uut.getFood();
+
+        test(actual).assertValue(emptyList());
+    }
+
+    @Test
+    public void foodWithSingleItemInAnyLocationIsReturned() {
+        FoodItemDbEntity foodItem = standardEntities.foodItemDbEntityBuilder()
+                .ofType(food.id())
+                .build();
+        stocksDatabase.synchronisationDao().writeFoodItems(singletonList(foodItem));
+
+        Observable<List<FoodForListingBaseData>> actual = uut.getFood();
+
+        testList(actual).assertValue(singletonList(FoodForListingBaseData.create(food.id(), food.name(), food.toBuy(), foodItem.eatBy())));
+    }
+
+    @Test
+    public void foodWithTwoItemsInAnyLocationReturnsLeastEatBy() {
+        FoodItemDbEntity foodItem = standardEntities.foodItemDbEntityBuilder()
+                .ofType(food.id())
+                .eatBy(Instant.EPOCH.plusSeconds(4))
+                .build();
+        FoodItemDbEntity foodItem2 = standardEntities.foodItemDbEntityBuilder()
+                .ofType(food.id())
+                .eatBy(Instant.EPOCH.plusSeconds(3))
+                .build();
+        stocksDatabase.synchronisationDao().writeFoodItems(asList(foodItem, foodItem2));
+
+        Observable<List<FoodForListingBaseData>> actual = uut.getFood();
+
+        testList(actual).assertValue(singletonList(FoodForListingBaseData.create(food.id(), food.name(), food.toBuy(), foodItem2.eatBy())));
+    }
 }

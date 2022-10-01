@@ -27,7 +27,7 @@ String customGeneratedSources = "generated/source/custom/"
 apply from: "$project.rootDir/gradle/jacoco/android.gradle"
 
 ext {
-    room_version = "2.4.2"
+    room_version = "2.4.3"
 }
 
 android {

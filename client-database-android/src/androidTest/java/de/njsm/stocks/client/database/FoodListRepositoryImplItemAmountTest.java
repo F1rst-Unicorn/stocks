@@ -199,4 +199,140 @@ public class FoodListRepositoryImplItemAmountTest extends FoodListRepositoryImpl
                 scaledUnit.scale(),
                 unit.abbreviation(), 2)));
     }
+
+    @Test
+    public void noItemsGivesEmptyList() {
+        Observable<List<StoredFoodAmount>> actual = uut.getFoodAmounts();
+
+        test(actual).assertValue(emptyList());
+    }
+
+    @Test
+    public void singleItemOfAnyLocationIsReturned() {
+        FoodItemDbEntity foodItem = standardEntities.foodItemDbEntityBuilder()
+                .unit(scaledUnit.id())
+                .build();
+        stocksDatabase.synchronisationDao().writeFoodItems(singletonList(foodItem));
+
+        Observable<List<StoredFoodAmount>> actual = uut.getFoodAmounts();
+
+        testList(actual).assertValue(singletonList(StoredFoodAmount.create(
+                foodItem.ofType(),
+                scaledUnit.id(),
+                unit.id(),
+                scaledUnit.scale(),
+                unit.abbreviation(), 1)));
+    }
+
+    @Test
+    public void twoItemsOfDifferentFoodOfAnyLocationAreSeparate() {
+        FoodItemDbEntity foodItem = standardEntities.foodItemDbEntityBuilder()
+                .unit(scaledUnit.id())
+                .build();
+        FoodItemDbEntity foodItemOfDifferentFood = standardEntities.foodItemDbEntityBuilder()
+                .unit(scaledUnit.id())
+                .build();
+        stocksDatabase.synchronisationDao().writeFoodItems(asList(foodItem, foodItemOfDifferentFood));
+
+        Observable<List<StoredFoodAmount>> actual = uut.getFoodAmounts();
+
+        testList(actual).assertValue(v -> v.size() == 2);
+        testList(actual).assertValue(v -> v.contains(StoredFoodAmount.create(
+                foodItem.ofType(),
+                scaledUnit.id(),
+                unit.id(),
+                scaledUnit.scale(),
+                unit.abbreviation(), 1)));
+        testList(actual).assertValue(v -> v.contains(StoredFoodAmount.create(
+                foodItemOfDifferentFood.ofType(),
+                scaledUnit.id(),
+                unit.id(),
+                scaledUnit.scale(),
+                unit.abbreviation(), 1)));
+    }
+
+    @Test
+    public void twoItemsOfDifferentUnitOfAnyLocationAreSeparate() {
+        UnitDbEntity unit2 = standardEntities.unitDbEntity();
+        stocksDatabase.synchronisationDao().writeUnits(singletonList(unit2));
+        ScaledUnitDbEntity scaledUnit2 = standardEntities.scaledUnitDbEntityBuilder()
+                .unit(unit2.id())
+                .build();
+        stocksDatabase.synchronisationDao().writeScaledUnits(singletonList(scaledUnit2));
+        FoodItemDbEntity foodItem = standardEntities.foodItemDbEntityBuilder()
+                .unit(scaledUnit.id())
+                .build();
+        FoodItemDbEntity foodItemOfDifferentScaledUnit = standardEntities.foodItemDbEntityBuilder()
+                .unit(scaledUnit2.id())
+                .build();
+        stocksDatabase.synchronisationDao().writeFoodItems(asList(foodItem, foodItemOfDifferentScaledUnit));
+
+        Observable<List<StoredFoodAmount>> actual = uut.getFoodAmounts();
+
+        testList(actual).assertValue(v -> v.size() == 2);
+        testList(actual).assertValue(v -> v.contains(StoredFoodAmount.create(
+                foodItem.ofType(),
+                scaledUnit.id(),
+                unit.id(),
+                scaledUnit.scale(),
+                unit.abbreviation(), 1)));
+        testList(actual).assertValue(v -> v.contains(StoredFoodAmount.create(
+                foodItemOfDifferentScaledUnit.ofType(),
+                scaledUnit2.id(),
+                unit2.id(),
+                scaledUnit.scale(),
+                unit2.abbreviation(), 1)));
+    }
+
+    @Test
+    public void twoItemsOfDifferentScaledUnitOfAnyLocationAreSeparate() {
+        ScaledUnitDbEntity scaledUnit2 = standardEntities.scaledUnitDbEntityBuilder()
+                .unit(unit.id())
+                .build();
+        stocksDatabase.synchronisationDao().writeScaledUnits(singletonList(scaledUnit2));
+        FoodItemDbEntity foodItem = standardEntities.foodItemDbEntityBuilder()
+                .unit(scaledUnit.id())
+                .build();
+        FoodItemDbEntity foodItemOfDifferentScaledUnit = standardEntities.foodItemDbEntityBuilder()
+                .unit(scaledUnit2.id())
+                .build();
+        stocksDatabase.synchronisationDao().writeFoodItems(asList(foodItem, foodItemOfDifferentScaledUnit));
+
+        Observable<List<StoredFoodAmount>> actual = uut.getFoodAmounts();
+
+        testList(actual).assertValue(v -> v.size() == 2);
+        testList(actual).assertValue(v -> v.contains(StoredFoodAmount.create(
+                foodItem.ofType(),
+                scaledUnit.id(),
+                unit.id(),
+                scaledUnit.scale(),
+                unit.abbreviation(), 1)));
+        testList(actual).assertValue(v -> v.contains(StoredFoodAmount.create(
+                foodItemOfDifferentScaledUnit.ofType(),
+                scaledUnit2.id(),
+                unit.id(),
+                scaledUnit.scale(),
+                unit.abbreviation(), 1)));
+    }
+
+    @Test
+    public void twoItemsOfSameScaledUnitOfAnyLocationAreMerged() {
+        FoodItemDbEntity foodItem = standardEntities.foodItemDbEntityBuilder()
+                .unit(scaledUnit.id())
+                .build();
+        FoodItemDbEntity foodItemOfDifferentScaledUnit = standardEntities.foodItemDbEntityBuilder()
+                .ofType(foodItem.ofType())
+                .unit(scaledUnit.id())
+                .build();
+        stocksDatabase.synchronisationDao().writeFoodItems(asList(foodItem, foodItemOfDifferentScaledUnit));
+
+        Observable<List<StoredFoodAmount>> actual = uut.getFoodAmounts();
+
+        testList(actual).assertValue(singletonList(StoredFoodAmount.create(
+                foodItem.ofType(),
+                scaledUnit.id(),
+                unit.id(),
+                scaledUnit.scale(),
+                unit.abbreviation(), 2)));
+    }
 }

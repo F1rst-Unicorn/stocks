@@ -19,7 +19,7 @@
  *
  */
 
-package de.njsm.stocks.client.fragment.foodinlocation;
+package de.njsm.stocks.client.fragment.allfood;
 
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -32,26 +32,23 @@ import androidx.core.content.ContextCompat;
 import androidx.lifecycle.ViewModelProvider;
 import de.njsm.stocks.client.business.Clock;
 import de.njsm.stocks.client.business.entities.FoodForListing;
-import de.njsm.stocks.client.business.entities.Identifiable;
-import de.njsm.stocks.client.business.entities.Location;
-import de.njsm.stocks.client.business.entities.LocationName;
 import de.njsm.stocks.client.databind.FoodAdapter;
 import de.njsm.stocks.client.fragment.BottomToolbarFragment;
 import de.njsm.stocks.client.fragment.listswipe.SwipeCallback;
 import de.njsm.stocks.client.fragment.view.FoodOutlineViewHolder;
 import de.njsm.stocks.client.fragment.view.TemplateSwipeList;
-import de.njsm.stocks.client.navigation.FoodByLocationNavigator;
-import de.njsm.stocks.client.presenter.FoodByLocationListViewModel;
+import de.njsm.stocks.client.navigation.AllFoodNavigator;
+import de.njsm.stocks.client.presenter.AllFoodListViewModel;
 import de.njsm.stocks.client.ui.R;
 
 import javax.inject.Inject;
 import java.util.List;
 
-public class FoodInLocationFragment extends BottomToolbarFragment {
+public class AllFoodFragment extends BottomToolbarFragment {
 
-    private FoodByLocationNavigator navigator;
+    private AllFoodNavigator navigator;
 
-    private FoodByLocationListViewModel viewModel;
+    private AllFoodListViewModel viewModel;
 
     private TemplateSwipeList templateSwipeList;
 
@@ -68,10 +65,8 @@ public class FoodInLocationFragment extends BottomToolbarFragment {
         templateSwipeList = new TemplateSwipeList(swipeList);
         templateSwipeList.setLoading();
 
-        Identifiable<Location> location = navigator.getId(requireArguments());
         foodListAdapter = new FoodAdapter(this::onItemClicked, this::onItemLongClicked, getResources(), requireActivity().getTheme(), clock);
-        viewModel.getFood(location).observe(getViewLifecycleOwner(), this::onListDataReceived);
-        viewModel.getLocation(location).observe(getViewLifecycleOwner(), this::setTitle);
+        viewModel.getFood().observe(getViewLifecycleOwner(), this::onListDataReceived);
 
         SwipeCallback callback = new SwipeCallback(
                 ContextCompat.getDrawable(requireActivity(), R.drawable.ic_delete_white_24dp),
@@ -103,15 +98,11 @@ public class FoodInLocationFragment extends BottomToolbarFragment {
 
     private void onListDataReceived(List<FoodForListing> data) {
         if (data.isEmpty()) {
-            templateSwipeList.setEmpty(R.string.hint_no_food_in_location);
+            templateSwipeList.setEmpty(R.string.hint_no_food_items);
         } else {
             templateSwipeList.setList();
         }
         foodListAdapter.setData(data);
-    }
-
-    private void setTitle(LocationName title) {
-        requireActivity().setTitle(title.name());
     }
 
     private void onSwipeDown() {
@@ -127,11 +118,11 @@ public class FoodInLocationFragment extends BottomToolbarFragment {
     protected void setViewModelFactory(ViewModelProvider.Factory viewModelFactory) {
         super.setViewModelFactory(viewModelFactory);
         ViewModelProvider viewModelProvider = new ViewModelProvider(this, viewModelFactory);
-        viewModel = viewModelProvider.get(FoodByLocationListViewModel.class);
+        viewModel = viewModelProvider.get(AllFoodListViewModel.class);
     }
 
     @Inject
-    void setNavigator(FoodByLocationNavigator navigator) {
+    void setNavigator(AllFoodNavigator navigator) {
         this.navigator = navigator;
     }
 

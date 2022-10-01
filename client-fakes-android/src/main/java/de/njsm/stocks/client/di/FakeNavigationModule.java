@@ -163,4 +163,10 @@ class FakeNavigationModule {
     FoodByLocationNavigator FoodByLocationNavigator() {
         return mock(FoodByLocationNavigator.class);
     }
+
+    @Provides
+    @Singleton
+    AllFoodNavigator AllFoodNavigator() {
+        return mock(AllFoodNavigator.class);
+    }
 }

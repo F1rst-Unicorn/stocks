@@ -76,6 +76,7 @@
     <string name="title_conflict">Solve Conflict</string>
     <string name="title_add_food">Add Food</string>
     <string name="title_edit_food">Edit Food</string>
+    <string name="title_all_food">To Eat Soon</string>
 
     <string name="action_users">Users</string>
     <string name="action_locations">Locations</string>
@@ -134,7 +135,8 @@
     <string name="hint_no_units">No Units of Measure.\nCreate one using the + button.</string>
     <string name="hint_no_scaled_units">No Unit Amounts.\nCreate one using the + button.</string>
     <string name="hint_no_food">No Food.\nCreate one using the + button.</string>
-    <string name="hint_no_food_in_location">Keine Lebensmittel an diesem Ort.</string>
+    <string name="hint_no_food_in_location">No food in this location.</string>
+    <string name="hint_no_food_items">No food present.</string>
 
     <string name="dialog_success">Success</string>
     <string name="dialog_finished">Registration finished</string>

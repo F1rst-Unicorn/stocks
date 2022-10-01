@@ -210,8 +210,27 @@
     </fragment>
     <fragment
             android:id="@+id/nav_fragment_all_food"
-            android:name="androidx.fragment.app.Fragment"
+            android:name="de.njsm.stocks.client.fragment.allfood.AllFoodFragment"
+            android:label="@string/title_all_food"
             tools:layout="@layout/template_swipe_list">
+        <action
+                android:id="@+id/action_nav_fragment_all_food_to_nav_fragment_edit_food"
+                app:destination="@id/nav_fragment_edit_food">
+            <argument
+                    android:name="id"
+                    app:argType="integer"/>
+        </action>
+        <action
+                android:id="@+id/action_nav_fragment_all_food_to_nav_fragment_food_item_list"
+                app:destination="@id/nav_fragment_food_item_list">
+            <argument
+                    android:name="id"
+                    app:argType="integer"/>
+        </action>
+        <action
+                android:id="@+id/action_nav_fragment_all_food_to_nav_fragment_add_food"
+                app:destination="@id/nav_fragment_add_food">
+        </action>
     </fragment>
     <fragment
             android:id="@+id/nav_fragment_empty_food"

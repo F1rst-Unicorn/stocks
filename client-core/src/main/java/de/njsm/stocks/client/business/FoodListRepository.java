@@ -28,13 +28,20 @@ import java.util.List;
 
 /**
  * At every consistent state of the client database it must hold that
+ * for each {@link FoodForListingBaseData} b in the result list of {@link #getFood()}}
+ * there exists a {@link StoredFoodAmount} a in the result list of {@link #getFoodAmounts()}
+ * such that {@code b.id() == a.foodId()} and
  * for each {@link FoodForListingBaseData} b in the result list of {@link #getFoodBy(Identifiable)}}
  * there exists a {@link StoredFoodAmount} a in the result list of {@link #getFoodAmountsIn(Identifiable)}
  * such that {@code b.id() == a.foodId()}
  */
 public interface FoodListRepository {
 
+    Observable<List<FoodForListingBaseData>> getFood();
+
     Observable<List<FoodForListingBaseData>> getFoodBy(Identifiable<Location> location);
+
+    Observable<List<StoredFoodAmount>> getFoodAmounts();
 
     Observable<List<StoredFoodAmount>> getFoodAmountsIn(Identifiable<Location> location);
 

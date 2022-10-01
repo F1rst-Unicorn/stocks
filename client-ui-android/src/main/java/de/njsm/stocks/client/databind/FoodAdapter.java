@@ -19,7 +19,7 @@
  *
  */
 
-package de.njsm.stocks.client.fragment.foodinlocation;
+package de.njsm.stocks.client.databind;
 
 import android.content.res.Resources;
 import android.graphics.PorterDuff;
@@ -31,7 +31,6 @@ import androidx.core.content.res.ResourcesCompat;
 import de.njsm.stocks.client.business.Clock;
 import de.njsm.stocks.client.business.entities.Food;
 import de.njsm.stocks.client.business.entities.FoodForListing;
-import de.njsm.stocks.client.databind.AbstractFoodAdapter;
 import de.njsm.stocks.client.fragment.view.FoodOutlineViewHolder;
 import de.njsm.stocks.client.presenter.DateRenderStrategy;
 import de.njsm.stocks.client.ui.R;
@@ -41,7 +40,7 @@ import java.time.Instant;
 import java.time.ZoneId;
 import java.util.Objects;
 
-class FoodByLocationAdapter extends AbstractFoodAdapter<Food, FoodForListing> {
+public class FoodAdapter extends AbstractFoodAdapter<Food, FoodForListing> {
 
     protected final DateRenderStrategy dateRenderStrategy;
 
@@ -49,7 +48,7 @@ class FoodByLocationAdapter extends AbstractFoodAdapter<Food, FoodForListing> {
 
     private final IconCache iconCache;
 
-    FoodByLocationAdapter(View.OnClickListener onClickListener, View.OnLongClickListener onLongClickListener, Resources resources, Resources.Theme theme, Clock clock) {
+    public FoodAdapter(View.OnClickListener onClickListener, View.OnLongClickListener onLongClickListener, Resources resources, Resources.Theme theme, Clock clock) {
         super(onClickListener, onLongClickListener);
         this.clock = clock;
         this.dateRenderStrategy = new DateRenderStrategy();

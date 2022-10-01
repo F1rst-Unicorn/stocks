@@ -41,8 +41,18 @@ class FoodListRepositoryImpl implements FoodListRepository {
     }
 
     @Override
+    public Observable<List<FoodForListingBaseData>> getFood() {
+        return foodDao.getCurrentFood();
+    }
+
+    @Override
     public Observable<List<FoodForListingBaseData>> getFoodBy(Identifiable<Location> location) {
         return foodDao.getCurrentFoodBy(location.id());
+    }
+
+    @Override
+    public Observable<List<StoredFoodAmount>> getFoodAmounts() {
+        return foodDao.getAmounts();
     }
 
     @Override

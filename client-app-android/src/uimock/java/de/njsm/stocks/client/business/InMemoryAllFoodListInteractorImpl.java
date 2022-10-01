@@ -22,33 +22,20 @@
 package de.njsm.stocks.client.business;
 
 import de.njsm.stocks.client.business.entities.FoodForListing;
-import de.njsm.stocks.client.business.entities.Identifiable;
-import de.njsm.stocks.client.business.entities.Location;
-import de.njsm.stocks.client.business.entities.LocationName;
+import de.njsm.stocks.client.testdata.FoodsForListing;
 import io.reactivex.rxjava3.core.Observable;
 
 import javax.inject.Inject;
 import java.util.List;
 
-class FoodByLocationListInteractorImpl implements FoodByLocationListInteractor {
-
-    private final FoodListRepository repository;
-
-    private final FoodRegrouper foodRegrouper;
+class InMemoryAllFoodListInteractorImpl implements AllPresentFoodListInteractor {
 
     @Inject
-    FoodByLocationListInteractorImpl(FoodListRepository repository, FoodRegrouper foodRegrouper) {
-        this.repository = repository;
-        this.foodRegrouper = foodRegrouper;
+    InMemoryAllFoodListInteractorImpl() {
     }
 
     @Override
-    public Observable<List<FoodForListing>> getFoodBy(Identifiable<Location> location) {
-        return repository.getFoodBy(location).zipWith(repository.getFoodAmountsIn(location), foodRegrouper::regroup);
-    }
-
-    @Override
-    public Observable<LocationName> getLocation(Identifiable<Location> location) {
-        return repository.getLocationName(location);
+    public Observable<List<FoodForListing>> getFood() {
+        return Observable.just(FoodsForListing.get());
     }
 }

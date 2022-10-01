@@ -19,16 +19,15 @@
  *
  */
 
-package de.njsm.stocks.client.fragment.foodinlocation;
+package de.njsm.stocks.client.fragment.allfood;
 
 import android.os.Bundle;
 import androidx.fragment.app.testing.FragmentScenario;
 import androidx.test.platform.app.InstrumentationRegistry;
 import de.njsm.stocks.client.Application;
-import de.njsm.stocks.client.business.FakeFoodByLocationListInteractor;
+import de.njsm.stocks.client.business.FakeAllPresentFoodListInteractor;
 import de.njsm.stocks.client.business.entities.FoodForListing;
-import de.njsm.stocks.client.fragment.allfood.BaseFoodFragmentTest;
-import de.njsm.stocks.client.navigation.FoodByLocationNavigator;
+import de.njsm.stocks.client.navigation.AllFoodNavigator;
 import de.njsm.stocks.client.navigation.FoodNavigator;
 import de.njsm.stocks.client.ui.R;
 import org.junit.After;
@@ -39,18 +38,18 @@ import java.util.List;
 
 import static org.mockito.Mockito.reset;
 
-public class FoodInLocationFragmentTest extends BaseFoodFragmentTest {
+public class AllFoodFragmentTest extends BaseFoodFragmentTest {
 
-    private FragmentScenario<FoodInLocationFragment> scenario;
+    private FragmentScenario<AllFoodFragment> scenario;
 
-    private FoodByLocationNavigator navigator;
+    private AllFoodNavigator navigator;
 
-    private FakeFoodByLocationListInteractor foodByLocationListInteractor;
+    private FakeAllPresentFoodListInteractor allPresentFoodListInteractor;
 
     @Before
     public void setUp() {
         ((Application) InstrumentationRegistry.getInstrumentation().getTargetContext().getApplicationContext()).getDaggerRoot().inject(this);
-        scenario = FragmentScenario.launchInContainer(FoodInLocationFragment.class, new Bundle(), R.style.StocksTheme);
+        scenario = FragmentScenario.launchInContainer(AllFoodFragment.class, new Bundle(), R.style.StocksTheme);
     }
 
     @After
@@ -59,27 +58,27 @@ public class FoodInLocationFragmentTest extends BaseFoodFragmentTest {
     }
 
     @Override
-    public FoodNavigator navigator() {
+    protected FoodNavigator navigator() {
         return navigator;
     }
 
     @Override
-    public void setData(List<FoodForListing> data) {
-        foodByLocationListInteractor.setData(data);
+    protected void setData(List<FoodForListing> data) {
+        allPresentFoodListInteractor.setData(data);
     }
 
     @Override
     protected int getEmptyText() {
-        return R.string.hint_no_food_in_location;
+        return R.string.hint_no_food_items;
     }
 
     @Inject
-    void setNavigator(FoodByLocationNavigator navigator) {
+    void setNavigator(AllFoodNavigator navigator) {
         this.navigator = navigator;
     }
 
     @Inject
-    void setFoodByLocationListInteractor(FakeFoodByLocationListInteractor foodByLocationListInteractor) {
-        this.foodByLocationListInteractor = foodByLocationListInteractor;
+    void setAllPresentFoodListInteractor(FakeAllPresentFoodListInteractor allPresentFoodListInteractor) {
+        this.allPresentFoodListInteractor = allPresentFoodListInteractor;
     }
 }
