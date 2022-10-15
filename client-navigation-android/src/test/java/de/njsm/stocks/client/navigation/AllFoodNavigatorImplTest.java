@@ -44,7 +44,7 @@ public class AllFoodNavigatorImplTest extends NavigationTest {
         uut.showFood(expected);
 
         AllFoodFragmentDirections.ActionNavFragmentAllFoodToNavFragmentFoodItemList actual = navigationArgConsumer.getLastArgument(AllFoodFragmentDirections.ActionNavFragmentAllFoodToNavFragmentFoodItemList.class);
-        assertEquals(actual.getId(), expected);
+        assertEquals(actual.getFoodId(), expected);
     }
 
     @Test

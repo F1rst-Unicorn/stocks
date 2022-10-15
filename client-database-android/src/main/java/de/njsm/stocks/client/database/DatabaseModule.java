@@ -151,4 +151,7 @@ public interface DatabaseModule {
 
     @Binds
     FoodListRepository FoodListRepository(FoodListRepositoryImpl impl);
+
+    @Binds
+    FoodItemListRepository FoodItemListRepository(FoodItemListRepositoryImpl impl);
 }

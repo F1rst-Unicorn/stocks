@@ -212,4 +212,11 @@ public class ViewModelModule {
     ViewModel AllFoodListViewModel(Synchroniser synchroniser, AllPresentFoodListInteractor allPresentFoodListInteractor, EntityDeleter<Food> deleter) {
         return new AllFoodListViewModel(synchroniser, allPresentFoodListInteractor, deleter);
     }
+
+    @Provides
+    @IntoMap
+    @ViewModelKey(FoodItemListViewModel.class)
+    ViewModel FoodItemListViewModel(FoodItemListInteractor interactor) {
+        return new FoodItemListViewModel(interactor);
+    }
 }

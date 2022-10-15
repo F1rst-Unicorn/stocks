@@ -19,7 +19,7 @@
  *
  */
 
-package de.njsm.stocks.client.fragment.allfood;
+package de.njsm.stocks.client.fragment.fooditemlist;
 
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -30,46 +30,44 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.RecyclerView;
 import de.njsm.stocks.client.business.Clock;
-import de.njsm.stocks.client.business.entities.FoodForListing;
+import de.njsm.stocks.client.business.entities.FoodItemForListing;
 import de.njsm.stocks.client.databind.ExpirationIconProvider;
-import de.njsm.stocks.client.databind.FoodAdapter;
-import de.njsm.stocks.client.fragment.BottomToolbarFragment;
+import de.njsm.stocks.client.fragment.InjectableFragment;
 import de.njsm.stocks.client.fragment.listswipe.SwipeCallback;
-import de.njsm.stocks.client.fragment.view.FoodOutlineViewHolder;
 import de.njsm.stocks.client.fragment.view.TemplateSwipeList;
-import de.njsm.stocks.client.navigation.AllFoodNavigator;
-import de.njsm.stocks.client.presenter.AllFoodListViewModel;
+import de.njsm.stocks.client.navigation.FoodItemListNavigator;
+import de.njsm.stocks.client.presenter.FoodItemListViewModel;
 import de.njsm.stocks.client.ui.R;
 
 import javax.inject.Inject;
 import java.util.List;
 
-public class AllFoodFragment extends BottomToolbarFragment {
+public class FoodItemListFragment extends InjectableFragment {
 
-    private AllFoodNavigator navigator;
+    private FoodItemListViewModel viewModel;
 
-    private AllFoodListViewModel viewModel;
+    private FoodItemListNavigator navigator;
+
+    private FoodItemAdapter adapter;
 
     private TemplateSwipeList templateSwipeList;
-
-    private FoodAdapter foodListAdapter;
 
     private ExpirationIconProvider expirationIconProvider;
 
     private Clock clock;
 
-    @Override
     @NonNull
+    @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View root = super.onCreateView(inflater, container, savedInstanceState);
-        View swipeList = insertContent(inflater, root, R.layout.template_swipe_list);
-
-        templateSwipeList = new TemplateSwipeList(swipeList);
+        View root = inflater.inflate(R.layout.template_swipe_list, container, false);
+        templateSwipeList = new TemplateSwipeList(root);
         templateSwipeList.setLoading();
+        templateSwipeList.disableSwipeRefresh();
 
-        foodListAdapter = new FoodAdapter(this::onItemClicked, this::onItemLongClicked, expirationIconProvider, clock);
-        viewModel.getFood().observe(getViewLifecycleOwner(), this::onListDataReceived);
+        adapter = new FoodItemAdapter(this::onItemClicked, expirationIconProvider, clock);
+        viewModel.get(navigator.getFoodId(requireArguments())).observe(getViewLifecycleOwner(), this::onListDataReceived);
 
         SwipeCallback callback = new SwipeCallback(
                 ContextCompat.getDrawable(requireActivity(), R.drawable.ic_delete_white_24dp),
@@ -77,65 +75,52 @@ public class AllFoodFragment extends BottomToolbarFragment {
                 this::onItemSwipedRight
         );
 
-        templateSwipeList.initialiseListWithSwiper(requireContext(), foodListAdapter, callback);
+        templateSwipeList.initialiseListWithSwiper(requireContext(), adapter, callback);
         templateSwipeList.bindFloatingActionButton(this::onAddItem);
-        templateSwipeList.bindSwipeDown(this::onSwipeDown);
 
         return root;
+    }
+
+    private void onListDataReceived(List<FoodItemForListing> foodItemsForListing) {
+        if (foodItemsForListing.isEmpty()) {
+            templateSwipeList.setEmpty(R.string.hint_no_food_items);
+        } else {
+            templateSwipeList.setList();
+        }
+        adapter.setData(foodItemsForListing);
+    }
+
+    private void onItemClicked(View listItem) {
+        int listItemIndex = ((RecyclerView.ViewHolder) listItem.getTag()).getBindingAdapterPosition();
+        viewModel.resolveId(listItemIndex, navigator::edit);
     }
 
     private void onItemSwipedRight(int listItemIndex) {
         viewModel.delete(listItemIndex);
     }
 
-    private void onItemClicked(View listItem) {
-        int listItemIndex = ((FoodOutlineViewHolder) listItem.getTag()).getBindingAdapterPosition();
-        viewModel.resolveId(listItemIndex, navigator::showFood);
-    }
-
-    private boolean onItemLongClicked(View listItem) {
-        int listItemIndex = ((FoodOutlineViewHolder) listItem.getTag()).getBindingAdapterPosition();
-        viewModel.resolveId(listItemIndex, navigator::editFood);
-        return true;
-    }
-
-    private void onListDataReceived(List<FoodForListing> data) {
-        if (data.isEmpty()) {
-            templateSwipeList.setEmpty(R.string.hint_no_food_items);
-        } else {
-            templateSwipeList.setList();
-        }
-        foodListAdapter.setData(data);
-    }
-
-    private void onSwipeDown() {
-        viewModel.synchronise();
-    }
-
     private void onAddItem(View view) {
-        navigator.addFood();
+        navigator.add();
     }
 
     @Inject
-    @Override
-    protected void setViewModelFactory(ViewModelProvider.Factory viewModelFactory) {
-        super.setViewModelFactory(viewModelFactory);
-        ViewModelProvider viewModelProvider = new ViewModelProvider(this, viewModelFactory);
-        viewModel = viewModelProvider.get(AllFoodListViewModel.class);
-    }
-
-    @Inject
-    void setNavigator(AllFoodNavigator navigator) {
+    void setNavigator(FoodItemListNavigator navigator) {
         this.navigator = navigator;
     }
 
     @Inject
-    void setClock(Clock clock) {
-        this.clock = clock;
+    protected void setViewModelFactory(ViewModelProvider.Factory viewModelFactory) {
+        ViewModelProvider viewModelProvider = new ViewModelProvider(this, viewModelFactory);
+        viewModel = viewModelProvider.get(FoodItemListViewModel.class);
     }
 
     @Inject
     void setExpirationIconProvider(ExpirationIconProvider expirationIconProvider) {
         this.expirationIconProvider = expirationIconProvider;
+    }
+
+    @Inject
+    void setClock(Clock clock) {
+        this.clock = clock;
     }
 }

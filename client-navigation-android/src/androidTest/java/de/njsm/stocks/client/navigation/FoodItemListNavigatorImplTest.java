@@ -23,60 +23,49 @@ package de.njsm.stocks.client.navigation;
 
 import android.os.Bundle;
 import androidx.navigation.ActionOnlyNavDirections;
+import de.njsm.stocks.client.business.entities.Food;
 import de.njsm.stocks.client.business.entities.Identifiable;
-import de.njsm.stocks.client.business.entities.Location;
-import de.njsm.stocks.client.fragment.emptyfood.EmptyFoodFragmentDirections;
-import de.njsm.stocks.client.fragment.foodinlocation.FoodInLocationFragmentDirections;
+import de.njsm.stocks.client.fragment.fooditemlist.FoodItemListFragmentDirections;
 import org.junit.Before;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 
-public class FoodByLocationNavigatorImplTest extends NavigationTest {
+public class FoodItemListNavigatorImplTest extends NavigationTest {
 
-    private FoodByLocationNavigator uut;
+    private FoodItemListNavigator uut;
 
     @Before
-    public void setUp() {
-        uut = new FoodByLocationNavigatorImpl(navigationArgConsumer);
+    public void setup() {
+        uut = new FoodItemListNavigatorImpl(navigationArgConsumer);
     }
 
     @Test
     public void argumentIsExtracted() {
         Bundle input = new Bundle();
         int expected = 42;
-        input.putInt("id", expected);
+        input.putInt("foodId", expected);
 
-        Identifiable<Location> actual = uut.getId(input);
+        Identifiable<Food> actual = uut.getFoodId(input);
 
         assertEquals(expected, actual.id());
     }
 
     @Test
-    public void showingFoodContentBindsCorrectly() {
+    public void editingContentBindsCorrectly() {
         int expected = 42;
 
-        uut.showFood(expected);
+        uut.edit(expected);
 
-        FoodInLocationFragmentDirections.ActionNavFragmentLocationContentToNavFragmentFoodItemList actual = navigationArgConsumer.getLastArgument(FoodInLocationFragmentDirections.ActionNavFragmentLocationContentToNavFragmentFoodItemList.class);
-        assertEquals(actual.getFoodId(), expected);
-    }
-
-    @Test
-    public void editingFoodContentBindsCorrectly() {
-        int expected = 42;
-
-        uut.editFood(expected);
-
-        FoodInLocationFragmentDirections.ActionNavFragmentLocationContentToNavFragmentEditFood actual = navigationArgConsumer.getLastArgument(FoodInLocationFragmentDirections.ActionNavFragmentLocationContentToNavFragmentEditFood.class);
+        FoodItemListFragmentDirections.ActionNavFragmentFoodItemListToNavFragmentFoodItemEdit actual = navigationArgConsumer.getLastArgument(FoodItemListFragmentDirections.ActionNavFragmentFoodItemListToNavFragmentFoodItemEdit.class);
         assertEquals(actual.getId(), expected);
     }
 
     @Test
-    public void addingFoodContentBindsCorrectly() {
-        uut.addFood();
+    public void addingContentBindsCorrectly() {
+        uut.add();
 
         ActionOnlyNavDirections actual = navigationArgConsumer.getLastArgument(ActionOnlyNavDirections.class);
-        assertEquals(actual.getActionId(), R.id.action_nav_fragment_location_content_to_nav_fragment_add_food);
+        assertEquals(actual.getActionId(), R.id.action_nav_fragment_food_item_list_to_nav_fragment_food_item_add);
     }
 }

@@ -19,6 +19,7 @@
 
 package de.njsm.stocks.client.di;
 
+import android.content.Context;
 import dagger.BindsInstance;
 import dagger.Component;
 import dagger.android.AndroidInjectionModule;
@@ -36,6 +37,7 @@ import de.njsm.stocks.client.fragment.foodadd.FoodAddFragmentTest;
 import de.njsm.stocks.client.fragment.foodconflict.FoodConflictFragmentTest;
 import de.njsm.stocks.client.fragment.foodedit.FoodEditFragmentTest;
 import de.njsm.stocks.client.fragment.foodinlocation.FoodInLocationFragmentTest;
+import de.njsm.stocks.client.fragment.fooditemlist.FoodItemListFragmentTest;
 import de.njsm.stocks.client.fragment.locationadd.LocationAddFragmentTest;
 import de.njsm.stocks.client.fragment.locationconflict.LocationConflictFragmentTest;
 import de.njsm.stocks.client.fragment.locationedit.LocationEditFragmentTest;
@@ -120,11 +122,16 @@ public interface TestComponent {
 
     void inject(AllFoodFragmentTest test);
 
+    void inject(FoodItemListFragmentTest test);
+
     @Component.Builder
     interface Builder {
 
         @BindsInstance
         Builder application(Application a);
+
+        @BindsInstance
+        Builder context(Context a);
 
         TestComponent build();
     }

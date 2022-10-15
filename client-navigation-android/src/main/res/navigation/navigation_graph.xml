@@ -89,7 +89,7 @@
                 android:id="@+id/action_nav_fragment_location_content_to_nav_fragment_food_item_list"
                 app:destination="@id/nav_fragment_food_item_list">
             <argument
-                    android:name="id"
+                    android:name="foodId"
                     app:argType="integer"/>
         </action>
         <action
@@ -224,7 +224,7 @@
                 android:id="@+id/action_nav_fragment_all_food_to_nav_fragment_food_item_list"
                 app:destination="@id/nav_fragment_food_item_list">
             <argument
-                    android:name="id"
+                    android:name="foodId"
                     app:argType="integer"/>
         </action>
         <action
@@ -248,7 +248,7 @@
                 android:id="@+id/action_nav_fragment_empty_food_to_nav_fragment_food_item_list"
                 app:destination="@id/nav_fragment_food_item_list">
             <argument
-                    android:name="id"
+                    android:name="foodId"
                     app:argType="integer"/>
         </action>
         <action
@@ -273,8 +273,35 @@
     </fragment>
     <fragment
             android:id="@+id/nav_fragment_food_item_list"
+            android:name="de.njsm.stocks.client.fragment.fooditemlist.FoodItemListFragment"
+            tools:layout="@layout/fragment_food_form">
+        <argument
+                android:name="foodId"
+                app:argType="integer"/>
+        <action
+                android:id="@+id/action_nav_fragment_food_item_list_to_nav_fragment_food_item_add"
+                app:destination="@id/nav_fragment_food_item_add">
+        </action>
+        <action
+                android:id="@+id/action_nav_fragment_food_item_list_to_nav_fragment_food_item_edit"
+                app:destination="@id/nav_fragment_food_item_edit">
+            <argument
+                    android:name="id"
+                    app:argType="integer"/>
+        </action>
+    </fragment>
+    <fragment
+            android:id="@+id/nav_fragment_food_item_add"
             android:name="androidx.fragment.app.Fragment"
             tools:layout="@layout/fragment_food_form">
+    </fragment>
+    <fragment
+            android:id="@+id/nav_fragment_food_item_edit"
+            android:name="androidx.fragment.app.Fragment"
+            tools:layout="@layout/fragment_food_form">
+        <argument
+                android:name="id"
+                app:argType="integer"/>
     </fragment>
     <action
             android:id="@+id/action_global_nav_fragment_error_list"

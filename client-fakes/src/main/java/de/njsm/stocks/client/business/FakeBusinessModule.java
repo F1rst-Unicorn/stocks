@@ -24,10 +24,7 @@ package de.njsm.stocks.client.business;
 import dagger.Binds;
 import dagger.Module;
 import dagger.Provides;
-import de.njsm.stocks.client.business.entities.Food;
-import de.njsm.stocks.client.business.entities.Location;
-import de.njsm.stocks.client.business.entities.ScaledUnit;
-import de.njsm.stocks.client.business.entities.Unit;
+import de.njsm.stocks.client.business.entities.*;
 import de.njsm.stocks.client.execution.Scheduler;
 import de.njsm.stocks.client.testdata.LocationsForSelection;
 import de.njsm.stocks.client.testdata.ScaledUnitsForSelection;
@@ -271,5 +268,21 @@ public interface FakeBusinessModule {
     @Singleton
     static FakeAllPresentFoodListInteractor FakeAllPresentFoodListInteractor() {
         return new FakeAllPresentFoodListInteractor();
+    }
+
+    @Provides
+    @Singleton
+    @SuppressWarnings("unchecked")
+    static EntityDeleter<FoodItem> foodItemDeleter() {
+        return mock(EntityDeleter.class);
+    }
+
+    @Binds
+    FoodItemListInteractor FoodItemListInteractor(FakeFoodItemListInteractor fake);
+
+    @Provides
+    @Singleton
+    static FakeFoodItemListInteractor FakeFoodItemListInteractor() {
+        return new FakeFoodItemListInteractor();
     }
 }

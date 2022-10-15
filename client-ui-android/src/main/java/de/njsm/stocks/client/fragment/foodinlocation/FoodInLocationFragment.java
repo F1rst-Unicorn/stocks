@@ -35,6 +35,7 @@ import de.njsm.stocks.client.business.entities.FoodForListing;
 import de.njsm.stocks.client.business.entities.Identifiable;
 import de.njsm.stocks.client.business.entities.Location;
 import de.njsm.stocks.client.business.entities.LocationName;
+import de.njsm.stocks.client.databind.ExpirationIconProvider;
 import de.njsm.stocks.client.databind.FoodAdapter;
 import de.njsm.stocks.client.fragment.BottomToolbarFragment;
 import de.njsm.stocks.client.fragment.listswipe.SwipeCallback;
@@ -59,6 +60,8 @@ public class FoodInLocationFragment extends BottomToolbarFragment {
 
     private Clock clock;
 
+    private ExpirationIconProvider expirationIconProvider;
+
     @Override
     @NonNull
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -69,7 +72,7 @@ public class FoodInLocationFragment extends BottomToolbarFragment {
         templateSwipeList.setLoading();
 
         Identifiable<Location> location = navigator.getId(requireArguments());
-        foodListAdapter = new FoodAdapter(this::onItemClicked, this::onItemLongClicked, getResources(), requireActivity().getTheme(), clock);
+        foodListAdapter = new FoodAdapter(this::onItemClicked, this::onItemLongClicked, expirationIconProvider, clock);
         viewModel.getFood(location).observe(getViewLifecycleOwner(), this::onListDataReceived);
         viewModel.getLocation(location).observe(getViewLifecycleOwner(), this::setTitle);
 
@@ -138,5 +141,10 @@ public class FoodInLocationFragment extends BottomToolbarFragment {
     @Inject
     void setClock(Clock clock) {
         this.clock = clock;
+    }
+
+    @Inject
+    void setExpirationIconProvider(ExpirationIconProvider expirationIconProvider) {
+        this.expirationIconProvider = expirationIconProvider;
     }
 }

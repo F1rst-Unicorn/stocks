@@ -45,7 +45,7 @@ public class EmptyFoodNavigatorImplTest extends NavigationTest {
         uut.showFood(expected);
 
         EmptyFoodFragmentDirections.ActionNavFragmentEmptyFoodToNavFragmentFoodItemList actual = navigationArgConsumer.getLastArgument(EmptyFoodFragmentDirections.ActionNavFragmentEmptyFoodToNavFragmentFoodItemList.class);
-        assertThat(actual.getId(), is(expected));
+        assertThat(actual.getFoodId(), is(expected));
     }
 
     @Test

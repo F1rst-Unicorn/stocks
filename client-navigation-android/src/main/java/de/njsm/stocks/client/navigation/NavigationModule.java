@@ -89,4 +89,7 @@ public interface NavigationModule {
 
     @Binds
     AllFoodNavigator AllFoodNavigator(AllFoodNavigatorImpl impl);
+
+    @Binds
+    FoodItemListNavigator FoodItemListNavigator(FoodItemListNavigatorImpl impl);
 }

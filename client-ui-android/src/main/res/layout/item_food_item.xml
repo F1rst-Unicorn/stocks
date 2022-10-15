@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ stocks is client-server program to manage a household's food stock
+  ~ Copyright (C) 2019  The stocks developers
+  ~
+  ~ This file is part of the stocks program suite.
+  ~
+  ~ stocks is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ stocks is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
+  ~
+  -->
+
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingLeft="@dimen/list_item_padding"
+    android:paddingTop="@dimen/list_item_padding"
+    android:paddingRight="@dimen/list_item_padding"
+    android:paddingBottom="@dimen/list_item_padding">
+
+    <ImageView
+        android:id="@+id/item_food_item_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+
+        android:layout_gravity="start"
+        android:contentDescription="@string/desc_expiration_state"
+        android:paddingTop="3dp"
+        android:paddingEnd="@dimen/list_item_padding"
+        android:src="@drawable/ic_alarm_black_24dp" />
+
+    <TextView
+            android:id="@+id/item_food_item_date"
+            android:layout_width="wrap_content"
+            style="@style/StocksTheme.TextLarge"
+            android:text="31.12.2020"
+
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@id/item_food_item_icon"
+    />
+
+    <TextView
+        android:id="@+id/item_food_item_buyer"
+        style="@style/StocksTheme.TextSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/item_food_item_icon"
+
+        android:layout_toStartOf="@id/item_food_item_colon"
+        android:paddingTop="@dimen/list_item_padding"
+        android:text="@string/text_buyer" />
+
+    <TextView
+        android:id="@+id/item_food_item_colon"
+        style="@style/StocksTheme.TextSmall"
+        android:layout_width="wrap_content"
+
+        android:layout_height="wrap_content"
+        android:layout_below="@id/item_food_item_icon"
+        android:layout_toStartOf="@id/item_food_item_user"
+        android:paddingTop="@dimen/list_item_padding"
+        android:paddingEnd="@dimen/list_item_padding"
+        android:text=":" />
+
+    <TextView
+        android:id="@+id/item_food_item_user"
+        style="@style/StocksTheme.TextSmall"
+        android:layout_width="wrap_content"
+
+        android:layout_height="wrap_content"
+        android:layout_below="@id/item_food_item_icon"
+        android:layout_toStartOf="@id/item_food_item_comma"
+        android:text="Janice"
+        android:paddingTop="@dimen/list_item_padding" />
+
+    <TextView
+        android:id="@+id/item_food_item_comma"
+        style="@style/StocksTheme.TextSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+
+        android:layout_below="@id/item_food_item_icon"
+        android:layout_toStartOf="@id/item_food_item_device"
+        android:paddingTop="@dimen/list_item_padding"
+        android:paddingEnd="4dp"
+        android:text="," />
+
+    <TextView
+        android:id="@+id/item_food_item_device"
+        style="@style/StocksTheme.TextSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+
+        android:layout_alignParentEnd="true"
+        android:layout_below="@id/item_food_item_icon"
+        android:text="Mobile"
+        android:paddingTop="@dimen/list_item_padding" />
+
+    <TextView
+            android:id="@+id/item_food_item_location"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:layout_alignParentEnd="true"
+            style="@style/StocksTheme.TextLarge"
+            android:paddingEnd="@dimen/list_item_padding"
+            android:text="Fridge"
+            android:textAlignment="viewEnd"/>
+
+    <TextView
+        android:id="@+id/item_food_item_amount"
+        style="@style/StocksTheme.TextSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+
+        android:layout_below="@id/item_food_item_location"
+        android:text="1kg"
+        android:paddingTop="@dimen/list_item_padding" />
+
+</RelativeLayout>

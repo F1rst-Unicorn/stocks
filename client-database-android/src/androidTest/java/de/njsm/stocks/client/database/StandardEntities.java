@@ -48,6 +48,10 @@ public class StandardEntities {
                 .description("description");
     }
 
+    public UserDbEntity userDbEntity() {
+        return userDbEntityBuilder().build();
+    }
+
     UserDbEntity.Builder userDbEntityBuilder() {
         return initialiseBuilder(UserDbEntity.builder())
                 .name("name");

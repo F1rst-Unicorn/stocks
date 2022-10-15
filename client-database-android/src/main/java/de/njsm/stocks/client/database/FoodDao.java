@@ -107,4 +107,15 @@ abstract class FoodDao {
             "join current_unit u on s.unit = u.id " +
             "group by i.of_type, s.id, u.id, s.scale, u.abbreviation")
     public abstract Observable<List<StoredFoodAmount>> getAmounts();
+
+    @Query("select i.id, s.scale as amount, unit.abbreviation, l.name as location, i.eat_by as eatBy, u.name as buyer, d.name as registerer " +
+            "from current_food_item i " +
+            "join current_user_device d on i.registers = d.id " +
+            "join current_user u on d.belongs_to = u.id " +
+            "join current_location l on i.stored_in = l.id " +
+            "join current_scaled_unit s on i.unit = s.id " +
+            "join current_unit unit on s.unit = unit.id " +
+            "where of_type = :id " +
+            "order by i.eat_by, i.id")
+    public abstract Observable<List<FoodItemForListingData>> get(int id);
 }

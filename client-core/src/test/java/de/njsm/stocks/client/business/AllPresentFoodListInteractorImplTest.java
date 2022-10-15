@@ -28,7 +28,9 @@ import de.njsm.stocks.client.business.entities.UnitAmount;
 import io.reactivex.rxjava3.core.Observable;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.Instant;
 import java.util.List;
@@ -38,6 +40,7 @@ import static java.util.Collections.singletonList;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+@ExtendWith(MockitoExtension.class)
 class AllPresentFoodListInteractorImplTest {
 
     private AllPresentFoodListInteractor uut;

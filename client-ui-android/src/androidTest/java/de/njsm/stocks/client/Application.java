@@ -46,6 +46,7 @@ public class Application extends android.app.Application implements HasAndroidIn
             dagger = DaggerTestComponent
                 .builder()
                 .application(this)
+                .context(this)
                 .build();
 
         return dagger;
