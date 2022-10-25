@@ -63,9 +63,11 @@ public class FoodItemListNavigatorImplTest extends NavigationTest {
 
     @Test
     public void addingContentBindsCorrectly() {
-        uut.add();
+        int expected = 42;
 
-        ActionOnlyNavDirections actual = navigationArgConsumer.getLastArgument(ActionOnlyNavDirections.class);
-        assertEquals(actual.getActionId(), R.id.action_nav_fragment_food_item_list_to_nav_fragment_food_item_add);
+        uut.add(() -> expected);
+
+        FoodItemListFragmentDirections.ActionNavFragmentFoodItemListToNavFragmentFoodItemAdd actual = navigationArgConsumer.getLastArgument(FoodItemListFragmentDirections.ActionNavFragmentFoodItemListToNavFragmentFoodItemAdd.class);
+        assertEquals(actual.getFoodId(), expected);
     }
 }

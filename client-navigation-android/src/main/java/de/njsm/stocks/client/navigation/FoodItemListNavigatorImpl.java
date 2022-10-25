@@ -45,8 +45,8 @@ class FoodItemListNavigatorImpl implements FoodItemListNavigator {
     }
 
     @Override
-    public void add() {
-        NavDirections direction = FoodItemListFragmentDirections.actionNavFragmentFoodItemListToNavFragmentFoodItemAdd();
+    public void add(Identifiable<Food> id) {
+        NavDirections direction = FoodItemListFragmentDirections.actionNavFragmentFoodItemListToNavFragmentFoodItemAdd(id.id());
         navigationArgConsumer.navigate(direction);
     }
 

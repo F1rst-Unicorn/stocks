@@ -29,7 +29,7 @@ public interface FoodItemListNavigator {
 
     Identifiable<Food> getFoodId(Bundle args);
 
-    void add();
+    void add(Identifiable<Food> id);
 
     void edit(int id);
 }

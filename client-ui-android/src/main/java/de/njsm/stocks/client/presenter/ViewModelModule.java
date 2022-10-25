@@ -219,4 +219,11 @@ public class ViewModelModule {
     ViewModel FoodItemListViewModel(FoodItemListInteractor interactor) {
         return new FoodItemListViewModel(interactor);
     }
+
+    @Provides
+    @IntoMap
+    @ViewModelKey(FoodItemAddViewModel.class)
+    ViewModel FoodItemAddViewModel(FoodItemAddInteractor interactor) {
+        return new FoodItemAddViewModel(interactor);
+    }
 }

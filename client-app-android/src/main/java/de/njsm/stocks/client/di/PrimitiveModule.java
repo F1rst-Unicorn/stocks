@@ -29,6 +29,8 @@ import de.njsm.stocks.client.business.CertificateStore;
 import de.njsm.stocks.client.business.Clock;
 import de.njsm.stocks.client.business.Settings;
 import de.njsm.stocks.client.business.entities.ServerEndpoint;
+import de.njsm.stocks.client.fragment.DialogDisplayer;
+import de.njsm.stocks.client.fragment.DialogDisplayerImpl;
 import de.njsm.stocks.client.runtime.FileInteractor;
 
 import javax.inject.Singleton;

@@ -23,6 +23,8 @@ package de.njsm.stocks.client.di;
 
 import dagger.Binds;
 import dagger.Module;
+import de.njsm.stocks.client.fragment.DialogDisplayer;
+import de.njsm.stocks.client.fragment.DialogDisplayerImpl;
 import de.njsm.stocks.client.navigation.NavigationArgConsumer;
 import de.njsm.stocks.client.navigation.NavigationArgConsumerImpl;
 
@@ -34,4 +36,9 @@ public interface NavigationArgConsumerModule {
     @Binds
     @Singleton
     NavigationArgConsumer navigationArgsConsumer(NavigationArgConsumerImpl implementation);
+
+
+    @Binds
+    @Singleton
+    DialogDisplayer dialogDisplayer(DialogDisplayerImpl impl);
 }

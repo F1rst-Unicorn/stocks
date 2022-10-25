@@ -22,7 +22,6 @@
 package de.njsm.stocks.client.business.entities;
 
 import com.google.auto.value.AutoValue;
-import com.sun.media.sound.RIFFInvalidDataException;
 
 @AutoValue
 public abstract class RecipeIngredientForSynchronisation implements Bitemporal<RecipeIngredient>, RecipeIngredient {

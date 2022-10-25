@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ stocks is client-server program to manage a household's food stock
+  ~ Copyright (C) 2019  The stocks developers
+  ~
+  ~ This file is part of the stocks program suite.
+  ~
+  ~ stocks is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ stocks is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
+  ~
+  -->
+
+<RelativeLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+    <DatePicker
+            android:id="@+id/date_conflict_date_picker"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:calendarViewShown="false"
+            android:layout_centerHorizontal="true"
+            android:datePickerMode="spinner"/>
+
+    <Button
+            android:id="@+id/date_conflict_today"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/date_conflict_date_picker"
+            android:text="@string/action_today"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            android:layout_alignParentEnd="true"/>
+
+    <Button
+            android:id="@+id/date_conflict_predict"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/date_conflict_date_picker"
+            android:layout_toStartOf="@id/date_conflict_today"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            android:text="@string/action_predict"/>
+
+    <include
+            android:id="@+id/date_conflict_conflict"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/date_conflict_predict"
+            layout="@layout/conflict_labels" />
+</RelativeLayout>

@@ -23,12 +23,42 @@ package de.njsm.stocks.client;
 
 import android.content.res.Resources;
 import android.view.View;
+import android.widget.DatePicker;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.test.espresso.matcher.BoundedMatcher;
+import de.njsm.stocks.client.business.entities.Entity;
+import de.njsm.stocks.client.business.entities.Identifiable;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
+import org.mockito.ArgumentMatcher;
+import org.mockito.ArgumentMatchers;
+
+import java.time.LocalDate;
 
 public class Matchers {
+
+    public static Matcher<View> matchesDate(LocalDate date) {
+        return new BoundedMatcher<View, DatePicker>(DatePicker.class) {
+
+            @Override
+            public void describeTo(Description description) {
+                description.appendText(String.format("matches date: %d-%d-%d",
+                        date.getYear(), date.getMonthValue(), date.getDayOfMonth()));
+            }
+
+            @Override
+            protected boolean matchesSafely(DatePicker item) {
+                int actualDay = item.getDayOfMonth();
+                int actualMonth = item.getMonth();
+                int actualYear = item.getYear();
+                return date.getYear() == actualYear
+                        && date.getMonthValue() - 1 == actualMonth
+                        && date.getDayOfMonth() == actualDay;
+            }
+        };
+    }
+
 
     public static RecyclerViewMatcher recyclerView(int id) {
         return new RecyclerViewMatcher(id);
@@ -85,5 +115,13 @@ public class Matchers {
                 }
             };
         }
+    }
+
+    public static <T extends Entity<T>> Identifiable<T> equalBy(Identifiable<T> id) {
+        return ArgumentMatchers.argThat(eqBy(id));
+    }
+
+    private static <T extends Entity<T>> ArgumentMatcher<Identifiable<T>> eqBy(Identifiable<T> id) {
+        return actual -> actual.id() == id.id();
     }
 }

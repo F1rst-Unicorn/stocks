@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 40,
-    "identityHash": "a86b42011caf724aa622ad89e573aa8a",
+    "identityHash": "9d3ec3e277a6b41d68ff128de93d8734",
     "entities": [
       {
         "tableName": "updates",
@@ -2002,6 +2002,68 @@
         },
         "indices": [],
         "foreignKeys": []
+      },
+      {
+        "tableName": "food_item_to_add",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `eat_by` TEXT NOT NULL, `of_typeid` INTEGER, `of_typetransaction_time` TEXT, `stored_inid` INTEGER, `stored_intransaction_time` TEXT, `unit_id` INTEGER, `unit_transaction_time` TEXT)",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "eatBy",
+            "columnName": "eat_by",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "ofType.id",
+            "columnName": "of_typeid",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "ofType.transactionTime",
+            "columnName": "of_typetransaction_time",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "storedIn.id",
+            "columnName": "stored_inid",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "storedIn.transactionTime",
+            "columnName": "stored_intransaction_time",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "unit.id",
+            "columnName": "unit_id",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "unit.transactionTime",
+            "columnName": "unit_transaction_time",
+            "affinity": "TEXT",
+            "notNull": false
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "id"
+          ],
+          "autoGenerate": true
+        },
+        "indices": [],
+        "foreignKeys": []
       }
     ],
     "views": [
@@ -2052,7 +2114,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'a86b42011caf724aa622ad89e573aa8a')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '9d3ec3e277a6b41d68ff128de93d8734')"
     ]
   }
 }

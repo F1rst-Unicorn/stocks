@@ -90,6 +90,9 @@ public interface NetworkModule {
     @Binds
     FoodEditService FoodEditService(FoodEditServiceImpl impl);
 
+    @Binds
+    FoodItemAddService FoodItemAddService(FoodItemAddServiceImpl impl);
+
     @Provides
     @Singleton
     static ServerApi serverApi(ServerEndpoint serverEndpoint) {

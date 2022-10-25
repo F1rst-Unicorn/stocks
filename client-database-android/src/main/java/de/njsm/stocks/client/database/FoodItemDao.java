@@ -23,8 +23,12 @@ package de.njsm.stocks.client.database;
 
 import androidx.room.Dao;
 import androidx.room.Query;
+import io.reactivex.rxjava3.core.Maybe;
 
+import java.time.Instant;
 import java.util.List;
+
+import static de.njsm.stocks.client.database.StocksDatabase.DATABASE_INFINITY_STRING_SQL;
 
 @Dao
 abstract class FoodItemDao {
@@ -32,4 +36,26 @@ abstract class FoodItemDao {
     @Query("select * " +
             "from current_food_item")
     abstract List<FoodItemDbEntity> getAll();
+
+    @Query("select max(eat_by) " +
+            "from current_food_item " +
+            "where of_type = :foodId")
+    abstract Maybe<Instant> getMaxEatByOfPresentItemsOf(int foodId);
+
+    @Query("select max(i.eat_by) " +
+            "from food_item i " +
+            "where i.of_type = :foodId " +
+            "and i.transaction_time_end = " + DATABASE_INFINITY_STRING_SQL + " " +
+            "and i.version = (select max(i2.version) from food_item i2 where i2.id = i.id)")
+    abstract Maybe<Instant> getMaxEatByEverOf(int foodId);
+
+    @Query("select " +
+            "l.id " +
+            "from current_location l " +
+            "join current_food_item i on i.stored_in = l.id " +
+            "where i.of_type = :foodId " +
+            "group by l.id " +
+            "order by count(*) desc " +
+            "limit 1")
+    abstract Maybe<Integer> getLocationWithMostItemsOfType(int foodId);
 }

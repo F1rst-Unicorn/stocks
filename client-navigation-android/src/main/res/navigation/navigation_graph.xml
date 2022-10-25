@@ -281,6 +281,9 @@
         <action
                 android:id="@+id/action_nav_fragment_food_item_list_to_nav_fragment_food_item_add"
                 app:destination="@id/nav_fragment_food_item_add">
+            <argument
+                    android:name="foodId"
+                    app:argType="integer"/>
         </action>
         <action
                 android:id="@+id/action_nav_fragment_food_item_list_to_nav_fragment_food_item_edit"
@@ -292,8 +295,11 @@
     </fragment>
     <fragment
             android:id="@+id/nav_fragment_food_item_add"
-            android:name="androidx.fragment.app.Fragment"
+            android:name="de.njsm.stocks.client.fragment.fooditemadd.FoodItemAddFragment"
             tools:layout="@layout/fragment_food_form">
+        <argument
+                android:name="foodId"
+                app:argType="integer"/>
     </fragment>
     <fragment
             android:id="@+id/nav_fragment_food_item_edit"

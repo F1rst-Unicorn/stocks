@@ -285,4 +285,10 @@ public interface FakeBusinessModule {
     static FakeFoodItemListInteractor FakeFoodItemListInteractor() {
         return new FakeFoodItemListInteractor();
     }
+
+    @Provides
+    @Singleton
+    static FoodItemAddInteractor FoodItemAddInteractor() {
+        return mock(FoodItemAddInteractor.class);
+    }
 }

@@ -37,6 +37,7 @@ import de.njsm.stocks.client.fragment.foodadd.FoodAddFragmentTest;
 import de.njsm.stocks.client.fragment.foodconflict.FoodConflictFragmentTest;
 import de.njsm.stocks.client.fragment.foodedit.FoodEditFragmentTest;
 import de.njsm.stocks.client.fragment.foodinlocation.FoodInLocationFragmentTest;
+import de.njsm.stocks.client.fragment.fooditemadd.FoodItemAddFragmentTest;
 import de.njsm.stocks.client.fragment.fooditemlist.FoodItemListFragmentTest;
 import de.njsm.stocks.client.fragment.locationadd.LocationAddFragmentTest;
 import de.njsm.stocks.client.fragment.locationconflict.LocationConflictFragmentTest;
@@ -123,6 +124,8 @@ public interface TestComponent {
     void inject(AllFoodFragmentTest test);
 
     void inject(FoodItemListFragmentTest test);
+
+    void inject(FoodItemAddFragmentTest test);
 
     @Component.Builder
     interface Builder {

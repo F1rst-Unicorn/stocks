@@ -198,5 +198,10 @@ public class ErrorDetailsFragment extends InjectableFragment {
         public String foodEditErrorDetails(FoodEditErrorDetails foodEditErrorDetails, Void input) {
             return foodEditErrorDetails.name();
         }
+
+        @Override
+        public String foodItemAddErrorDetails(FoodItemAddErrorDetails foodItem, Void input) {
+            return unitAmountRenderStrategy.render(foodItem.unit()) + " " + foodItem.foodName() + "\n" + foodItem.locationName();
+        }
     }
 }

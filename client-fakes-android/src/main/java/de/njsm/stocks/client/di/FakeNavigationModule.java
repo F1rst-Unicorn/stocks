@@ -22,6 +22,7 @@ package de.njsm.stocks.client.di;
 import dagger.Module;
 import dagger.Provides;
 import de.njsm.stocks.client.business.SetupInteractor;
+import de.njsm.stocks.client.fragment.DialogDisplayer;
 import de.njsm.stocks.client.navigation.*;
 import de.njsm.stocks.client.fragment.setupform.SetupFormFragmentArgumentProvider;
 
@@ -174,5 +175,17 @@ class FakeNavigationModule {
     @Singleton
     FoodItemListNavigator FoodItemListNavigator() {
         return mock(FoodItemListNavigator.class);
+    }
+
+    @Provides
+    @Singleton
+    FoodItemAddNavigator FoodItemAddNavigator() {
+        return mock(FoodItemAddNavigator.class);
+    }
+
+    @Provides
+    @Singleton
+    DialogDisplayer DialogDisplayer() {
+        return mock(DialogDisplayer.class);
     }
 }

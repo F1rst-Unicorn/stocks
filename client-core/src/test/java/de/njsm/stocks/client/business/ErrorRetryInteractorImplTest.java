@@ -31,6 +31,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.Period;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -79,6 +80,9 @@ public class ErrorRetryInteractorImplTest {
     private FoodEditInteractor foodEditInteractor;
 
     @Mock
+    private FoodItemAddInteractor foodItemAddInteractor;
+
+    @Mock
     private Synchroniser synchroniser;
 
     @Mock
@@ -101,6 +105,7 @@ public class ErrorRetryInteractorImplTest {
                 foodAddInteractor,
                 foodDeleter,
                 foodEditInteractor,
+                foodItemAddInteractor,
                 synchroniser,
                 scheduler,
                 errorRepository);
@@ -318,6 +323,30 @@ public class ErrorRetryInteractorImplTest {
         uut.retryInBackground(input);
 
         verify(foodEditInteractor).edit(expected);
+        verify(errorRepository).deleteError(input);
+    }
+
+    @Test
+    void retryingFoodItemAddingDispatches() {
+        FoodItemAddErrorDetails errorDetails = FoodItemAddErrorDetails.create(
+                LocalDate.ofEpochDay(3),
+                1,
+                2,
+                3,
+                FoodItemAddErrorDetails.Unit.create(BigDecimal.TEN, "g"),
+                "Banana",
+                "Fridge");
+        ErrorDescription input = ErrorDescription.create(1, StatusCode.DATABASE_UNREACHABLE, "", "test", errorDetails);
+
+        uut.retryInBackground(input);
+
+        FoodItemForm expected = FoodItemForm.create(
+                errorDetails.eatBy(),
+                errorDetails.ofType(),
+                errorDetails.storedIn(),
+                errorDetails.unitId()
+        );
+        verify(foodItemAddInteractor).add(expected);
         verify(errorRepository).deleteError(input);
     }
 }

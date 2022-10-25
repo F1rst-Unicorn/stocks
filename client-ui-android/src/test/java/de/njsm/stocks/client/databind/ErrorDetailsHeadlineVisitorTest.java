@@ -27,6 +27,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.Period;
 
 import static org.junit.Assert.assertEquals;
@@ -64,5 +65,6 @@ public class ErrorDetailsHeadlineVisitorTest {
                 FoodAddErrorDetails.StoreUnit.create(BigDecimal.TEN, "g")), null));
         assertEquals(R.string.error_details_food_delete_error_list, (long) uut.visit(FoodDeleteErrorDetails.create(1, "Banana"), null));
         assertEquals(R.string.error_details_food_edit_error_list, (long) uut.visit(FoodEditErrorDetails.create(1, "Banana", Period.ofDays(3), 4, 5, "yellow"), null));
+        assertEquals(R.string.error_details_food_item_add_error_list, (long) uut.visit(FoodItemAddErrorDetails.create(LocalDate.ofEpochDay(2), 1, 2, 3, FoodItemAddErrorDetails.Unit.create(BigDecimal.ONE, "g"), "Banana", "Fridge"), null));
     }
 }

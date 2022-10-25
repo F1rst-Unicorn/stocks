@@ -421,4 +421,20 @@ public abstract class ErrorDao {
     @Query("delete from food_to_edit " +
             "where id = :id")
     abstract void deleteFoodEdit(Long id);
+
+    @Insert
+    abstract long insert(FoodItemAddEntity entity);
+
+    @Query("select * " +
+            "from food_item_to_add")
+    abstract List<FoodItemAddEntity> getFoodItemAdds();
+
+    @Query("delete from food_item_to_add " +
+            "where id = :id")
+    abstract void deleteFoodItemAdd(Long id);
+
+    @Query("select * " +
+            "from food_item_to_add " +
+            "where id = :id")
+    abstract FoodItemAddEntity getFoodItemAdd(Long id);
 }

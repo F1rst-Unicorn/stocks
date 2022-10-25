@@ -83,6 +83,7 @@
     <string name="action_refresh">Aktualisieren</string>
     <string name="action_search">Suchen</string>
     <string name="action_save">Speichern</string>
+    <string name="action_save_and_continue">Speichern und Fortfahren</string>
     <string name="action_add_more">Speichern und weiter</string>
     <string name="action_missing_food">Fehlende Lebensmittel</string>
     <string name="action_eat_next">Was bald abläuft</string>
@@ -215,6 +216,7 @@
     <string name="error_duration_invalid" >Dauer ist ungültig</string>
     <string name="error_amount_invalid" >Menge ist ungültig</string>
     <string name="error_loading_recipe" >Rezept wurde nicht in der Zwischenzeit geladen</string>
+    <string name="error_add_location_first">Erstelle zuerst einen Ort, an dem du deine Lebensmittel lagerst.</string>
 
     <string name="text_show_qr_code_friend">Lass Dein neues Gerät diesen Code lesen:</string>
     <string name="text_amount">Menge:</string>
@@ -303,6 +305,7 @@
     <string name="error_details_food_add_error_list">Lebensmittel hinzufügen</string>
     <string name="error_details_food_delete_error_list">Lebensmittel löschen</string>
     <string name="error_details_food_edit_error_list">Lebensmittel bearbeiten</string>
+    <string name="error_details_food_item_add_error_list">Lebensmittel hinzufügen</string>
 
     <string name="text_no_errors">Alles in Ordnung.</string>
 </resources>

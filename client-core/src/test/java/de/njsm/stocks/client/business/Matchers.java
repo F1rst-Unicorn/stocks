@@ -24,13 +24,12 @@ package de.njsm.stocks.client.business;
 import de.njsm.stocks.client.business.entities.Entity;
 import de.njsm.stocks.client.business.entities.Identifiable;
 import org.mockito.ArgumentMatcher;
-
-import static org.mockito.ArgumentMatchers.argThat;
+import org.mockito.ArgumentMatchers;
 
 public class Matchers {
 
     public static <T extends Entity<T>> Identifiable<T> equalBy(Identifiable<T> id) {
-        return argThat(eqBy(id));
+        return ArgumentMatchers.argThat(eqBy(id));
     }
 
     private static <T extends Entity<T>> ArgumentMatcher<Identifiable<T>> eqBy(Identifiable<T> id) {

@@ -34,6 +34,7 @@ import javax.inject.Inject;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.time.Instant;
+import java.time.ZoneId;
 
 import static de.njsm.stocks.client.database.DataMapper.map;
 import static java.util.Optional.ofNullable;
@@ -200,6 +201,22 @@ public class ErrorRecorderImpl implements ErrorRecorder {
                 clock.get());
         long dataId = errorDao.insert(entity);
         errorDao.insert(ErrorEntity.create(ErrorEntity.Action.EDIT_FOOD, dataId, exceptionData.exceptionType(), exceptionData.exceptionId()));
+    }
+
+    @Override
+    public void recordFoodItemAddError(SubsystemException e, FoodItemForm item) {
+        ExceptionData exceptionData = new ExceptionInserter().visit(e, null);
+        Instant foodTransactionTime = errorDao.getTransactionTimeOf(EntityType.FOOD);
+        Instant scaledUnitTransactionTime = errorDao.getTransactionTimeOf(EntityType.SCALED_UNIT);
+        Instant locationTransactionTime = errorDao.getTransactionTimeOf(EntityType.LOCATION);
+        FoodItemAddEntity entity = FoodItemAddEntity.create(
+                item.eatBy().atStartOfDay(ZoneId.systemDefault()).toInstant(),
+                PreservedId.create(item.ofType(), foodTransactionTime),
+                PreservedId.create(item.storedIn(), locationTransactionTime),
+                PreservedId.create(item.unit(), scaledUnitTransactionTime)
+        );
+        long dataId = errorDao.insert(entity);
+        errorDao.insert(ErrorEntity.create(ErrorEntity.Action.ADD_ITEM_FOOD, dataId, exceptionData.exceptionType(), exceptionData.exceptionId()));
     }
 
     @AutoValue

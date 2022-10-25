@@ -48,6 +48,7 @@ public class TestApplication extends android.app.Application implements HasAndro
             dagger = DaggerTestComponent
                 .builder()
                 .application(this)
+                .context(this)
                 .build();
 
         return dagger;

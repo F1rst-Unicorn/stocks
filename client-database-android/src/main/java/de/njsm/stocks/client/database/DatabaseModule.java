@@ -113,6 +113,11 @@ public interface DatabaseModule {
         return database.foodDao();
     }
 
+    @Provides
+    static FoodItemDao FoodItemDao(StocksDatabase database) {
+        return database.foodItemDao();
+    }
+
     @Binds
     ErrorRepository errorRepository(ErrorRepositoryImpl impl);
 
@@ -154,4 +159,7 @@ public interface DatabaseModule {
 
     @Binds
     FoodItemListRepository FoodItemListRepository(FoodItemListRepositoryImpl impl);
+
+    @Binds
+    FoodItemAddRepository FoodItemAddRepository(FoodItemAddRepositoryImpl impl);
 }

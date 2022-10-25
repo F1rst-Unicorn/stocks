@@ -25,11 +25,14 @@ import android.os.Bundle;
 import androidx.fragment.app.testing.FragmentScenario;
 import androidx.test.platform.app.InstrumentationRegistry;
 import de.njsm.stocks.client.Application;
+import de.njsm.stocks.client.Matchers;
 import de.njsm.stocks.client.business.EntityDeleter;
 import de.njsm.stocks.client.business.FakeFoodItemListInteractor;
 import de.njsm.stocks.client.business.Synchroniser;
+import de.njsm.stocks.client.business.entities.Food;
 import de.njsm.stocks.client.business.entities.FoodItem;
 import de.njsm.stocks.client.business.entities.FoodItemForListing;
+import de.njsm.stocks.client.business.entities.Identifiable;
 import de.njsm.stocks.client.navigation.FoodItemListNavigator;
 import de.njsm.stocks.client.presenter.DateRenderStrategy;
 import de.njsm.stocks.client.presenter.UnitAmountRenderStrategy;
@@ -54,8 +57,8 @@ import static java.util.Collections.emptyList;
 import static org.hamcrest.Matchers.allOf;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.reset;
-import static org.mockito.Mockito.verify;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
 
 public class FoodItemListFragmentTest {
 
@@ -73,9 +76,13 @@ public class FoodItemListFragmentTest {
 
     private UnitAmountRenderStrategy unitAmountRenderStrategy;
 
+    private Identifiable<Food> food;
+
     @Before
     public void setUp() {
         ((Application) InstrumentationRegistry.getInstrumentation().getTargetContext().getApplicationContext()).getDaggerRoot().inject(this);
+        food = () -> 42;
+        when(foodItemListNavigator.getFoodId(any())).thenReturn(food);
         scenario = FragmentScenario.launchInContainer(FoodItemListFragment.class, new Bundle(), R.style.StocksTheme);
         dateRenderStrategy = new DateRenderStrategy();
         unitAmountRenderStrategy = new UnitAmountRenderStrategy();
@@ -155,7 +162,7 @@ public class FoodItemListFragmentTest {
         onView(withId(R.id.template_swipe_list_fab))
                 .perform(click());
 
-        verify(foodItemListNavigator).add();
+        verify(foodItemListNavigator).add(Matchers.equalBy(food));
     }
 
     @Inject

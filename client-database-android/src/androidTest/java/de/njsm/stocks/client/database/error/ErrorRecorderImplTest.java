@@ -33,7 +33,9 @@ import org.junit.Test;
 
 import java.math.BigDecimal;
 import java.time.Instant;
+import java.time.LocalDate;
 import java.time.Period;
+import java.time.ZoneId;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -413,6 +415,34 @@ public class ErrorRecorderImplTest extends DbTestCase {
         List<ErrorEntity> errors = stocksDatabase.errorDao().getErrors();
         assertEquals(1, errors.size());
         assertEquals(ErrorEntity.Action.EDIT_FOOD, errors.get(0).action());
+        assertEquals(1, errors.get(0).dataId());
+        assertEquals(ErrorEntity.ExceptionType.STATUSCODE_EXCEPTION, errors.get(0).exceptionType());
+        assertEquals(1, errors.get(0).exceptionId());
+    }
+
+    @Test
+    public void recordingErrorAddingFoodItemWorks() {
+        FoodItemForm form = FoodItemForm.create(LocalDate.ofEpochDay(2), 1, 2, 3);
+        StatusCodeException exception = new StatusCodeException(StatusCode.DATABASE_UNREACHABLE);
+
+        uut.recordFoodItemAddError(exception, form);
+
+        assertEquals(1, stocksDatabase.errorDao().getStatusCodeErrors().size());
+        StatusCodeExceptionEntity actual = stocksDatabase.errorDao().getStatusCodeErrors().get(0);
+        assertEquals(exception.getStatusCode(), actual.statusCode());
+        List<FoodItemAddEntity> foodAdds = stocksDatabase.errorDao().getFoodItemAdds();
+        assertEquals(1, foodAdds.size());
+        FoodItemAddEntity foodItemAddEntity = foodAdds.get(0);
+        assertEquals(form.eatBy().atStartOfDay(ZoneId.systemDefault()).toInstant(), foodItemAddEntity.eatBy());
+        assertEquals(form.ofType(), foodItemAddEntity.ofType().id());
+        assertEquals(stocksDatabase.errorDao().getTransactionTimeOf(EntityType.FOOD), foodItemAddEntity.ofType().transactionTime());
+        assertEquals(form.storedIn(), foodItemAddEntity.storedIn().id());
+        assertEquals(stocksDatabase.errorDao().getTransactionTimeOf(EntityType.LOCATION), foodItemAddEntity.storedIn().transactionTime());
+        assertEquals(form.unit(), foodItemAddEntity.unit().id());
+        assertEquals(stocksDatabase.errorDao().getTransactionTimeOf(EntityType.SCALED_UNIT), foodItemAddEntity.unit().transactionTime());
+        List<ErrorEntity> errors = stocksDatabase.errorDao().getErrors();
+        assertEquals(1, errors.size());
+        assertEquals(ErrorEntity.Action.ADD_ITEM_FOOD, errors.get(0).action());
         assertEquals(1, errors.get(0).dataId());
         assertEquals(ErrorEntity.ExceptionType.STATUSCODE_EXCEPTION, errors.get(0).exceptionType());
         assertEquals(1, errors.get(0).exceptionId());

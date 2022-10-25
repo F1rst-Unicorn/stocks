@@ -138,4 +138,7 @@ public interface BusinessModule {
 
     @Binds
     FoodItemListInteractor FoodItemListInteractor(FoodItemListInteractorImpl impl);
+
+    @Binds
+    FoodItemAddInteractor FoodItemAddInteractor(FoodItemAddInteractorImpl impl);
 }

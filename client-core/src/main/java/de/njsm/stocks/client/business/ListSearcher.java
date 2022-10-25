@@ -76,8 +76,18 @@ public class ListSearcher {
         return searchFirst(list, v -> v.id() == id).orElseThrow(() -> new IllegalStateException("No matching item found"));
     }
 
+    public static <E extends Entity<E>, T extends Identifiable<E>>
+    int findFirst(List<T> list, Identifiable<E> id) {
+        return searchFirst(list, v -> v.id() == id.id()).orElseThrow(() -> new IllegalStateException("No matching item found"));
+    }
+
+    public static <E extends Entity<E>, T extends Identifiable<E>>
+    Optional<Integer> searchFirst(List<T> list, Identifiable<E> id) {
+        return searchFirst(list, v -> v.id() == id.id());
+    }
+
     // Optional.or() is Java API 9 only
-    private static <T> Optional<T> or(Optional<T> source, Supplier<? extends Optional<? extends T>> supplier) {
+    public static <T> Optional<T> or(Optional<T> source, Supplier<? extends Optional<? extends T>> supplier) {
         Objects.requireNonNull(supplier);
         if (source.isPresent()) {
             return source;

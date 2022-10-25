@@ -52,6 +52,8 @@ class ErrorRetryInteractorImpl implements ErrorRetryInteractor, ErrorDetailsVisi
 
     private final FoodEditInteractor foodEditInteractor;
 
+    private final FoodItemAddInteractor foodItemAddInteractor;
+
     private final Synchroniser synchroniser;
 
     private final Scheduler scheduler;
@@ -73,7 +75,7 @@ class ErrorRetryInteractorImpl implements ErrorRetryInteractor, ErrorDetailsVisi
                              FoodAddInteractor foodAddInteractor,
                              EntityDeleter<Food> foodDeleter,
                              FoodEditInteractor foodEditInteractor,
-                             Synchroniser synchroniser,
+                             FoodItemAddInteractor foodItemAddInteractor, Synchroniser synchroniser,
                              Scheduler scheduler,
                              ErrorRepository errorRepository) {
         this.locationAddInteractor = locationAddInteractor;
@@ -88,6 +90,7 @@ class ErrorRetryInteractorImpl implements ErrorRetryInteractor, ErrorDetailsVisi
         this.foodAddInteractor = foodAddInteractor;
         this.foodDeleter = foodDeleter;
         this.foodEditInteractor = foodEditInteractor;
+        this.foodItemAddInteractor = foodItemAddInteractor;
         this.synchroniser = synchroniser;
         this.scheduler = scheduler;
         this.errorRepository = errorRepository;
@@ -220,6 +223,12 @@ class ErrorRetryInteractorImpl implements ErrorRetryInteractor, ErrorDetailsVisi
     }
 
     @Override
+    public Void foodItemAddErrorDetails(FoodItemAddErrorDetails foodItemAddErrorDetails, Void input) {
+        foodItemAddInteractor.add(foodItemAddErrorDetails.into());
+        return null;
+    }
+
+    @Override
     public Void foodDeleteErrorDetails(FoodDeleteErrorDetails foodDeleteErrorDetails, Void input) {
         foodDeleter.delete(foodDeleteErrorDetails);
         return null;
@@ -290,6 +299,11 @@ class ErrorRetryInteractorImpl implements ErrorRetryInteractor, ErrorDetailsVisi
         @Override
         public Job.Type foodEditErrorDetails(FoodEditErrorDetails foodEditErrorDetails, Void input) {
             return Job.Type.EDIT_FOOD;
+        }
+
+        @Override
+        public Job.Type foodItemAddErrorDetails(FoodItemAddErrorDetails foodItemAddErrorDetails, Void input) {
+            return Job.Type.ADD_FOOD_ITEM;
         }
     }
 }

@@ -32,7 +32,9 @@ import androidx.core.content.ContextCompat;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.RecyclerView;
 import de.njsm.stocks.client.business.Clock;
+import de.njsm.stocks.client.business.entities.Food;
 import de.njsm.stocks.client.business.entities.FoodItemForListing;
+import de.njsm.stocks.client.business.entities.Identifiable;
 import de.njsm.stocks.client.databind.ExpirationIconProvider;
 import de.njsm.stocks.client.fragment.InjectableFragment;
 import de.njsm.stocks.client.fragment.listswipe.SwipeCallback;
@@ -58,6 +60,8 @@ public class FoodItemListFragment extends InjectableFragment {
 
     private Clock clock;
 
+    private Identifiable<Food> food;
+
     @NonNull
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -67,7 +71,8 @@ public class FoodItemListFragment extends InjectableFragment {
         templateSwipeList.disableSwipeRefresh();
 
         adapter = new FoodItemAdapter(this::onItemClicked, expirationIconProvider, clock);
-        viewModel.get(navigator.getFoodId(requireArguments())).observe(getViewLifecycleOwner(), this::onListDataReceived);
+        food = navigator.getFoodId(requireArguments());
+        viewModel.get(food).observe(getViewLifecycleOwner(), this::onListDataReceived);
 
         SwipeCallback callback = new SwipeCallback(
                 ContextCompat.getDrawable(requireActivity(), R.drawable.ic_delete_white_24dp),
@@ -100,7 +105,7 @@ public class FoodItemListFragment extends InjectableFragment {
     }
 
     private void onAddItem(View view) {
-        navigator.add();
+        navigator.add(food);
     }
 
     @Inject

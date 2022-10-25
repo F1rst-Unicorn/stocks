@@ -45,6 +45,8 @@ public class MainActivity extends BaseActivity {
 
     private NavigationArgConsumerImpl navigationArgConsumer;
 
+    private DialogDisplayerImpl dialogDisplayer;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         AndroidInjection.inject(this);
@@ -96,7 +98,13 @@ public class MainActivity extends BaseActivity {
     }
 
     @Inject
-    public void setNavigationArgConsumer(NavigationArgConsumerImpl navigationArgConsumer) {
+    void setNavigationArgConsumer(NavigationArgConsumerImpl navigationArgConsumer) {
         this.navigationArgConsumer = navigationArgConsumer;
+    }
+
+    @Inject
+    void setDialogDisplayer(DialogDisplayerImpl dialogDisplayer) {
+        this.dialogDisplayer = dialogDisplayer;
+        this.dialogDisplayer.setActivity(this);
     }
 }

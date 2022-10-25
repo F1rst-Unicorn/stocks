@@ -21,12 +21,19 @@
 
 package de.njsm.stocks.client.database.util;
 
+import io.reactivex.rxjava3.core.Maybe;
 import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.observers.TestObserver;
 
 import java.util.List;
 
 public class Util {
+
+    public static <T> TestObserver<T> test(Maybe<T> input) {
+        return input.test()
+                .awaitCount(1)
+                .assertNoErrors();
+    }
 
     public static <T> TestObserver<T> test(Observable<T> input) {
         return input.test()

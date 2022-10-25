@@ -141,4 +141,10 @@ public interface ServerApi {
                             @Query("location") Integer location,
                             @Field("description") String description,
                             @Query("storeunit") int storeUnit);
+
+    @PUT("/v2/fooditem")
+    Call<DataResponse<Integer>> addFoodItem(@Query("eatByDate") String date,
+                                            @Query("storedIn") int storedIn,
+                                            @Query("ofType") int ofType,
+                                            @Query("unit") int unit);
 }

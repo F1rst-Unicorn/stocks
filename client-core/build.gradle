@@ -33,7 +33,6 @@ dependencies {
     implementation "io.reactivex.rxjava3:rxjava:${rxjava_version}"
     implementation "com.google.guava:guava:${guava_version}"
 
-
     annotationProcessor "com.google.auto.value:auto-value:${autovalue_version}"
     annotationProcessor "com.google.dagger:dagger-compiler:${dagger_version}"
 
