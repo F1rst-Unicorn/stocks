@@ -34,10 +34,14 @@ import static de.njsm.stocks.client.database.util.Util.test;
 import static de.njsm.stocks.client.database.util.Util.testList;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 public class FoodItemListRepositoryImplTest extends DbTestCase {
 
     private FoodItemListRepositoryImpl uut;
+
     private UnitDbEntity unit;
     private ScaledUnitDbEntity scaledUnit;
     private LocationDbEntity location;
@@ -47,7 +51,7 @@ public class FoodItemListRepositoryImplTest extends DbTestCase {
 
     @Before
     public void setup() {
-        uut = new FoodItemListRepositoryImpl(stocksDatabase.foodDao());
+        uut = new FoodItemListRepositoryImpl(stocksDatabase.foodDao(), stocksDatabase.foodItemDao());
 
         unit = standardEntities.unitDbEntity();
         stocksDatabase.synchronisationDao().writeUnits(singletonList(unit));
@@ -101,5 +105,20 @@ public class FoodItemListRepositoryImplTest extends DbTestCase {
         Observable<List<FoodItemForListing>> actual = uut.get(food::id);
 
         test(actual).assertValue(emptyList());
+    }
+
+    @Test
+    public void gettingVersionOfFoodItemWorks() {
+        FoodItemDbEntity expected = standardEntities.foodItemDbEntityBuilder()
+                .ofType(food.id())
+                .storedIn(location.id())
+                .registers(device.id())
+                .unit(scaledUnit.id())
+                .build();
+        stocksDatabase.synchronisationDao().writeFoodItems(singletonList(expected));
+
+        var actual = uut.getEntityForDeletion(expected::id);
+
+        assertThat(actual.version(), is(equalTo(expected.version())));
     }
 }

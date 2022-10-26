@@ -23,6 +23,7 @@ package de.njsm.stocks.client.database;
 
 import androidx.room.Dao;
 import androidx.room.Query;
+import de.njsm.stocks.client.business.entities.FoodItemForDeletion;
 import io.reactivex.rxjava3.core.Maybe;
 
 import java.time.Instant;
@@ -58,4 +59,9 @@ abstract class FoodItemDao {
             "order by count(*) desc " +
             "limit 1")
     abstract Maybe<Integer> getLocationWithMostItemsOfType(int foodId);
+
+    @Query("select * " +
+            "from current_food_item " +
+            "where id = :id")
+    abstract FoodItemForDeletion getVersionOf(int id);
 }

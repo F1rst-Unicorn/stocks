@@ -148,4 +148,11 @@ public class ErrorDetailsPrinterTest {
         FoodItemAddErrorDetails data = FoodItemAddErrorDetails.create(LocalDate.ofEpochDay(2), 1, 2, 3, FoodItemAddErrorDetails.Unit.create(BigDecimal.ONE, "g"), "Banana", "Fridge");
         assertEquals("1g Banana\nFridge", uut.visit(data, null));
     }
+
+
+    @Test
+    public void foodItemDeletingShowsDetails() {
+        FoodItemDeleteErrorDetails data = FoodItemDeleteErrorDetails.create(1, "Banana", FoodItemDeleteErrorDetails.Unit.create(BigDecimal.ONE, "g"));
+        assertEquals("1g Banana", uut.visit(data, null));
+    }
 }

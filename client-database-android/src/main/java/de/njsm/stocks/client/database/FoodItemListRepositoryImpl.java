@@ -21,10 +21,9 @@
 
 package de.njsm.stocks.client.database;
 
+import de.njsm.stocks.client.business.EntityDeleteRepository;
 import de.njsm.stocks.client.business.FoodItemListRepository;
-import de.njsm.stocks.client.business.entities.Food;
-import de.njsm.stocks.client.business.entities.FoodItemForListing;
-import de.njsm.stocks.client.business.entities.Identifiable;
+import de.njsm.stocks.client.business.entities.*;
 import io.reactivex.rxjava3.core.Observable;
 
 import javax.inject.Inject;
@@ -32,17 +31,25 @@ import java.util.List;
 
 import static java.util.stream.Collectors.toList;
 
-class FoodItemListRepositoryImpl implements FoodItemListRepository {
+class FoodItemListRepositoryImpl implements FoodItemListRepository, EntityDeleteRepository<FoodItem> {
 
     private final FoodDao foodDao;
 
+    private final FoodItemDao foodItemDao;
+
     @Inject
-    FoodItemListRepositoryImpl(FoodDao foodDao) {
+    FoodItemListRepositoryImpl(FoodDao foodDao, FoodItemDao foodItemDao) {
         this.foodDao = foodDao;
+        this.foodItemDao = foodItemDao;
     }
 
     @Override
     public Observable<List<FoodItemForListing>> get(Identifiable<Food> food) {
         return foodDao.get(food.id()).map(v -> v.stream().map(FoodItemForListingData::map).collect(toList()));
+    }
+
+    @Override
+    public FoodItemForDeletion getEntityForDeletion(Identifiable<FoodItem> id) {
+        return foodItemDao.getVersionOf(id.id());
     }
 }

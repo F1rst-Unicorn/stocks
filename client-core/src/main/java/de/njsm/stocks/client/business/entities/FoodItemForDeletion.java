@@ -19,12 +19,14 @@
  *
  */
 
-package de.njsm.stocks.client.business;
+package de.njsm.stocks.client.business.entities;
 
-import de.njsm.stocks.client.business.entities.Entity;
-import de.njsm.stocks.client.business.entities.Identifiable;
+import com.google.auto.value.AutoValue;
 
-public interface EntityDeleter<E extends Entity<E>> {
+@AutoValue
+public abstract class FoodItemForDeletion implements Versionable<FoodItem> {
 
-    void delete(Identifiable<E> entity);
+    public static FoodItemForDeletion create(int id, int version) {
+        return new AutoValue_FoodItemForDeletion(id, version);
+    }
 }

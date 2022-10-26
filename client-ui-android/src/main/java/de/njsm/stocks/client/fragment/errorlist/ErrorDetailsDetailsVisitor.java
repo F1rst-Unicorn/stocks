@@ -108,4 +108,9 @@ public class ErrorDetailsDetailsVisitor implements ErrorDetailsVisitor<Void, Str
     public String foodItemAddErrorDetails(FoodItemAddErrorDetails foodItem, Void input) {
         return unitAmountRenderStrategy.render(foodItem.unit()) + " " + foodItem.foodName();
     }
+
+    @Override
+    public String foodItemDeleteErrorDetails(FoodItemDeleteErrorDetails foodItem, Void input) {
+        return unitAmountRenderStrategy.render(foodItem.unit()) + " " + foodItem.foodName();
+    }
 }

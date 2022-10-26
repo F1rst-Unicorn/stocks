@@ -192,4 +192,18 @@ public class ErrorRepositoryImpl implements ErrorRepository, ErrorEntity.ActionV
                 location.name()
         );
     }
+
+    @Override
+    public ErrorDetails deleteFoodItem(ErrorEntity.Action action, Long input) {
+        FoodItemDeleteEntity entity = errorDao.getFoodItemDelete(input);
+        FoodItemDbEntity foodItem = errorDao.getFoodItemByValidOrTransactionTime(entity.foodItem());
+        FoodDbEntity food = errorDao.getFoodByValidOrTransactionTime(PreservedId.create(foodItem.ofType(), entity.foodItem().transactionTime()));
+        ScaledUnitDbEntity scaledUnit = errorDao.getScaledUnitByValidOrTransactionTime(PreservedId.create(foodItem.unit(), entity.foodItem().transactionTime()));
+        UnitDbEntity unit = errorDao.getUnitByValidOrTransactionTime(PreservedId.create(scaledUnit.unit(), entity.foodItem().transactionTime()));
+        return FoodItemDeleteErrorDetails.create(
+                foodItem.id(),
+                food.name(),
+                FoodItemDeleteErrorDetails.Unit.create(scaledUnit.scale(), unit.abbreviation())
+        );
+    }
 }

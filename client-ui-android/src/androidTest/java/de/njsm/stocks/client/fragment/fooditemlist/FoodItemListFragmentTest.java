@@ -40,7 +40,6 @@ import de.njsm.stocks.client.testdata.FoodItemsForListing;
 import de.njsm.stocks.client.ui.R;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import javax.inject.Inject;
@@ -144,7 +143,6 @@ public class FoodItemListFragmentTest {
     }
 
     @Test
-    @Ignore("todo")
     public void deletionWorks() {
         List<FoodItemForListing> data = FoodItemsForListing.get();
         assertFalse(data.isEmpty());

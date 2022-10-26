@@ -77,7 +77,11 @@ public class StandardEntities {
                 .description("description");
     }
 
-    FoodItemDbEntity.Builder foodItemDbEntityBuilder() {
+    public FoodItemDbEntity foodItemDbEntity() {
+        return foodItemDbEntityBuilder().build();
+    }
+
+    public FoodItemDbEntity.Builder foodItemDbEntityBuilder() {
         return initialiseBuilder(FoodItemDbEntity.builder())
                 .eatBy(EPOCH)
                 .ofType(randomnessProvider.getId("food_item of_type"))

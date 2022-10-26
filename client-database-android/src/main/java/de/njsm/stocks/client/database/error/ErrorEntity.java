@@ -130,10 +130,16 @@ public abstract class ErrorEntity implements IdFields {
                 return visitor.editFood(this, input);
             }
         },
-        ADD_ITEM_FOOD {
+        ADD_FOOD_ITEM {
             @Override
             <I, O> O accept(ActionVisitor<I, O> visitor, I input) {
                 return visitor.addFoodItem(this, input);
+            }
+        },
+        DELETE_FOOD_ITEM {
+            @Override
+            <I, O> O accept(ActionVisitor<I, O> visitor, I input) {
+                return visitor.deleteFoodItem(this, input);
             }
         };
 
@@ -173,6 +179,8 @@ public abstract class ErrorEntity implements IdFields {
         O editFood(Action action, I input);
 
         O addFoodItem(Action action, I input);
+
+        O deleteFoodItem(Action action, I input);
     }
 
     enum ExceptionType {

@@ -147,4 +147,8 @@ public interface ServerApi {
                                             @Query("storedIn") int storedIn,
                                             @Query("ofType") int ofType,
                                             @Query("unit") int unit);
+
+    @DELETE("/v2/fooditem")
+    Call<Response> deleteFoodItem(@Query("id") int id,
+                                  @Query("version") int version);
 }

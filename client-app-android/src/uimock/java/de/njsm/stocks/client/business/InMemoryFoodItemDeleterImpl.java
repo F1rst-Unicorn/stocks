@@ -21,10 +21,18 @@
 
 package de.njsm.stocks.client.business;
 
-import de.njsm.stocks.client.business.entities.Entity;
+import de.njsm.stocks.client.business.entities.FoodItem;
 import de.njsm.stocks.client.business.entities.Identifiable;
 
-public interface EntityDeleter<E extends Entity<E>> {
+import javax.inject.Inject;
 
-    void delete(Identifiable<E> entity);
+class InMemoryFoodItemDeleterImpl implements EntityDeleter<FoodItem> {
+
+    @Inject
+    InMemoryFoodItemDeleterImpl() {
+    }
+
+    @Override
+    public void delete(Identifiable<FoodItem> location) {
+    }
 }

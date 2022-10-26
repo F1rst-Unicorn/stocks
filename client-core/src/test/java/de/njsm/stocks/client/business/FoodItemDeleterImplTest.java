@@ -21,10 +21,27 @@
 
 package de.njsm.stocks.client.business;
 
-import de.njsm.stocks.client.business.entities.Entity;
-import de.njsm.stocks.client.business.entities.Identifiable;
+import de.njsm.stocks.client.business.entities.FoodItem;
+import de.njsm.stocks.client.business.entities.Job;
+import de.njsm.stocks.client.business.entities.Versionable;
+import org.junit.jupiter.api.BeforeEach;
 
-public interface EntityDeleter<E extends Entity<E>> {
+import static org.mockito.Mockito.verify;
 
-    void delete(Identifiable<E> entity);
+class FoodItemDeleterImplTest extends DeleterImplTest<FoodItem> {
+
+    @BeforeEach
+    void setUp() {
+        uut = new FoodItemDeleterImpl(deleteService, deleteRepository, synchroniser, errorRecorder, scheduler);
+    }
+
+    @Override
+    Job.Type getJobType() {
+        return Job.Type.DELETE_FOOD_ITEM;
+    }
+
+    @Override
+    void verifyRecorder(SubsystemException exception, Versionable<FoodItem> outputToService) {
+        verify(errorRecorder).recordFoodItemDeleteError(exception, outputToService);
+    }
 }

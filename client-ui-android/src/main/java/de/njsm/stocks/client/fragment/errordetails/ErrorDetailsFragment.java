@@ -203,5 +203,10 @@ public class ErrorDetailsFragment extends InjectableFragment {
         public String foodItemAddErrorDetails(FoodItemAddErrorDetails foodItem, Void input) {
             return unitAmountRenderStrategy.render(foodItem.unit()) + " " + foodItem.foodName() + "\n" + foodItem.locationName();
         }
+
+        @Override
+        public String foodItemDeleteErrorDetails(FoodItemDeleteErrorDetails foodItem, Void input) {
+            return unitAmountRenderStrategy.render(foodItem.unit()) + " " + foodItem.foodName();
+        }
     }
 }

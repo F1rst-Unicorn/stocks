@@ -113,7 +113,7 @@ public abstract class SynchronisationDao {
     }
 
     @Insert(onConflict = REPLACE)
-    abstract void writeFoodItems(List<FoodItemDbEntity> data);
+    public abstract void writeFoodItems(List<FoodItemDbEntity> data);
 
     @Query("delete from food_item")
     abstract void deleteFoodItems();

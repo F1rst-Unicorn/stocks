@@ -54,6 +54,8 @@ class ErrorRetryInteractorImpl implements ErrorRetryInteractor, ErrorDetailsVisi
 
     private final FoodItemAddInteractor foodItemAddInteractor;
 
+    private final EntityDeleter<FoodItem> foodItemDeleter;
+
     private final Synchroniser synchroniser;
 
     private final Scheduler scheduler;
@@ -75,7 +77,9 @@ class ErrorRetryInteractorImpl implements ErrorRetryInteractor, ErrorDetailsVisi
                              FoodAddInteractor foodAddInteractor,
                              EntityDeleter<Food> foodDeleter,
                              FoodEditInteractor foodEditInteractor,
-                             FoodItemAddInteractor foodItemAddInteractor, Synchroniser synchroniser,
+                             FoodItemAddInteractor foodItemAddInteractor,
+                             EntityDeleter<FoodItem> foodItemDeleter,
+                             Synchroniser synchroniser,
                              Scheduler scheduler,
                              ErrorRepository errorRepository) {
         this.locationAddInteractor = locationAddInteractor;
@@ -91,6 +95,7 @@ class ErrorRetryInteractorImpl implements ErrorRetryInteractor, ErrorDetailsVisi
         this.foodDeleter = foodDeleter;
         this.foodEditInteractor = foodEditInteractor;
         this.foodItemAddInteractor = foodItemAddInteractor;
+        this.foodItemDeleter = foodItemDeleter;
         this.synchroniser = synchroniser;
         this.scheduler = scheduler;
         this.errorRepository = errorRepository;
@@ -234,6 +239,12 @@ class ErrorRetryInteractorImpl implements ErrorRetryInteractor, ErrorDetailsVisi
         return null;
     }
 
+    @Override
+    public Void foodItemDeleteErrorDetails(FoodItemDeleteErrorDetails foodItemDeleteErrorDetails, Void input) {
+        foodItemDeleter.delete(foodItemDeleteErrorDetails);
+        return null;
+    }
+
     private static final class JobTypeTranslator implements ErrorDetailsVisitor<Void, Job.Type> {
 
         @Override
@@ -304,6 +315,11 @@ class ErrorRetryInteractorImpl implements ErrorRetryInteractor, ErrorDetailsVisi
         @Override
         public Job.Type foodItemAddErrorDetails(FoodItemAddErrorDetails foodItemAddErrorDetails, Void input) {
             return Job.Type.ADD_FOOD_ITEM;
+        }
+
+        @Override
+        public Job.Type foodItemDeleteErrorDetails(FoodItemDeleteErrorDetails foodItemDeleteErrorDetails, Void input) {
+            return Job.Type.DELETE_FOOD_ITEM;
         }
     }
 }

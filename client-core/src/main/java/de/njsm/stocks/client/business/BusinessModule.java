@@ -24,10 +24,7 @@ package de.njsm.stocks.client.business;
 import dagger.Binds;
 import dagger.Module;
 import dagger.Provides;
-import de.njsm.stocks.client.business.entities.Food;
-import de.njsm.stocks.client.business.entities.Location;
-import de.njsm.stocks.client.business.entities.ScaledUnit;
-import de.njsm.stocks.client.business.entities.Unit;
+import de.njsm.stocks.client.business.entities.*;
 import de.njsm.stocks.client.execution.ExecutionModule;
 
 import javax.inject.Singleton;
@@ -141,4 +138,7 @@ public interface BusinessModule {
 
     @Binds
     FoodItemAddInteractor FoodItemAddInteractor(FoodItemAddInteractorImpl impl);
+
+    @Binds
+    EntityDeleter<FoodItem> FoodItemDeleter(FoodItemDeleterImpl impl);
 }

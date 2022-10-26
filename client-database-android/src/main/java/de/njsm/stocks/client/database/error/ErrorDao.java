@@ -437,4 +437,64 @@ public abstract class ErrorDao {
             "from food_item_to_add " +
             "where id = :id")
     abstract FoodItemAddEntity getFoodItemAdd(Long id);
+
+    @Query("select * " +
+            "from food_item_to_delete")
+    abstract List<FoodItemDeleteEntity> getFoodItemDeletes();
+
+    @Insert
+    abstract long insert(FoodItemDeleteEntity entity);
+
+    @Query("delete from food_item_to_delete " +
+            "where id = :id")
+    abstract void deleteFoodItemEdit(Long id);
+
+    @Query("select * " +
+            "from food_item_to_delete " +
+            "where id = :id")
+    abstract FoodItemDeleteEntity getFoodItemDelete(Long id);
+
+    public FoodItemDbEntity getFoodItemByValidOrTransactionTime(PreservedId id) {
+        FoodItemDbEntity foodItem = getCurrentFoodItem(id.id());
+        if (foodItem == null) {
+            foodItem = getLatestFoodItemAsBestKnown(id.id());
+        }
+        if (foodItem == null) {
+            foodItem = getCurrentFoodItemAsKnownAt(id.id(), id.transactionTime());
+        }
+        return foodItem;
+    }
+
+    @Query("select * " +
+            "from current_food_item " +
+            "where id = :id")
+    abstract FoodItemDbEntity getCurrentFoodItem(int id);
+
+    @Query("select * " +
+            "from food_item " +
+            "where id = :id " +
+            "and transaction_time_end = " + DATABASE_INFINITY_STRING_SQL +
+            "and valid_time_start = (" +
+            "   select max(valid_time_start) " +
+            "   from food_item " +
+            "   where id = :id" +
+            "   and valid_time_start <= " + NOW +
+            "   and transaction_time_end = " + DATABASE_INFINITY_STRING_SQL +
+            ")")
+    abstract FoodItemDbEntity getLatestFoodItemAsBestKnown(int id);
+
+    @Query("select * " +
+            "from food_item " +
+            "where id = :id " +
+            "and transaction_time_start <= :transactionTime " +
+            "and :transactionTime < transaction_time_end " +
+            "and valid_time_start = (" +
+            "   select max(valid_time_start) " +
+            "   from food_item " +
+            "   where id = :id" +
+            "   and valid_time_start <= " + NOW +
+            "   and transaction_time_start <= :transactionTime " +
+            "   and :transactionTime < transaction_time_end " +
+            ")")
+    abstract FoodItemDbEntity getCurrentFoodItemAsKnownAt(int id, Instant transactionTime);
 }

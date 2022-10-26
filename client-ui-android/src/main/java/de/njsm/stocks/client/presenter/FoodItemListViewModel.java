@@ -24,8 +24,10 @@ package de.njsm.stocks.client.presenter;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.LiveDataReactiveStreams;
 import androidx.lifecycle.ViewModel;
+import de.njsm.stocks.client.business.EntityDeleter;
 import de.njsm.stocks.client.business.FoodItemListInteractor;
 import de.njsm.stocks.client.business.entities.Food;
+import de.njsm.stocks.client.business.entities.FoodItem;
 import de.njsm.stocks.client.business.entities.FoodItemForListing;
 import de.njsm.stocks.client.business.entities.Identifiable;
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
@@ -40,18 +42,21 @@ public class FoodItemListViewModel extends ViewModel {
 
     private final FoodItemListInteractor interactor;
 
+    private final EntityDeleter<FoodItem> deleter;
+
     private Observable<List<FoodItemForListing>> data;
 
     @Inject
-    FoodItemListViewModel(FoodItemListInteractor interactor) {
+    FoodItemListViewModel(FoodItemListInteractor interactor, EntityDeleter<FoodItem> deleter) {
         this.interactor = interactor;
+        this.deleter = deleter;
     }
 
     public void delete(int listItemIndex) {
         if (data == null)
             return;
 
-        throw new UnsupportedOperationException("TODO");
+        performOnCurrentData(list -> deleter.delete(list.get(listItemIndex)));
     }
 
     public void resolveId(int listItemIndex, Consumer<Integer> callback) {

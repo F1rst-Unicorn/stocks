@@ -216,7 +216,16 @@ public class ErrorRecorderImpl implements ErrorRecorder {
                 PreservedId.create(item.unit(), scaledUnitTransactionTime)
         );
         long dataId = errorDao.insert(entity);
-        errorDao.insert(ErrorEntity.create(ErrorEntity.Action.ADD_ITEM_FOOD, dataId, exceptionData.exceptionType(), exceptionData.exceptionId()));
+        errorDao.insert(ErrorEntity.create(ErrorEntity.Action.ADD_FOOD_ITEM, dataId, exceptionData.exceptionType(), exceptionData.exceptionId()));
+    }
+
+    @Override
+    public void recordFoodItemDeleteError(SubsystemException exception, Versionable<FoodItem> input) {
+        ExceptionData exceptionData = new ExceptionInserter().visit(exception, null);
+        Instant currentTransactionTime = errorDao.getTransactionTimeOf(EntityType.FOOD_ITEM);
+        FoodItemDeleteEntity entity = FoodItemDeleteEntity.create(input.version(), PreservedId.create(input.id(), currentTransactionTime));
+        long dataId = errorDao.insert(entity);
+        errorDao.insert(ErrorEntity.create(ErrorEntity.Action.DELETE_FOOD_ITEM, dataId, exceptionData.exceptionType(), exceptionData.exceptionId()));
     }
 
     @AutoValue
