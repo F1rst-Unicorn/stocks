@@ -85,10 +85,14 @@ object Build : BuildType({
 
         client-app-android/build/reports/**/* => client-app-android
         client-core/build/reports/**/* => client-core
+        client-crypto/build/reports/**/* => client-crypto
         client-database-android/build/reports/**/* => client-database-android
-        client-ui-android/build/reports/**/* => client-ui-android
+        client-fakes-android/build/reports/**/* => client-fakes-android
+        client-fakes/build/reports/**/* => client-fakes
         client-navigation-android/build/reports/**/* => client-navigation-android
         client-network/build/reports/**/* => client-network
+        client-settings-android/build/reports/**/* => client-settings-android
+        client-ui-android/build/reports/**/* => client-ui-android
     """.trimIndent()
     maxRunningBuilds = 2
 
@@ -131,10 +135,9 @@ object Build : BuildType({
         }
         gradle {
             name = "Assemble new module system"
-            tasks = "createDebugCoverageReport createUimockDebugCoverageReport createProdDebugCoverageReport testCoverageUnitTestCoverage build assemble"
+            tasks = "check test connectedCheck assemble"
             buildFile = "build.gradle"
             gradleHome = "/usr/bin/gradle"
-            gradleParams = "--no-build-cache"
             gradleWrapperPath = "."
             enableStacktrace = true
         }
