@@ -26,10 +26,8 @@ import de.njsm.stocks.client.business.entities.Identifiable;
 import de.njsm.stocks.client.business.entities.conflict.ConflictData;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Predicate;
-import java.util.function.Supplier;
 
 public class ListSearcher {
 
@@ -51,24 +49,18 @@ public class ListSearcher {
     public static <E extends Entity<E>, I extends Identifiable<E>>
     Optional<Integer> searchFirstOptional(List<? extends I> list,
                                           ConflictData<? extends Optional<? extends I>> key) {
-        int mappedPosition = or(key.suggestedValue().flatMap(v -> searchFirst(list, v.id())),
-                () -> or(key.local().flatMap(v -> searchFirst(list, v.id())),
-                () -> or(key.remote().flatMap(v -> searchFirst(list, v.id())),
-                () -> key.original().flatMap(v -> searchFirst(list, v.id())))))
-                .orElse(-1);
-        return Optional.of(mappedPosition)
-                .filter(v -> v != -1);
+        return key.suggestedValue().flatMap(v -> searchFirst(list, v.id()))
+                .or(() -> key.local().flatMap(v -> searchFirst(list, v.id())))
+                .or(() -> key.remote().flatMap(v -> searchFirst(list, v.id())))
+                .or(() -> key.original().flatMap(v -> searchFirst(list, v.id())));
     }
 
     public static <E extends Entity<E>, I extends Identifiable<E>>
     Optional<Integer> searchFirst(List<? extends I> list, ConflictData<? extends I> key) {
-        int mappedPosition = or(searchFirst(list, key.suggestedValue().id()),
-                () -> or(searchFirst(list, key.local().id()),
-                () -> or(searchFirst(list, key.remote().id()),
-                () -> searchFirst(list, key.original().id()))))
-                .orElse(-1);
-        return Optional.of(mappedPosition)
-                .filter(v -> v != -1);
+        return searchFirst(list, key.suggestedValue().id())
+                .or(() -> searchFirst(list, key.local().id()))
+                .or(() -> searchFirst(list, key.remote().id()))
+                .or(() -> searchFirst(list, key.original().id()));
     }
 
     public static <E extends Entity<E>, T extends Identifiable<E>>
@@ -84,17 +76,5 @@ public class ListSearcher {
     public static <E extends Entity<E>, T extends Identifiable<E>>
     Optional<Integer> searchFirst(List<T> list, Identifiable<E> id) {
         return searchFirst(list, v -> v.id() == id.id());
-    }
-
-    // Optional.or() is Java API 9 only
-    public static <T> Optional<T> or(Optional<T> source, Supplier<? extends Optional<? extends T>> supplier) {
-        Objects.requireNonNull(supplier);
-        if (source.isPresent()) {
-            return source;
-        } else {
-            @SuppressWarnings("unchecked")
-            Optional<T> r = (Optional<T>) supplier.get();
-            return Objects.requireNonNull(r);
-        }
     }
 }
