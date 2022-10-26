@@ -22,8 +22,6 @@ plugins {
     id "checkstyle"
 }
 
-apply from: "$project.rootDir/gradle/jacoco/java.gradle"
-
 dependencies {
     implementation "javax.inject:javax.inject:${inject_version}"
     implementation "com.squareup.retrofit2:retrofit:${retrofit_version}"

@@ -22,8 +22,6 @@ plugins {
     id "checkstyle"
 }
 
-apply from: "$project.rootDir/gradle/jacoco/java.gradle"
-
 ext {
     bouncycastle_version = "1.70"
 }

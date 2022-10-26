@@ -21,5 +21,4 @@
 
 
 <manifest
-        package="de.njsm.stocks.client"
         xmlns:android="http://schemas.android.com/apk/res/android"/>

@@ -22,8 +22,6 @@ plugins {
     id "checkstyle"
 }
 
-apply from: "$project.rootDir/gradle/jacoco/java.gradle"
-
 dependencies {
     implementation "com.fasterxml.jackson.core:jackson-annotations:${jackson_version}"
     implementation "com.fasterxml.jackson.core:jackson-databind:${jackson_version}"

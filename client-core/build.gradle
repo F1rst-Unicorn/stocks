@@ -23,8 +23,6 @@ plugins {
     id "checkstyle"
 }
 
-apply from: "$project.rootDir/gradle/jacoco/java.gradle"
-
 dependencies {
     implementation "javax.inject:javax.inject:${inject_version}"
     implementation "org.slf4j:slf4j-api:${slf4j_version}"
