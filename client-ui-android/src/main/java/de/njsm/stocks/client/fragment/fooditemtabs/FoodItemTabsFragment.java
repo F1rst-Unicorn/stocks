@@ -19,37 +19,43 @@
  *
  */
 
-package de.njsm.stocks.client.fragment.unittabs;
+package de.njsm.stocks.client.fragment.fooditemtabs;
 
 import androidx.fragment.app.Fragment;
 import com.google.android.material.tabs.TabLayout;
-import de.njsm.stocks.client.fragment.scaledunitlist.ScaledUnitListFragment;
-import de.njsm.stocks.client.fragment.unitlist.UnitListFragment;
+import de.njsm.stocks.client.fragment.fooditemlist.FoodItemListFragment;
+import de.njsm.stocks.client.fragment.unittabs.TabsFragment;
 import de.njsm.stocks.client.ui.R;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 import java.util.function.Supplier;
 
-public class UnitTabsFragment extends TabsFragment {
+public class FoodItemTabsFragment extends TabsFragment {
 
     @Override
     public void setIcon(TabLayout.Tab tab, int position) {
         int iconId;
         if (position == 0) {
-            iconId = R.drawable.ic_weight_numbered_black_24;
+            iconId = R.drawable.baseline_room_service_black_24;
         } else {
-            iconId = R.drawable.ic_weight_black_24;
+            iconId = R.drawable.baseline_insert_chart_black_24;
         }
         tab.setIcon(iconId);
     }
 
-    @NotNull
     @Override
     public List<Supplier<? extends Fragment>> fragmentFactories() {
         return List.of(
-                ScaledUnitListFragment::new,
-                UnitListFragment::new
+                () -> {
+                    Fragment result = new FoodItemListFragment();
+                    result.setArguments(requireArguments());
+                    return result;
+                },
+                () -> {
+                    Fragment result = new FoodItemListFragment();
+                    result.setArguments(requireArguments());
+                    return result;
+                }
         );
     }
 }

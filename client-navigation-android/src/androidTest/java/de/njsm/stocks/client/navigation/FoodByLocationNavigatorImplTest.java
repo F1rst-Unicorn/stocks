@@ -58,7 +58,7 @@ public class FoodByLocationNavigatorImplTest extends NavigationTest {
 
         uut.showFood(expected);
 
-        FoodInLocationFragmentDirections.ActionNavFragmentLocationContentToNavFragmentFoodItemList actual = navigationArgConsumer.getLastArgument(FoodInLocationFragmentDirections.ActionNavFragmentLocationContentToNavFragmentFoodItemList.class);
+        FoodInLocationFragmentDirections.ActionNavFragmentLocationContentToNavFragmentFoodItemTabs actual = navigationArgConsumer.getLastArgument(FoodInLocationFragmentDirections.ActionNavFragmentLocationContentToNavFragmentFoodItemTabs.class);
         assertEquals(actual.getFoodId(), expected);
     }
 

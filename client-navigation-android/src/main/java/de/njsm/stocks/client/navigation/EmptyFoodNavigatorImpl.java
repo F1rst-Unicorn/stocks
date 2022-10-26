@@ -48,7 +48,7 @@ class EmptyFoodNavigatorImpl extends BaseNavigator implements EmptyFoodNavigator
     public void showFood(int id) {
         LOG.debug("showing food " + id);
         getNavigationArgConsumer().navigate(
-                EmptyFoodFragmentDirections.actionNavFragmentEmptyFoodToNavFragmentFoodItemList(id)
+                EmptyFoodFragmentDirections.actionNavFragmentEmptyFoodToNavFragmentFoodItemTabs(id)
         );
     }
 

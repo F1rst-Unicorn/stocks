@@ -86,8 +86,8 @@
                     app:argType="integer"/>
         </action>
         <action
-                android:id="@+id/action_nav_fragment_location_content_to_nav_fragment_food_item_list"
-                app:destination="@id/nav_fragment_food_item_list">
+                android:id="@+id/action_nav_fragment_location_content_to_nav_fragment_food_item_tabs"
+                app:destination="@id/nav_fragment_food_item_tabs">
             <argument
                     android:name="foodId"
                     app:argType="integer"/>
@@ -221,8 +221,8 @@
                     app:argType="integer"/>
         </action>
         <action
-                android:id="@+id/action_nav_fragment_all_food_to_nav_fragment_food_item_list"
-                app:destination="@id/nav_fragment_food_item_list">
+                android:id="@+id/action_nav_fragment_all_food_to_nav_fragment_food_item_tabs"
+                app:destination="@id/nav_fragment_food_item_tabs">
             <argument
                     android:name="foodId"
                     app:argType="integer"/>
@@ -245,8 +245,8 @@
                     app:argType="integer"/>
         </action>
         <action
-                android:id="@+id/action_nav_fragment_empty_food_to_nav_fragment_food_item_list"
-                app:destination="@id/nav_fragment_food_item_list">
+                android:id="@+id/action_nav_fragment_empty_food_to_nav_fragment_food_item_tabs"
+                app:destination="@id/nav_fragment_food_item_tabs">
             <argument
                     android:name="foodId"
                     app:argType="integer"/>
@@ -272,26 +272,34 @@
                 app:argType="integer"/>
     </fragment>
     <fragment
-            android:id="@+id/nav_fragment_food_item_list"
-            android:name="de.njsm.stocks.client.fragment.fooditemlist.FoodItemListFragment"
-            tools:layout="@layout/fragment_food_form">
+            android:id="@+id/nav_fragment_food_item_tabs"
+            android:name="de.njsm.stocks.client.fragment.fooditemtabs.FoodItemTabsFragment"
+            tools:layout="@layout/template_swipe_list">
         <argument
                 android:name="foodId"
                 app:argType="integer"/>
         <action
-                android:id="@+id/action_nav_fragment_food_item_list_to_nav_fragment_food_item_add"
+                android:id="@+id/action_nav_fragment_food_item_tabs_to_nav_fragment_food_item_add"
                 app:destination="@id/nav_fragment_food_item_add">
             <argument
                     android:name="foodId"
                     app:argType="integer"/>
         </action>
         <action
-                android:id="@+id/action_nav_fragment_food_item_list_to_nav_fragment_food_item_edit"
+                android:id="@+id/action_nav_fragment_food_item_tabs_to_nav_fragment_food_item_edit"
                 app:destination="@id/nav_fragment_food_item_edit">
             <argument
                     android:name="id"
                     app:argType="integer"/>
         </action>
+    </fragment>
+    <fragment
+            android:id="@+id/nav_fragment_food_item_list"
+            android:name="de.njsm.stocks.client.fragment.fooditemlist.FoodItemListFragment"
+            tools:layout="@layout/template_swipe_list">
+        <argument
+                android:name="foodId"
+                app:argType="integer"/>
     </fragment>
     <fragment
             android:id="@+id/nav_fragment_food_item_add"

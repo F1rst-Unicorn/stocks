@@ -114,9 +114,9 @@ public class ViewModelModule {
 
     @Provides
     @IntoMap
-    @ViewModelKey(UnitTabsViewModel.class)
+    @ViewModelKey(TabsViewModel.class)
     ViewModel UnitTabsViewModel(Synchroniser synchroniser) {
-        return new UnitTabsViewModel(synchroniser);
+        return new TabsViewModel(synchroniser);
     }
 
     @Provides

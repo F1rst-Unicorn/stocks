@@ -24,11 +24,11 @@ package de.njsm.stocks.client.presenter;
 import androidx.lifecycle.ViewModel;
 import de.njsm.stocks.client.business.Synchroniser;
 
-public class UnitTabsViewModel extends ViewModel {
+public class TabsViewModel extends ViewModel {
 
     private final Synchroniser synchroniser;
 
-    public UnitTabsViewModel(Synchroniser synchroniser) {
+    public TabsViewModel(Synchroniser synchroniser) {
         this.synchroniser = synchroniser;
     }
 

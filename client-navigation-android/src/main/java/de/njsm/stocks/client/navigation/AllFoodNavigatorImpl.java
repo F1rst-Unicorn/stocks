@@ -42,7 +42,7 @@ class AllFoodNavigatorImpl extends BaseNavigator implements AllFoodNavigator {
 
     @Override
     public void showFood(int id) {
-        NavDirections direction = AllFoodFragmentDirections.actionNavFragmentAllFoodToNavFragmentFoodItemList(id);
+        NavDirections direction = AllFoodFragmentDirections.actionNavFragmentAllFoodToNavFragmentFoodItemTabs(id);
         getNavigationArgConsumer().navigate(direction);
     }
 

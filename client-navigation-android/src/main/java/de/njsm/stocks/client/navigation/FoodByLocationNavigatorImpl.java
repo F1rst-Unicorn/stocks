@@ -48,7 +48,7 @@ class FoodByLocationNavigatorImpl extends BaseNavigator implements FoodByLocatio
 
     @Override
     public void showFood(int id) {
-        getNavigationArgConsumer().navigate(FoodInLocationFragmentDirections.actionNavFragmentLocationContentToNavFragmentFoodItemList(id));
+        getNavigationArgConsumer().navigate(FoodInLocationFragmentDirections.actionNavFragmentLocationContentToNavFragmentFoodItemTabs(id));
     }
 
     @Override

@@ -25,7 +25,7 @@ import android.os.Bundle;
 import androidx.navigation.ActionOnlyNavDirections;
 import de.njsm.stocks.client.business.entities.Food;
 import de.njsm.stocks.client.business.entities.Identifiable;
-import de.njsm.stocks.client.fragment.fooditemlist.FoodItemListFragmentDirections;
+import de.njsm.stocks.client.fragment.fooditemtabs.FoodItemTabsFragmentDirections;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -57,7 +57,7 @@ public class FoodItemListNavigatorImplTest extends NavigationTest {
 
         uut.edit(expected);
 
-        FoodItemListFragmentDirections.ActionNavFragmentFoodItemListToNavFragmentFoodItemEdit actual = navigationArgConsumer.getLastArgument(FoodItemListFragmentDirections.ActionNavFragmentFoodItemListToNavFragmentFoodItemEdit.class);
+        FoodItemTabsFragmentDirections.ActionNavFragmentFoodItemTabsToNavFragmentFoodItemEdit actual = navigationArgConsumer.getLastArgument(FoodItemTabsFragmentDirections.ActionNavFragmentFoodItemTabsToNavFragmentFoodItemEdit.class);
         assertEquals(actual.getId(), expected);
     }
 
@@ -67,7 +67,7 @@ public class FoodItemListNavigatorImplTest extends NavigationTest {
 
         uut.add(() -> expected);
 
-        FoodItemListFragmentDirections.ActionNavFragmentFoodItemListToNavFragmentFoodItemAdd actual = navigationArgConsumer.getLastArgument(FoodItemListFragmentDirections.ActionNavFragmentFoodItemListToNavFragmentFoodItemAdd.class);
+        FoodItemTabsFragmentDirections.ActionNavFragmentFoodItemTabsToNavFragmentFoodItemAdd actual = navigationArgConsumer.getLastArgument(FoodItemTabsFragmentDirections.ActionNavFragmentFoodItemTabsToNavFragmentFoodItemAdd.class);
         assertEquals(actual.getFoodId(), expected);
     }
 }

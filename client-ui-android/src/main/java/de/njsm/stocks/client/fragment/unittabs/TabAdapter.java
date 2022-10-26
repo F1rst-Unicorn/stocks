@@ -22,29 +22,27 @@ package de.njsm.stocks.client.fragment.unittabs;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
-import de.njsm.stocks.client.fragment.scaledunitlist.ScaledUnitListFragment;
-import de.njsm.stocks.client.fragment.unitlist.UnitListFragment;
+
+import java.util.List;
+import java.util.function.Supplier;
 
 public class TabAdapter extends FragmentStateAdapter {
 
-    public TabAdapter(@NonNull UnitTabsFragment fragment) {
-        super(fragment);
+    private final List<Supplier<? extends Fragment>> fragmentFactories;
+
+    public TabAdapter(Fragment owner, List<Supplier<? extends Fragment>> fragmentFactories) {
+        super(owner);
+        this.fragmentFactories = fragmentFactories;
     }
 
     @NonNull
     @Override
     public Fragment createFragment(int position) {
-        Fragment fragment;
-        if (position == 0) {
-            fragment = new ScaledUnitListFragment();
-        } else {
-            fragment = new UnitListFragment();
-        }
-        return fragment;
+        return fragmentFactories.get(position).get();
     }
 
     @Override
     public int getItemCount() {
-        return 2;
+        return fragmentFactories.size();
     }
 }
