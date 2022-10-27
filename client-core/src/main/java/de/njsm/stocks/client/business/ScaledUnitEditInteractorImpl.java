@@ -28,6 +28,8 @@ import io.reactivex.rxjava3.core.Observable;
 import javax.inject.Inject;
 import java.util.List;
 
+import static de.njsm.stocks.client.business.ListSearcher.findFirstSuggestion;
+
 class ScaledUnitEditInteractorImpl implements ScaledUnitEditInteractor {
 
     private final ScaledUnitEditRepository repository;
@@ -54,10 +56,9 @@ class ScaledUnitEditInteractorImpl implements ScaledUnitEditInteractor {
         Observable<List<UnitForSelection>> units = repository.getUnitsForSelection();
         Observable<ScaledUnitToEdit> scaledUnitToEdit = repository.getScaledUnit(id);
 
-        return units.zipWith(scaledUnitToEdit, (unitList, scaledUnit) -> {
-            int position = ListSearcher.findFirst(unitList, scaledUnit.unit());
-            return ScaledUnitEditingFormData.create(scaledUnit.id(), scaledUnit.scale(), unitList, position);
-        });
+        return units.zipWith(scaledUnitToEdit, (unitList, scaledUnit) ->
+                ScaledUnitEditingFormData.create(scaledUnit.id(), scaledUnit.scale(),
+                        findFirstSuggestion(unitList, scaledUnit::unit)));
     }
 
     @Override

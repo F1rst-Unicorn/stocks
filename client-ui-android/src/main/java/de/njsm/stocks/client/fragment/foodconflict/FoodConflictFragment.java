@@ -62,7 +62,7 @@ public class FoodConflictFragment extends BottomToolbarFragment {
             form.setName(v.name());
             form.setExpirationOffset(v.expirationOffset());
             form.showLocations(v.availableLocations(), v.currentLocationListPosition());
-            form.showUnits(v.availableStoreUnits(), v.currentScaledUnitListPosition());
+            form.showUnits(v.availableStoreUnits());
             form.setDescription(String.format(v.description().suggestedValue(),
                     getString(R.string.hint_original),
                     getString(R.string.hint_remote),

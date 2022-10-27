@@ -90,10 +90,9 @@ class FoodEditInteractorImplTest {
                         v.name().equals(food.name()) &&
                         v.expirationOffset().equals(food.expirationOffset()) &&
                         v.description().equals(food.description()) &&
-                        v.storeUnits().equals(units) &&
+                        v.storeUnits().equals(ListWithSuggestion.create(units, 0)) &&
                         v.locations().equals(locations) &&
-                        v.currentLocationListPosition().get() == 0 &&
-                        v.currentStoreUnitListPosition() == 0
+                        v.currentLocationListPosition().get() == 0
 
         );
         verify(repository).getFood(food);

@@ -40,10 +40,8 @@ class InMemoryFoodItemAddInteractorImpl implements FoodItemAddInteractor {
         return Observable.just(FoodItemAddData.create(
                 FoodForSelection.create(food.id(), "Banana"),
                 LocalDate.ofEpochDay(5),
-                LocationsForSelection.generate(),
-                1,
-                ScaledUnitsForSelection.generate(),
-                1));
+                ListWithSuggestion.create(LocationsForSelection.generate(), 1),
+                ListWithSuggestion.create(ScaledUnitsForSelection.generate(), 1)));
     }
 
     @Override

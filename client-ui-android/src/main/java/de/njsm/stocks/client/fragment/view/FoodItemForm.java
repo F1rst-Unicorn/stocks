@@ -23,13 +23,13 @@ package de.njsm.stocks.client.fragment.view;
 
 import android.view.View;
 import android.widget.ArrayAdapter;
+import de.njsm.stocks.client.business.entities.ListWithSuggestion;
 import de.njsm.stocks.client.business.entities.LocationForSelection;
 import de.njsm.stocks.client.business.entities.ScaledUnitForSelection;
 import de.njsm.stocks.client.presenter.UnitAmountRenderStrategy;
 import de.njsm.stocks.client.ui.R;
 
 import java.time.LocalDate;
-import java.util.List;
 
 import static java.util.stream.Collectors.toList;
 
@@ -59,23 +59,23 @@ public class FoodItemForm {
         unit.setAdapter(unitAdapter);
     }
 
-    public void showLocations(List<LocationForSelection> locations, int predictedLocationListPosition) {
+    public void showLocations(ListWithSuggestion<LocationForSelection> locations) {
         locationAdapter.clear();
-        locationAdapter.addAll(locations.stream()
+        locationAdapter.addAll(locations.list().stream()
                 .map(v -> new EntityStringDisplayWrapper<>(v, LocationForSelection::name))
                 .collect(toList()));
         locationAdapter.notifyDataSetChanged();
-        location.setSelection(predictedLocationListPosition);
+        location.setSelection(locations.suggestion());
     }
 
-    public void showUnits(List<ScaledUnitForSelection> scaledUnits, int predictedScaledUnit) {
+    public void showUnits(ListWithSuggestion<ScaledUnitForSelection> scaledUnits) {
         unitAdapter.clear();
         UnitAmountRenderStrategy renderStrategy = new UnitAmountRenderStrategy();
-        unitAdapter.addAll(scaledUnits.stream()
+        unitAdapter.addAll(scaledUnits.list().stream()
                 .map(v -> new EntityStringDisplayWrapper<>(v, renderStrategy::render))
                 .collect(toList()));
         unitAdapter.notifyDataSetChanged();
-        unit.setSelection(predictedScaledUnit);
+        unit.setSelection(scaledUnits.suggestion());
     }
 
     public void setPredictionDate(LocalDate predictedEatBy) {

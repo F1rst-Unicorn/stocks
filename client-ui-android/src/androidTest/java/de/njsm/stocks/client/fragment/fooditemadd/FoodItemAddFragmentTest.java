@@ -45,7 +45,6 @@ import org.junit.runner.RunWith;
 
 import javax.inject.Inject;
 import java.time.LocalDate;
-import java.util.Collections;
 
 import static androidx.test.espresso.Espresso.onData;
 import static androidx.test.espresso.Espresso.onView;
@@ -108,9 +107,9 @@ public class FoodItemAddFragmentTest {
         onView(allOf(isDescendantOfA(withId(R.id.fragment_food_item_form_date)), withId(R.id.date_conflict_date_picker))).check(matches(
                 allOf(isDisplayed(), matchesDate(form.predictedEatBy()))));
         onView(allOf(isDescendantOfA(withId(R.id.fragment_food_item_form_location)), withId(R.id.spinner_conflict_spinner))).check(matches(
-                allOf(isDisplayed(), hasDescendant(withText(form.locations().get(form.predictedLocationListPosition()).name())))));
+                allOf(isDisplayed(), hasDescendant(withText(form.locations().suggested().name())))));
         onView(allOf(isDescendantOfA(withId(R.id.fragment_food_item_form_unit)), withId(R.id.spinner_conflict_spinner))).check(matches(
-                allOf(isDisplayed(), hasDescendant(withText(unitAmountRenderStrategy.render(form.scaledUnits().get(form.predictedScaledUnit())))))));
+                allOf(isDisplayed(), hasDescendant(withText(unitAmountRenderStrategy.render(form.scaledUnits().suggested()))))));
     }
 
     @Test
@@ -169,10 +168,8 @@ public class FoodItemAddFragmentTest {
         prefilledFormData.onNext(FoodItemAddData.create(
                 FoodForSelection.create(food.id(), "Banana"),
                 LocalDate.ofEpochDay(5),
-                Collections.emptyList(),
-                0,
-                ScaledUnitsForSelection.generate(),
-                1));
+                ListWithSuggestion.empty(),
+                ListWithSuggestion.create(ScaledUnitsForSelection.generate(), 1)));
 
         onView(withId(R.id.fragment_food_item_form_unit)).check(matches(isDisplayed()));
 
@@ -204,9 +201,7 @@ public class FoodItemAddFragmentTest {
         return FoodItemAddData.create(
                 FoodForSelection.create(food.id(), "Banana"),
                 LocalDate.ofEpochDay(5),
-                LocationsForSelection.generate(),
-                1,
-                ScaledUnitsForSelection.generate(),
-                1);
+                ListWithSuggestion.create(LocationsForSelection.generate(), 1),
+                ListWithSuggestion.create(ScaledUnitsForSelection.generate(), 1));
     }
 }

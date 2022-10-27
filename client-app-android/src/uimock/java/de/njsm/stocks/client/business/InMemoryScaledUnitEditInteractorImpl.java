@@ -46,8 +46,7 @@ class InMemoryScaledUnitEditInteractorImpl implements ScaledUnitEditInteractor {
             return ScaledUnitEditingFormData.create(
                     id.id(),
                     item.scale(),
-                    UnitsForSelection.generate(),
-                    UnitsForSelection.generate().size() / 2
+                    ListWithSuggestion.create(UnitsForSelection.generate(), UnitsForSelection.generate().size() / 2)
             );
         }).toObservable();
     }

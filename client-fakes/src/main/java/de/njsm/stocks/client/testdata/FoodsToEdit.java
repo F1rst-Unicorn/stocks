@@ -23,6 +23,7 @@ package de.njsm.stocks.client.testdata;
 
 
 import de.njsm.stocks.client.business.entities.FoodEditingFormData;
+import de.njsm.stocks.client.business.entities.ListWithSuggestion;
 import de.njsm.stocks.client.business.entities.LocationForSelection;
 import de.njsm.stocks.client.business.entities.ScaledUnitForSelection;
 
@@ -41,8 +42,7 @@ public class FoodsToEdit {
                 Period.ofDays(4),
                 locations,
                 Optional.of(locations.size() / 2),
-                units,
-                units.size() / 2,
+                ListWithSuggestion.create(units, units.size() / 2),
                 "They are yellow"
         );
     }

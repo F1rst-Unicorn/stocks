@@ -56,9 +56,9 @@ class FoodEditInteractorImpl implements FoodEditInteractor {
                 repository.getScaledUnitsForSelection(),
                 repository.getLocations(),
                 (food, units, locations) -> {
-                    int unitPosition = ListSearcher.findFirst(units, food.storeUnit());
+                    ListWithSuggestion<ScaledUnitForSelection> unitPosition = ListSearcher.findFirstSuggestion(units, food::storeUnit);
                     Optional<Integer> locationPosition = food.location().map(v -> ListSearcher.findFirst(locations, v));
-                    return FoodEditingFormData.create(food.id(), food.name(), food.expirationOffset(), locations, locationPosition, units, unitPosition, food.description());
+                    return FoodEditingFormData.create(food.id(), food.name(), food.expirationOffset(), locations, locationPosition, unitPosition, food.description());
         });
     }
 

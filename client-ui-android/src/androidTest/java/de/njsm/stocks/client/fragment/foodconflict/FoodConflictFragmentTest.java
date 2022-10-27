@@ -105,7 +105,7 @@ public class FoodConflictFragmentTest implements TestUtility {
         checkTextField(R.id.fragment_food_form_name, data.name());
         checkTextField(R.id.fragment_food_form_expiration_offset, data.expirationOffset().map(v -> String.valueOf(v.getDays())));
         checkSpinner(R.id.fragment_food_form_location, data.availableLocations().get(data.currentLocationListPosition().orElse(0)).name(), data.location().map(v -> v.map(LocationForListing::name).orElse("---")));
-        checkSpinner(R.id.fragment_food_form_store_unit, unitRenderStrategy.render(data.availableStoreUnits().get(data.currentScaledUnitListPosition())), data.storeUnit().map(unitRenderStrategy::render));
+        checkSpinner(R.id.fragment_food_form_store_unit, unitRenderStrategy.render(data.availableStoreUnits().suggested()), data.storeUnit().map(unitRenderStrategy::render));
         checkMergingTextField(R.id.fragment_food_form_description, data.description());
     }
 

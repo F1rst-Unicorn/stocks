@@ -76,15 +76,16 @@ class FoodItemAddInteractorImpl implements FoodItemAddInteractor {
             }
         });
         Observable<Id<Location>> predictedLocation = foodObservable.flatMapMaybe(food -> food.location().map(Maybe::just)
-                .orElseGet(() -> repository.getLocationWithMostItemsOfType(food)));
+                .orElseGet(() -> Maybe.concat(repository.getLocationWithMostItemsOfType(food), Maybe.just(() -> -1))
+                        .firstElement()));
 
         Observable<List<LocationForSelection>> locations = repository.getLocations();
         Observable<List<ScaledUnitForSelection>> units = repository.getUnits();
 
         return Observable.zip(foodObservable, locations, units, predictedEatBy, predictedLocation, (f, l, u, eatBy, location) -> {
-            int locationPosition = ListSearcher.searchFirst(l, location).orElse(0);
-            int unitPosition = ListSearcher.findFirst(u, f.unit());
-            return FoodItemAddData.create(f.toSelection(), localiser.toLocalDate(eatBy), l, locationPosition, u, unitPosition);
+            ListWithSuggestion<LocationForSelection> locationWithSuggestion = ListSearcher.searchFirstSuggested(l, location);
+            ListWithSuggestion<ScaledUnitForSelection> unitWithSuggestion = ListSearcher.findFirstSuggestion(u, f.unit());
+            return FoodItemAddData.create(f.toSelection(), localiser.toLocalDate(eatBy), locationWithSuggestion, unitWithSuggestion);
         });
     }
 

@@ -19,20 +19,18 @@
  *
  */
 
-package de.njsm.stocks.client.business.entities;
+package de.njsm.stocks.client.business;
 
-import com.google.auto.value.AutoValue;
+import io.reactivex.rxjava3.core.Maybe;
+import org.junit.jupiter.api.Test;
 
-import java.math.BigDecimal;
+public class ReactiveLearningTest {
 
-@AutoValue
-public abstract class ScaledUnitEditingFormData implements Id<ScaledUnit> {
-
-    public static ScaledUnitEditingFormData create(int id, BigDecimal scale, ListWithSuggestion<UnitForSelection> units) {
-        return new AutoValue_ScaledUnitEditingFormData(id, scale, units);
+    @Test
+    void emptyMaybePreventsYielding() {
+        Maybe.empty().zipWith(Maybe.just("data"), (__, v) -> v)
+                .test()
+                .assertComplete()
+                .assertNoValues();
     }
-
-    public abstract BigDecimal scale();
-
-    public abstract ListWithSuggestion<UnitForSelection> availableUnits();
 }

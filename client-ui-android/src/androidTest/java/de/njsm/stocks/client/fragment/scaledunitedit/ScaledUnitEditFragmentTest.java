@@ -95,7 +95,7 @@ public class ScaledUnitEditFragmentTest {
                 .check(matches(withText(dataToEdit.scale().toPlainString())));
         onView(withId(R.id.fragment_scaled_unit_form_unit)).check(matches(allOf(
                 isDisplayed(),
-                hasDescendant(withText(units.get(dataToEdit.currentUnitListPosition()).name()))
+                hasDescendant(withText(units.get(dataToEdit.availableUnits().suggestion()).name()))
         )));
 
         onView(withId(R.id.fragment_scaled_unit_form_unit)).perform(click());

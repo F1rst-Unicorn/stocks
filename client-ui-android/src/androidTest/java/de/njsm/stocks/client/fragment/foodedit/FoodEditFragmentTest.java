@@ -105,7 +105,7 @@ public class FoodEditFragmentTest {
                 hasDescendant(withText(dataToEdit.locations().get(dataToEdit.currentLocationListPosition().get()).name())))));
         onView(withId(R.id.fragment_food_form_store_unit)).check(matches(allOf(
                 isDisplayed(),
-                hasDescendant(withText(renderStrategy.render(dataToEdit.storeUnits().get(dataToEdit.currentStoreUnitListPosition()))))
+                hasDescendant(withText(renderStrategy.render(dataToEdit.storeUnits().suggested())))
         )));
         onView(allOf(
                 isDescendantOfA(withId(R.id.fragment_food_form_description)),
@@ -127,7 +127,7 @@ public class FoodEditFragmentTest {
             onData(anything()).atPosition(index).check(matches(withText(renderStrategy.render(unitListEntry))));
             index++;
         }
-        onData(anything()).atPosition(dataToEdit.currentStoreUnitListPosition()).perform(click());
+        onData(anything()).atPosition(dataToEdit.storeUnits().suggestion()).perform(click());
 
         verify(navigator).getId(any());
     }

@@ -48,11 +48,9 @@ public abstract class FoodEditConflictFormData implements Id<Food> {
 
     public abstract List<LocationForSelection> availableLocations();
 
-    public abstract List<ScaledUnitForSelection> availableStoreUnits();
+    public abstract ListWithSuggestion<ScaledUnitForSelection> availableStoreUnits();
 
     public abstract Optional<Integer> currentLocationListPosition();
-
-    public abstract int currentScaledUnitListPosition();
 
     public boolean hasAnyConflict() {
         return name().needsHandling() ||
@@ -72,7 +70,8 @@ public abstract class FoodEditConflictFormData implements Id<Food> {
             List<ScaledUnitForSelection> scaledUnits) {
 
         Optional<Integer> selectedLocationPosition = ListSearcher.searchFirstOptional(locations, food.location());
-        int selectedScaledUnitPosition = ListSearcher.searchFirst(scaledUnits, food.storeUnit()).orElse(0);
+        var selectedScaledUnitPosition = ListWithSuggestion.create(scaledUnits,
+                ListSearcher.searchFirst(scaledUnits, food.storeUnit()).orElse(0));
 
         return new AutoValue_FoodEditConflictFormData(food.id(), food.errorId(), food.originalVersion(),
                 food.name(),
@@ -81,8 +80,7 @@ public abstract class FoodEditConflictFormData implements Id<Food> {
                 food.storeUnit(),
                 food.description(),
                 locations,
-                scaledUnits,
-                selectedLocationPosition,
-                selectedScaledUnitPosition);
+                selectedScaledUnitPosition,
+                selectedLocationPosition);
     }
 }

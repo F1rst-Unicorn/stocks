@@ -103,8 +103,8 @@ public class ScaledUnitForm {
 
     public void showScaledUnit(ScaledUnitEditingFormData scaledUnitEditingFormData) {
         scaleField.setEditorContent(scaledUnitEditingFormData.scale().toPlainString());
-        showUnits(scaledUnitEditingFormData.availableUnits());
-        unitField.setSelection(scaledUnitEditingFormData.currentUnitListPosition());
+        showUnits(scaledUnitEditingFormData.availableUnits().list());
+        unitField.setSelection(scaledUnitEditingFormData.availableUnits().suggestion());
     }
 
     public void showScale(ConflictData<BigDecimal> scale) {

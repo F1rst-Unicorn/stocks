@@ -76,8 +76,8 @@ public class FoodItemAddFragment extends BottomToolbarFragment {
             return;
         }
 
-        form.showLocations(foodItemAddData.locations(), foodItemAddData.predictedLocationListPosition());
-        form.showUnits(foodItemAddData.scaledUnits(), foodItemAddData.predictedScaledUnit());
+        form.showLocations(foodItemAddData.locations());
+        form.showUnits(foodItemAddData.scaledUnits());
         form.setPredictionDate(foodItemAddData.predictedEatBy());
         requireActivity().setTitle(String.format(getString(R.string.title_add_item),
                         foodItemAddData.food().name()));

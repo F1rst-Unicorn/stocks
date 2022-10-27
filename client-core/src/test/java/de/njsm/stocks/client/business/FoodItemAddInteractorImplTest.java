@@ -97,10 +97,8 @@ class FoodItemAddInteractorImplTest {
 
         actual.test().assertValue(FoodItemAddData.create(food.toSelection(),
                 localiser.toLocalDate(clock.get().plus(food.expirationOffset())),
-                locations,
-                1,
-                units,
-                1
+                ListWithSuggestion.create(locations, 1),
+                ListWithSuggestion.create(units, 1)
         ));
     }
 
@@ -118,10 +116,27 @@ class FoodItemAddInteractorImplTest {
 
         actual.test().assertValue(FoodItemAddData.create(food.toSelection(),
                 localiser.toLocalDate(clock.get().plus(food.expirationOffset())),
-                locations,
-                1,
-                units,
-                1
+                ListWithSuggestion.create(locations, 1),
+                ListWithSuggestion.create(units, 1)
+        ));
+    }
+
+    @Test
+    void missingLocationPredictorsDontBlockResult() {
+        FoodForItemCreation food = FoodForItemCreation.create(1, "Banana", Period.ofDays(10), Optional.empty(), () -> 4);
+        List<LocationForSelection> locations = getLocations();
+        List<ScaledUnitForSelection> units = getUnits();
+        when(repository.getFood(equalBy(food))).thenReturn(Observable.just(food));
+        when(repository.getLocations()).thenReturn(Observable.just(locations));
+        when(repository.getUnits()).thenReturn(Observable.just(units));
+        when(repository.getLocationWithMostItemsOfType(food)).thenReturn(Maybe.empty());
+
+        Observable<FoodItemAddData> actual = uut.getFormData(food);
+
+        actual.test().assertValue(FoodItemAddData.create(food.toSelection(),
+                localiser.toLocalDate(clock.get().plus(food.expirationOffset())),
+                ListWithSuggestion.create(locations, 0),
+                ListWithSuggestion.create(units, 1)
         ));
     }
 
@@ -140,10 +155,8 @@ class FoodItemAddInteractorImplTest {
 
         actual.test().assertValue(FoodItemAddData.create(food.toSelection(),
                 localiser.toLocalDate(Instant.EPOCH.plus(1, ChronoUnit.DAYS)),
-                locations,
-                1,
-                units,
-                1
+                ListWithSuggestion.create(locations, 1),
+                ListWithSuggestion.create(units, 1)
         ));
     }
 
@@ -162,10 +175,8 @@ class FoodItemAddInteractorImplTest {
 
         actual.test().assertValue(FoodItemAddData.create(food.toSelection(),
                 localiser.toLocalDate(Instant.EPOCH.plus(2, ChronoUnit.DAYS)),
-                locations,
-                1,
-                units,
-                1
+                ListWithSuggestion.create(locations, 1),
+                ListWithSuggestion.create(units, 1)
         ));
     }
 
@@ -184,10 +195,8 @@ class FoodItemAddInteractorImplTest {
 
         actual.test().assertValue(FoodItemAddData.create(food.toSelection(),
                 localiser.toLocalDate(Instant.EPOCH),
-                locations,
-                1,
-                units,
-                1
+                ListWithSuggestion.create(locations, 1),
+                ListWithSuggestion.create(units, 1)
         ));
     }
 

@@ -25,7 +25,6 @@ package de.njsm.stocks.client.business.entities;
 import com.google.auto.value.AutoValue;
 
 import java.time.LocalDate;
-import java.util.List;
 
 @AutoValue
 public abstract class FoodItemAddData {
@@ -34,15 +33,11 @@ public abstract class FoodItemAddData {
 
     public abstract LocalDate predictedEatBy();
 
-    public abstract List<LocationForSelection> locations();
+    public abstract ListWithSuggestion<LocationForSelection> locations();
 
-    public abstract int predictedLocationListPosition();
+    public abstract ListWithSuggestion<ScaledUnitForSelection> scaledUnits();
 
-    public abstract List<ScaledUnitForSelection> scaledUnits();
-
-    public abstract int predictedScaledUnit();
-
-    public static FoodItemAddData create(FoodForSelection food, LocalDate predictedEatBy, List<LocationForSelection> locations, int predictedLocationListPosition, List<ScaledUnitForSelection> units, int predictedScaledUnit) {
-        return new AutoValue_FoodItemAddData(food, predictedEatBy, locations, predictedLocationListPosition, units, predictedScaledUnit);
+    public static FoodItemAddData create(FoodForSelection food, LocalDate predictedEatBy, ListWithSuggestion<LocationForSelection> locations, ListWithSuggestion<ScaledUnitForSelection> units) {
+        return new AutoValue_FoodItemAddData(food, predictedEatBy, locations, units);
     }
 }

@@ -84,8 +84,7 @@ class ScaledUnitEditInteractorImplTest {
         actual.test().awaitCount(1).assertNoErrors().assertValue(v ->
                 v.id() == scaledUnit.id() &&
                 v.scale().compareTo(scaledUnit.scale()) == 0 &&
-                v.availableUnits().equals(units) &&
-                v.currentUnitListPosition() == 0
+                v.availableUnits().equals(ListWithSuggestion.create(units, 0))
         );
         verify(repository).getScaledUnit(scaledUnit);
         verify(repository).getUnitsForSelection();

@@ -22,6 +22,7 @@
 package de.njsm.stocks.client.testdata;
 
 
+import de.njsm.stocks.client.business.entities.ListWithSuggestion;
 import de.njsm.stocks.client.business.entities.ScaledUnitEditingFormData;
 import de.njsm.stocks.client.business.entities.UnitForSelection;
 
@@ -32,6 +33,7 @@ public class ScaledUnitsToEdit {
 
     public static ScaledUnitEditingFormData generate() {
         List<UnitForSelection> units = UnitsForSelection.generate();
-        return ScaledUnitEditingFormData.create(2, BigDecimal.ONE, units, units.size() / 2);
+        ListWithSuggestion<UnitForSelection> list = ListWithSuggestion.create(units, units.size() / 2);
+        return ScaledUnitEditingFormData.create(2, BigDecimal.ONE, list);
     }
 }

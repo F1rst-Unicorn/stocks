@@ -23,26 +23,34 @@ package de.njsm.stocks.client.business.entities;
 
 import com.google.auto.value.AutoValue;
 
-import java.time.Period;
 import java.util.List;
-import java.util.Optional;
+
+import static java.util.Collections.emptyList;
 
 @AutoValue
-public abstract class FoodEditingFormData implements Id<Food> {
+public abstract class ListWithSuggestion<T> {
 
-    public abstract String name();
+    public abstract List<T> list();
 
-    public abstract Period expirationOffset();
+    public abstract int suggestion();
 
-    public abstract List<LocationForSelection> locations();
+    public T suggested() {
+        return list().get(suggestion());
+    }
 
-    public abstract Optional<Integer> currentLocationListPosition();
+    public boolean isEmpty() {
+        return list().isEmpty();
+    }
 
-    public abstract ListWithSuggestion<ScaledUnitForSelection> storeUnits();
+    public static <T> ListWithSuggestion<T> create(List<T> list, int suggestion) {
+        if (list.isEmpty() && suggestion == 0)
+            return empty();
+        if (suggestion < 0 || list.size() <= suggestion)
+            throw new IndexOutOfBoundsException("index " + suggestion + ", size " + list.size());
+        return new AutoValue_ListWithSuggestion<>(list, suggestion);
+    }
 
-    public abstract String description();
-
-    public static FoodEditingFormData create(int id, String name, Period expirationOffset, List<LocationForSelection> locations, Optional<Integer> currentLocationListPosition, ListWithSuggestion<ScaledUnitForSelection> storeUnits, String description) {
-        return new AutoValue_FoodEditingFormData(id, name, expirationOffset, locations, currentLocationListPosition, storeUnits, description);
+    public static <T> ListWithSuggestion<T> empty() {
+        return new AutoValue_ListWithSuggestion<>(emptyList(), 0);
     }
 }

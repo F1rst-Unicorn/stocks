@@ -23,6 +23,7 @@ package de.njsm.stocks.client.business;
 
 import de.njsm.stocks.client.business.entities.Entity;
 import de.njsm.stocks.client.business.entities.Id;
+import de.njsm.stocks.client.business.entities.ListWithSuggestion;
 import de.njsm.stocks.client.business.entities.conflict.ConflictData;
 
 import java.util.List;
@@ -30,6 +31,15 @@ import java.util.Optional;
 import java.util.function.Predicate;
 
 public class ListSearcher {
+
+    public static <E extends Entity<E>, I extends Id<E>>
+    Optional<Integer> searchFirstOptional(List<? extends I> list,
+                                          ConflictData<? extends Optional<? extends I>> key) {
+        return key.suggestedValue().flatMap(v -> searchFirst(list, v.id()))
+                .or(() -> key.local().flatMap(v -> searchFirst(list, v.id())))
+                .or(() -> key.remote().flatMap(v -> searchFirst(list, v.id())))
+                .or(() -> key.original().flatMap(v -> searchFirst(list, v.id())));
+    }
 
     private static <E extends Entity<E>, T extends Id<E>>
     Optional<Integer> searchFirst(List<T> list, int id) {
@@ -47,15 +57,6 @@ public class ListSearcher {
     }
 
     public static <E extends Entity<E>, I extends Id<E>>
-    Optional<Integer> searchFirstOptional(List<? extends I> list,
-                                          ConflictData<? extends Optional<? extends I>> key) {
-        return key.suggestedValue().flatMap(v -> searchFirst(list, v.id()))
-                .or(() -> key.local().flatMap(v -> searchFirst(list, v.id())))
-                .or(() -> key.remote().flatMap(v -> searchFirst(list, v.id())))
-                .or(() -> key.original().flatMap(v -> searchFirst(list, v.id())));
-    }
-
-    public static <E extends Entity<E>, I extends Id<E>>
     Optional<Integer> searchFirst(List<? extends I> list, ConflictData<? extends I> key) {
         return searchFirst(list, key.suggestedValue().id())
                 .or(() -> searchFirst(list, key.local().id()))
@@ -64,17 +65,22 @@ public class ListSearcher {
     }
 
     public static <E extends Entity<E>, T extends Id<E>>
+    ListWithSuggestion<T> findFirstSuggestion(List<T> list, Id<E> id) {
+        return ListWithSuggestion.create(list, findFirst(list, id));
+    }
+
+    public static <E extends Entity<E>, T extends Id<E>>
     int findFirst(List<T> list, int id) {
         return searchFirst(list, v -> v.id() == id).orElseThrow(() -> new IllegalStateException("No matching item found"));
     }
 
-    public static <E extends Entity<E>, T extends Id<E>>
+    private static <E extends Entity<E>, T extends Id<E>>
     int findFirst(List<T> list, Id<E> id) {
         return searchFirst(list, v -> v.id() == id.id()).orElseThrow(() -> new IllegalStateException("No matching item found"));
     }
 
     public static <E extends Entity<E>, T extends Id<E>>
-    Optional<Integer> searchFirst(List<T> list, Id<E> id) {
-        return searchFirst(list, v -> v.id() == id.id());
+    ListWithSuggestion<T> searchFirstSuggested(List<T> list, Id<E> id) {
+        return ListWithSuggestion.create(list, searchFirst(list, v -> v.id() == id.id()).orElse(0));
     }
 }

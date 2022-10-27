@@ -25,10 +25,7 @@ import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.ArrayAdapter;
 import com.google.android.material.textfield.TextInputLayout;
-import de.njsm.stocks.client.business.entities.LocationForListing;
-import de.njsm.stocks.client.business.entities.LocationForSelection;
-import de.njsm.stocks.client.business.entities.ScaledUnitForListing;
-import de.njsm.stocks.client.business.entities.ScaledUnitForSelection;
+import de.njsm.stocks.client.business.entities.*;
 import de.njsm.stocks.client.business.entities.conflict.ConflictData;
 import de.njsm.stocks.client.presenter.UnitAmountRenderStrategy;
 import de.njsm.stocks.client.ui.R;
@@ -146,9 +143,9 @@ public class FoodForm {
         unitAdapter.notifyDataSetChanged();
     }
 
-    public void showUnits(List<ScaledUnitForSelection> storeUnits, int currentStoreUnitListPosition) {
-        showUnits(storeUnits);
-        storeUnitField.setSelection(currentStoreUnitListPosition);
+    public void showUnits(ListWithSuggestion<ScaledUnitForSelection> storeUnits) {
+        showUnits(storeUnits.list());
+        storeUnitField.setSelection(storeUnits.suggestion());
     }
 
     public boolean maySubmit() {

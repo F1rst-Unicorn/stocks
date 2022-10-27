@@ -65,7 +65,7 @@ public class FoodEditFragment extends BottomToolbarFragment {
         form.setName(foodEditingFormData.name());
         form.setExpirationOffset(foodEditingFormData.expirationOffset());
         form.showLocations(foodEditingFormData.locations(), foodEditingFormData.currentLocationListPosition());
-        form.showUnits(foodEditingFormData.storeUnits(), foodEditingFormData.currentStoreUnitListPosition());
+        form.showUnits(foodEditingFormData.storeUnits());
         form.setDescription(foodEditingFormData.description());
     }
 

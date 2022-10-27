@@ -52,8 +52,7 @@ class InMemoryFoodEditInteractorImpl implements FoodEditInteractor {
                     Period.ofDays(3),
                     LocationsForSelection.generate(),
                     Optional.of(LocationsForSelection.generate().size() / 2),
-                    ScaledUnitsForSelection.generate(),
-                    ScaledUnitsForSelection.generate().size() / 2,
+                    ListWithSuggestion.create(ScaledUnitsForSelection.generate(), ScaledUnitsForSelection.generate().size() / 2),
                     "This is a fixed description"
             );
         }).toObservable();
