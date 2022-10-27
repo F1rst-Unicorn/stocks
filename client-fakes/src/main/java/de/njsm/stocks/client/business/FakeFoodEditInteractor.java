@@ -24,7 +24,7 @@ package de.njsm.stocks.client.business;
 import de.njsm.stocks.client.business.entities.Food;
 import de.njsm.stocks.client.business.entities.FoodEditingFormData;
 import de.njsm.stocks.client.business.entities.FoodToEdit;
-import de.njsm.stocks.client.business.entities.Identifiable;
+import de.njsm.stocks.client.business.entities.Id;
 import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.subjects.BehaviorSubject;
 
@@ -41,7 +41,7 @@ public class FakeFoodEditInteractor implements FoodEditInteractor {
     }
 
     @Override
-    public Observable<FoodEditingFormData> getFormData(Identifiable<Food> id) {
+    public Observable<FoodEditingFormData> getFormData(Id<Food> id) {
         return data;
     }
 

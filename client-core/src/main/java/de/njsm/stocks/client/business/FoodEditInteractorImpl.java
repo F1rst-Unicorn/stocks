@@ -50,7 +50,7 @@ class FoodEditInteractorImpl implements FoodEditInteractor {
     }
 
     @Override
-    public Observable<FoodEditingFormData> getFormData(Identifiable<Food> id) {
+    public Observable<FoodEditingFormData> getFormData(Id<Food> id) {
         return Observable.zip(
                 repository.getFood(id),
                 repository.getScaledUnitsForSelection(),

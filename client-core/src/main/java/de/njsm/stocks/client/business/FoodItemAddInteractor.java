@@ -24,12 +24,12 @@ package de.njsm.stocks.client.business;
 import de.njsm.stocks.client.business.entities.Food;
 import de.njsm.stocks.client.business.entities.FoodItemAddData;
 import de.njsm.stocks.client.business.entities.FoodItemForm;
-import de.njsm.stocks.client.business.entities.Identifiable;
+import de.njsm.stocks.client.business.entities.Id;
 import io.reactivex.rxjava3.core.Observable;
 
 public interface FoodItemAddInteractor {
 
-    Observable<FoodItemAddData> getFormData(Identifiable<Food> food);
+    Observable<FoodItemAddData> getFormData(Id<Food> food);
 
     void add(FoodItemForm item);
 }

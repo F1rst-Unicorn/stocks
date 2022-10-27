@@ -24,7 +24,7 @@ package de.njsm.stocks.client.database;
 import com.google.auto.value.AutoValue;
 import de.njsm.stocks.client.business.entities.FoodItem;
 import de.njsm.stocks.client.business.entities.FoodItemForListing;
-import de.njsm.stocks.client.business.entities.Identifiable;
+import de.njsm.stocks.client.business.entities.Id;
 import de.njsm.stocks.client.business.entities.StoredAmount;
 
 import java.math.BigDecimal;
@@ -32,7 +32,7 @@ import java.time.Instant;
 import java.time.ZoneId;
 
 @AutoValue
-public abstract class FoodItemForListingData implements Identifiable<FoodItem> {
+public abstract class FoodItemForListingData implements Id<FoodItem> {
 
     public abstract BigDecimal amount();
 

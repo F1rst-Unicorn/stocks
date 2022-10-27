@@ -39,7 +39,7 @@ class InMemoryUnitEditInteractorImpl implements UnitEditInteractor {
     }
 
     @Override
-    public Observable<UnitToEdit> get(Identifiable<Unit> id) {
+    public Observable<UnitToEdit> get(Id<Unit> id) {
         return data.firstElement().map(list -> {
             UnitForListing item = list.stream().filter(v -> v.id() == id.id()).findAny().get();
             return UnitToEdit.builder()

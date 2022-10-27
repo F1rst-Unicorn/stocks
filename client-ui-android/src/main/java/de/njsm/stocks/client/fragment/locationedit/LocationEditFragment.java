@@ -26,7 +26,7 @@ import android.view.*;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.ViewModelProvider;
-import de.njsm.stocks.client.business.entities.Identifiable;
+import de.njsm.stocks.client.business.entities.Id;
 import de.njsm.stocks.client.business.entities.Location;
 import de.njsm.stocks.client.business.entities.LocationToEdit;
 import de.njsm.stocks.client.fragment.BottomToolbarFragment;
@@ -45,7 +45,7 @@ public class LocationEditFragment extends BottomToolbarFragment {
 
     private LocationForm form;
 
-    private Identifiable<Location> id;
+    private Id<Location> id;
 
     @Nullable
     @Override

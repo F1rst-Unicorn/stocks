@@ -32,7 +32,7 @@ public interface LocationRepository extends EntityDeleteRepository<Location> {
 
     Observable<List<LocationForSelection>> getLocationsForSelection();
 
-    Observable<LocationToEdit> getLocationForEditing(Identifiable<Location> location);
+    Observable<LocationToEdit> getLocationForEditing(Id<Location> location);
 
-    LocationForEditing getCurrentLocationBeforeEditing(Identifiable<Location> location);
+    LocationForEditing getCurrentLocationBeforeEditing(Id<Location> location);
 }

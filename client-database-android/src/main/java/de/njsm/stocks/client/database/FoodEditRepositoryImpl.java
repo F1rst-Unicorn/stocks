@@ -47,7 +47,7 @@ class FoodEditRepositoryImpl implements FoodEditRepository {
     }
 
     @Override
-    public Observable<FoodToEdit> getFood(Identifiable<Food> food) {
+    public Observable<FoodToEdit> getFood(Id<Food> food) {
         return foodDao.getToEdit(food.id()).map(v ->
             FoodToEdit.create(
                     v.id(),
@@ -71,7 +71,7 @@ class FoodEditRepositoryImpl implements FoodEditRepository {
     }
 
     @Override
-    public FoodForEditing getFoodForSending(Identifiable<Food> editedFood) {
+    public FoodForEditing getFoodForSending(Id<Food> editedFood) {
         FoodDbEntity entity = foodDao.getForEditing(editedFood.id());
         return FoodForEditing.create(
                 entity.id(),

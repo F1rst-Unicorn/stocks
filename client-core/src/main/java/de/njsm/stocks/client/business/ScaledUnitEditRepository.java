@@ -28,9 +28,9 @@ import java.util.List;
 
 public interface ScaledUnitEditRepository {
 
-    Observable<ScaledUnitToEdit> getScaledUnit(Identifiable<ScaledUnit> id);
+    Observable<ScaledUnitToEdit> getScaledUnit(Id<ScaledUnit> id);
 
     Observable<List<UnitForSelection>> getUnitsForSelection();
 
-    ScaledUnitForEditing getScaledUnitForSending(Identifiable<ScaledUnit> id);
+    ScaledUnitForEditing getScaledUnitForSending(Id<ScaledUnit> id);
 }

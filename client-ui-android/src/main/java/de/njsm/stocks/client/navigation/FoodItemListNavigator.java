@@ -23,13 +23,13 @@ package de.njsm.stocks.client.navigation;
 
 import android.os.Bundle;
 import de.njsm.stocks.client.business.entities.Food;
-import de.njsm.stocks.client.business.entities.Identifiable;
+import de.njsm.stocks.client.business.entities.Id;
 
 public interface FoodItemListNavigator {
 
-    Identifiable<Food> getFoodId(Bundle args);
+    Id<Food> getFoodId(Bundle args);
 
-    void add(Identifiable<Food> id);
+    void add(Id<Food> id);
 
     void edit(int id);
 }

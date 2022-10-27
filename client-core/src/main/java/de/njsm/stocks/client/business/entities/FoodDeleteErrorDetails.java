@@ -24,7 +24,7 @@ package de.njsm.stocks.client.business.entities;
 import com.google.auto.value.AutoValue;
 
 @AutoValue
-public abstract class FoodDeleteErrorDetails implements ErrorDetails, Identifiable<Food> {
+public abstract class FoodDeleteErrorDetails implements ErrorDetails, Id<Food> {
 
     public abstract String name();
 

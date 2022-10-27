@@ -25,7 +25,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.LiveDataReactiveStreams;
 import androidx.lifecycle.ViewModel;
 import de.njsm.stocks.client.business.ScaledUnitEditInteractor;
-import de.njsm.stocks.client.business.entities.Identifiable;
+import de.njsm.stocks.client.business.entities.Id;
 import de.njsm.stocks.client.business.entities.ScaledUnit;
 import de.njsm.stocks.client.business.entities.ScaledUnitEditingFormData;
 import de.njsm.stocks.client.business.entities.ScaledUnitToEdit;
@@ -46,7 +46,7 @@ public class ScaledUnitEditViewModel extends ViewModel {
     }
 
 
-    public LiveData<ScaledUnitEditingFormData> getFormData(Identifiable<ScaledUnit> id) {
+    public LiveData<ScaledUnitEditingFormData> getFormData(Id<ScaledUnit> id) {
         return LiveDataReactiveStreams.fromPublisher(
                 getData(id).toFlowable(BackpressureStrategy.LATEST)
         );
@@ -56,7 +56,7 @@ public class ScaledUnitEditViewModel extends ViewModel {
         scaledUnitEditInteractor.edit(editedScaledUnit);
     }
 
-    private Observable<ScaledUnitEditingFormData> getData(Identifiable<ScaledUnit> id) {
+    private Observable<ScaledUnitEditingFormData> getData(Id<ScaledUnit> id) {
         if (data == null)
             data = scaledUnitEditInteractor.getFormData(id);
         return data;

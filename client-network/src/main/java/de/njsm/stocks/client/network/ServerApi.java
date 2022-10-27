@@ -151,4 +151,12 @@ public interface ServerApi {
     @DELETE("/v2/fooditem")
     Call<Response> deleteFoodItem(@Query("id") int id,
                                   @Query("version") int version);
+
+
+    @PUT("/v2/fooditem/edit")
+    Call<Response> editFoodItem(@Query("id") int id,
+                                @Query("version") int version,
+                                @Query("eatByDate") String eatBy,
+                                @Query("storedIn") int storedIn,
+                                @Query("unit") int unit);
 }

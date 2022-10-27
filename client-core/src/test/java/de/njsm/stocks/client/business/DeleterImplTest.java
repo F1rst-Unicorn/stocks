@@ -58,7 +58,7 @@ abstract class DeleterImplTest<E extends Entity<E>> {
 
     @Test
     void deletingQueuesTask() {
-        Identifiable<E> input = () -> 42;
+        Id<E> input = () -> 42;
 
         uut.delete(input);
 
@@ -70,7 +70,7 @@ abstract class DeleterImplTest<E extends Entity<E>> {
     @Test
     void deletingInBackgroundWorks() {
         int id = 42;
-        Identifiable<E> input = () -> id;
+        Id<E> input = () -> id;
         Versionable<E> outputToService = getNetworkData(id, 3);
         when(deleteRepository.getEntityForDeletion(input)).thenReturn(outputToService);
 
@@ -84,7 +84,7 @@ abstract class DeleterImplTest<E extends Entity<E>> {
     @Test
     void failingDeletionIsRecorded() {
         int id = 42;
-        Identifiable<E> input = () -> id;
+        Id<E> input = () -> id;
         Versionable<E> outputToService = getNetworkData(id, 3);
         when(deleteRepository.getEntityForDeletion(input)).thenReturn(outputToService);
         StatusCodeException exception = new StatusCodeException(StatusCode.DATABASE_UNREACHABLE);
@@ -101,7 +101,7 @@ abstract class DeleterImplTest<E extends Entity<E>> {
     @Test
     void failingDeletionWithSubsystemExceptionIsRecorded() {
         int id = 42;
-        Identifiable<E> input = () -> id;
+        Id<E> input = () -> id;
         Versionable<E> outputToService = getNetworkData(id, 3);
         when(deleteRepository.getEntityForDeletion(input)).thenReturn(outputToService);
         SubsystemException exception = new SubsystemException("test");
@@ -115,7 +115,7 @@ abstract class DeleterImplTest<E extends Entity<E>> {
         verifyRecorder(exception, outputToService);
     }
 
-    private void act(Identifiable<E> input) {
+    private void act(Id<E> input) {
         uut.delete(input);
         ArgumentCaptor<Job> captor = ArgumentCaptor.forClass(Job.class);
         verify(scheduler).schedule(captor.capture());

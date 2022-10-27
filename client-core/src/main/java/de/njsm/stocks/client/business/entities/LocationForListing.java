@@ -24,7 +24,7 @@ package de.njsm.stocks.client.business.entities;
 import com.google.auto.value.AutoValue;
 
 @AutoValue
-public abstract class LocationForListing implements Identifiable<Location> {
+public abstract class LocationForListing implements Id<Location> {
 
     public static LocationForListing create(int id, String name) {
         return new AutoValue_LocationForListing(id, name);

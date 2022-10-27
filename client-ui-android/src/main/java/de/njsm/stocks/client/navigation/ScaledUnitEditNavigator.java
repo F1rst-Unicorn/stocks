@@ -22,9 +22,9 @@
 package de.njsm.stocks.client.navigation;
 
 import android.os.Bundle;
-import de.njsm.stocks.client.business.entities.Identifiable;
+import de.njsm.stocks.client.business.entities.Id;
 import de.njsm.stocks.client.business.entities.ScaledUnit;
 
 public interface ScaledUnitEditNavigator extends Navigator {
-    Identifiable<ScaledUnit> getScaledUnitId(Bundle arguments);
+    Id<ScaledUnit> getScaledUnitId(Bundle arguments);
 }

@@ -22,9 +22,8 @@
 package de.njsm.stocks.client.navigation;
 
 import android.os.Bundle;
-import androidx.navigation.ActionOnlyNavDirections;
 import de.njsm.stocks.client.business.entities.Food;
-import de.njsm.stocks.client.business.entities.Identifiable;
+import de.njsm.stocks.client.business.entities.Id;
 import de.njsm.stocks.client.fragment.fooditemtabs.FoodItemTabsFragmentDirections;
 import org.junit.Before;
 import org.junit.Test;
@@ -46,7 +45,7 @@ public class FoodItemListNavigatorImplTest extends NavigationTest {
         int expected = 42;
         input.putInt("foodId", expected);
 
-        Identifiable<Food> actual = uut.getFoodId(input);
+        Id<Food> actual = uut.getFoodId(input);
 
         assertEquals(expected, actual.id());
     }

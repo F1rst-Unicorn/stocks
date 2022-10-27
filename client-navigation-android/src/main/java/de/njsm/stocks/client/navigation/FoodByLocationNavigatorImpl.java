@@ -22,7 +22,7 @@
 package de.njsm.stocks.client.navigation;
 
 import android.os.Bundle;
-import de.njsm.stocks.client.business.entities.Identifiable;
+import de.njsm.stocks.client.business.entities.Id;
 import de.njsm.stocks.client.business.entities.Location;
 import de.njsm.stocks.client.fragment.foodinlocation.FoodInLocationFragmentArgs;
 import de.njsm.stocks.client.fragment.foodinlocation.FoodInLocationFragmentDirections;
@@ -37,7 +37,7 @@ class FoodByLocationNavigatorImpl extends BaseNavigator implements FoodByLocatio
     }
 
     @Override
-    public Identifiable<Location> getId(Bundle arguments) {
+    public Id<Location> getId(Bundle arguments) {
         return FoodInLocationFragmentArgs.fromBundle(arguments)::getId;
     }
 

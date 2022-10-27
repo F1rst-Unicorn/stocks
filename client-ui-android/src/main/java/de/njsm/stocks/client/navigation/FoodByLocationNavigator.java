@@ -22,10 +22,10 @@
 package de.njsm.stocks.client.navigation;
 
 import android.os.Bundle;
-import de.njsm.stocks.client.business.entities.Identifiable;
+import de.njsm.stocks.client.business.entities.Id;
 import de.njsm.stocks.client.business.entities.Location;
 
 public interface FoodByLocationNavigator extends FoodNavigator {
 
-    Identifiable<Location> getId(Bundle arguments);
+    Id<Location> getId(Bundle arguments);
 }

@@ -46,7 +46,7 @@ class FoodListRepositoryImpl implements FoodListRepository {
     }
 
     @Override
-    public Observable<List<FoodForListingBaseData>> getFoodBy(Identifiable<Location> location) {
+    public Observable<List<FoodForListingBaseData>> getFoodBy(Id<Location> location) {
         return foodDao.getCurrentFoodBy(location.id());
     }
 
@@ -56,12 +56,12 @@ class FoodListRepositoryImpl implements FoodListRepository {
     }
 
     @Override
-    public Observable<List<StoredFoodAmount>> getFoodAmountsIn(Identifiable<Location> location) {
+    public Observable<List<StoredFoodAmount>> getFoodAmountsIn(Id<Location> location) {
         return foodDao.getAmountsStoredIn(location.id());
     }
 
     @Override
-    public Observable<LocationName> getLocationName(Identifiable<Location> location) {
+    public Observable<LocationName> getLocationName(Id<Location> location) {
         return locationDao.getCurrentLocation(location.id())
                 .map(v -> LocationName.create(v.name()));
     }

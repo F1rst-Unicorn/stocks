@@ -24,7 +24,7 @@ package de.njsm.stocks.client.business.entities;
 import com.google.auto.value.AutoValue;
 
 @AutoValue
-public abstract class UnitDeleteErrorDetails implements ErrorDetails, Identifiable<Unit>, UnitFields {
+public abstract class UnitDeleteErrorDetails implements ErrorDetails, Id<Unit>, UnitFields {
 
     public static UnitDeleteErrorDetails create(int id, String name, String abbreviation) {
         return new AutoValue_UnitDeleteErrorDetails(id, name, abbreviation);

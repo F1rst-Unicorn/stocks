@@ -23,7 +23,7 @@ package de.njsm.stocks.client.navigation;
 
 import android.os.Bundle;
 import de.njsm.stocks.client.business.entities.Food;
-import de.njsm.stocks.client.business.entities.Identifiable;
+import de.njsm.stocks.client.business.entities.Id;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -37,7 +37,7 @@ public class FoodEditNavigatorImplTest extends NavigationTest {
         int expected = 42;
         input.putInt("id", expected);
 
-        Identifiable<Food> actual = uut.getId(input);
+        Id<Food> actual = uut.getId(input);
 
         assertEquals(expected, actual.id());
     }

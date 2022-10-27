@@ -30,7 +30,7 @@ import java.util.List;
 import java.util.Optional;
 
 @AutoValue
-public abstract class FoodEditConflictFormData implements Identifiable<Food> {
+public abstract class FoodEditConflictFormData implements Id<Food> {
 
     public abstract int errorId();
 

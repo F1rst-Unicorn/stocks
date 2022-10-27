@@ -22,7 +22,7 @@
 package de.njsm.stocks.client.business;
 
 import de.njsm.stocks.client.business.entities.Entity;
-import de.njsm.stocks.client.business.entities.Identifiable;
+import de.njsm.stocks.client.business.entities.Id;
 import de.njsm.stocks.client.business.entities.conflict.ConflictData;
 
 import java.util.List;
@@ -31,7 +31,7 @@ import java.util.function.Predicate;
 
 public class ListSearcher {
 
-    private static <E extends Entity<E>, T extends Identifiable<E>>
+    private static <E extends Entity<E>, T extends Id<E>>
     Optional<Integer> searchFirst(List<T> list, int id) {
         return searchFirst(list, v -> v.id() == id);
     }
@@ -46,7 +46,7 @@ public class ListSearcher {
         return Optional.empty();
     }
 
-    public static <E extends Entity<E>, I extends Identifiable<E>>
+    public static <E extends Entity<E>, I extends Id<E>>
     Optional<Integer> searchFirstOptional(List<? extends I> list,
                                           ConflictData<? extends Optional<? extends I>> key) {
         return key.suggestedValue().flatMap(v -> searchFirst(list, v.id()))
@@ -55,7 +55,7 @@ public class ListSearcher {
                 .or(() -> key.original().flatMap(v -> searchFirst(list, v.id())));
     }
 
-    public static <E extends Entity<E>, I extends Identifiable<E>>
+    public static <E extends Entity<E>, I extends Id<E>>
     Optional<Integer> searchFirst(List<? extends I> list, ConflictData<? extends I> key) {
         return searchFirst(list, key.suggestedValue().id())
                 .or(() -> searchFirst(list, key.local().id()))
@@ -63,18 +63,18 @@ public class ListSearcher {
                 .or(() -> searchFirst(list, key.original().id()));
     }
 
-    public static <E extends Entity<E>, T extends Identifiable<E>>
+    public static <E extends Entity<E>, T extends Id<E>>
     int findFirst(List<T> list, int id) {
         return searchFirst(list, v -> v.id() == id).orElseThrow(() -> new IllegalStateException("No matching item found"));
     }
 
-    public static <E extends Entity<E>, T extends Identifiable<E>>
-    int findFirst(List<T> list, Identifiable<E> id) {
+    public static <E extends Entity<E>, T extends Id<E>>
+    int findFirst(List<T> list, Id<E> id) {
         return searchFirst(list, v -> v.id() == id.id()).orElseThrow(() -> new IllegalStateException("No matching item found"));
     }
 
-    public static <E extends Entity<E>, T extends Identifiable<E>>
-    Optional<Integer> searchFirst(List<T> list, Identifiable<E> id) {
+    public static <E extends Entity<E>, T extends Id<E>>
+    Optional<Integer> searchFirst(List<T> list, Id<E> id) {
         return searchFirst(list, v -> v.id() == id.id());
     }
 }

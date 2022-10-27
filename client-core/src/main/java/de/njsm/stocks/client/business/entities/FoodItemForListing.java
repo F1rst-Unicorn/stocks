@@ -26,7 +26,7 @@ import com.google.auto.value.AutoValue;
 import java.time.LocalDate;
 
 @AutoValue
-public abstract class FoodItemForListing implements Identifiable<FoodItem> {
+public abstract class FoodItemForListing implements Id<FoodItem> {
 
     public abstract StoredAmount amount();
 

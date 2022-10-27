@@ -21,7 +21,7 @@
 
 package de.njsm.stocks.client.business;
 
-import de.njsm.stocks.client.business.entities.Identifiable;
+import de.njsm.stocks.client.business.entities.Id;
 import de.njsm.stocks.client.business.entities.Location;
 import de.njsm.stocks.client.business.entities.LocationForListing;
 import de.njsm.stocks.client.testdata.LocationsForListing;
@@ -41,7 +41,7 @@ class InMemoryLocationDeleterImpl implements EntityDeleter<Location> {
     }
 
     @Override
-    public void delete(Identifiable<Location> location) {
+    public void delete(Id<Location> location) {
         data.firstElement().subscribe(list -> {
             List<LocationForListing> newList = new ArrayList<>(list);
             newList.removeIf(v -> v.id() == location.id());

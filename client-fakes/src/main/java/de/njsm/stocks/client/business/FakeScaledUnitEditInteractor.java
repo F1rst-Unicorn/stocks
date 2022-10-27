@@ -38,7 +38,7 @@ public class FakeScaledUnitEditInteractor implements ScaledUnitEditInteractor {
     }
 
     @Override
-    public Observable<ScaledUnitEditingFormData> getFormData(Identifiable<ScaledUnit> id) {
+    public Observable<ScaledUnitEditingFormData> getFormData(Id<ScaledUnit> id) {
         return data;
     }
 

@@ -21,7 +21,7 @@
 
 package de.njsm.stocks.client.business;
 
-import de.njsm.stocks.client.business.entities.Identifiable;
+import de.njsm.stocks.client.business.entities.Id;
 import de.njsm.stocks.client.business.entities.Location;
 import de.njsm.stocks.client.business.entities.LocationForListing;
 import de.njsm.stocks.client.business.entities.LocationToEdit;
@@ -42,7 +42,7 @@ class InMemoryLocationEditInteractorImpl implements LocationEditInteractor {
     }
 
     @Override
-    public Observable<LocationToEdit> getLocation(Identifiable<Location> id) {
+    public Observable<LocationToEdit> getLocation(Id<Location> id) {
         return data.firstElement().map(list -> {
             LocationForListing item = list.stream().filter(v -> v.id() == id.id()).findAny().get();
             return LocationToEdit.builder()

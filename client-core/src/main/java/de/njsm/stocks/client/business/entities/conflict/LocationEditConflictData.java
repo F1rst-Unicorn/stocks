@@ -22,11 +22,11 @@
 package de.njsm.stocks.client.business.entities.conflict;
 
 import com.google.auto.value.AutoValue;
-import de.njsm.stocks.client.business.entities.Identifiable;
+import de.njsm.stocks.client.business.entities.Id;
 import de.njsm.stocks.client.business.entities.Location;
 
 @AutoValue
-public abstract class LocationEditConflictData implements Identifiable<Location> {
+public abstract class LocationEditConflictData implements Id<Location> {
 
     public abstract int errorId();
 

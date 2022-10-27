@@ -23,7 +23,7 @@ package de.njsm.stocks.client.business.entities.conflict;
 
 import com.google.auto.value.AutoValue;
 import de.njsm.stocks.client.business.entities.Food;
-import de.njsm.stocks.client.business.entities.Identifiable;
+import de.njsm.stocks.client.business.entities.Id;
 import de.njsm.stocks.client.business.entities.LocationForListing;
 import de.njsm.stocks.client.business.entities.ScaledUnitForListing;
 
@@ -31,7 +31,7 @@ import java.time.Period;
 import java.util.Optional;
 
 @AutoValue
-public abstract class FoodEditConflictData implements Identifiable<Food> {
+public abstract class FoodEditConflictData implements Id<Food> {
 
     public abstract int errorId();
 

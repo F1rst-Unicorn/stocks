@@ -34,7 +34,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import de.njsm.stocks.client.business.Clock;
 import de.njsm.stocks.client.business.entities.Food;
 import de.njsm.stocks.client.business.entities.FoodItemForListing;
-import de.njsm.stocks.client.business.entities.Identifiable;
+import de.njsm.stocks.client.business.entities.Id;
 import de.njsm.stocks.client.databind.ExpirationIconProvider;
 import de.njsm.stocks.client.fragment.InjectableFragment;
 import de.njsm.stocks.client.fragment.listswipe.SwipeCallback;
@@ -60,7 +60,7 @@ public class FoodItemListFragment extends InjectableFragment {
 
     private Clock clock;
 
-    private Identifiable<Food> food;
+    private Id<Food> food;
 
     @NonNull
     @Override

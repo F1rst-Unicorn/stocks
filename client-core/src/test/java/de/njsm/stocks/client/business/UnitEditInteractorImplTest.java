@@ -62,7 +62,7 @@ class UnitEditInteractorImplTest {
     @Test
     void gettingLocationIsForwarded() {
         int id = 42;
-        Identifiable<Unit> input = () -> id;
+        Id<Unit> input = () -> id;
         UnitToEdit expected = getDataToEdit(id);
         when(repository.getUnit(input)).thenReturn(Observable.just(expected));
 

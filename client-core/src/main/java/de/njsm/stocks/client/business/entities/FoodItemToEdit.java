@@ -19,19 +19,22 @@
  *
  */
 
-package de.njsm.stocks.client.business;
+package de.njsm.stocks.client.business.entities;
 
-import de.njsm.stocks.client.business.entities.FoodForListing;
-import de.njsm.stocks.client.business.entities.Id;
-import de.njsm.stocks.client.business.entities.Location;
-import de.njsm.stocks.client.business.entities.LocationName;
-import io.reactivex.rxjava3.core.Observable;
+import com.google.auto.value.AutoValue;
 
-import java.util.List;
+import java.time.LocalDate;
 
-public interface FoodByLocationListInteractor {
+@AutoValue
+public abstract class FoodItemToEdit implements Id<FoodItem> {
 
-    Observable<List<FoodForListing>> getFoodBy(Id<Location> location);
+    public abstract LocalDate eatBy();
 
-    Observable<LocationName> getLocation(Id<Location> location);
+    public abstract int storedIn();
+
+    public abstract int unit();
+
+    public static FoodItemToEdit create(int id, LocalDate eatBy, int storedIn, int unit) {
+        return new AutoValue_FoodItemToEdit(id, eatBy, storedIn, unit);
+    }
 }

@@ -24,7 +24,7 @@ package de.njsm.stocks.client.business.entities;
 import com.google.auto.value.AutoValue;
 
 @AutoValue
-public abstract class UnitToEdit implements Identifiable<Unit>, UnitFields {
+public abstract class UnitToEdit implements Id<Unit>, UnitFields {
 
     public static UnitToEdit create(int id, String name, String abbreviation) {
         return UnitToEdit.builder()
@@ -55,7 +55,7 @@ public abstract class UnitToEdit implements Identifiable<Unit>, UnitFields {
 
     @AutoValue.Builder
     public abstract static class Builder
-            implements Identifiable.Builder<Builder>, UnitFields.Builder<Builder> {
+            implements Id.Builder<Builder>, UnitFields.Builder<Builder> {
         public abstract UnitToEdit build();
     }
 }

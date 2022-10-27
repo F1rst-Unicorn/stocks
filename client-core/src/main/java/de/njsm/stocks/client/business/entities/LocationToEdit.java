@@ -24,7 +24,7 @@ package de.njsm.stocks.client.business.entities;
 import com.google.auto.value.AutoValue;
 
 @AutoValue
-public abstract class LocationToEdit implements Identifiable<Location>, LocationFields {
+public abstract class LocationToEdit implements Id<Location>, LocationFields {
 
     public LocationForEditing addVersion(int version) {
         return LocationForEditing.builder()
@@ -47,7 +47,7 @@ public abstract class LocationToEdit implements Identifiable<Location>, Location
 
     @AutoValue.Builder
     public abstract static class Builder
-            implements Identifiable.Builder<Builder>, LocationFields.Builder<Builder> {
+            implements Id.Builder<Builder>, LocationFields.Builder<Builder> {
         public abstract LocationToEdit build();
     }
 }

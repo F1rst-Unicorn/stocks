@@ -42,12 +42,12 @@ class ScaledUnitEditRepositoryImpl implements ScaledUnitEditRepository {
     }
 
     @Override
-    public Observable<ScaledUnitToEdit> getScaledUnit(Identifiable<ScaledUnit> id) {
+    public Observable<ScaledUnitToEdit> getScaledUnit(Id<ScaledUnit> id) {
         return scaledUnitDao.getCurrentScaledUnit(id.id());
     }
 
     @Override
-    public ScaledUnitForEditing getScaledUnitForSending(Identifiable<ScaledUnit> id) {
+    public ScaledUnitForEditing getScaledUnitForSending(Id<ScaledUnit> id) {
         return scaledUnitDao.getCurrentScaledUnitWithVersion(id.id());
     }
 

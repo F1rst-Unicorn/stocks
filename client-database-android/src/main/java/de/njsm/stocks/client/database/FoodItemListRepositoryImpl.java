@@ -44,12 +44,12 @@ class FoodItemListRepositoryImpl implements FoodItemListRepository, EntityDelete
     }
 
     @Override
-    public Observable<List<FoodItemForListing>> get(Identifiable<Food> food) {
+    public Observable<List<FoodItemForListing>> get(Id<Food> food) {
         return foodDao.get(food.id()).map(v -> v.stream().map(FoodItemForListingData::map).collect(toList()));
     }
 
     @Override
-    public FoodItemForDeletion getEntityForDeletion(Identifiable<FoodItem> id) {
+    public FoodItemForDeletion getEntityForDeletion(Id<FoodItem> id) {
         return foodItemDao.getVersionOf(id.id());
     }
 }

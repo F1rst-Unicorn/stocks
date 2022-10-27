@@ -96,6 +96,9 @@ public interface NetworkModule {
     @Binds
     EntityDeleteService<FoodItem> foodItemDeleteService(FoodItemDeleteServiceImpl impl);
 
+    @Binds
+    FoodItemEditService FoodItemEditService(FoodItemEditServiceImpl impl);
+
 
     @Provides
     @Singleton

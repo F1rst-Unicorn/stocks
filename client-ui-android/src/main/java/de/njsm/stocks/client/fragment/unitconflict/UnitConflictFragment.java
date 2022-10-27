@@ -26,7 +26,7 @@ import android.view.*;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.ViewModelProvider;
-import de.njsm.stocks.client.business.entities.Identifiable;
+import de.njsm.stocks.client.business.entities.Id;
 import de.njsm.stocks.client.business.entities.Unit;
 import de.njsm.stocks.client.business.entities.UnitToEdit;
 import de.njsm.stocks.client.fragment.BottomToolbarFragment;
@@ -45,7 +45,7 @@ public class UnitConflictFragment extends BottomToolbarFragment {
 
     private UnitForm form;
 
-    private Identifiable<Unit> id;
+    private Id<Unit> id;
 
     @NonNull
     @Override

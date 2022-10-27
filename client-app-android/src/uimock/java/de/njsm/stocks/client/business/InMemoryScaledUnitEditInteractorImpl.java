@@ -40,7 +40,7 @@ class InMemoryScaledUnitEditInteractorImpl implements ScaledUnitEditInteractor {
     }
 
     @Override
-    public Observable<ScaledUnitEditingFormData> getFormData(Identifiable<ScaledUnit> id) {
+    public Observable<ScaledUnitEditingFormData> getFormData(Id<ScaledUnit> id) {
         return data.firstElement().map(list -> {
             ScaledUnitForListing item = list.stream().filter(v -> v.id() == id.id()).findAny().get();
             return ScaledUnitEditingFormData.create(

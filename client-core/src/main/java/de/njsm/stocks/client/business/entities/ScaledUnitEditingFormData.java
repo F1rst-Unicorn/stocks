@@ -27,7 +27,7 @@ import java.math.BigDecimal;
 import java.util.List;
 
 @AutoValue
-public abstract class ScaledUnitEditingFormData implements Identifiable<ScaledUnit> {
+public abstract class ScaledUnitEditingFormData implements Id<ScaledUnit> {
 
     public static ScaledUnitEditingFormData create(int id, BigDecimal scale, List<UnitForSelection> units, int currentUnitListPosition) {
         return new AutoValue_ScaledUnitEditingFormData(id, scale, units, currentUnitListPosition);

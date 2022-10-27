@@ -72,7 +72,7 @@ public class FoodItemAddFragmentTest {
 
     private Localiser clock;
 
-    private Identifiable<Food> food;
+    private Id<Food> food;
 
     private UnitAmountRenderStrategy unitAmountRenderStrategy;
 

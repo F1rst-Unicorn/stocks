@@ -23,9 +23,9 @@ package de.njsm.stocks.client.navigation;
 
 import android.os.Bundle;
 import de.njsm.stocks.client.business.entities.Food;
-import de.njsm.stocks.client.business.entities.Identifiable;
+import de.njsm.stocks.client.business.entities.Id;
 
 public interface FoodItemAddNavigator extends Navigator {
 
-    Identifiable<Food> getFood(Bundle requireArguments);
+    Id<Food> getFood(Bundle requireArguments);
 }

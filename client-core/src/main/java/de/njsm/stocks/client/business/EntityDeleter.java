@@ -22,9 +22,9 @@
 package de.njsm.stocks.client.business;
 
 import de.njsm.stocks.client.business.entities.Entity;
-import de.njsm.stocks.client.business.entities.Identifiable;
+import de.njsm.stocks.client.business.entities.Id;
 
 public interface EntityDeleter<E extends Entity<E>> {
 
-    void delete(Identifiable<E> entity);
+    void delete(Id<E> entity);
 }

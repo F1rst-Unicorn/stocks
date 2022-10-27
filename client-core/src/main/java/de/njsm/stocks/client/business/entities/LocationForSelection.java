@@ -24,7 +24,7 @@ package de.njsm.stocks.client.business.entities;
 import com.google.auto.value.AutoValue;
 
 @AutoValue
-public abstract class LocationForSelection implements Identifiable<Location> {
+public abstract class LocationForSelection implements Id<Location> {
 
     public abstract String name();
 

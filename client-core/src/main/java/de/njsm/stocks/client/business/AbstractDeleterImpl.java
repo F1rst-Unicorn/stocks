@@ -45,11 +45,11 @@ abstract class AbstractDeleterImpl<E extends Entity<E>> implements EntityDeleter
     }
 
     @Override
-    public void delete(Identifiable<E> id) {
+    public void delete(Id<E> id) {
         scheduler.schedule(Job.create(getJobType(), () -> deleteLocationInBackground(id)));
     }
 
-    void deleteLocationInBackground(Identifiable<E> id) {
+    void deleteLocationInBackground(Id<E> id) {
         Versionable<E> data = entityDeleteRepository.getEntityForDeletion(id);
         try {
             deleteService.delete(data);

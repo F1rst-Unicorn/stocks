@@ -19,19 +19,24 @@
  *
  */
 
-package de.njsm.stocks.client.business;
+package de.njsm.stocks.client.business.entities;
 
-import de.njsm.stocks.client.business.entities.FoodForListing;
-import de.njsm.stocks.client.business.entities.Id;
-import de.njsm.stocks.client.business.entities.Location;
-import de.njsm.stocks.client.business.entities.LocationName;
-import io.reactivex.rxjava3.core.Observable;
+import com.google.auto.value.AutoValue;
 
-import java.util.List;
+import java.time.Instant;
+import java.time.LocalDate;
 
-public interface FoodByLocationListInteractor {
+@AutoValue
+public abstract class FoodItemForEditing implements Versionable<FoodItem> {
 
-    Observable<List<FoodForListing>> getFoodBy(Id<Location> location);
+    public abstract Instant eatBy();
 
-    Observable<LocationName> getLocation(Id<Location> location);
+    public abstract int storedIn();
+
+    public abstract int unit();
+
+    public static FoodItemForEditing create(int id, int version, Instant eatBy, int storedIn, int unit) {
+        return new AutoValue_FoodItemForEditing(id, version, eatBy, storedIn, unit);
+    }
+
 }

@@ -25,7 +25,7 @@ import androidx.annotation.StringRes;
 import de.njsm.stocks.client.business.EntityDeleter;
 import de.njsm.stocks.client.business.entities.Food;
 import de.njsm.stocks.client.business.entities.FoodForListing;
-import de.njsm.stocks.client.business.entities.Identifiable;
+import de.njsm.stocks.client.business.entities.Id;
 import de.njsm.stocks.client.navigation.FoodNavigator;
 import de.njsm.stocks.client.presenter.DateRenderStrategy;
 import de.njsm.stocks.client.presenter.UnitAmountRenderStrategy;
@@ -147,7 +147,7 @@ public abstract class BaseFoodFragmentTest {
         onView(recyclerView(R.id.template_swipe_list_list).atPosition(itemIndex)).perform(swipeRight());
 
         @SuppressWarnings("unchecked")
-        ArgumentCaptor<Identifiable<Food>> captor = ArgumentCaptor.forClass(Identifiable.class);
+        ArgumentCaptor<Id<Food>> captor = ArgumentCaptor.forClass(Id.class);
         verify(deleter).delete(captor.capture());
         assertThat(captor.getValue().id(), is(data.get(itemIndex).id()));
     }

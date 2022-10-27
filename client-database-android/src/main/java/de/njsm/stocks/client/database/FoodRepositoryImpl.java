@@ -49,7 +49,7 @@ class FoodRepositoryImpl implements EmptyFoodRepository, EntityDeleteRepository<
     }
 
     @Override
-    public Versionable<Food> getEntityForDeletion(Identifiable<Food> id) {
+    public Versionable<Food> getEntityForDeletion(Id<Food> id) {
         return foodDao.getForDeletion(id.id());
     }
 }

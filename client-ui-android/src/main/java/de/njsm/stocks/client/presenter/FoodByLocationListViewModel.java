@@ -43,19 +43,19 @@ public class FoodByLocationListViewModel extends AbstractFoodListViewModel {
         this.foodByLocationListInteractor = foodByLocationListInteractor;
     }
 
-    public LiveData<List<FoodForListing>> getFood(Identifiable<Location> location) {
+    public LiveData<List<FoodForListing>> getFood(Id<Location> location) {
         return LiveDataReactiveStreams.fromPublisher(
                 getData(location).toFlowable(BackpressureStrategy.LATEST)
         );
     }
 
-    private Observable<List<FoodForListing>> getData(Identifiable<Location> location) {
+    private Observable<List<FoodForListing>> getData(Id<Location> location) {
         if (data == null)
             data = foodByLocationListInteractor.getFoodBy(location);
         return data;
     }
 
-    public LiveData<LocationName> getLocation(Identifiable<Location> location) {
+    public LiveData<LocationName> getLocation(Id<Location> location) {
         return LiveDataReactiveStreams.fromPublisher(
                 foodByLocationListInteractor.getLocation(location).toFlowable(BackpressureStrategy.LATEST));
     }

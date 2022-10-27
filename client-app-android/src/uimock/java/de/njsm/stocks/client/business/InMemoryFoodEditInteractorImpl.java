@@ -43,7 +43,7 @@ class InMemoryFoodEditInteractorImpl implements FoodEditInteractor {
     }
 
     @Override
-    public Observable<FoodEditingFormData> getFormData(Identifiable<Food> id) {
+    public Observable<FoodEditingFormData> getFormData(Id<Food> id) {
         return data.firstElement().map(list -> {
             EmptyFood item = list.stream().filter(v -> v.id() == id.id()).findAny().get();
             return FoodEditingFormData.create(

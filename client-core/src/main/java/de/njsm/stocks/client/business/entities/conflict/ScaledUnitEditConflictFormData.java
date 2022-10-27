@@ -23,7 +23,7 @@ package de.njsm.stocks.client.business.entities.conflict;
 
 import com.google.auto.value.AutoValue;
 import de.njsm.stocks.client.business.ListSearcher;
-import de.njsm.stocks.client.business.entities.Identifiable;
+import de.njsm.stocks.client.business.entities.Id;
 import de.njsm.stocks.client.business.entities.ScaledUnit;
 import de.njsm.stocks.client.business.entities.UnitForListing;
 import de.njsm.stocks.client.business.entities.UnitForSelection;
@@ -32,7 +32,7 @@ import java.math.BigDecimal;
 import java.util.List;
 
 @AutoValue
-public abstract class ScaledUnitEditConflictFormData implements Identifiable<ScaledUnit> {
+public abstract class ScaledUnitEditConflictFormData implements Id<ScaledUnit> {
 
     public abstract int errorId();
 

@@ -26,7 +26,7 @@ import io.reactivex.rxjava3.core.Observable;
 
 public interface UnitEditInteractor {
 
-    Observable<UnitToEdit> get(Identifiable<Unit> id);
+    Observable<UnitToEdit> get(Id<Unit> id);
 
     void edit(UnitToEdit formData);
 }

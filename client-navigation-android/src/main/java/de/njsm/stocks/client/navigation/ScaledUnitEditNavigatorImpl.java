@@ -22,7 +22,7 @@
 package de.njsm.stocks.client.navigation;
 
 import android.os.Bundle;
-import de.njsm.stocks.client.business.entities.Identifiable;
+import de.njsm.stocks.client.business.entities.Id;
 import de.njsm.stocks.client.business.entities.ScaledUnit;
 import de.njsm.stocks.client.fragment.scaledunitedit.ScaledUnitEditFragmentArgs;
 
@@ -36,7 +36,7 @@ class ScaledUnitEditNavigatorImpl extends BaseNavigator implements ScaledUnitEdi
     }
 
     @Override
-    public Identifiable<ScaledUnit> getScaledUnitId(Bundle arguments) {
+    public Id<ScaledUnit> getScaledUnitId(Bundle arguments) {
         return () -> ScaledUnitEditFragmentArgs.fromBundle(arguments).getId();
     }
 }

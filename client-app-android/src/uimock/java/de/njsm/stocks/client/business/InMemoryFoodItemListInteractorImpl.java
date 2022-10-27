@@ -23,7 +23,7 @@ package de.njsm.stocks.client.business;
 
 import de.njsm.stocks.client.business.entities.Food;
 import de.njsm.stocks.client.business.entities.FoodItemForListing;
-import de.njsm.stocks.client.business.entities.Identifiable;
+import de.njsm.stocks.client.business.entities.Id;
 import de.njsm.stocks.client.testdata.FoodItemsForListing;
 import io.reactivex.rxjava3.core.Observable;
 
@@ -37,7 +37,7 @@ class InMemoryFoodItemListInteractorImpl implements FoodItemListInteractor {
     }
 
     @Override
-    public Observable<List<FoodItemForListing>> get(Identifiable<Food> food) {
+    public Observable<List<FoodItemForListing>> get(Id<Food> food) {
         return Observable.just(FoodItemsForListing.get());
     }
 }

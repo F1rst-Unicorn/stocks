@@ -36,7 +36,7 @@ class InMemoryFoodItemAddInteractorImpl implements FoodItemAddInteractor {
     }
 
     @Override
-    public Observable<FoodItemAddData> getFormData(Identifiable<Food> food) {
+    public Observable<FoodItemAddData> getFormData(Id<Food> food) {
         return Observable.just(FoodItemAddData.create(
                 FoodForSelection.create(food.id(), "Banana"),
                 LocalDate.ofEpochDay(5),

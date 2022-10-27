@@ -28,17 +28,17 @@ import java.time.Period;
 import java.util.Optional;
 
 @AutoValue
-public abstract class FoodForItemCreation implements Identifiable<Food> {
+public abstract class FoodForItemCreation implements Id<Food> {
 
     public abstract String name();
 
     public abstract Period expirationOffset();
 
-    public abstract Optional<Identifiable<Location>> location();
+    public abstract Optional<Id<Location>> location();
 
-    public abstract Identifiable<ScaledUnit> unit();
+    public abstract Id<ScaledUnit> unit();
 
-    public static FoodForItemCreation create(int id, String name, Period expirationOffset, Optional<Identifiable<Location>> location, Identifiable<ScaledUnit> unit) {
+    public static FoodForItemCreation create(int id, String name, Period expirationOffset, Optional<Id<Location>> location, Id<ScaledUnit> unit) {
         return new AutoValue_FoodForItemCreation(id, name, expirationOffset, location, unit);
     }
 

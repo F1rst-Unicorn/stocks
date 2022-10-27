@@ -62,7 +62,7 @@ class LocationEditInteractorImplTest {
     @Test
     void gettingLocationIsForwarded() {
         int id = 42;
-        Identifiable<Location> input = () -> id;
+        Id<Location> input = () -> id;
         LocationToEdit expected = getLocationToEdit(id);
         when(locationRepository.getLocationForEditing(input)).thenReturn(Observable.just(expected));
 

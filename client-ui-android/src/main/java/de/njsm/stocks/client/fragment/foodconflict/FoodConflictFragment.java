@@ -28,7 +28,7 @@ import androidx.annotation.Nullable;
 import androidx.lifecycle.ViewModelProvider;
 import de.njsm.stocks.client.business.entities.Food;
 import de.njsm.stocks.client.business.entities.FoodToEdit;
-import de.njsm.stocks.client.business.entities.Identifiable;
+import de.njsm.stocks.client.business.entities.Id;
 import de.njsm.stocks.client.business.entities.LocationForSelection;
 import de.njsm.stocks.client.fragment.BottomToolbarFragment;
 import de.njsm.stocks.client.fragment.view.FoodForm;
@@ -46,7 +46,7 @@ public class FoodConflictFragment extends BottomToolbarFragment {
 
     private FoodForm form;
 
-    private Identifiable<Food> id;
+    private Id<Food> id;
 
     @NonNull
     @Override

@@ -24,7 +24,7 @@ package de.njsm.stocks.client.business.entities;
 import com.google.auto.value.AutoValue;
 
 @AutoValue
-public abstract class EmptyFood implements Identifiable<Food> {
+public abstract class EmptyFood implements Id<Food> {
 
     public abstract String name();
 

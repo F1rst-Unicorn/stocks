@@ -21,7 +21,7 @@
 
 package de.njsm.stocks.client.business;
 
-import de.njsm.stocks.client.business.entities.Identifiable;
+import de.njsm.stocks.client.business.entities.Id;
 import de.njsm.stocks.client.business.entities.Unit;
 import de.njsm.stocks.client.business.entities.UnitToEdit;
 import io.reactivex.rxjava3.core.Observable;
@@ -40,7 +40,7 @@ public class FakeUnitEditInteractor implements UnitEditInteractor {
     }
 
     @Override
-    public Observable<UnitToEdit> get(Identifiable<Unit> id) {
+    public Observable<UnitToEdit> get(Id<Unit> id) {
         return data;
     }
 

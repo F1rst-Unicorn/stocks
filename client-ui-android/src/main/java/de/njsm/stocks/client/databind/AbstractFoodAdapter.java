@@ -28,7 +28,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 import de.njsm.stocks.client.business.entities.Entity;
-import de.njsm.stocks.client.business.entities.Identifiable;
+import de.njsm.stocks.client.business.entities.Id;
 import de.njsm.stocks.client.fragment.view.FoodOutlineViewHolder;
 import de.njsm.stocks.client.presenter.UnitAmountRenderStrategy;
 import de.njsm.stocks.client.ui.R;
@@ -37,7 +37,7 @@ import java.util.List;
 
 import static de.njsm.stocks.client.fragment.util.ListDiffer.byId;
 
-public abstract class AbstractFoodAdapter<E extends Entity<E>, T extends Identifiable<E>> extends RecyclerView.Adapter<FoodOutlineViewHolder> {
+public abstract class AbstractFoodAdapter<E extends Entity<E>, T extends Id<E>> extends RecyclerView.Adapter<FoodOutlineViewHolder> {
 
     private List<T> foods;
 

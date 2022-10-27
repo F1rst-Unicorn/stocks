@@ -27,7 +27,7 @@ import com.google.auto.value.extension.memoized.Memoized;
 import java.math.BigDecimal;
 
 @AutoValue
-public abstract class FoodItemDeleteErrorDetails implements Identifiable<FoodItem>, ErrorDetails {
+public abstract class FoodItemDeleteErrorDetails implements Id<FoodItem>, ErrorDetails {
 
     public abstract String foodName();
 

@@ -49,7 +49,7 @@ class UnitEditInteractorImpl implements UnitEditInteractor {
     }
 
     @Override
-    public Observable<UnitToEdit> get(Identifiable<Unit> id) {
+    public Observable<UnitToEdit> get(Id<Unit> id) {
         return repository.getUnit(id);
     }
 

@@ -23,9 +23,8 @@ package de.njsm.stocks.client.navigation;
 
 import android.os.Bundle;
 import androidx.navigation.ActionOnlyNavDirections;
-import de.njsm.stocks.client.business.entities.Identifiable;
+import de.njsm.stocks.client.business.entities.Id;
 import de.njsm.stocks.client.business.entities.Location;
-import de.njsm.stocks.client.fragment.emptyfood.EmptyFoodFragmentDirections;
 import de.njsm.stocks.client.fragment.foodinlocation.FoodInLocationFragmentDirections;
 import org.junit.Before;
 import org.junit.Test;
@@ -47,7 +46,7 @@ public class FoodByLocationNavigatorImplTest extends NavigationTest {
         int expected = 42;
         input.putInt("id", expected);
 
-        Identifiable<Location> actual = uut.getId(input);
+        Id<Location> actual = uut.getId(input);
 
         assertEquals(expected, actual.id());
     }

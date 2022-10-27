@@ -22,7 +22,7 @@
 package de.njsm.stocks.client.business;
 
 import de.njsm.stocks.client.business.entities.FoodItem;
-import de.njsm.stocks.client.business.entities.Identifiable;
+import de.njsm.stocks.client.business.entities.Id;
 
 import javax.inject.Inject;
 
@@ -33,6 +33,6 @@ class InMemoryFoodItemDeleterImpl implements EntityDeleter<FoodItem> {
     }
 
     @Override
-    public void delete(Identifiable<FoodItem> location) {
+    public void delete(Id<FoodItem> location) {
     }
 }

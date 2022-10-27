@@ -63,7 +63,7 @@ class FoodItemAddInteractorImpl implements FoodItemAddInteractor {
     }
 
     @Override
-    public Observable<FoodItemAddData> getFormData(Identifiable<Food> id) {
+    public Observable<FoodItemAddData> getFormData(Id<Food> id) {
         Observable<FoodForItemCreation> foodObservable = repository.getFood(id);
         Observable<Instant> predictedEatBy = foodObservable.flatMapMaybe(food -> {
             if (food.expirationOffset().equals(Period.ZERO)) {
@@ -75,7 +75,7 @@ class FoodItemAddInteractorImpl implements FoodItemAddInteractor {
                 return Maybe.just(clock.get().plus(food.expirationOffset()));
             }
         });
-        Observable<Identifiable<Location>> predictedLocation = foodObservable.flatMapMaybe(food -> food.location().map(Maybe::just)
+        Observable<Id<Location>> predictedLocation = foodObservable.flatMapMaybe(food -> food.location().map(Maybe::just)
                 .orElseGet(() -> repository.getLocationWithMostItemsOfType(food)));
 
         Observable<List<LocationForSelection>> locations = repository.getLocations();

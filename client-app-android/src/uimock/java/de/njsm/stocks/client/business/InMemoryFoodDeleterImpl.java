@@ -23,7 +23,7 @@ package de.njsm.stocks.client.business;
 
 import de.njsm.stocks.client.business.entities.EmptyFood;
 import de.njsm.stocks.client.business.entities.Food;
-import de.njsm.stocks.client.business.entities.Identifiable;
+import de.njsm.stocks.client.business.entities.Id;
 import de.njsm.stocks.client.testdata.FoodsForListing;
 import io.reactivex.rxjava3.subjects.BehaviorSubject;
 
@@ -41,7 +41,7 @@ class InMemoryFoodDeleterImpl implements EntityDeleter<Food> {
     }
 
     @Override
-    public void delete(Identifiable<Food> location) {
+    public void delete(Id<Food> location) {
         data.firstElement().subscribe(list -> {
             List<EmptyFood> newList = new ArrayList<>(list);
             newList.removeIf(v -> v.id() == location.id());

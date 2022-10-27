@@ -28,7 +28,7 @@ import de.njsm.stocks.client.business.FoodItemAddInteractor;
 import de.njsm.stocks.client.business.entities.Food;
 import de.njsm.stocks.client.business.entities.FoodItemAddData;
 import de.njsm.stocks.client.business.entities.FoodItemForm;
-import de.njsm.stocks.client.business.entities.Identifiable;
+import de.njsm.stocks.client.business.entities.Id;
 import io.reactivex.rxjava3.core.BackpressureStrategy;
 
 public class FoodItemAddViewModel extends ViewModel {
@@ -39,7 +39,7 @@ public class FoodItemAddViewModel extends ViewModel {
         this.interactor = interactor;
     }
 
-    public LiveData<FoodItemAddData> getFormData(Identifiable<Food> food) {
+    public LiveData<FoodItemAddData> getFormData(Id<Food> food) {
         return LiveDataReactiveStreams.fromPublisher(
                 interactor.getFormData(food).toFlowable(BackpressureStrategy.LATEST)
         );

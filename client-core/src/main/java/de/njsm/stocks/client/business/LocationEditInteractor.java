@@ -21,14 +21,14 @@
 
 package de.njsm.stocks.client.business;
 
-import de.njsm.stocks.client.business.entities.Identifiable;
+import de.njsm.stocks.client.business.entities.Id;
 import de.njsm.stocks.client.business.entities.Location;
 import de.njsm.stocks.client.business.entities.LocationToEdit;
 import io.reactivex.rxjava3.core.Observable;
 
 public interface LocationEditInteractor {
 
-    Observable<LocationToEdit> getLocation(Identifiable<Location> id);
+    Observable<LocationToEdit> getLocation(Id<Location> id);
 
     void edit(LocationToEdit formData);
 }

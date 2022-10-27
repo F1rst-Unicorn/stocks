@@ -29,7 +29,7 @@ import androidx.lifecycle.ViewModelProvider;
 import de.njsm.stocks.client.business.Localiser;
 import de.njsm.stocks.client.business.entities.Food;
 import de.njsm.stocks.client.business.entities.FoodItemAddData;
-import de.njsm.stocks.client.business.entities.Identifiable;
+import de.njsm.stocks.client.business.entities.Id;
 import de.njsm.stocks.client.fragment.BottomToolbarFragment;
 import de.njsm.stocks.client.fragment.DialogDisplayer;
 import de.njsm.stocks.client.fragment.view.FoodItemForm;
@@ -47,7 +47,7 @@ public class FoodItemAddFragment extends BottomToolbarFragment {
 
     private FoodItemForm form;
 
-    private Identifiable<Food> food;
+    private Id<Food> food;
 
     private Localiser clock;
 

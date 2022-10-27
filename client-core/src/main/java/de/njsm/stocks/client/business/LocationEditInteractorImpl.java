@@ -49,7 +49,7 @@ class LocationEditInteractorImpl implements LocationEditInteractor {
     }
 
     @Override
-    public Observable<LocationToEdit> getLocation(Identifiable<Location> location) {
+    public Observable<LocationToEdit> getLocation(Id<Location> location) {
         return locationRepository.getLocationForEditing(location);
     }
 

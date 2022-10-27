@@ -26,7 +26,7 @@ import android.view.*;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.ViewModelProvider;
-import de.njsm.stocks.client.business.entities.Identifiable;
+import de.njsm.stocks.client.business.entities.Id;
 import de.njsm.stocks.client.business.entities.ScaledUnit;
 import de.njsm.stocks.client.business.entities.ScaledUnitToEdit;
 import de.njsm.stocks.client.business.entities.UnitForSelection;
@@ -47,7 +47,7 @@ public class ScaledUnitConflictFragment extends BottomToolbarFragment {
 
     private ScaledUnitForm form;
 
-    private Identifiable<ScaledUnit> id;
+    private Id<ScaledUnit> id;
 
     @NonNull
     @Override

@@ -28,7 +28,7 @@ import de.njsm.stocks.client.business.FoodEditInteractor;
 import de.njsm.stocks.client.business.entities.Food;
 import de.njsm.stocks.client.business.entities.FoodEditingFormData;
 import de.njsm.stocks.client.business.entities.FoodToEdit;
-import de.njsm.stocks.client.business.entities.Identifiable;
+import de.njsm.stocks.client.business.entities.Id;
 import io.reactivex.rxjava3.core.BackpressureStrategy;
 import io.reactivex.rxjava3.core.Observable;
 
@@ -49,13 +49,13 @@ public class FoodEditViewModel extends ViewModel {
         interactor.edit(data);
     }
 
-    public LiveData<FoodEditingFormData> getFormData(Identifiable<Food> id) {
+    public LiveData<FoodEditingFormData> getFormData(Id<Food> id) {
         return LiveDataReactiveStreams.fromPublisher(
                 getData(id).toFlowable(BackpressureStrategy.LATEST)
         );
     }
 
-    private Observable<FoodEditingFormData> getData(Identifiable<Food> id) {
+    private Observable<FoodEditingFormData> getData(Id<Food> id) {
         if (data == null)
             data = interactor.getFormData(id);
         return data;

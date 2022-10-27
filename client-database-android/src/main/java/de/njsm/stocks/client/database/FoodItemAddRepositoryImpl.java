@@ -52,7 +52,7 @@ class FoodItemAddRepositoryImpl implements FoodItemAddRepository {
     }
 
     @Override
-    public Observable<FoodForItemCreation> getFood(Identifiable<Food> food) {
+    public Observable<FoodForItemCreation> getFood(Id<Food> food) {
         return foodDao.getToEdit(food.id())
                 .map(f -> FoodForItemCreation.create(
                         f.id(),
@@ -74,17 +74,17 @@ class FoodItemAddRepositoryImpl implements FoodItemAddRepository {
     }
 
     @Override
-    public Maybe<Instant> getMaxEatByOfPresentItemsOf(Identifiable<Food> food) {
+    public Maybe<Instant> getMaxEatByOfPresentItemsOf(Id<Food> food) {
         return foodItemDao.getMaxEatByOfPresentItemsOf(food.id());
     }
 
     @Override
-    public Maybe<Instant> getMaxEatByEverOf(Identifiable<Food> food) {
+    public Maybe<Instant> getMaxEatByEverOf(Id<Food> food) {
         return foodItemDao.getMaxEatByEverOf(food.id());
     }
 
     @Override
-    public Maybe<Identifiable<Location>> getLocationWithMostItemsOfType(Identifiable<Food> food) {
+    public Maybe<Id<Location>> getLocationWithMostItemsOfType(Id<Food> food) {
         return foodItemDao.getLocationWithMostItemsOfType(food.id()).map(v -> () -> v);
     }
 }

@@ -24,7 +24,7 @@ package de.njsm.stocks.client.navigation;
 import android.os.Bundle;
 import androidx.navigation.NavDirections;
 import de.njsm.stocks.client.business.entities.Food;
-import de.njsm.stocks.client.business.entities.Identifiable;
+import de.njsm.stocks.client.business.entities.Id;
 import de.njsm.stocks.client.fragment.fooditemlist.FoodItemListFragmentArgs;
 import de.njsm.stocks.client.fragment.fooditemtabs.FoodItemTabsFragmentDirections;
 
@@ -40,12 +40,12 @@ class FoodItemListNavigatorImpl implements FoodItemListNavigator {
     }
 
     @Override
-    public Identifiable<Food> getFoodId(Bundle args) {
+    public Id<Food> getFoodId(Bundle args) {
         return FoodItemListFragmentArgs.fromBundle(args)::getFoodId;
     }
 
     @Override
-    public void add(Identifiable<Food> id) {
+    public void add(Id<Food> id) {
         NavDirections direction = FoodItemTabsFragmentDirections.actionNavFragmentFoodItemTabsToNavFragmentFoodItemAdd(id.id());
         navigationArgConsumer.navigate(direction);
     }

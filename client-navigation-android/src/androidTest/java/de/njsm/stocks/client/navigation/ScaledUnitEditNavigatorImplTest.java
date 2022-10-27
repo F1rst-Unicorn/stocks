@@ -22,7 +22,7 @@
 package de.njsm.stocks.client.navigation;
 
 import android.os.Bundle;
-import de.njsm.stocks.client.business.entities.Identifiable;
+import de.njsm.stocks.client.business.entities.Id;
 import de.njsm.stocks.client.business.entities.ScaledUnit;
 import org.junit.Test;
 
@@ -37,7 +37,7 @@ public class ScaledUnitEditNavigatorImplTest extends NavigationTest {
         int expected = 42;
         input.putInt("id", expected);
 
-        Identifiable<ScaledUnit> actual = uut.getScaledUnitId(input);
+        Id<ScaledUnit> actual = uut.getScaledUnitId(input);
 
         assertEquals(expected, actual.id());
     }

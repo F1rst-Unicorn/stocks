@@ -21,11 +21,11 @@
 
 package de.njsm.stocks.client.business.entities;
 
-public interface Versionable<T extends Entity<T>> extends Identifiable<T> {
+public interface Versionable<T extends Entity<T>> extends Id<T> {
 
     int version();
 
-    interface Builder<T> extends Identifiable.Builder<T> {
+    interface Builder<T> extends Id.Builder<T> {
         T version(int v);
     }
 }

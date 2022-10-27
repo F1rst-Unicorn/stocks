@@ -21,11 +21,11 @@
 
 package de.njsm.stocks.client.business.entities;
 
-public interface Identifiable<T extends Entity<T>> {
+import io.reactivex.rxjava3.core.Observable;
 
-    int id();
+public interface FoodItemEditInteractor {
 
-    interface Builder<T> {
-        T id(int v);
-    }
+    Observable<FoodItemEditingFormData> getFormData(Id<Food> food);
+
+    void add(FoodItemToEdit item);
 }

@@ -19,19 +19,13 @@
  *
  */
 
-package de.njsm.stocks.client.business;
+package de.njsm.stocks.client.business.entities;
 
-import de.njsm.stocks.client.business.entities.FoodForListing;
-import de.njsm.stocks.client.business.entities.Id;
-import de.njsm.stocks.client.business.entities.Location;
-import de.njsm.stocks.client.business.entities.LocationName;
-import io.reactivex.rxjava3.core.Observable;
+public interface Id<T extends Entity<T>> {
 
-import java.util.List;
+    int id();
 
-public interface FoodByLocationListInteractor {
-
-    Observable<List<FoodForListing>> getFoodBy(Id<Location> location);
-
-    Observable<LocationName> getLocation(Id<Location> location);
+    interface Builder<T> {
+        T id(int v);
+    }
 }

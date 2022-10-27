@@ -48,7 +48,7 @@ public class ScaledUnitRepositoryImpl implements ScaledUnitRepository {
     }
 
     @Override
-    public ScaledUnitForDeletion getEntityForDeletion(Identifiable<ScaledUnit> id) {
+    public ScaledUnitForDeletion getEntityForDeletion(Id<ScaledUnit> id) {
         return scaledUnitDao.getScaledUnitForDeletion(id.id());
     }
 

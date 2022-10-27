@@ -24,25 +24,35 @@ package de.njsm.stocks.client.business.entities;
 import com.google.auto.value.AutoValue;
 
 import java.time.LocalDate;
-import java.time.ZoneId;
 import java.util.List;
 
 @AutoValue
-public abstract class FoodForListing implements Id<Food> {
+public abstract class FoodItemEditingFormData implements Id<FoodItem> {
 
-    public abstract String name();
+    public abstract LocalDate eatBy();
 
-    public abstract boolean toBuy();
+    public abstract FoodForSelection ofType();
 
-    public abstract LocalDate nextEatByDate();
+    public abstract LocalDate predictedEatBy();
 
-    public abstract List<UnitAmount> storedAmounts();
+    public abstract List<LocationForSelection> locations();
 
-    public static FoodForListing create(int id, String name, boolean toBuy, LocalDate nextEatByDate, List<UnitAmount> storedAmounts) {
-        return new AutoValue_FoodForListing(id, name, toBuy, nextEatByDate, storedAmounts);
+    public abstract int predictedLocationListPosition();
+
+    public abstract List<ScaledUnitForSelection> scaledUnits();
+
+    public abstract int predictedScaledUnit();
+
+    public static FoodItemEditingFormData create(
+            int id,
+            LocalDate eatBy,
+            FoodForSelection food,
+            LocalDate predictedEatBy,
+            List<LocationForSelection> locations,
+            int predictedLocationListPosition,
+            List<ScaledUnitForSelection> units,
+            int predictedScaledUnit) {
+        return new AutoValue_FoodItemEditingFormData(id, eatBy, food, predictedEatBy, locations, predictedLocationListPosition, units, predictedScaledUnit);
     }
 
-    public static FoodForListing create(FoodForListingBaseData food, List<UnitAmount> storedAmounts) {
-        return new AutoValue_FoodForListing(food.id(), food.name(), food.toBuy(), food.nextEatByDate().atZone(ZoneId.systemDefault()).toLocalDate(), storedAmounts);
-    }
 }

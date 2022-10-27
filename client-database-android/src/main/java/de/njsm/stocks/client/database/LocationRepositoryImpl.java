@@ -52,17 +52,17 @@ class LocationRepositoryImpl implements LocationRepository {
     }
 
     @Override
-    public LocationForDeletion getEntityForDeletion(Identifiable<Location> i) {
+    public LocationForDeletion getEntityForDeletion(Id<Location> i) {
         return mapForDeletion(locationDao.getLocation(i.id()));
     }
 
     @Override
-    public Observable<LocationToEdit> getLocationForEditing(Identifiable<Location> location) {
+    public Observable<LocationToEdit> getLocationForEditing(Id<Location> location) {
         return locationDao.getCurrentLocation(location.id()).map(DataMapper::mapToEdit);
     }
 
     @Override
-    public LocationForEditing getCurrentLocationBeforeEditing(Identifiable<Location> location) {
+    public LocationForEditing getCurrentLocationBeforeEditing(Id<Location> location) {
         return mapForEditing(locationDao.getLocation(location.id()));
     }
 

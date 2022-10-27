@@ -24,7 +24,7 @@ package de.njsm.stocks.client.business.entities;
 import com.google.auto.value.AutoValue;
 
 @AutoValue
-public abstract class UnitForSelection implements Identifiable<Unit> {
+public abstract class UnitForSelection implements Id<Unit> {
 
     public abstract String name();
 

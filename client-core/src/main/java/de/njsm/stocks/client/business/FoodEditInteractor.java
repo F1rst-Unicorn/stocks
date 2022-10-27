@@ -26,7 +26,7 @@ import io.reactivex.rxjava3.core.Observable;
 
 public interface FoodEditInteractor {
 
-    Observable<FoodEditingFormData> getFormData(Identifiable<Food> id);
+    Observable<FoodEditingFormData> getFormData(Id<Food> id);
 
     void edit(FoodToEdit food);
 }

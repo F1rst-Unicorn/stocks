@@ -28,11 +28,11 @@ import java.util.List;
 
 public interface FoodEditRepository {
 
-    Observable<FoodToEdit> getFood(Identifiable<Food> food);
+    Observable<FoodToEdit> getFood(Id<Food> food);
 
     Observable<List<ScaledUnitForSelection>> getScaledUnitsForSelection();
 
     Observable<List<LocationForSelection>> getLocations();
 
-    FoodForEditing getFoodForSending(Identifiable<Food> editedFood);
+    FoodForEditing getFoodForSending(Id<Food> editedFood);
 }

@@ -22,7 +22,7 @@
 package de.njsm.stocks.client.business;
 
 import de.njsm.stocks.client.business.entities.FoodForListing;
-import de.njsm.stocks.client.business.entities.Identifiable;
+import de.njsm.stocks.client.business.entities.Id;
 import de.njsm.stocks.client.business.entities.Location;
 import de.njsm.stocks.client.business.entities.LocationName;
 import io.reactivex.rxjava3.core.Observable;
@@ -45,12 +45,12 @@ public class FakeFoodByLocationListInteractor implements FoodByLocationListInter
     }
 
     @Override
-    public Observable<List<FoodForListing>> getFoodBy(Identifiable<Location> location) {
+    public Observable<List<FoodForListing>> getFoodBy(Id<Location> location) {
         return data;
     }
 
     @Override
-    public Observable<LocationName> getLocation(Identifiable<Location> location) {
+    public Observable<LocationName> getLocation(Id<Location> location) {
         return Observable.just(LocationName.create("Fridge"));
     }
 }

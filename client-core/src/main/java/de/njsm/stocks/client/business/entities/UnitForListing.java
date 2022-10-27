@@ -24,7 +24,7 @@ package de.njsm.stocks.client.business.entities;
 import com.google.auto.value.AutoValue;
 
 @AutoValue
-public abstract class UnitForListing implements Identifiable<Unit>, UnitFields {
+public abstract class UnitForListing implements Id<Unit>, UnitFields {
 
     public static UnitForListing create(int id, String name, String abbreviation) {
         return new AutoValue_UnitForListing(id, name, abbreviation);

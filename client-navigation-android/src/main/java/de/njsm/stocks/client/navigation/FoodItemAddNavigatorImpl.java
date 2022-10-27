@@ -23,7 +23,7 @@ package de.njsm.stocks.client.navigation;
 
 import android.os.Bundle;
 import de.njsm.stocks.client.business.entities.Food;
-import de.njsm.stocks.client.business.entities.Identifiable;
+import de.njsm.stocks.client.business.entities.Id;
 import de.njsm.stocks.client.fragment.fooditemadd.FoodItemAddFragmentArgs;
 
 import javax.inject.Inject;
@@ -36,7 +36,7 @@ class FoodItemAddNavigatorImpl extends BaseNavigator implements FoodItemAddNavig
     }
 
     @Override
-    public Identifiable<Food> getFood(Bundle arguments) {
+    public Id<Food> getFood(Bundle arguments) {
         return FoodItemAddFragmentArgs.fromBundle(arguments)::getFoodId;
     }
 }

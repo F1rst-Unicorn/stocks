@@ -42,7 +42,7 @@ public class UnitEditViewModel extends ViewModel {
         this.unitEditInteractor = unitEditInteractor;
     }
 
-    public LiveData<UnitToEdit> get(Identifiable<Unit> id) {
+    public LiveData<UnitToEdit> get(Id<Unit> id) {
         return LiveDataReactiveStreams.fromPublisher(
                 getData(id).toFlowable(BackpressureStrategy.LATEST)
         );
@@ -52,7 +52,7 @@ public class UnitEditViewModel extends ViewModel {
         unitEditInteractor.edit(data);
     }
 
-    private Observable<UnitToEdit> getData(Identifiable<Unit> id) {
+    private Observable<UnitToEdit> getData(Id<Unit> id) {
         if (data == null)
             data = unitEditInteractor.get(id);
         return data;

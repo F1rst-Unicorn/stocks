@@ -26,7 +26,7 @@ import com.google.auto.value.AutoValue;
 import java.math.BigDecimal;
 
 @AutoValue
-public abstract class ScaledUnitToEdit implements Identifiable<ScaledUnit>, ScaledUnitFields {
+public abstract class ScaledUnitToEdit implements Id<ScaledUnit>, ScaledUnitFields {
 
     public static ScaledUnitToEdit create(int id, BigDecimal scale, int unit) {
         return new AutoValue_ScaledUnitToEdit(id, scale, unit);

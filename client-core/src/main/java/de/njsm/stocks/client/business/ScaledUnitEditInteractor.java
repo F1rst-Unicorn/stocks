@@ -21,7 +21,7 @@
 
 package de.njsm.stocks.client.business;
 
-import de.njsm.stocks.client.business.entities.Identifiable;
+import de.njsm.stocks.client.business.entities.Id;
 import de.njsm.stocks.client.business.entities.ScaledUnit;
 import de.njsm.stocks.client.business.entities.ScaledUnitEditingFormData;
 import de.njsm.stocks.client.business.entities.ScaledUnitToEdit;
@@ -29,7 +29,7 @@ import io.reactivex.rxjava3.core.Observable;
 
 public interface ScaledUnitEditInteractor {
 
-    Observable<ScaledUnitEditingFormData> getFormData(Identifiable<ScaledUnit> id);
+    Observable<ScaledUnitEditingFormData> getFormData(Id<ScaledUnit> id);
 
     void edit(ScaledUnitToEdit form);
 }

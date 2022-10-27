@@ -32,7 +32,7 @@ import de.njsm.stocks.client.business.Synchroniser;
 import de.njsm.stocks.client.business.entities.Food;
 import de.njsm.stocks.client.business.entities.FoodItem;
 import de.njsm.stocks.client.business.entities.FoodItemForListing;
-import de.njsm.stocks.client.business.entities.Identifiable;
+import de.njsm.stocks.client.business.entities.Id;
 import de.njsm.stocks.client.navigation.FoodItemListNavigator;
 import de.njsm.stocks.client.presenter.DateRenderStrategy;
 import de.njsm.stocks.client.presenter.UnitAmountRenderStrategy;
@@ -75,7 +75,7 @@ public class FoodItemListFragmentTest {
 
     private UnitAmountRenderStrategy unitAmountRenderStrategy;
 
-    private Identifiable<Food> food;
+    private Id<Food> food;
 
     @Before
     public void setUp() {

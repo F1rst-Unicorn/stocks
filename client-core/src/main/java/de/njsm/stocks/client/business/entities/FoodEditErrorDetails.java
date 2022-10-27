@@ -28,7 +28,7 @@ import java.time.Period;
 import java.util.Optional;
 
 @AutoValue
-public abstract class FoodEditErrorDetails implements Identifiable<Food>, ErrorDetails {
+public abstract class FoodEditErrorDetails implements Id<Food>, ErrorDetails {
 
     public abstract String name();
 

@@ -26,7 +26,7 @@ import com.google.auto.value.AutoValue;
 import java.time.Instant;
 
 @AutoValue
-public abstract class FoodForListingBaseData implements Identifiable<Food> {
+public abstract class FoodForListingBaseData implements Id<Food> {
 
     public abstract String name();
 

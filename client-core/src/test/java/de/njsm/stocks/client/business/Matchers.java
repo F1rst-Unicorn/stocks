@@ -22,17 +22,17 @@
 package de.njsm.stocks.client.business;
 
 import de.njsm.stocks.client.business.entities.Entity;
-import de.njsm.stocks.client.business.entities.Identifiable;
+import de.njsm.stocks.client.business.entities.Id;
 import org.mockito.ArgumentMatcher;
 import org.mockito.ArgumentMatchers;
 
 public class Matchers {
 
-    public static <T extends Entity<T>> Identifiable<T> equalBy(Identifiable<T> id) {
+    public static <T extends Entity<T>> Id<T> equalBy(Id<T> id) {
         return ArgumentMatchers.argThat(eqBy(id));
     }
 
-    private static <T extends Entity<T>> ArgumentMatcher<Identifiable<T>> eqBy(Identifiable<T> id) {
+    private static <T extends Entity<T>> ArgumentMatcher<Id<T>> eqBy(Id<T> id) {
         return actual -> actual.id() == id.id();
     }
 }

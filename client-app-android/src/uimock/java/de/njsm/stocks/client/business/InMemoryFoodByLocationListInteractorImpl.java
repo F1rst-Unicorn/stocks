@@ -22,7 +22,7 @@
 package de.njsm.stocks.client.business;
 
 import de.njsm.stocks.client.business.entities.FoodForListing;
-import de.njsm.stocks.client.business.entities.Identifiable;
+import de.njsm.stocks.client.business.entities.Id;
 import de.njsm.stocks.client.business.entities.Location;
 import de.njsm.stocks.client.business.entities.LocationName;
 import de.njsm.stocks.client.testdata.FoodsForListing;
@@ -38,12 +38,12 @@ class InMemoryFoodByLocationListInteractorImpl implements FoodByLocationListInte
     }
 
     @Override
-    public Observable<List<FoodForListing>> getFoodBy(Identifiable<Location> location) {
+    public Observable<List<FoodForListing>> getFoodBy(Id<Location> location) {
         return Observable.just(FoodsForListing.get());
     }
 
     @Override
-    public Observable<LocationName> getLocation(Identifiable<Location> location) {
+    public Observable<LocationName> getLocation(Id<Location> location) {
         return Observable.just(LocationName.create("Fridge"));
     }
 }

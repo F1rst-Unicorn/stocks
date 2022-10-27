@@ -29,7 +29,7 @@ import de.njsm.stocks.client.business.FoodItemListInteractor;
 import de.njsm.stocks.client.business.entities.Food;
 import de.njsm.stocks.client.business.entities.FoodItem;
 import de.njsm.stocks.client.business.entities.FoodItemForListing;
-import de.njsm.stocks.client.business.entities.Identifiable;
+import de.njsm.stocks.client.business.entities.Id;
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.core.BackpressureStrategy;
 import io.reactivex.rxjava3.core.Observable;
@@ -71,12 +71,12 @@ public class FoodItemListViewModel extends ViewModel {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(runnable::accept);
     }
-    public LiveData<List<FoodItemForListing>> get(Identifiable<Food> id) {
+    public LiveData<List<FoodItemForListing>> get(Id<Food> id) {
         return LiveDataReactiveStreams.fromPublisher(getData(id)
                 .toFlowable(BackpressureStrategy.LATEST));
     }
 
-    public Observable<List<FoodItemForListing>> getData(Identifiable<Food> id) {
+    public Observable<List<FoodItemForListing>> getData(Id<Food> id) {
         if (data == null)
             data = interactor.get(id);
         return data;

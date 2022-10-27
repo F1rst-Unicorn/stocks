@@ -22,7 +22,7 @@
 package de.njsm.stocks.client.navigation;
 
 import android.os.Bundle;
-import de.njsm.stocks.client.business.entities.Identifiable;
+import de.njsm.stocks.client.business.entities.Id;
 import de.njsm.stocks.client.business.entities.Unit;
 import de.njsm.stocks.client.fragment.unitedit.UnitEditFragmentArgs;
 
@@ -36,7 +36,7 @@ class UnitEditNavigatorImpl extends BaseNavigator implements UnitEditNavigator {
     }
 
     @Override
-    public Identifiable<Unit> getUnitId(Bundle arguments) {
+    public Id<Unit> getUnitId(Bundle arguments) {
         return () -> UnitEditFragmentArgs.fromBundle(arguments).getId();
     }
 }

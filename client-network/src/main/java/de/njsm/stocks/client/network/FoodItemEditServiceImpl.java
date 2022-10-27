@@ -19,33 +19,34 @@
  *
  */
 
-package de.njsm.stocks.client.business;
+package de.njsm.stocks.client.network;
 
-import de.njsm.stocks.client.business.entities.Id;
-import de.njsm.stocks.client.business.entities.Unit;
-import de.njsm.stocks.client.business.entities.UnitForListing;
-import de.njsm.stocks.client.testdata.UnitsForListing;
-import io.reactivex.rxjava3.subjects.BehaviorSubject;
+import de.njsm.stocks.client.business.FoodItemEditService;
+import de.njsm.stocks.client.business.entities.FoodItemForEditing;
+import de.njsm.stocks.common.api.Response;
+import de.njsm.stocks.common.api.serialisers.InstantSerialiser;
+import retrofit2.Call;
 
 import javax.inject.Inject;
-import java.util.ArrayList;
-import java.util.List;
 
-public class InMemoryUnitDeleterImpl implements EntityDeleter<Unit> {
-
-    private final BehaviorSubject<List<UnitForListing>> data;
+class FoodItemEditServiceImpl extends ServiceBase<FoodItemForEditing> implements FoodItemEditService {
 
     @Inject
-    InMemoryUnitDeleterImpl(UnitsForListing unitsForListing) {
-        this.data = unitsForListing.getData();
+    FoodItemEditServiceImpl(ServerApi api, CallHandler callHandler) {
+        super(api, callHandler);
     }
 
     @Override
-    public void delete(Id<Unit> unit) {
-        data.firstElement().subscribe(list -> {
-            List<UnitForListing> newList = new ArrayList<>(list);
-            newList.removeIf(v -> v.id() == unit.id());
-            data.onNext(newList);
-        });
+    public void edit(FoodItemForEditing item) {
+        perform(item);
+    }
+
+    @Override
+    Call<? extends Response> buildCall(FoodItemForEditing input) {
+        return api.editFoodItem(input.id(),
+                input.version(),
+                InstantSerialiser.serialize(input.eatBy()),
+                input.storedIn(),
+                input.unit());
     }
 }

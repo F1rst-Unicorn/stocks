@@ -22,14 +22,14 @@
 package de.njsm.stocks.client.business.entities.conflict;
 
 import com.google.auto.value.AutoValue;
-import de.njsm.stocks.client.business.entities.Identifiable;
+import de.njsm.stocks.client.business.entities.Id;
 import de.njsm.stocks.client.business.entities.ScaledUnit;
 import de.njsm.stocks.client.business.entities.UnitForListing;
 
 import java.math.BigDecimal;
 
 @AutoValue
-public abstract class ScaledUnitEditConflictData implements Identifiable<ScaledUnit> {
+public abstract class ScaledUnitEditConflictData implements Id<ScaledUnit> {
 
     public abstract int errorId();
 

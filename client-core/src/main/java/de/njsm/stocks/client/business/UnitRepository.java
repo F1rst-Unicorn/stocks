@@ -30,7 +30,7 @@ public interface UnitRepository extends EntityDeleteRepository<Unit> {
 
     Observable<List<UnitForListing>> getUnits();
 
-    Observable<UnitToEdit> getUnit(Identifiable<Unit> id);
+    Observable<UnitToEdit> getUnit(Id<Unit> id);
 
-    UnitForEditing getCurrentDataBeforeEditing(Identifiable<Unit> data);
+    UnitForEditing getCurrentDataBeforeEditing(Id<Unit> data);
 }

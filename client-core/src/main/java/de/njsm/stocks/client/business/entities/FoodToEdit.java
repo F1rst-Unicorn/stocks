@@ -28,7 +28,7 @@ import java.time.Period;
 import java.util.Optional;
 
 @AutoValue
-public abstract class FoodToEdit implements Identifiable<Food> {
+public abstract class FoodToEdit implements Id<Food> {
 
     public abstract String name();
 

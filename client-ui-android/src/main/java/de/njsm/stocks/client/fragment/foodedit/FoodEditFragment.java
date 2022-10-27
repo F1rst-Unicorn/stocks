@@ -43,7 +43,7 @@ public class FoodEditFragment extends BottomToolbarFragment {
 
     private FoodForm form;
 
-    private Identifiable<Food> id;
+    private Id<Food> id;
 
     @NonNull
     @Override

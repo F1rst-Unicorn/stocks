@@ -27,7 +27,7 @@ import android.widget.DatePicker;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.test.espresso.matcher.BoundedMatcher;
 import de.njsm.stocks.client.business.entities.Entity;
-import de.njsm.stocks.client.business.entities.Identifiable;
+import de.njsm.stocks.client.business.entities.Id;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
@@ -117,11 +117,11 @@ public class Matchers {
         }
     }
 
-    public static <T extends Entity<T>> Identifiable<T> equalBy(Identifiable<T> id) {
+    public static <T extends Entity<T>> Id<T> equalBy(Id<T> id) {
         return ArgumentMatchers.argThat(eqBy(id));
     }
 
-    private static <T extends Entity<T>> ArgumentMatcher<Identifiable<T>> eqBy(Identifiable<T> id) {
+    private static <T extends Entity<T>> ArgumentMatcher<Id<T>> eqBy(Id<T> id) {
         return actual -> actual.id() == id.id();
     }
 }

@@ -30,15 +30,15 @@ import java.util.List;
 
 public interface FoodItemAddRepository {
 
-    Observable<FoodForItemCreation> getFood(Identifiable<Food> food);
+    Observable<FoodForItemCreation> getFood(Id<Food> food);
 
     Observable<List<LocationForSelection>> getLocations();
 
     Observable<List<ScaledUnitForSelection>> getUnits();
 
-    Maybe<Instant> getMaxEatByOfPresentItemsOf(Identifiable<Food> food);
+    Maybe<Instant> getMaxEatByOfPresentItemsOf(Id<Food> food);
 
-    Maybe<Instant> getMaxEatByEverOf(Identifiable<Food> food);
+    Maybe<Instant> getMaxEatByEverOf(Id<Food> food);
 
-    Maybe<Identifiable<Location>> getLocationWithMostItemsOfType(Identifiable<Food> food);
+    Maybe<Id<Location>> getLocationWithMostItemsOfType(Id<Food> food);
 }

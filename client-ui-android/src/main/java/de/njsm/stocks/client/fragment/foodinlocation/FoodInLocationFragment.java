@@ -32,7 +32,7 @@ import androidx.core.content.ContextCompat;
 import androidx.lifecycle.ViewModelProvider;
 import de.njsm.stocks.client.business.Clock;
 import de.njsm.stocks.client.business.entities.FoodForListing;
-import de.njsm.stocks.client.business.entities.Identifiable;
+import de.njsm.stocks.client.business.entities.Id;
 import de.njsm.stocks.client.business.entities.Location;
 import de.njsm.stocks.client.business.entities.LocationName;
 import de.njsm.stocks.client.databind.ExpirationIconProvider;
@@ -71,7 +71,7 @@ public class FoodInLocationFragment extends BottomToolbarFragment {
         templateSwipeList = new TemplateSwipeList(swipeList);
         templateSwipeList.setLoading();
 
-        Identifiable<Location> location = navigator.getId(requireArguments());
+        Id<Location> location = navigator.getId(requireArguments());
         foodListAdapter = new FoodAdapter(this::onItemClicked, this::onItemLongClicked, expirationIconProvider, clock);
         viewModel.getFood(location).observe(getViewLifecycleOwner(), this::onListDataReceived);
         viewModel.getLocation(location).observe(getViewLifecycleOwner(), this::setTitle);

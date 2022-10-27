@@ -56,7 +56,7 @@ class FoodByLocationListInteractorImplTest {
         FoodForListingBaseData food = FoodForListingBaseData.create(1, "Banana", false, Instant.EPOCH);
         StoredFoodAmount amount = StoredFoodAmount.create(food.id(), 2, 3, valueOf(1), "piece", 1);
         FoodForListing expected = FoodForListing.create(food, singletonList(UnitAmount.of(valueOf(1), amount.abbreviation())));
-        Identifiable<Location> id = () -> 42;
+        Id<Location> id = () -> 42;
         when(repository.getFoodBy(equalBy(id))).thenReturn(Observable.just(singletonList(food)));
         when(repository.getFoodAmountsIn(equalBy(id))).thenReturn(Observable.just(singletonList(amount)));
 

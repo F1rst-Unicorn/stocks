@@ -22,10 +22,10 @@
 package de.njsm.stocks.client.business;
 
 import de.njsm.stocks.client.business.entities.Entity;
-import de.njsm.stocks.client.business.entities.Identifiable;
+import de.njsm.stocks.client.business.entities.Id;
 import de.njsm.stocks.client.business.entities.Versionable;
 
 public interface EntityDeleteRepository<E extends Entity<E>> {
 
-    Versionable<E> getEntityForDeletion(Identifiable<E> id);
+    Versionable<E> getEntityForDeletion(Id<E> id);
 }

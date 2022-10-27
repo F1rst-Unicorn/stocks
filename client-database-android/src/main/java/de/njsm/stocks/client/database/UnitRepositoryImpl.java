@@ -45,17 +45,17 @@ class UnitRepositoryImpl implements UnitRepository, ScaledUnitAddRepository {
     }
 
     @Override
-    public Observable<UnitToEdit> getUnit(Identifiable<Unit> id) {
+    public Observable<UnitToEdit> getUnit(Id<Unit> id) {
         return unitDao.getUnitToEdit(id.id());
     }
 
     @Override
-    public UnitForEditing getCurrentDataBeforeEditing(Identifiable<Unit> data) {
+    public UnitForEditing getCurrentDataBeforeEditing(Id<Unit> data) {
         return unitDao.getUnitForEditing(data.id());
     }
 
     @Override
-    public UnitForDeletion getEntityForDeletion(Identifiable<Unit> id) {
+    public UnitForDeletion getEntityForDeletion(Id<Unit> id) {
         return unitDao.getUnit(id.id());
     }
 

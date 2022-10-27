@@ -28,7 +28,7 @@ import java.util.List;
 import java.util.Optional;
 
 @AutoValue
-public abstract class FoodEditingFormData implements Identifiable<Food> {
+public abstract class FoodEditingFormData implements Id<Food> {
 
     public abstract String name();
 

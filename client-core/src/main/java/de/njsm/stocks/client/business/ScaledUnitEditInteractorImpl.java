@@ -50,7 +50,7 @@ class ScaledUnitEditInteractorImpl implements ScaledUnitEditInteractor {
     }
 
     @Override
-    public Observable<ScaledUnitEditingFormData> getFormData(Identifiable<ScaledUnit> id) {
+    public Observable<ScaledUnitEditingFormData> getFormData(Id<ScaledUnit> id) {
         Observable<List<UnitForSelection>> units = repository.getUnitsForSelection();
         Observable<ScaledUnitToEdit> scaledUnitToEdit = repository.getScaledUnit(id);
 

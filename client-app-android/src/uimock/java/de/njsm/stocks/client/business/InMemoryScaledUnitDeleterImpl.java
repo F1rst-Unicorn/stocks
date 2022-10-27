@@ -21,7 +21,7 @@
 
 package de.njsm.stocks.client.business;
 
-import de.njsm.stocks.client.business.entities.Identifiable;
+import de.njsm.stocks.client.business.entities.Id;
 import de.njsm.stocks.client.business.entities.ScaledUnit;
 import de.njsm.stocks.client.business.entities.ScaledUnitForListing;
 import de.njsm.stocks.client.testdata.ScaledUnitsForListing;
@@ -41,7 +41,7 @@ public class InMemoryScaledUnitDeleterImpl implements EntityDeleter<ScaledUnit> 
     }
 
     @Override
-    public void delete(Identifiable<ScaledUnit> unit) {
+    public void delete(Id<ScaledUnit> unit) {
         data.firstElement().subscribe(list -> {
             List<ScaledUnitForListing> newList = new ArrayList<>(list);
             newList.removeIf(v -> v.id() == unit.id());

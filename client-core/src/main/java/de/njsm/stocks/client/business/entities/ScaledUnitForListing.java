@@ -27,7 +27,7 @@ import com.google.auto.value.extension.memoized.Memoized;
 import java.math.BigDecimal;
 
 @AutoValue
-public abstract class ScaledUnitForListing implements Identifiable<ScaledUnit>, ScaledUnitSummaryFields {
+public abstract class ScaledUnitForListing implements Id<ScaledUnit>, ScaledUnitSummaryFields {
 
     @Override
     @Memoized

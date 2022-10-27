@@ -181,7 +181,7 @@ public class ErrorRetryInteractorImplTest {
         uut.retryInBackground(input);
 
         @SuppressWarnings("unchecked")
-        ArgumentCaptor<Identifiable<Location>> captor = ArgumentCaptor.forClass(Identifiable.class);
+        ArgumentCaptor<Id<Location>> captor = ArgumentCaptor.forClass(Id.class);
         verify(locationDeleter).delete(captor.capture());
         assertEquals(locationDeleteErrorDetails.id(), captor.getValue().id());
         verify(errorRepository).deleteError(input);
@@ -222,7 +222,7 @@ public class ErrorRetryInteractorImplTest {
         uut.retryInBackground(input);
 
         @SuppressWarnings("unchecked")
-        ArgumentCaptor<Identifiable<Unit>> captor = ArgumentCaptor.forClass(Identifiable.class);
+        ArgumentCaptor<Id<Unit>> captor = ArgumentCaptor.forClass(Id.class);
         verify(unitDeleter).delete(captor.capture());
         assertEquals(unitDeleteErrorDetails.id(), captor.getValue().id());
         verify(errorRepository).deleteError(input);
@@ -273,7 +273,7 @@ public class ErrorRetryInteractorImplTest {
         uut.retryInBackground(input);
 
         @SuppressWarnings("unchecked")
-        ArgumentCaptor<Identifiable<ScaledUnit>> captor = ArgumentCaptor.forClass(Identifiable.class);
+        ArgumentCaptor<Id<ScaledUnit>> captor = ArgumentCaptor.forClass(Id.class);
         verify(scaledUnitDeleter).delete(captor.capture());
         assertEquals(scaledUnitDeleteErrorDetails.id(), captor.getValue().id());
         verify(errorRepository).deleteError(input);
@@ -312,7 +312,7 @@ public class ErrorRetryInteractorImplTest {
         uut.retryInBackground(input);
 
         @SuppressWarnings("unchecked")
-        ArgumentCaptor<Identifiable<Food>> captor = ArgumentCaptor.forClass(Identifiable.class);
+        ArgumentCaptor<Id<Food>> captor = ArgumentCaptor.forClass(Id.class);
         verify(foodDeleter).delete(captor.capture());
         assertEquals(foodDeleteErrorDetails.id(), captor.getValue().id());
         verify(errorRepository).deleteError(input);
