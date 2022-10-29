@@ -30,6 +30,7 @@ import de.njsm.stocks.client.business.entities.FoodForListing;
 import de.njsm.stocks.client.fragment.allfood.BaseFoodFragmentTest;
 import de.njsm.stocks.client.navigation.FoodByLocationNavigator;
 import de.njsm.stocks.client.navigation.FoodNavigator;
+import de.njsm.stocks.client.presenter.DateRenderStrategy;
 import de.njsm.stocks.client.ui.R;
 import org.junit.After;
 import org.junit.Before;
@@ -51,6 +52,7 @@ public class FoodInLocationFragmentTest extends BaseFoodFragmentTest {
     public void setUp() {
         ((Application) InstrumentationRegistry.getInstrumentation().getTargetContext().getApplicationContext()).getDaggerRoot().inject(this);
         scenario = FragmentScenario.launchInContainer(FoodInLocationFragment.class, new Bundle(), R.style.StocksTheme);
+        dateRenderStrategy = new DateRenderStrategy(localiser);
     }
 
     @After

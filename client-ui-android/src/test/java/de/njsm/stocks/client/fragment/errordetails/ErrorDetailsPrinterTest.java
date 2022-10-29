@@ -149,10 +149,15 @@ public class ErrorDetailsPrinterTest {
         assertEquals("1g Banana\nFridge", uut.visit(data, null));
     }
 
-
     @Test
     public void foodItemDeletingShowsDetails() {
         FoodItemDeleteErrorDetails data = FoodItemDeleteErrorDetails.create(1, "Banana", FoodItemDeleteErrorDetails.Unit.create(BigDecimal.ONE, "g"));
         assertEquals("1g Banana", uut.visit(data, null));
+    }
+
+    @Test
+    public void foodItemEditingShowsDetails() {
+        FoodItemEditErrorDetails data = FoodItemEditErrorDetails.create(1, "Banana", LocalDate.ofEpochDay(2), 3, 4);
+        assertEquals(data.foodName(), uut.visit(data, null));
     }
 }

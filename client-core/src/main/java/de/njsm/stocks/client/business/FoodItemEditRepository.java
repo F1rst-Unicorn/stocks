@@ -19,13 +19,20 @@
  *
  */
 
-package de.njsm.stocks.client.business.entities;
+package de.njsm.stocks.client.business;
 
+import de.njsm.stocks.client.business.entities.*;
 import io.reactivex.rxjava3.core.Observable;
 
-public interface FoodItemEditInteractor {
+import java.util.List;
 
-    Observable<FoodItemEditingFormData> getFormData(Id<Food> food);
+public interface FoodItemEditRepository {
 
-    void add(FoodItemToEdit item);
+    Observable<FoodItemEditBaseData> getFoodItem(Id<FoodItem> id);
+
+    Observable<List<LocationForSelection>> getLocations();
+
+    Observable<List<ScaledUnitForSelection>> getScaledUnits();
+
+    FoodItemForEditing getFoodItemForSending(Id<FoodItem> editedFoodItem);
 }

@@ -25,6 +25,7 @@ import android.content.Context;
 import androidx.room.Room;
 import androidx.test.core.app.ApplicationProvider;
 import de.njsm.stocks.client.business.Clock;
+import de.njsm.stocks.client.business.Localiser;
 import de.njsm.stocks.client.business.entities.EntityType;
 import de.njsm.stocks.client.database.util.RandomnessProvider;
 import io.requery.android.database.sqlite.RequerySQLiteOpenHelperFactory;
@@ -42,6 +43,8 @@ public class DbTestCase implements Clock {
 
     private Instant now;
 
+    protected Localiser localiser;
+
     @Rule
     public RandomnessProvider randomnessProvider = new RandomnessProvider();
 
@@ -54,6 +57,7 @@ public class DbTestCase implements Clock {
                 .openHelperFactory(new RequerySQLiteOpenHelperFactory())
                 .build();
         setNow(Instant.EPOCH);
+        localiser = new Localiser(this);
     }
 
     @After

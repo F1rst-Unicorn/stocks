@@ -30,7 +30,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.lifecycle.ViewModelProvider;
-import de.njsm.stocks.client.business.Clock;
+import de.njsm.stocks.client.business.Localiser;
 import de.njsm.stocks.client.business.entities.FoodForListing;
 import de.njsm.stocks.client.databind.ExpirationIconProvider;
 import de.njsm.stocks.client.databind.FoodAdapter;
@@ -57,7 +57,7 @@ public class AllFoodFragment extends BottomToolbarFragment {
 
     private ExpirationIconProvider expirationIconProvider;
 
-    private Clock clock;
+    private Localiser localiser;
 
     @Override
     @NonNull
@@ -68,7 +68,7 @@ public class AllFoodFragment extends BottomToolbarFragment {
         templateSwipeList = new TemplateSwipeList(swipeList);
         templateSwipeList.setLoading();
 
-        foodListAdapter = new FoodAdapter(this::onItemClicked, this::onItemLongClicked, expirationIconProvider, clock);
+        foodListAdapter = new FoodAdapter(this::onItemClicked, this::onItemLongClicked, expirationIconProvider, localiser);
         viewModel.getFood().observe(getViewLifecycleOwner(), this::onListDataReceived);
 
         SwipeCallback callback = new SwipeCallback(
@@ -130,8 +130,8 @@ public class AllFoodFragment extends BottomToolbarFragment {
     }
 
     @Inject
-    void setClock(Clock clock) {
-        this.clock = clock;
+    void setClock(Localiser localiser) {
+        this.localiser = localiser;
     }
 
     @Inject

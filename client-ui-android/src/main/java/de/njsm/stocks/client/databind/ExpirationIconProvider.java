@@ -31,7 +31,7 @@ import de.njsm.stocks.client.ui.R;
 
 import javax.inject.Inject;
 import java.time.Duration;
-import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 public class ExpirationIconProvider {
@@ -70,8 +70,8 @@ public class ExpirationIconProvider {
         ));
     }
 
-    public Drawable computeIcon(Instant expiration, Instant now) {
-        Instant inFiveDays = now.plus(Duration.ofDays(5));
+    public Drawable computeIcon(LocalDateTime expiration, LocalDateTime now) {
+        LocalDateTime inFiveDays = now.plus(Duration.ofDays(5));
         if (expiration.isBefore(now)) {
             return error;
         } else if (expiration.isAfter(inFiveDays)) {

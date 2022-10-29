@@ -61,7 +61,7 @@ public class ConflictRepositoryImplTest extends DbTestCase {
     public void setUp() {
         uut = new ConflictRepositoryImpl(stocksDatabase.errorDao());
         errorRecorder = new ErrorRecorderImpl(stocksDatabase.errorDao(), this);
-        errorRepository = new ErrorRepositoryImpl(stocksDatabase.errorDao());
+        errorRepository = new ErrorRepositoryImpl(stocksDatabase.errorDao(), localiser);
 
         List<UpdateDbEntity> updates = Arrays.stream(EntityType.values())
                 .map(v -> UpdateDbEntity.create(v, Instant.EPOCH))

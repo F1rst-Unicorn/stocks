@@ -95,4 +95,7 @@ public interface NavigationModule {
 
     @Binds
     FoodItemAddNavigator FoodItemAddNavigator(FoodItemAddNavigatorImpl impl);
+
+    @Binds
+    FoodItemEditNavigator FoodItemEditNavigator(FoodItemEditNavigatorImpl impl);
 }

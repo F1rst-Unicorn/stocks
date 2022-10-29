@@ -447,7 +447,7 @@ public abstract class ErrorDao {
 
     @Query("delete from food_item_to_delete " +
             "where id = :id")
-    abstract void deleteFoodItemEdit(Long id);
+    abstract void deleteFoodItemDelete(Long id);
 
     @Query("select * " +
             "from food_item_to_delete " +
@@ -497,4 +497,20 @@ public abstract class ErrorDao {
             "   and :transactionTime < transaction_time_end " +
             ")")
     abstract FoodItemDbEntity getCurrentFoodItemAsKnownAt(int id, Instant transactionTime);
+
+    @Query("select * " +
+            "from food_item_to_edit")
+    abstract List<FoodItemEditEntity> getFoodItemEdits();
+
+    @Insert
+    abstract long insert(FoodItemEditEntity entity);
+
+    @Query("delete from food_item_to_edit " +
+            "where id = :id")
+    abstract void deleteFoodItemEdit(Long id);
+
+    @Query("select * " +
+            "from food_item_to_edit " +
+            "where id = :id")
+    abstract FoodItemEditEntity getFoodItemEdit(Long id);
 }

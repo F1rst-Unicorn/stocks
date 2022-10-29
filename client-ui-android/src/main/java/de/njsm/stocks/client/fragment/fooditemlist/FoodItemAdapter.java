@@ -27,14 +27,13 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
-import de.njsm.stocks.client.business.Clock;
+import de.njsm.stocks.client.business.Localiser;
 import de.njsm.stocks.client.business.entities.FoodItemForListing;
 import de.njsm.stocks.client.databind.ExpirationIconProvider;
 import de.njsm.stocks.client.presenter.DateRenderStrategy;
 import de.njsm.stocks.client.presenter.UnitAmountRenderStrategy;
 import de.njsm.stocks.client.ui.R;
 
-import java.time.ZoneOffset;
 import java.util.List;
 
 import static de.njsm.stocks.client.fragment.util.ListDiffer.byId;
@@ -43,7 +42,7 @@ class FoodItemAdapter extends RecyclerView.Adapter<FoodItemViewHolder> {
 
     private final DateRenderStrategy dateRenderStrategy;
 
-    private final Clock clock;
+    private final Localiser localiser;
 
     private final ExpirationIconProvider expirationIconProvider;
 
@@ -53,11 +52,11 @@ class FoodItemAdapter extends RecyclerView.Adapter<FoodItemViewHolder> {
 
     private final UnitAmountRenderStrategy unitAmountRenderStrategy;
 
-    FoodItemAdapter(View.OnClickListener onClickListener, ExpirationIconProvider expirationIconProvider, Clock clock) {
+    FoodItemAdapter(View.OnClickListener onClickListener, ExpirationIconProvider expirationIconProvider, Localiser localiser) {
         this.onClickListener = onClickListener;
         unitAmountRenderStrategy = new UnitAmountRenderStrategy();
-        this.dateRenderStrategy = new DateRenderStrategy();
-        this.clock = clock;
+        this.dateRenderStrategy = new DateRenderStrategy(localiser);
+        this.localiser = localiser;
         this.expirationIconProvider = expirationIconProvider;
     }
 
@@ -84,7 +83,7 @@ class FoodItemAdapter extends RecyclerView.Adapter<FoodItemViewHolder> {
         holder.setLocation(item.location());
         holder.setAmount(unitAmountRenderStrategy.render(item.amount()));
         holder.setEatBy(dateRenderStrategy.render(item.eatBy()));
-        holder.setWarningLevel(expirationIconProvider.computeIcon(item.eatBy().atStartOfDay(ZoneOffset.systemDefault()).toInstant(), clock.get()));
+        holder.setWarningLevel(expirationIconProvider.computeIcon(item.eatBy().atStartOfDay(), localiser.now()));
     }
 
     @Override

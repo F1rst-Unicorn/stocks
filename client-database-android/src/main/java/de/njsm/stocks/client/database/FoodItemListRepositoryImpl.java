@@ -29,8 +29,6 @@ import io.reactivex.rxjava3.core.Observable;
 import javax.inject.Inject;
 import java.util.List;
 
-import static java.util.stream.Collectors.toList;
-
 class FoodItemListRepositoryImpl implements FoodItemListRepository, EntityDeleteRepository<FoodItem> {
 
     private final FoodDao foodDao;
@@ -44,8 +42,8 @@ class FoodItemListRepositoryImpl implements FoodItemListRepository, EntityDelete
     }
 
     @Override
-    public Observable<List<FoodItemForListing>> get(Id<Food> food) {
-        return foodDao.get(food.id()).map(v -> v.stream().map(FoodItemForListingData::map).collect(toList()));
+    public Observable<List<FoodItemForListingData>> get(Id<Food> food) {
+        return foodDao.get(food.id());
     }
 
     @Override

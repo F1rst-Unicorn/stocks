@@ -26,6 +26,7 @@ import de.njsm.stocks.client.business.entities.ErrorDetails;
 import de.njsm.stocks.client.business.entities.FoodEditErrorDetails;
 import de.njsm.stocks.client.business.entities.FoodForEditing;
 import de.njsm.stocks.client.database.LocationDbEntity;
+import de.njsm.stocks.client.database.ScaledUnitDbEntity;
 import de.njsm.stocks.client.database.UnitDbEntity;
 
 import java.time.Period;
@@ -39,9 +40,13 @@ public class FoodEditErrorRepositoryImplTest extends AbstractErrorRepositoryImpl
     ErrorDetails recordError(StatusCodeException e) {
         LocationDbEntity location = standardEntities.locationDbEntity();
         UnitDbEntity unit = standardEntities.unitDbEntity();
-        FoodForEditing form = FoodForEditing.create(randomnessProvider.getId("FoodForEditing"), 2, "Banana", Period.ofDays(3), Optional.of(location.id()), unit.id(), "yellow");
+        ScaledUnitDbEntity scaledUnit = standardEntities.scaledUnitDbEntityBuilder()
+                .unit(unit.id())
+                .build();
+        FoodForEditing form = FoodForEditing.create(randomnessProvider.getId("FoodForEditing"), 2, "Banana", Period.ofDays(3), Optional.of(location.id()), scaledUnit.id(), "yellow");
         FoodEditErrorDetails errorDetails = FoodEditErrorDetails.create(form.id(), form.name(), form.expirationOffset(), form.location(), form.storeUnit(), form.description());
         stocksDatabase.synchronisationDao().writeUnits(singletonList(unit));
+        stocksDatabase.synchronisationDao().writeScaledUnits(singletonList(scaledUnit));
         stocksDatabase.synchronisationDao().writeLocations(singletonList(location));
         errorRecorder.recordFoodEditError(e, form);
         return errorDetails;

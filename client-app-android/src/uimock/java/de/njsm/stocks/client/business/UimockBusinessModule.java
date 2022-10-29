@@ -155,4 +155,7 @@ public interface UimockBusinessModule {
 
     @Binds
     EntityDeleter<FoodItem> FoodItemDeleter(InMemoryFoodItemDeleterImpl impl);
+
+    @Binds
+    FoodItemEditInteractor FoodItemEditInteractor(InMemoryFoodItemEditInteractorImpl impl);
 }

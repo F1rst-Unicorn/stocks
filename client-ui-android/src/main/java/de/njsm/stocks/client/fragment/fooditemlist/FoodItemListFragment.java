@@ -31,7 +31,7 @@ import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.RecyclerView;
-import de.njsm.stocks.client.business.Clock;
+import de.njsm.stocks.client.business.Localiser;
 import de.njsm.stocks.client.business.entities.Food;
 import de.njsm.stocks.client.business.entities.FoodItemForListing;
 import de.njsm.stocks.client.business.entities.Id;
@@ -58,7 +58,7 @@ public class FoodItemListFragment extends InjectableFragment {
 
     private ExpirationIconProvider expirationIconProvider;
 
-    private Clock clock;
+    private Localiser localiser;
 
     private Id<Food> food;
 
@@ -70,7 +70,7 @@ public class FoodItemListFragment extends InjectableFragment {
         templateSwipeList.setLoading();
         templateSwipeList.disableSwipeRefresh();
 
-        adapter = new FoodItemAdapter(this::onItemClicked, expirationIconProvider, clock);
+        adapter = new FoodItemAdapter(this::onItemClicked, expirationIconProvider, localiser);
         food = navigator.getFoodId(requireArguments());
         viewModel.get(food).observe(getViewLifecycleOwner(), this::onListDataReceived);
 
@@ -125,7 +125,7 @@ public class FoodItemListFragment extends InjectableFragment {
     }
 
     @Inject
-    void setClock(Clock clock) {
-        this.clock = clock;
+    void setClock(Localiser localiser) {
+        this.localiser = localiser;
     }
 }

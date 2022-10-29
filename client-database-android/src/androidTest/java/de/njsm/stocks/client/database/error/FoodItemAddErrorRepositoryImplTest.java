@@ -24,13 +24,13 @@ package de.njsm.stocks.client.database.error;
 import de.njsm.stocks.client.business.StatusCodeException;
 import de.njsm.stocks.client.business.entities.ErrorDetails;
 import de.njsm.stocks.client.business.entities.FoodItemAddErrorDetails;
-import de.njsm.stocks.client.business.entities.FoodItemForm;
+import de.njsm.stocks.client.business.entities.FoodItemAddFormForErrorRecording;
 import de.njsm.stocks.client.database.FoodDbEntity;
 import de.njsm.stocks.client.database.LocationDbEntity;
 import de.njsm.stocks.client.database.ScaledUnitDbEntity;
 import de.njsm.stocks.client.database.UnitDbEntity;
 
-import java.time.LocalDate;
+import java.time.Instant;
 import java.util.List;
 
 import static java.util.Collections.singletonList;
@@ -47,10 +47,10 @@ public class FoodItemAddErrorRepositoryImplTest extends AbstractErrorRepositoryI
         stocksDatabase.synchronisationDao().writeLocations(singletonList(location));
         FoodDbEntity food = standardEntities.foodDbEntity();
         stocksDatabase.synchronisationDao().writeFood(singletonList(food));
-        FoodItemForm form = FoodItemForm.create(LocalDate.ofEpochDay(2), food.id(), location.id(), scaledUnit.id());
+        FoodItemAddFormForErrorRecording form = FoodItemAddFormForErrorRecording.create(Instant.ofEpochSecond(2), food.id(), location.id(), scaledUnit.id());
         errorRecorder.recordFoodItemAddError(e, form);
         return FoodItemAddErrorDetails.create(
-                form.eatBy(),
+                localiser.toLocalDate(form.eatBy()),
                 form.ofType(),
                 form.storedIn(),
                 form.unit(),

@@ -44,7 +44,7 @@ public class ErrorRepositoryImplTest extends DbTestCase {
     @Before
     public void setup() {
         errorRecorder = new ErrorRecorderImpl(stocksDatabase.errorDao(), this);
-        uut = new ErrorRepositoryImpl(stocksDatabase.errorDao());
+        uut = new ErrorRepositoryImpl(stocksDatabase.errorDao(), localiser);
     }
 
     @Test

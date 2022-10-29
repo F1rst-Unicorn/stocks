@@ -86,6 +86,9 @@ public class ErrorRetryInteractorImplTest {
     private EntityDeleter<FoodItem> foodItemDeleter;
 
     @Mock
+    private FoodItemEditInteractor foodItemEditInteractor;
+
+    @Mock
     private Synchroniser synchroniser;
 
     @Mock
@@ -110,6 +113,7 @@ public class ErrorRetryInteractorImplTest {
                 foodEditInteractor,
                 foodItemAddInteractor,
                 foodItemDeleter,
+                foodItemEditInteractor,
                 synchroniser,
                 scheduler,
                 errorRepository);
@@ -362,6 +366,18 @@ public class ErrorRetryInteractorImplTest {
         uut.retryInBackground(input);
 
         verify(foodItemDeleter).delete(Matchers.equalBy(foodDeleteErrorDetails));
+        verify(errorRepository).deleteError(input);
+    }
+
+    @Test
+    void retryingFoodItemEditingDispatches() {
+        FoodItemEditErrorDetails foodItemEditErrorDetails = FoodItemEditErrorDetails.create(1, "Banana", LocalDate.ofEpochDay(2), 3, 4);
+        ErrorDescription input = ErrorDescription.create(1, StatusCode.DATABASE_UNREACHABLE, "", "test", foodItemEditErrorDetails);
+        FoodItemToEdit expected = FoodItemToEdit.create(foodItemEditErrorDetails.id(), foodItemEditErrorDetails.eatBy(), foodItemEditErrorDetails.storedIn(), foodItemEditErrorDetails.unit());
+
+        uut.retryInBackground(input);
+
+        verify(foodItemEditInteractor).edit(expected);
         verify(errorRepository).deleteError(input);
     }
 }

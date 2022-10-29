@@ -22,6 +22,7 @@
 package de.njsm.stocks.client.business.entities;
 
 import com.google.auto.value.AutoValue;
+import de.njsm.stocks.client.business.Localiser;
 
 import java.time.LocalDate;
 
@@ -36,5 +37,15 @@ public abstract class FoodItemToEdit implements Id<FoodItem> {
 
     public static FoodItemToEdit create(int id, LocalDate eatBy, int storedIn, int unit) {
         return new AutoValue_FoodItemToEdit(id, eatBy, storedIn, unit);
+    }
+
+    public FoodItemForEditing withVersion(int version, Localiser localiser) {
+        return FoodItemForEditing.create(
+                id(),
+                version,
+                localiser.toInstant(eatBy()),
+                storedIn(),
+                unit()
+        );
     }
 }

@@ -41,16 +41,19 @@ class FoodRegrouperTest {
 
     private FoodRegrouper uut;
 
+    private Localiser localiser;
+
     @BeforeEach
     void setUp() {
-        uut = new FoodRegrouper();
+        localiser = new Localiser(Instant::now);
+        uut = new FoodRegrouper(localiser);
     }
 
     @Test
     void singleFoodWithSingleAmountIsReturned() {
         FoodForListingBaseData food = FoodForListingBaseData.create(1, "Banana", false, Instant.EPOCH);
         StoredFoodAmount amount = StoredFoodAmount.create(food.id(), 2, 3, valueOf(1), "piece", 1);
-        FoodForListing expected = FoodForListing.create(food, singletonList(UnitAmount.of(valueOf(1), amount.abbreviation())));
+        FoodForListing expected = FoodForListing.create(food, singletonList(UnitAmount.of(valueOf(1), amount.abbreviation())), localiser);
         testDataProcessing(
                 singletonList(food),
                 singletonList(amount),
@@ -61,7 +64,7 @@ class FoodRegrouperTest {
     void scaleAndAmountIsMultiplied() {
         FoodForListingBaseData food = FoodForListingBaseData.create(1, "Banana", false, Instant.EPOCH);
         StoredFoodAmount amount = StoredFoodAmount.create(food.id(), 2, 3, valueOf(2), "piece", 3);
-        FoodForListing expected = FoodForListing.create(food, singletonList(UnitAmount.of(valueOf(6), amount.abbreviation())));
+        FoodForListing expected = FoodForListing.create(food, singletonList(UnitAmount.of(valueOf(6), amount.abbreviation())), localiser);
         testDataProcessing(
                 singletonList(food),
                 singletonList(amount),
@@ -72,10 +75,10 @@ class FoodRegrouperTest {
     void foodsAreOrderedByEatByDate() {
         FoodForListingBaseData food = FoodForListingBaseData.create(1, "Banana", false, Instant.EPOCH.plus(1, ChronoUnit.DAYS));
         StoredFoodAmount amount = StoredFoodAmount.create(food.id(), 2, 3, valueOf(2), "piece", 3);
-        FoodForListing expected = FoodForListing.create(food, singletonList(UnitAmount.of(valueOf(6), amount.abbreviation())));
+        FoodForListing expected = FoodForListing.create(food, singletonList(UnitAmount.of(valueOf(6), amount.abbreviation())), localiser);
         FoodForListingBaseData food2 = FoodForListingBaseData.create(10, "Banana", false, Instant.EPOCH);
         StoredFoodAmount amount2 = StoredFoodAmount.create(food2.id(), 2, 3, valueOf(2), "piece", 3);
-        FoodForListing expected2 = FoodForListing.create(food2, singletonList(UnitAmount.of(valueOf(6), amount2.abbreviation())));
+        FoodForListing expected2 = FoodForListing.create(food2, singletonList(UnitAmount.of(valueOf(6), amount2.abbreviation())), localiser);
         testDataProcessing(
                 asList(food, food2),
                 asList(amount, amount2),
@@ -87,7 +90,7 @@ class FoodRegrouperTest {
         FoodForListingBaseData food = FoodForListingBaseData.create(1, "Banana", false, Instant.EPOCH.plus(1, ChronoUnit.DAYS));
         StoredFoodAmount amount = StoredFoodAmount.create(food.id(), 2, 3, valueOf(2), "piece", 3);
         StoredFoodAmount amount2 = StoredFoodAmount.create(food.id(), 4, 3, valueOf(1000), "piece", 3);
-        FoodForListing expected = FoodForListing.create(food, singletonList(UnitAmount.of(valueOf(3006), amount.abbreviation())));
+        FoodForListing expected = FoodForListing.create(food, singletonList(UnitAmount.of(valueOf(3006), amount.abbreviation())), localiser);
         testDataProcessing(
                 singletonList(food),
                 asList(amount, amount2),

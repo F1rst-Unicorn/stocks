@@ -23,6 +23,7 @@ package de.njsm.stocks.client.fragment.allfood;
 
 import androidx.annotation.StringRes;
 import de.njsm.stocks.client.business.EntityDeleter;
+import de.njsm.stocks.client.business.Localiser;
 import de.njsm.stocks.client.business.entities.Food;
 import de.njsm.stocks.client.business.entities.FoodForListing;
 import de.njsm.stocks.client.business.entities.Id;
@@ -37,7 +38,6 @@ import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 
 import javax.inject.Inject;
-import java.time.Instant;
 import java.util.List;
 
 import static androidx.test.espresso.Espresso.onView;
@@ -56,12 +56,14 @@ public abstract class BaseFoodFragmentTest {
     private EntityDeleter<Food> deleter;
 
     private UnitAmountRenderStrategy unitAmountRenderStrategy;
-    private DateRenderStrategy dateRenderStrategy;
+
+    protected DateRenderStrategy dateRenderStrategy;
+
+    protected Localiser localiser;
 
     @Before
     public void setUpBase() {
         unitAmountRenderStrategy = new UnitAmountRenderStrategy();
-        dateRenderStrategy = new DateRenderStrategy();
     }
 
     @After
@@ -108,7 +110,7 @@ public abstract class BaseFoodFragmentTest {
                     .check(matches(withEffectiveVisibility(expectedShoppingCartVisibility)));
             onView(recyclerView(R.id.template_swipe_list_list)
                     .atPositionOnView(position, R.id.item_food_outline_date))
-                    .check(matches(withText(dateRenderStrategy.renderRelative(item.nextEatByDate(), Instant.now()).toString())));
+                    .check(matches(withText(dateRenderStrategy.renderRelative(item.nextEatByDate()).toString())));
             onView(recyclerView(R.id.template_swipe_list_list)
                     .atPositionOnView(position, R.id.item_food_outline_count))
                     .check(matches(withText(unitAmountRenderStrategy.render(item.storedAmounts()))));
@@ -155,5 +157,10 @@ public abstract class BaseFoodFragmentTest {
     @Inject
     void setDeleter(EntityDeleter<Food> deleter) {
         this.deleter = deleter;
+    }
+
+    @Inject
+    void setLocaliser(Localiser localiser) {
+        this.localiser = localiser;
     }
 }

@@ -34,9 +34,7 @@ import org.junit.Test;
 import javax.inject.Provider;
 import java.math.BigDecimal;
 import java.time.Instant;
-import java.time.LocalDate;
 import java.time.Period;
-import java.time.ZoneId;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -406,12 +404,12 @@ public class ErrorRecorderImplTest extends DbTestCase {
 
     @Test
     public void recordingErrorAddingFoodItemWorks() {
-        test(FoodItemForm.create(LocalDate.ofEpochDay(2), 1, 2, 3),
+        test(FoodItemAddFormForErrorRecording.create(Instant.ofEpochMilli(2), 1, 2, 3),
                 uut::recordFoodItemAddError,
                 ErrorEntity.Action.ADD_FOOD_ITEM,
                 stocksDatabase.errorDao()::getFoodItemAdds,
                 (expected, actual) -> {
-                    assertEquals(expected.eatBy().atStartOfDay(ZoneId.systemDefault()).toInstant(), actual.eatBy());
+                    assertEquals(expected.eatBy(), actual.eatBy());
                     assertEquals(expected.ofType(), actual.ofType().id());
                     assertEquals(stocksDatabase.errorDao().getTransactionTimeOf(EntityType.FOOD), actual.ofType().transactionTime());
                     assertEquals(expected.storedIn(), actual.storedIn().id());
@@ -434,7 +432,24 @@ public class ErrorRecorderImplTest extends DbTestCase {
                     assertEquals(stocksDatabase.errorDao().getTransactionTimeOf(EntityType.FOOD_ITEM), actual.foodItem().transactionTime());
                 }
         );
+    }
 
+    @Test
+    public void recordingErrorEditingFoodItemWorks() {
+        test(FoodItemForEditing.create(1, 2, Instant.EPOCH, 3, 4),
+                uut::recordFoodItemEditError,
+                ErrorEntity.Action.EDIT_FOOD_ITEM,
+                stocksDatabase.errorDao()::getFoodItemEdits,
+                (expected, actual) -> {
+                    assertEquals(expected.id(), actual.foodItem().id());
+                    assertEquals(stocksDatabase.errorDao().getTransactionTimeOf(EntityType.FOOD_ITEM), actual.foodItem().transactionTime());
+                    assertEquals(expected.eatBy(), actual.eatBy());
+                    assertEquals(expected.storedIn(), actual.storedIn().id());
+                    assertEquals(stocksDatabase.errorDao().getTransactionTimeOf(EntityType.LOCATION), actual.storedIn().transactionTime());
+                    assertEquals(expected.unit(), actual.unit().id());
+                    assertEquals(stocksDatabase.errorDao().getTransactionTimeOf(EntityType.SCALED_UNIT), actual.unit().transactionTime());
+                }
+        );
     }
 
     private <T, E> void test(T input,

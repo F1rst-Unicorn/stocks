@@ -39,8 +39,11 @@ import static java.util.stream.Collectors.toList;
 
 class FoodRegrouper {
 
+    private final Localiser localiser;
+
     @Inject
-    FoodRegrouper() {
+    FoodRegrouper(Localiser localiser) {
+        this.localiser = localiser;
     }
 
     List<FoodForListing> regroup(List<FoodForListingBaseData> food, List<StoredFoodAmount> amounts) {
@@ -53,12 +56,12 @@ class FoodRegrouper {
                 .collect(toList());
     }
 
-    private static FoodForListing regroupSingleFood(FoodForListingBaseData food, List<StoredFoodAmount> storedFoodAmounts) {
+    private FoodForListing regroupSingleFood(FoodForListingBaseData food, List<StoredFoodAmount> storedFoodAmounts) {
         List<UnitAmount> amountsSummedByUnit = storedFoodAmounts.stream().collect(groupingBy(StoredFoodAmount::unitId))
                 .values().stream()
                 .map(FoodRegrouper::addAmountsOfSameUnit)
                 .collect(toList());
-        return FoodForListing.create(food, amountsSummedByUnit);
+        return FoodForListing.create(food, amountsSummedByUnit, localiser);
     }
 
     private static UnitAmount addAmountsOfSameUnit(List<StoredFoodAmount> singleUnitAmounts) {

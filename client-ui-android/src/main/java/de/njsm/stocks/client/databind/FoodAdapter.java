@@ -22,26 +22,24 @@
 package de.njsm.stocks.client.databind;
 
 import android.view.View;
-import de.njsm.stocks.client.business.Clock;
+import de.njsm.stocks.client.business.Localiser;
 import de.njsm.stocks.client.business.entities.Food;
 import de.njsm.stocks.client.business.entities.FoodForListing;
 import de.njsm.stocks.client.fragment.view.FoodOutlineViewHolder;
 import de.njsm.stocks.client.presenter.DateRenderStrategy;
 
-import java.time.ZoneId;
-
 public class FoodAdapter extends AbstractFoodAdapter<Food, FoodForListing> {
 
     protected final DateRenderStrategy dateRenderStrategy;
 
-    private final Clock clock;
+    private final Localiser localiser;
 
     private final ExpirationIconProvider expirationIconProvider;
 
-    public FoodAdapter(View.OnClickListener onClickListener, View.OnLongClickListener onLongClickListener, ExpirationIconProvider expirationIconProvider, Clock clock) {
+    public FoodAdapter(View.OnClickListener onClickListener, View.OnLongClickListener onLongClickListener, ExpirationIconProvider expirationIconProvider, Localiser localiser) {
         super(onClickListener, onLongClickListener);
-        this.clock = clock;
-        this.dateRenderStrategy = new DateRenderStrategy();
+        this.localiser = localiser;
+        this.dateRenderStrategy = new DateRenderStrategy(localiser);
         this.expirationIconProvider = expirationIconProvider;
     }
 
@@ -50,7 +48,7 @@ public class FoodAdapter extends AbstractFoodAdapter<Food, FoodForListing> {
         holder.setName(item.name());
         holder.showToBuy(item.toBuy());
         holder.setAmount(unitAmountRenderStrategy.render(item.storedAmounts()));
-        holder.setExpirationDate(dateRenderStrategy.renderRelative(item.nextEatByDate(), clock.get()));
-        holder.setExpirationWarningLevel(expirationIconProvider.computeIcon(item.nextEatByDate().atStartOfDay(ZoneId.systemDefault()).toInstant(), clock.get()));
+        holder.setExpirationDate(dateRenderStrategy.renderRelative(item.nextEatByDate()));
+        holder.setExpirationWarningLevel(expirationIconProvider.computeIcon(item.nextEatByDate().atStartOfDay(), localiser.now()));
     }
 }

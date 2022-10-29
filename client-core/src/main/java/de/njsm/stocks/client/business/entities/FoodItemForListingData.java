@@ -19,13 +19,10 @@
  *
  */
 
-package de.njsm.stocks.client.database;
+package de.njsm.stocks.client.business.entities;
 
 import com.google.auto.value.AutoValue;
-import de.njsm.stocks.client.business.entities.FoodItem;
-import de.njsm.stocks.client.business.entities.FoodItemForListing;
-import de.njsm.stocks.client.business.entities.Id;
-import de.njsm.stocks.client.business.entities.StoredAmount;
+import de.njsm.stocks.client.business.Localiser;
 
 import java.math.BigDecimal;
 import java.time.Instant;
@@ -50,7 +47,7 @@ public abstract class FoodItemForListingData implements Id<FoodItem> {
         return new AutoValue_FoodItemForListingData(id, amount, abbreviation, location, eatBy, buyer, registerer);
     }
 
-    public FoodItemForListing map() {
-        return FoodItemForListing.create(id(), StoredAmount.create(amount(), abbreviation()), location(), eatBy().atZone(ZoneId.systemDefault()).toLocalDate(), buyer(), registerer());
+    public FoodItemForListing map(Localiser localiser) {
+        return FoodItemForListing.create(id(), StoredAmount.create(amount(), abbreviation()), location(), localiser.toLocalDate(eatBy()), buyer(), registerer());
     }
 }

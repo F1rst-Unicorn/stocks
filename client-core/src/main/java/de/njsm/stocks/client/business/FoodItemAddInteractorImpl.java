@@ -96,11 +96,11 @@ class FoodItemAddInteractorImpl implements FoodItemAddInteractor {
 
     void addInBackground(FoodItemForm item) {
         try {
-            service.add(item.toNetwork());
+            service.add(item.toNetwork(localiser));
             synchroniser.synchronise();
         } catch (SubsystemException e) {
             LOG.warn("failed to add food " + item);
-            errorRecorder.recordFoodItemAddError(e, item);
+            errorRecorder.recordFoodItemAddError(e, item.toErrorRecording(localiser));
             synchroniser.synchroniseAfterError(e);
         }
     }

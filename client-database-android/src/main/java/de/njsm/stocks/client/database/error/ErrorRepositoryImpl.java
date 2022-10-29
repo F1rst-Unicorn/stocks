@@ -22,12 +22,12 @@
 package de.njsm.stocks.client.database.error;
 
 import de.njsm.stocks.client.business.ErrorRepository;
+import de.njsm.stocks.client.business.Localiser;
 import de.njsm.stocks.client.business.entities.*;
 import de.njsm.stocks.client.database.*;
 import io.reactivex.rxjava3.core.Observable;
 
 import javax.inject.Inject;
-import java.time.ZoneId;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -38,9 +38,12 @@ public class ErrorRepositoryImpl implements ErrorRepository, ErrorEntity.ActionV
 
     private final ErrorDao errorDao;
 
+    private final Localiser localiser;
+
     @Inject
-    ErrorRepositoryImpl(ErrorDao errorDao) {
+    ErrorRepositoryImpl(ErrorDao errorDao, Localiser localiser) {
         this.errorDao = errorDao;
+        this.localiser = localiser;
     }
 
     @Override
@@ -183,7 +186,7 @@ public class ErrorRepositoryImpl implements ErrorRepository, ErrorEntity.ActionV
         ScaledUnitDbEntity scaledUnit = errorDao.getScaledUnitByValidOrTransactionTime(entity.unit());
         UnitDbEntity unit = errorDao.getUnitByValidOrTransactionTime(PreservedId.create(scaledUnit.unit(), entity.unit().transactionTime()));
         return FoodItemAddErrorDetails.create(
-                entity.eatBy().atZone(ZoneId.systemDefault()).toLocalDate(),
+                localiser.toLocalDate(entity.eatBy()),
                 entity.ofType().id(),
                 entity.storedIn().id(),
                 scaledUnit.id(),
@@ -205,5 +208,13 @@ public class ErrorRepositoryImpl implements ErrorRepository, ErrorEntity.ActionV
                 food.name(),
                 FoodItemDeleteErrorDetails.Unit.create(scaledUnit.scale(), unit.abbreviation())
         );
+    }
+
+    @Override
+    public ErrorDetails editFoodItem(ErrorEntity.Action action, Long input) {
+        FoodItemEditEntity entity = errorDao.getFoodItemEdit(input);
+        FoodItemDbEntity foodItem = errorDao.getFoodItemByValidOrTransactionTime(entity.foodItem());
+        FoodDbEntity food = errorDao.getFoodByValidOrTransactionTime(PreservedId.create(foodItem.ofType(), entity.foodItem().transactionTime()));
+        return FoodItemEditErrorDetails.create(entity.foodItem().id(), food.name(), localiser.toLocalDate(entity.eatBy()), entity.storedIn().id(), entity.unit().id());
     }
 }

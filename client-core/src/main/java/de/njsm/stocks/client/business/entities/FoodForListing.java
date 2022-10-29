@@ -22,9 +22,9 @@
 package de.njsm.stocks.client.business.entities;
 
 import com.google.auto.value.AutoValue;
+import de.njsm.stocks.client.business.Localiser;
 
 import java.time.LocalDate;
-import java.time.ZoneId;
 import java.util.List;
 
 @AutoValue
@@ -42,7 +42,7 @@ public abstract class FoodForListing implements Id<Food> {
         return new AutoValue_FoodForListing(id, name, toBuy, nextEatByDate, storedAmounts);
     }
 
-    public static FoodForListing create(FoodForListingBaseData food, List<UnitAmount> storedAmounts) {
-        return new AutoValue_FoodForListing(food.id(), food.name(), food.toBuy(), food.nextEatByDate().atZone(ZoneId.systemDefault()).toLocalDate(), storedAmounts);
+    public static FoodForListing create(FoodForListingBaseData food, List<UnitAmount> storedAmounts, Localiser localiser) {
+        return new AutoValue_FoodForListing(food.id(), food.name(), food.toBuy(), localiser.toLocalDate(food.nextEatByDate()), storedAmounts);
     }
 }

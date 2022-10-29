@@ -32,15 +32,23 @@ public class Localiser {
     private final Clock clock;
 
     @Inject
-    Localiser(Clock clock) {
+    public Localiser(Clock clock) {
         this.clock = clock;
     }
 
-    LocalDate toLocalDate(Instant i) {
+    public Instant toInstant(LocalDate d) {
+        return d.atStartOfDay(ZoneId.systemDefault()).toInstant();
+    }
+
+    public Instant toInstant(LocalDateTime d) {
+        return d.atZone(ZoneId.systemDefault()).toInstant();
+    }
+
+    public LocalDate toLocalDate(Instant i) {
         return i.atZone(ZoneId.systemDefault()).toLocalDate();
     }
 
-    LocalDateTime toLocalDateTime(Instant i) {
+    public LocalDateTime toLocalDateTime(Instant i) {
         return i.atZone(ZoneId.systemDefault()).toLocalDateTime();
     }
 
@@ -48,7 +56,11 @@ public class Localiser {
         return toLocalDate(clock.get());
     }
 
-    LocalDateTime now() {
+    public LocalDateTime now() {
         return toLocalDateTime(clock.get());
+    }
+
+    public long epochMilli() {
+        return clock.get().toEpochMilli();
     }
 }

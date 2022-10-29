@@ -28,6 +28,7 @@ import de.njsm.stocks.client.Application;
 import de.njsm.stocks.client.Matchers;
 import de.njsm.stocks.client.business.EntityDeleter;
 import de.njsm.stocks.client.business.FakeFoodItemListInteractor;
+import de.njsm.stocks.client.business.Localiser;
 import de.njsm.stocks.client.business.Synchroniser;
 import de.njsm.stocks.client.business.entities.Food;
 import de.njsm.stocks.client.business.entities.FoodItem;
@@ -77,13 +78,15 @@ public class FoodItemListFragmentTest {
 
     private Id<Food> food;
 
+    private Localiser localiser;
+
     @Before
     public void setUp() {
         ((Application) InstrumentationRegistry.getInstrumentation().getTargetContext().getApplicationContext()).getDaggerRoot().inject(this);
         food = () -> 42;
         when(foodItemListNavigator.getFoodId(any())).thenReturn(food);
         scenario = FragmentScenario.launchInContainer(FoodItemListFragment.class, new Bundle(), R.style.StocksTheme);
-        dateRenderStrategy = new DateRenderStrategy();
+        dateRenderStrategy = new DateRenderStrategy(localiser);
         unitAmountRenderStrategy = new UnitAmountRenderStrategy();
     }
 
@@ -181,5 +184,10 @@ public class FoodItemListFragmentTest {
     @Inject
     public void setFoodItemDeleter(EntityDeleter<FoodItem> foodItemDeleter) {
         this.foodItemDeleter = foodItemDeleter;
+    }
+
+    @Inject
+    void setLocaliser(Localiser localiser) {
+        this.localiser = localiser;
     }
 }

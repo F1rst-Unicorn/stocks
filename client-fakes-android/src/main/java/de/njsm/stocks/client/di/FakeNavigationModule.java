@@ -188,4 +188,10 @@ class FakeNavigationModule {
     DialogDisplayer DialogDisplayer() {
         return mock(DialogDisplayer.class);
     }
+
+    @Provides
+    @Singleton
+    FoodItemEditNavigator FoodItemEditNavigator() {
+        return mock(FoodItemEditNavigator.class);
+    }
 }

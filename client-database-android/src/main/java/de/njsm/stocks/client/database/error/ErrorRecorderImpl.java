@@ -34,7 +34,6 @@ import javax.inject.Inject;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.time.Instant;
-import java.time.ZoneId;
 
 import static de.njsm.stocks.client.database.DataMapper.map;
 import static java.util.Optional.ofNullable;
@@ -204,13 +203,13 @@ public class ErrorRecorderImpl implements ErrorRecorder {
     }
 
     @Override
-    public void recordFoodItemAddError(SubsystemException e, FoodItemForm item) {
+    public void recordFoodItemAddError(SubsystemException e, FoodItemAddFormForErrorRecording item) {
         ExceptionData exceptionData = new ExceptionInserter().visit(e, null);
         Instant foodTransactionTime = errorDao.getTransactionTimeOf(EntityType.FOOD);
         Instant scaledUnitTransactionTime = errorDao.getTransactionTimeOf(EntityType.SCALED_UNIT);
         Instant locationTransactionTime = errorDao.getTransactionTimeOf(EntityType.LOCATION);
         FoodItemAddEntity entity = FoodItemAddEntity.create(
-                item.eatBy().atStartOfDay(ZoneId.systemDefault()).toInstant(),
+                item.eatBy(),
                 PreservedId.create(item.ofType(), foodTransactionTime),
                 PreservedId.create(item.storedIn(), locationTransactionTime),
                 PreservedId.create(item.unit(), scaledUnitTransactionTime)
@@ -226,6 +225,22 @@ public class ErrorRecorderImpl implements ErrorRecorder {
         FoodItemDeleteEntity entity = FoodItemDeleteEntity.create(input.version(), PreservedId.create(input.id(), currentTransactionTime));
         long dataId = errorDao.insert(entity);
         errorDao.insert(ErrorEntity.create(ErrorEntity.Action.DELETE_FOOD_ITEM, dataId, exceptionData.exceptionType(), exceptionData.exceptionId()));
+    }
+
+    @Override
+    public void recordFoodItemEditError(SubsystemException e, FoodItemForEditing item) {
+        ExceptionData exceptionData = new ExceptionInserter().visit(e, null);
+        Instant currentTransactionTime = errorDao.getTransactionTimeOf(EntityType.FOOD_ITEM);
+        Instant currentLocationTransactionTime = errorDao.getTransactionTimeOf(EntityType.LOCATION);
+        Instant currentScaledUnitTransactionTime = errorDao.getTransactionTimeOf(EntityType.SCALED_UNIT);
+        FoodItemEditEntity entity = FoodItemEditEntity.create(
+                PreservedId.create(item.id(), currentTransactionTime),
+                item.eatBy(),
+                PreservedId.create(item.storedIn(), currentLocationTransactionTime),
+                PreservedId.create(item.unit(), currentScaledUnitTransactionTime),
+                clock.get());
+        long dataId = errorDao.insert(entity);
+        errorDao.insert(ErrorEntity.create(ErrorEntity.Action.EDIT_FOOD_ITEM, dataId, exceptionData.exceptionType(), exceptionData.exceptionId()));
     }
 
     @AutoValue

@@ -311,7 +311,7 @@
     </fragment>
     <fragment
             android:id="@+id/nav_fragment_food_item_edit"
-            android:name="androidx.fragment.app.Fragment"
+            android:name="de.njsm.stocks.client.fragment.fooditemedit.FoodItemEditFragment"
             tools:layout="@layout/fragment_food_form">
         <argument
                 android:name="id"

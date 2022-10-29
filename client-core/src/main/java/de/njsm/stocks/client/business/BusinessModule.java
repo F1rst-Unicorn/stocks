@@ -141,4 +141,7 @@ public interface BusinessModule {
 
     @Binds
     EntityDeleter<FoodItem> FoodItemDeleter(FoodItemDeleterImpl impl);
+
+    @Binds
+    FoodItemEditInteractor FoodItemEditInteractor(FoodItemEditInteractorImpl impl);
 }

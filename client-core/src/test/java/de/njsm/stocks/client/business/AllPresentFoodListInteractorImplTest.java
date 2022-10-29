@@ -48,16 +48,19 @@ class AllPresentFoodListInteractorImplTest {
     @Mock
     private FoodListRepository repository;
 
+    private Localiser localiser;
+
     @BeforeEach
     void setUp() {
-        uut = new AllPresentFoodListInteractorImpl(repository, new FoodRegrouper());
+        localiser = new Localiser(Instant::now);
+        uut = new AllPresentFoodListInteractorImpl(repository, new FoodRegrouper(localiser));
     }
 
     @Test
     void singleFoodWithSingleAmountIsReturned() {
         FoodForListingBaseData food = FoodForListingBaseData.create(1, "Banana", false, Instant.EPOCH);
         StoredFoodAmount amount = StoredFoodAmount.create(food.id(), 2, 3, valueOf(1), "piece", 1);
-        FoodForListing expected = FoodForListing.create(food, singletonList(UnitAmount.of(valueOf(1), amount.abbreviation())));
+        FoodForListing expected = FoodForListing.create(food, singletonList(UnitAmount.of(valueOf(1), amount.abbreviation())), localiser);
         when(repository.getFood()).thenReturn(Observable.just(singletonList(food)));
         when(repository.getFoodAmounts()).thenReturn(Observable.just(singletonList(amount)));
 

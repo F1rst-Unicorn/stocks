@@ -29,17 +29,22 @@ import io.reactivex.rxjava3.core.Observable;
 import javax.inject.Inject;
 import java.util.List;
 
+import static java.util.stream.Collectors.toList;
+
 class FoodItemListInteractorImpl implements FoodItemListInteractor {
 
     private final FoodItemListRepository repository;
 
+    private final Localiser localiser;
+
     @Inject
-    FoodItemListInteractorImpl(FoodItemListRepository repository) {
+    FoodItemListInteractorImpl(FoodItemListRepository repository, Localiser localiser) {
         this.repository = repository;
+        this.localiser = localiser;
     }
 
     @Override
     public Observable<List<FoodItemForListing>> get(Id<Food> food) {
-        return repository.get(food);
+        return repository.get(food).map(v -> v.stream().map(item -> item.map(localiser)).collect(toList()));
     }
 }

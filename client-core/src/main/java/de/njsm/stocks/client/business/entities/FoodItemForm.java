@@ -22,10 +22,9 @@
 package de.njsm.stocks.client.business.entities;
 
 import com.google.auto.value.AutoValue;
+import de.njsm.stocks.client.business.Localiser;
 
-import java.time.Instant;
 import java.time.LocalDate;
-import java.time.ZoneId;
 
 @AutoValue
 public abstract class FoodItemForm {
@@ -38,11 +37,15 @@ public abstract class FoodItemForm {
 
     public abstract int unit();
 
-    public FoodItemToAdd toNetwork() {
-        return FoodItemToAdd.create(Instant.from(eatBy().atStartOfDay().atZone(ZoneId.of("UTC"))),
+    public FoodItemToAdd toNetwork(Localiser localiser) {
+        return FoodItemToAdd.create(localiser.toInstant(eatBy()),
                 ofType(),
                 storedIn(),
                 unit());
+    }
+
+    public FoodItemAddFormForErrorRecording toErrorRecording(Localiser localiser) {
+        return FoodItemAddFormForErrorRecording.create(localiser.toInstant(eatBy()), ofType(), storedIn(), unit());
     }
 
     public static FoodItemForm create(LocalDate eatBy, int ofType, int storedIn, int unit) {

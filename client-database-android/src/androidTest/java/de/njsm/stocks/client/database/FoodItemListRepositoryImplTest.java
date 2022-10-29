@@ -21,13 +21,11 @@
 
 package de.njsm.stocks.client.database;
 
-import de.njsm.stocks.client.business.entities.FoodItemForListing;
-import de.njsm.stocks.client.business.entities.StoredAmount;
+import de.njsm.stocks.client.business.entities.FoodItemForListingData;
 import io.reactivex.rxjava3.core.Observable;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.time.ZoneId;
 import java.util.List;
 
 import static de.njsm.stocks.client.database.util.Util.test;
@@ -81,13 +79,14 @@ public class FoodItemListRepositoryImplTest extends DbTestCase {
                 .build();
         stocksDatabase.synchronisationDao().writeFoodItems(singletonList(item));
 
-        Observable<List<FoodItemForListing>> actual = uut.get(food::id);
+        Observable<List<FoodItemForListingData>> actual = uut.get(food::id);
 
-        testList(actual).assertValue(singletonList(FoodItemForListing.create(
+        testList(actual).assertValue(singletonList(FoodItemForListingData.create(
                 item.id(),
-                StoredAmount.create(scaledUnit.scale(), unit.abbreviation()),
+                scaledUnit.scale(),
+                unit.abbreviation(),
                 location.name(),
-                item.eatBy().atZone(ZoneId.systemDefault()).toLocalDate(),
+                item.eatBy(),
                 user.name(),
                 device.name()
         )));
@@ -102,7 +101,7 @@ public class FoodItemListRepositoryImplTest extends DbTestCase {
                 .build();
         stocksDatabase.synchronisationDao().writeFoodItems(singletonList(item));
 
-        Observable<List<FoodItemForListing>> actual = uut.get(food::id);
+        Observable<List<FoodItemForListingData>> actual = uut.get(food::id);
 
         test(actual).assertValue(emptyList());
     }

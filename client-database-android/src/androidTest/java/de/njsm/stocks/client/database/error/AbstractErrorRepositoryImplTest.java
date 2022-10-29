@@ -51,7 +51,7 @@ public abstract class AbstractErrorRepositoryImplTest extends DbTestCase {
     @Before
     public void setup() {
         errorRecorder = new ErrorRecorderImpl(stocksDatabase.errorDao(), this);
-        uut = new ErrorRepositoryImpl(stocksDatabase.errorDao());
+        uut = new ErrorRepositoryImpl(stocksDatabase.errorDao(), localiser);
 
         List<UpdateDbEntity> updates = Arrays.stream(EntityType.values())
                 .map(v -> UpdateDbEntity.create(v, Instant.EPOCH))
@@ -88,7 +88,7 @@ public abstract class AbstractErrorRepositoryImplTest extends DbTestCase {
         uut.deleteError(input);
 
         assertTrue(stocksDatabase.errorDao().getStatusCodeErrors().isEmpty());
-        test(uut.getNumberOfErrors()).assertValuesOnly(0);
+        test(uut.getNumberOfErrors().firstElement()).assertValue(0);
         assertTrue(getErrorDetails().isEmpty());
     }
 }

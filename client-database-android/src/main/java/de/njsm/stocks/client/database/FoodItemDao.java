@@ -24,7 +24,9 @@ package de.njsm.stocks.client.database;
 import androidx.room.Dao;
 import androidx.room.Query;
 import de.njsm.stocks.client.business.entities.FoodItemForDeletion;
+import de.njsm.stocks.client.business.entities.FoodItemForEditing;
 import io.reactivex.rxjava3.core.Maybe;
+import io.reactivex.rxjava3.core.Observable;
 
 import java.time.Instant;
 import java.util.List;
@@ -64,4 +66,15 @@ abstract class FoodItemDao {
             "from current_food_item " +
             "where id = :id")
     abstract FoodItemForDeletion getVersionOf(int id);
+
+    @Query("select i.id, f.id as ofType, f.name as foodName, i.eat_by as eatBy, i.stored_in as storedIn, i.unit " +
+            "from current_food_item i " +
+            "join current_food f on f.id = i.of_type " +
+            "where i.id = :id")
+    abstract Observable<FoodItemEditRepositoryImpl.FoodItemEditRecord> getItemToEdit(int id);
+
+    @Query("select id, version, eat_by as eatBy, stored_in as storedIn, unit " +
+            "from current_food_item " +
+            "where id = :id")
+    abstract FoodItemForEditing getCurrentItemForEditing(int id);
 }

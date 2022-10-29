@@ -34,7 +34,7 @@ public class DateRenderStrategyTest {
 
     @Before
     public void setUp() {
-        uut = new DateRenderStrategy();
+        uut = new DateRenderStrategy(null);
     }
 
     @Test

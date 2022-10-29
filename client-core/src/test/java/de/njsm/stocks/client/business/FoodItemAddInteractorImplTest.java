@@ -212,7 +212,7 @@ class FoodItemAddInteractorImplTest {
     @Test
     void dataIsSentToService() {
         FoodItemForm localData = getInput();
-        FoodItemToAdd dataToNetwork = localData.toNetwork();
+        FoodItemToAdd dataToNetwork = localData.toNetwork(localiser);
 
         uut.addInBackground(localData);
 
@@ -223,14 +223,14 @@ class FoodItemAddInteractorImplTest {
     @Test
     void failingOperationIsRecorded() {
         FoodItemForm form = getInput();
-        FoodItemToAdd expected = form.toNetwork();
+        FoodItemToAdd expected = form.toNetwork(localiser);
         StatusCodeException exception = new StatusCodeException(StatusCode.DATABASE_UNREACHABLE);
         doThrow(exception).when(service).add(expected);
 
         uut.addInBackground(form);
 
         verify(service).add(expected);
-        verify(errorRecorder).recordFoodItemAddError(exception, form);
+        verify(errorRecorder).recordFoodItemAddError(exception, form.toErrorRecording(localiser));
         verify(synchroniser).synchroniseAfterError(exception);
     }
 

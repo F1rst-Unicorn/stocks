@@ -22,29 +22,31 @@
 package de.njsm.stocks.client.presenter;
 
 import android.text.format.DateUtils;
+import de.njsm.stocks.client.business.Localiser;
 
 import javax.inject.Inject;
-import java.time.Instant;
 import java.time.LocalDate;
-import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 
 public class DateRenderStrategy {
 
     private static final java.time.format.DateTimeFormatter FORMAT = DateTimeFormatter.ofPattern("dd.MM.yyyy");
 
+    private final Localiser localiser;
+
     @Inject
-    public DateRenderStrategy() {
+    public DateRenderStrategy(Localiser localiser) {
+        this.localiser = localiser;
     }
 
     public String render(LocalDate date) {
         return FORMAT.format(date);
     }
 
-    public CharSequence renderRelative(LocalDate date, Instant now) {
+    public CharSequence renderRelative(LocalDate date) {
         return DateUtils.getRelativeTimeSpanString(
-                date.atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli(),
-                now.toEpochMilli(),
+                localiser.toInstant(date).toEpochMilli(),
+                localiser.epochMilli(),
                 0L, DateUtils.FORMAT_ABBREV_ALL);
     }
 }

@@ -291,4 +291,13 @@ public interface FakeBusinessModule {
     static FoodItemAddInteractor FoodItemAddInteractor() {
         return mock(FoodItemAddInteractor.class);
     }
+
+    @Binds
+    FoodItemEditInteractor FoodItemEditInteractor(FakeFoodItemEditInteractor fake);
+
+    @Provides
+    @Singleton
+    static FakeFoodItemEditInteractor FakeFoodItemEditInteractor() {
+        return new FakeFoodItemEditInteractor();
+    }
 }

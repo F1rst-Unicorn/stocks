@@ -83,7 +83,6 @@ public class FoodEditFragmentTest {
 
     @After
     public void tearDown() {
-        //verifyNoMoreInteractions(navigator);
         reset(navigator);
         interactor.reset();
     }

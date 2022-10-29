@@ -67,5 +67,6 @@ public class ErrorDetailsHeadlineVisitorTest {
         assertEquals(R.string.error_details_food_edit_error_list, (long) uut.visit(FoodEditErrorDetails.create(1, "Banana", Period.ofDays(3), 4, 5, "yellow"), null));
         assertEquals(R.string.error_details_food_item_add_error_list, (long) uut.visit(FoodItemAddErrorDetails.create(LocalDate.ofEpochDay(2), 1, 2, 3, FoodItemAddErrorDetails.Unit.create(BigDecimal.ONE, "g"), "Banana", "Fridge"), null));
         assertEquals(R.string.error_details_food_item_delete_error_list, (long) uut.visit(FoodItemDeleteErrorDetails.create(1, "Banana", FoodItemDeleteErrorDetails.Unit.create(BigDecimal.ONE, "g")), null));
+        assertEquals(R.string.error_details_food_item_edit_error_list, (long) uut.visit(FoodItemEditErrorDetails.create(1, "Banana", LocalDate.ofEpochDay(2), 3, 4), null));
     }
 }

@@ -46,16 +46,19 @@ class FoodByLocationListInteractorImplTest {
     @Mock
     private FoodListRepository repository;
 
+    private Localiser localiser;
+
     @BeforeEach
     void setUp() {
-        uut = new FoodByLocationListInteractorImpl(repository, new FoodRegrouper());
+        localiser = new Localiser(Instant::now);
+        uut = new FoodByLocationListInteractorImpl(repository, new FoodRegrouper(localiser));
     }
 
     @Test
     void singleFoodWithSingleAmountIsReturned() {
         FoodForListingBaseData food = FoodForListingBaseData.create(1, "Banana", false, Instant.EPOCH);
         StoredFoodAmount amount = StoredFoodAmount.create(food.id(), 2, 3, valueOf(1), "piece", 1);
-        FoodForListing expected = FoodForListing.create(food, singletonList(UnitAmount.of(valueOf(1), amount.abbreviation())));
+        FoodForListing expected = FoodForListing.create(food, singletonList(UnitAmount.of(valueOf(1), amount.abbreviation())), localiser);
         Id<Location> id = () -> 42;
         when(repository.getFoodBy(equalBy(id))).thenReturn(Observable.just(singletonList(food)));
         when(repository.getFoodAmountsIn(equalBy(id))).thenReturn(Observable.just(singletonList(amount)));
