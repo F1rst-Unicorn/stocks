@@ -23,6 +23,8 @@ package de.njsm.stocks.client.database;
 
 import androidx.room.Dao;
 import androidx.room.Query;
+import de.njsm.stocks.client.business.entities.UserDeviceForListing;
+import io.reactivex.rxjava3.core.Observable;
 
 import java.util.List;
 
@@ -32,4 +34,10 @@ abstract class UserDeviceDao {
     @Query("select * " +
             "from current_user_device")
     abstract List<UserDeviceDbEntity> getAll();
+
+    @Query("select * " +
+            "from current_user_device " +
+            "where belongs_to = :id " +
+            "order by name, id")
+    abstract Observable<List<UserDeviceForListing>> getUserDevices(int id);
 }

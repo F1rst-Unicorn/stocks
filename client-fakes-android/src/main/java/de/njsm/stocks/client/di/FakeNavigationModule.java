@@ -23,8 +23,8 @@ import dagger.Module;
 import dagger.Provides;
 import de.njsm.stocks.client.business.SetupInteractor;
 import de.njsm.stocks.client.fragment.DialogDisplayer;
-import de.njsm.stocks.client.navigation.*;
 import de.njsm.stocks.client.fragment.setupform.SetupFormFragmentArgumentProvider;
+import de.njsm.stocks.client.navigation.*;
 
 import javax.inject.Singleton;
 
@@ -205,5 +205,11 @@ class FakeNavigationModule {
     @Singleton
     UserListNavigator UserListNavigator() {
         return mock(UserListNavigator.class);
+    }
+
+    @Provides
+    @Singleton
+    UserDeviceListNavigator UserDeviceListNavigator() {
+        return mock(UserDeviceListNavigator.class);
     }
 }

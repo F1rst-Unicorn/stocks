@@ -56,6 +56,7 @@ import de.njsm.stocks.client.fragment.unitadd.UnitAddFragmentTest;
 import de.njsm.stocks.client.fragment.unitconflict.UnitConflictFragmentTest;
 import de.njsm.stocks.client.fragment.unitedit.UnitEditFragmentTest;
 import de.njsm.stocks.client.fragment.unitlist.UnitListFragmentTest;
+import de.njsm.stocks.client.fragment.userdevicelist.UserDeviceListFragmentTest;
 import de.njsm.stocks.client.fragment.userlist.UserListFragmentTest;
 import de.njsm.stocks.client.presenter.ViewModelModule;
 
@@ -135,6 +136,8 @@ public interface TestComponent {
     void inject(FoodItemConflictFragmentTest test);
 
     void inject(UserListFragmentTest test);
+
+    void inject(UserDeviceListFragmentTest test);
 
     @Component.Builder
     interface Builder {

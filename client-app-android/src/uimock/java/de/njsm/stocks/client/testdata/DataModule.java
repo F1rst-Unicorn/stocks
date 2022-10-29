@@ -64,4 +64,10 @@ public class DataModule {
     public UsersForListing UsersForListing() {
         return new UsersForListing(UsersForListing.generate());
     }
+
+    @Provides
+    @Singleton
+    public UserDevicesForListing UserDevicesForListing() {
+        return new UserDevicesForListing(UserDevicesForListing.generate());
+    }
 }

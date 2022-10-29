@@ -318,4 +318,13 @@ public interface FakeBusinessModule {
     static FakeUserListInteractor FakeUserListInteractor() {
         return new FakeUserListInteractor();
     }
+
+    @Binds
+    UserDeviceListInteractor UserDeviceListInteractor(FakeUserDeviceListInteractor impl);
+
+    @Provides
+    @Singleton
+    static FakeUserDeviceListInteractor FakeUserDeviceListInteractor() {
+        return new FakeUserDeviceListInteractor();
+    }
 }

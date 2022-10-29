@@ -21,27 +21,31 @@
 
 package de.njsm.stocks.client.database;
 
-import androidx.room.Dao;
-import androidx.room.Query;
-import de.njsm.stocks.client.business.entities.UserForListing;
+import de.njsm.stocks.client.business.UserDeviceListRepository;
+import de.njsm.stocks.client.business.entities.Id;
+import de.njsm.stocks.client.business.entities.User;
+import de.njsm.stocks.client.business.entities.UserDevicesForListing;
 import io.reactivex.rxjava3.core.Observable;
 
-import java.util.List;
+import javax.inject.Inject;
 
-@Dao
-abstract class UserDao {
+class UserDeviceListRepositoryImpl implements UserDeviceListRepository {
 
-    @Query("select * " +
-            "from current_user")
-    abstract List<UserDbEntity> getAll();
+    private final UserDeviceDao userDeviceDao;
 
-    @Query("select * " +
-            "from current_user " +
-            "order by name, id")
-    abstract Observable<List<UserForListing>> getUsers();
+    private final UserDao userDao;
 
-    @Query("select * " +
-            "from current_user " +
-            "where id = :id")
-    abstract Observable<UserForListing> getUser(int id);
+    @Inject
+    UserDeviceListRepositoryImpl(UserDeviceDao userDeviceDao, UserDao userDao) {
+        this.userDeviceDao = userDeviceDao;
+        this.userDao = userDao;
+    }
+
+    @Override
+    public Observable<UserDevicesForListing> getUserDevices(Id<User> userId) {
+        var devices = userDeviceDao.getUserDevices(userId.id());
+        var user = userDao.getUser(userId.id());
+
+        return devices.zipWith(user, (d, u) -> UserDevicesForListing.create(d, u.name()));
+    }
 }

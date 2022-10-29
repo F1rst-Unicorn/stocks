@@ -19,29 +19,26 @@
  *
  */
 
-package de.njsm.stocks.client.database;
+package de.njsm.stocks.client.business;
 
-import androidx.room.Dao;
-import androidx.room.Query;
-import de.njsm.stocks.client.business.entities.UserForListing;
+import de.njsm.stocks.client.business.entities.Id;
+import de.njsm.stocks.client.business.entities.User;
+import de.njsm.stocks.client.business.entities.UserDevicesForListing;
 import io.reactivex.rxjava3.core.Observable;
 
-import java.util.List;
+import javax.inject.Inject;
 
-@Dao
-abstract class UserDao {
+class UserDeviceListInteractorImpl implements UserDeviceListInteractor {
 
-    @Query("select * " +
-            "from current_user")
-    abstract List<UserDbEntity> getAll();
+    private final UserDeviceListRepository repository;
 
-    @Query("select * " +
-            "from current_user " +
-            "order by name, id")
-    abstract Observable<List<UserForListing>> getUsers();
+    @Inject
+    UserDeviceListInteractorImpl(UserDeviceListRepository repository) {
+        this.repository = repository;
+    }
 
-    @Query("select * " +
-            "from current_user " +
-            "where id = :id")
-    abstract Observable<UserForListing> getUser(int id);
+    @Override
+    public Observable<UserDevicesForListing> getData(Id<User> user) {
+        return repository.getUserDevices(user);
+    }
 }

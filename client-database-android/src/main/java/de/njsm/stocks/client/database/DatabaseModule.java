@@ -123,6 +123,11 @@ public interface DatabaseModule {
         return database.userDao();
     }
 
+    @Provides
+    static UserDeviceDao UserDeviceDao(StocksDatabase database) {
+        return database.userDeviceDao();
+    }
+
     @Binds
     ErrorRepository errorRepository(ErrorRepositoryImpl impl);
 
@@ -176,4 +181,7 @@ public interface DatabaseModule {
 
     @Binds
     UserListRepository UserListRepository(UserListRepositoryImpl impl);
+
+    @Binds
+    UserDeviceListRepository UserDeviceListRepository(UserDeviceListRepositoryImpl impl);
 }

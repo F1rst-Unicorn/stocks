@@ -244,4 +244,11 @@ public class ViewModelModule {
     ViewModel UserListViewModel(UserListInteractor interactor, Synchroniser errorRetryInteractor) {
         return new UserListViewModel(interactor, errorRetryInteractor);
     }
+
+    @Provides
+    @IntoMap
+    @ViewModelKey(UserDeviceListViewModel.class)
+    ViewModel UserDeviceListViewModel(UserDeviceListInteractor interactor, Synchroniser errorRetryInteractor) {
+        return new UserDeviceListViewModel(interactor, errorRetryInteractor);
+    }
 }

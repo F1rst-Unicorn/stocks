@@ -19,29 +19,16 @@
  *
  */
 
-package de.njsm.stocks.client.database;
+package de.njsm.stocks.client.business.entities;
 
-import androidx.room.Dao;
-import androidx.room.Query;
-import de.njsm.stocks.client.business.entities.UserForListing;
-import io.reactivex.rxjava3.core.Observable;
+import com.google.auto.value.AutoValue;
 
-import java.util.List;
+@AutoValue
+public abstract class UserDeviceForListing implements Id<UserDevice> {
 
-@Dao
-abstract class UserDao {
+    public abstract String name();
 
-    @Query("select * " +
-            "from current_user")
-    abstract List<UserDbEntity> getAll();
-
-    @Query("select * " +
-            "from current_user " +
-            "order by name, id")
-    abstract Observable<List<UserForListing>> getUsers();
-
-    @Query("select * " +
-            "from current_user " +
-            "where id = :id")
-    abstract Observable<UserForListing> getUser(int id);
+    public static UserDeviceForListing create(int id, String name) {
+        return new AutoValue_UserDeviceForListing(id, name);
+    }
 }

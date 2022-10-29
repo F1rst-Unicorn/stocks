@@ -150,4 +150,7 @@ public interface BusinessModule {
 
     @Binds
     UserListInteractor UserListInteractor(UserListInteractorImpl impl);
+
+    @Binds
+    UserDeviceListInteractor UserDeviceListInteractor(UserDeviceListInteractorImpl impl);
 }

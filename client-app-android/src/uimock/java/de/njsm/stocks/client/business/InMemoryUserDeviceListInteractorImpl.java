@@ -19,29 +19,28 @@
  *
  */
 
-package de.njsm.stocks.client.database;
+package de.njsm.stocks.client.business;
 
-import androidx.room.Dao;
-import androidx.room.Query;
-import de.njsm.stocks.client.business.entities.UserForListing;
+import de.njsm.stocks.client.business.entities.Id;
+import de.njsm.stocks.client.business.entities.User;
+import de.njsm.stocks.client.testdata.UserDevicesForListing;
 import io.reactivex.rxjava3.core.Observable;
+import io.reactivex.rxjava3.subjects.BehaviorSubject;
 
-import java.util.List;
+import javax.inject.Inject;
+import java.util.concurrent.TimeUnit;
 
-@Dao
-abstract class UserDao {
+class InMemoryUserDeviceListInteractorImpl implements UserDeviceListInteractor {
 
-    @Query("select * " +
-            "from current_user")
-    abstract List<UserDbEntity> getAll();
+    private final BehaviorSubject<de.njsm.stocks.client.business.entities.UserDevicesForListing> data;
 
-    @Query("select * " +
-            "from current_user " +
-            "order by name, id")
-    abstract Observable<List<UserForListing>> getUsers();
+    @Inject
+    InMemoryUserDeviceListInteractorImpl(UserDevicesForListing UsersForListing) {
+        this.data = UsersForListing.getData();
+    }
 
-    @Query("select * " +
-            "from current_user " +
-            "where id = :id")
-    abstract Observable<UserForListing> getUser(int id);
+    @Override
+    public Observable<de.njsm.stocks.client.business.entities.UserDevicesForListing> getData(Id<User> user) {
+        return data.delay(1, TimeUnit.SECONDS);
+    }
 }

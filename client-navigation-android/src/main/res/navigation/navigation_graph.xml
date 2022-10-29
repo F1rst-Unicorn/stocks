@@ -350,6 +350,20 @@
     </fragment>
     <fragment
             android:id="@+id/nav_fragment_device_list"
+            android:name="de.njsm.stocks.client.fragment.userdevicelist.UserDeviceListFragment">
+        <argument
+                android:name="id"
+                app:argType="integer"/>
+        <action
+                android:id="@+id/action_nav_fragment_device_list_to_nav_fragment_user_device_add"
+                app:destination="@id/nav_fragment_user_device_add">
+            <argument
+                    android:name="id"
+                    app:argType="integer"/>
+        </action>
+    </fragment>
+    <fragment
+            android:id="@+id/nav_fragment_user_device_add"
             android:name="androidx.fragment.app.Fragment">
         <argument
                 android:name="id"
