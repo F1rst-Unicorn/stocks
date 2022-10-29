@@ -237,4 +237,11 @@ public class ViewModelModule {
     ViewModel FoodItemConflictViewModel(FoodItemConflictInteractor interactor, ErrorRetryInteractor errorRetryInteractor) {
         return new FoodItemConflictViewModel(interactor, errorRetryInteractor);
     }
+
+    @Provides
+    @IntoMap
+    @ViewModelKey(UserListViewModel.class)
+    ViewModel UserListViewModel(UserListInteractor interactor, Synchroniser errorRetryInteractor) {
+        return new UserListViewModel(interactor, errorRetryInteractor);
+    }
 }

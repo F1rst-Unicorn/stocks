@@ -58,4 +58,10 @@ public class DataModule {
     public FoodsForListing FoodsForListing() {
         return new FoodsForListing(FoodsForListing.getEmpty());
     }
+
+    @Provides
+    @Singleton
+    public UsersForListing UsersForListing() {
+        return new UsersForListing(UsersForListing.generate());
+    }
 }

@@ -19,24 +19,27 @@
  *
  */
 
-package de.njsm.stocks.client.database;
+package de.njsm.stocks.client.navigation;
 
-import androidx.room.Dao;
-import androidx.room.Query;
-import de.njsm.stocks.client.business.entities.UserForListing;
-import io.reactivex.rxjava3.core.Observable;
+import de.njsm.stocks.client.fragment.userlist.UserListFragmentDirections;
 
-import java.util.List;
+import javax.inject.Inject;
 
-@Dao
-abstract class UserDao {
+class UserListNavigatorImpl extends BaseNavigator implements UserListNavigator {
 
-    @Query("select * " +
-            "from current_user")
-    abstract List<UserDbEntity> getAll();
+    @Inject
+    UserListNavigatorImpl(NavigationArgConsumer navigationArgConsumer) {
+        super(navigationArgConsumer);
+    }
 
-    @Query("select * " +
-            "from current_user " +
-            "order by name, id")
-    abstract Observable<List<UserForListing>> getUsers();
+    @Override
+    public void add() {
+        getNavigationArgConsumer().navigate(UserListFragmentDirections.actionNavFragmentUserListToNavFragmentUserAdd());
+    }
+
+    @Override
+    public void show(int id) {
+        var direction = UserListFragmentDirections.actionNavFragmentUserListToNavFragmentDeviceList(id);
+        getNavigationArgConsumer().navigate(direction);
+    }
 }

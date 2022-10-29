@@ -161,4 +161,7 @@ public interface UimockBusinessModule {
 
     @Binds
     FoodItemConflictInteractor FoodItemConflictInteractor(InMemoryFoodItemConflictInteractorImpl impl);
+
+    @Binds
+    UserListInteractor UserListInteractor(InMemoryUserListInteractorImpl impl);
 }

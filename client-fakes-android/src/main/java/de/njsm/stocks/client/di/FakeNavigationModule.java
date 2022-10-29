@@ -200,4 +200,10 @@ class FakeNavigationModule {
     FoodItemConflictNavigator FoodItemConflictNavigator() {
         return mock(FoodItemConflictNavigator.class);
     }
+
+    @Provides
+    @Singleton
+    UserListNavigator UserListNavigator() {
+        return mock(UserListNavigator.class);
+    }
 }

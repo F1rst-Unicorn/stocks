@@ -32,9 +32,11 @@ import de.njsm.stocks.client.fragment.allfood.AllFoodFragment;
 import de.njsm.stocks.client.fragment.emptyfood.EmptyFoodFragment;
 import de.njsm.stocks.client.fragment.errorlist.ErrorListFragment;
 import de.njsm.stocks.client.fragment.foodinlocation.FoodInLocationFragment;
+import de.njsm.stocks.client.fragment.fooditemtabs.FoodItemTabsFragment;
 import de.njsm.stocks.client.fragment.locationlist.LocationListFragment;
 import de.njsm.stocks.client.fragment.outline.OutlineFragment;
 import de.njsm.stocks.client.fragment.unittabs.UnitTabsFragment;
+import de.njsm.stocks.client.fragment.userlist.UserListFragment;
 import de.njsm.stocks.client.ui.R;
 import org.junit.Test;
 
@@ -56,7 +58,9 @@ public class SwipeDownSupportTest {
             new TestCaseData(OutlineFragment.class, R.id.fragment_outline_swipe, 2),
             new TestCaseData(EmptyFoodFragment .class, R.id.template_swipe_list_swipe),
             new TestCaseData(AllFoodFragment .class, R.id.template_swipe_list_swipe),
-            new TestCaseData(FoodInLocationFragment.class, R.id.template_swipe_list_swipe)
+            new TestCaseData(FoodInLocationFragment.class, R.id.template_swipe_list_swipe),
+            new TestCaseData(FoodItemTabsFragment .class, R.id.template_swipe_list_swipe),
+            new TestCaseData(UserListFragment.class, R.id.template_swipe_list_swipe)
     );
 
     private Synchroniser synchroniser;

@@ -21,22 +21,24 @@
 
 package de.njsm.stocks.client.database;
 
-import androidx.room.Dao;
-import androidx.room.Query;
+import de.njsm.stocks.client.business.UserListRepository;
 import de.njsm.stocks.client.business.entities.UserForListing;
 import io.reactivex.rxjava3.core.Observable;
 
+import javax.inject.Inject;
 import java.util.List;
 
-@Dao
-abstract class UserDao {
+class UserListRepositoryImpl implements UserListRepository {
 
-    @Query("select * " +
-            "from current_user")
-    abstract List<UserDbEntity> getAll();
+    private final UserDao userDao;
 
-    @Query("select * " +
-            "from current_user " +
-            "order by name, id")
-    abstract Observable<List<UserForListing>> getUsers();
+    @Inject
+    UserListRepositoryImpl(UserDao userDao) {
+        this.userDao = userDao;
+    }
+
+    @Override
+    public Observable<List<UserForListing>> getUsers() {
+        return userDao.getUsers();
+    }
 }

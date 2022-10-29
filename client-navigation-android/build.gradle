@@ -51,6 +51,17 @@ android {
         targetCompatibility JavaVersion.VERSION_11
     }
 
+    sourceSets {
+        main {
+            debug {
+                java.srcDir "${buildDir}/generated/source/navigation-args/debug"
+            }
+            release {
+                java.srcDir "${buildDir}/generated/source/navigation-args/release"
+            }
+        }
+    }
+
     testOptions {
         animationsDisabled true
         unitTests {

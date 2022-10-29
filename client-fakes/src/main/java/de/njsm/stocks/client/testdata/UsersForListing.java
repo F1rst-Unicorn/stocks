@@ -19,24 +19,33 @@
  *
  */
 
-package de.njsm.stocks.client.database;
+package de.njsm.stocks.client.testdata;
 
-import androidx.room.Dao;
-import androidx.room.Query;
+
 import de.njsm.stocks.client.business.entities.UserForListing;
-import io.reactivex.rxjava3.core.Observable;
+import io.reactivex.rxjava3.subjects.BehaviorSubject;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
-@Dao
-abstract class UserDao {
+public class UsersForListing {
 
-    @Query("select * " +
-            "from current_user")
-    abstract List<UserDbEntity> getAll();
+    private final BehaviorSubject<List<UserForListing>> data;
 
-    @Query("select * " +
-            "from current_user " +
-            "order by name, id")
-    abstract Observable<List<UserForListing>> getUsers();
+    public UsersForListing(List<UserForListing> data) {
+        this.data = BehaviorSubject.createDefault(data);
+    }
+
+    public static List<UserForListing> generate() {
+        return new ArrayList<>(Arrays.asList(
+                UserForListing.create(1, "Jack"),
+                UserForListing.create(2, "Juliette"),
+                UserForListing.create(4, "Jane")
+        ));
+    }
+
+    public BehaviorSubject<List<UserForListing>> getData() {
+        return data;
+    }
 }

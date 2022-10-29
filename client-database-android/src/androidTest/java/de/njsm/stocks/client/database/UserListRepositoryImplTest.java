@@ -21,22 +21,32 @@
 
 package de.njsm.stocks.client.database;
 
-import androidx.room.Dao;
-import androidx.room.Query;
+import de.njsm.stocks.client.business.UserListRepository;
 import de.njsm.stocks.client.business.entities.UserForListing;
-import io.reactivex.rxjava3.core.Observable;
+import org.junit.Before;
+import org.junit.Test;
 
 import java.util.List;
 
-@Dao
-abstract class UserDao {
+import static de.njsm.stocks.client.database.util.Util.testList;
+import static org.junit.Assert.*;
 
-    @Query("select * " +
-            "from current_user")
-    abstract List<UserDbEntity> getAll();
+public class UserListRepositoryImplTest extends DbTestCase {
 
-    @Query("select * " +
-            "from current_user " +
-            "order by name, id")
-    abstract Observable<List<UserForListing>> getUsers();
+    private UserListRepository uut;
+
+    @Before
+    public void setUp() {
+        uut = new UserListRepositoryImpl(stocksDatabase.userDao());
+    }
+
+    @Test
+    public void gettingUsersWorks() {
+        UserDbEntity user = standardEntities.userDbEntity();
+        stocksDatabase.synchronisationDao().writeUsers(List.of(user));
+
+        var actual = uut.getUsers();
+
+        testList(actual).assertValue(List.of(UserForListing.create(user.id(), user.name())));
+    }
 }

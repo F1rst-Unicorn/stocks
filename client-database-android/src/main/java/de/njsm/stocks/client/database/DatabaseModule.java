@@ -118,6 +118,11 @@ public interface DatabaseModule {
         return database.foodItemDao();
     }
 
+    @Provides
+    static UserDao UserDao(StocksDatabase database) {
+        return database.userDao();
+    }
+
     @Binds
     ErrorRepository errorRepository(ErrorRepositoryImpl impl);
 
@@ -168,4 +173,7 @@ public interface DatabaseModule {
 
     @Binds
     FoodItemEditRepository FoodItemEditRepository(FoodItemEditRepositoryImpl impl);
+
+    @Binds
+    UserListRepository UserListRepository(UserListRepositoryImpl impl);
 }

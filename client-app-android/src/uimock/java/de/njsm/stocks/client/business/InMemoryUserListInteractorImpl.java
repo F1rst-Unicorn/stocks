@@ -19,24 +19,28 @@
  *
  */
 
-package de.njsm.stocks.client.database;
+package de.njsm.stocks.client.business;
 
-import androidx.room.Dao;
-import androidx.room.Query;
 import de.njsm.stocks.client.business.entities.UserForListing;
+import de.njsm.stocks.client.testdata.UsersForListing;
 import io.reactivex.rxjava3.core.Observable;
+import io.reactivex.rxjava3.subjects.BehaviorSubject;
 
+import javax.inject.Inject;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
-@Dao
-abstract class UserDao {
+class InMemoryUserListInteractorImpl implements UserListInteractor {
 
-    @Query("select * " +
-            "from current_user")
-    abstract List<UserDbEntity> getAll();
+    private final BehaviorSubject<List<UserForListing>> data;
 
-    @Query("select * " +
-            "from current_user " +
-            "order by name, id")
-    abstract Observable<List<UserForListing>> getUsers();
+    @Inject
+    InMemoryUserListInteractorImpl(UsersForListing UsersForListing) {
+        this.data = UsersForListing.getData();
+    }
+
+    @Override
+    public Observable<List<UserForListing>> getUsers() {
+        return data.delay(1, TimeUnit.SECONDS);
+    }
 }

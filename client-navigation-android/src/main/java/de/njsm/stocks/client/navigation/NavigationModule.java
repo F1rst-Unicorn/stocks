@@ -101,4 +101,7 @@ public interface NavigationModule {
 
     @Binds
     FoodItemConflictNavigator FoodItemConflictNavigator(FoodItemConflictNavigatorImpl impl);
+
+    @Binds
+    UserListNavigator UserListNavigator(UserListNavigatorImpl impl);
 }

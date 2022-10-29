@@ -309,4 +309,13 @@ public interface FakeBusinessModule {
     static FakeFoodItemConflictInteractor FakeFoodItemConflictInteractor() {
         return new FakeFoodItemConflictInteractor();
     }
+
+    @Binds
+    UserListInteractor UserListInteractor(FakeUserListInteractor impl);
+
+    @Provides
+    @Singleton
+    static FakeUserListInteractor FakeUserListInteractor() {
+        return new FakeUserListInteractor();
+    }
 }

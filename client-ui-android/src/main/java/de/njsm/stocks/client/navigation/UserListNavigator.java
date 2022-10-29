@@ -19,24 +19,11 @@
  *
  */
 
-package de.njsm.stocks.client.database;
+package de.njsm.stocks.client.navigation;
 
-import androidx.room.Dao;
-import androidx.room.Query;
-import de.njsm.stocks.client.business.entities.UserForListing;
-import io.reactivex.rxjava3.core.Observable;
+public interface UserListNavigator {
 
-import java.util.List;
+    void add();
 
-@Dao
-abstract class UserDao {
-
-    @Query("select * " +
-            "from current_user")
-    abstract List<UserDbEntity> getAll();
-
-    @Query("select * " +
-            "from current_user " +
-            "order by name, id")
-    abstract Observable<List<UserForListing>> getUsers();
+    void show(int id);
 }
