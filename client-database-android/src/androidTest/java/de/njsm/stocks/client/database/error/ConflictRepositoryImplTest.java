@@ -23,10 +23,7 @@ package de.njsm.stocks.client.database.error;
 
 import de.njsm.stocks.client.business.*;
 import de.njsm.stocks.client.business.entities.*;
-import de.njsm.stocks.client.business.entities.conflict.FoodEditConflictData;
-import de.njsm.stocks.client.business.entities.conflict.LocationEditConflictData;
-import de.njsm.stocks.client.business.entities.conflict.ScaledUnitEditConflictData;
-import de.njsm.stocks.client.business.entities.conflict.UnitEditConflictData;
+import de.njsm.stocks.client.business.entities.conflict.*;
 import de.njsm.stocks.client.database.*;
 import io.reactivex.rxjava3.observers.TestObserver;
 import org.junit.Before;
@@ -34,6 +31,7 @@ import org.junit.Test;
 
 import java.math.BigDecimal;
 import java.time.Instant;
+import java.time.LocalDate;
 import java.time.Period;
 import java.util.Arrays;
 import java.util.List;
@@ -59,7 +57,7 @@ public class ConflictRepositoryImplTest extends DbTestCase {
 
     @Before
     public void setUp() {
-        uut = new ConflictRepositoryImpl(stocksDatabase.errorDao());
+        uut = new ConflictRepositoryImpl(stocksDatabase.errorDao(), localiser);
         errorRecorder = new ErrorRecorderImpl(stocksDatabase.errorDao(), this);
         errorRepository = new ErrorRepositoryImpl(stocksDatabase.errorDao(), localiser);
 
@@ -460,9 +458,6 @@ public class ConflictRepositoryImplTest extends DbTestCase {
                 remoteScaledUnit.id(),
                 "red");
 
-
-
-
         stocksDatabase.synchronisationDao().writeFood(currentUpdate(original,
                 (BitemporalOperations.EntityEditor<FoodDbEntity, FoodDbEntity.Builder>) builder ->
                         builder.name(remoteEdit.name())
@@ -498,5 +493,142 @@ public class ConflictRepositoryImplTest extends DbTestCase {
         assertEquals(original.description(), actual.description().original());
         assertEquals(remoteEdit.description(), actual.description().remote());
         assertEquals(localEdit.description(), actual.description().local());
+    }
+
+    @Test
+    public void gettingCurrentFoodItemEditConflictWorks() {
+        Instant editTime = Instant.EPOCH.plusSeconds(5);
+        UnitDbEntity unit = standardEntities.unitDbEntity();
+        stocksDatabase.synchronisationDao().writeUnits(singletonList(unit));
+        ScaledUnitDbEntity localScaledUnit = standardEntities.scaledUnitDbEntityBuilder()
+                .unit(unit.id())
+                .build();
+        ScaledUnitDbEntity remoteScaledUnit = standardEntities.scaledUnitDbEntityBuilder()
+                .id(randomnessProvider.getId("remote scaled unit id"))
+                .unit(unit.id())
+                .build();
+        stocksDatabase.synchronisationDao().writeScaledUnits(asList(localScaledUnit, remoteScaledUnit));
+        LocationDbEntity localLocation = standardEntities.locationDbEntity();
+        LocationDbEntity remoteLocation = standardEntities.locationDbEntityBuilder()
+                .id(randomnessProvider.getId("remote location id"))
+                .build();
+        stocksDatabase.synchronisationDao().writeLocations(asList(localLocation, remoteLocation));
+        FoodDbEntity food = standardEntities.foodDbEntity();
+        stocksDatabase.synchronisationDao().writeFood(List.of(food));
+        FoodItemDbEntity original = standardEntities.foodItemDbEntityBuilder()
+                .ofType(food.id())
+                .storedIn(localLocation.id())
+                .unit(localScaledUnit.id())
+                .build();
+        stocksDatabase.synchronisationDao().writeFoodItems(singletonList(original));
+        FoodItemForEditing localEdit = FoodItemForEditing.create(
+                original.id(),
+                original.version(),
+                Instant.ofEpochMilli(1),
+                localLocation.id(),
+                localScaledUnit.id()
+        );
+        FoodItemToEdit remoteEdit = FoodItemToEdit.create(
+                original.id(),
+                LocalDate.ofEpochDay(2),
+                remoteLocation.id(),
+                remoteScaledUnit.id()
+        );
+        stocksDatabase.synchronisationDao().writeFoodItems(currentUpdate(original,
+                (BitemporalOperations.EntityEditor<FoodItemDbEntity, FoodItemDbEntity.Builder>) builder ->
+                        builder.eatBy(localiser.toInstant(remoteEdit.eatBy()))
+                                .storedIn(remoteEdit.storedIn())
+                                .unit(remoteEdit.unit()), editTime));
+        setNow(editTime.plusSeconds(1));
+        errorRecorder.recordFoodItemEditError(new SubsystemException("test"), localEdit);
+        setArtificialDbNow(editTime.plusSeconds(1));
+        ErrorDescription error = testList(errorRepository.getErrors()).values().get(0).get(0);
+
+        TestObserver<FoodItemEditConflictData> observable = test(uut.getFoodItemEditConflict(error.id()));
+
+        FoodItemEditConflictData actual = observable.values().get(0);
+        assertEquals(error.id(), actual.errorId());
+        assertEquals(localEdit.id(), actual.id());
+        assertEquals(localEdit.version(), actual.originalVersion());
+        assertEquals(localiser.toLocalDate(original.eatBy()), actual.eatBy().original());
+        assertEquals(remoteEdit.eatBy(), actual.eatBy().remote());
+        assertEquals(localiser.toLocalDate(localEdit.eatBy()), actual.eatBy().local());
+        assertEquals(original.storedIn(), actual.storedIn().original().id());
+        assertEquals(remoteEdit.storedIn(), actual.storedIn().remote().id());
+        assertEquals(localEdit.storedIn(), actual.storedIn().local().id());
+        assertEquals(original.unit(), actual.unit().original().id());
+        assertEquals(remoteEdit.unit(), actual.unit().remote().id());
+        assertEquals(localEdit.unit(), actual.unit().local().id());
+    }
+
+    @Test
+    public void gettingFoodItemEditConflictOfDeletedEntityWorks() {
+        Instant editTime = Instant.EPOCH.plusSeconds(5);
+        Instant deleteTime = Instant.EPOCH.plusSeconds(10);
+        StatusCode statusCode = StatusCode.DATABASE_UNREACHABLE;
+        StatusCodeException exception = new StatusCodeException(statusCode);
+        UnitDbEntity unit = standardEntities.unitDbEntity();
+        stocksDatabase.synchronisationDao().writeUnits(singletonList(unit));
+        ScaledUnitDbEntity localScaledUnit = standardEntities.scaledUnitDbEntityBuilder()
+                .unit(unit.id())
+                .build();
+        ScaledUnitDbEntity remoteScaledUnit = standardEntities.scaledUnitDbEntityBuilder()
+                .id(randomnessProvider.getId("remote scaled unit id"))
+                .unit(unit.id())
+                .build();
+        stocksDatabase.synchronisationDao().writeScaledUnits(asList(localScaledUnit, remoteScaledUnit));
+        LocationDbEntity localLocation = standardEntities.locationDbEntity();
+        LocationDbEntity remoteLocation = standardEntities.locationDbEntityBuilder()
+                .id(randomnessProvider.getId("remote location id"))
+                .build();
+        stocksDatabase.synchronisationDao().writeLocations(asList(localLocation, remoteLocation));
+        FoodDbEntity food = standardEntities.foodDbEntity();
+        stocksDatabase.synchronisationDao().writeFood(List.of(food));
+        FoodItemDbEntity original = standardEntities.foodItemDbEntityBuilder()
+                .ofType(food.id())
+                .storedIn(localLocation.id())
+                .unit(localScaledUnit.id())
+                .build();
+        stocksDatabase.synchronisationDao().writeFoodItems(singletonList(original));
+        FoodItemForEditing localEdit = FoodItemForEditing.create(
+                original.id(),
+                original.version(),
+                Instant.ofEpochMilli(1),
+                localLocation.id(),
+                localScaledUnit.id()
+        );
+        FoodItemToEdit remoteEdit = FoodItemToEdit.create(
+                original.id(),
+                LocalDate.ofEpochDay(2),
+                remoteLocation.id(),
+                remoteScaledUnit.id()
+        );
+        stocksDatabase.synchronisationDao().writeFoodItems(currentUpdate(original,
+                (BitemporalOperations.EntityEditor<FoodItemDbEntity, FoodItemDbEntity.Builder>) builder ->
+                        builder.eatBy(localiser.toInstant(remoteEdit.eatBy()))
+                                .storedIn(remoteEdit.storedIn())
+                                .unit(remoteEdit.unit()), editTime));
+        setNow(editTime.plusSeconds(2));
+        errorRecorder.recordFoodItemEditError(exception, localEdit);
+        FoodItemDbEntity remoteEdited = stocksDatabase.errorDao().getCurrentFoodItem(original.id());
+        stocksDatabase.synchronisationDao().writeFoodItems(currentDelete(remoteEdited, deleteTime));
+        ErrorDescription error = testList(errorRepository.getErrors()).values().get(0).get(0);
+        setArtificialDbNow(deleteTime.plusSeconds(3));
+
+        TestObserver<FoodItemEditConflictData> observable = test(uut.getFoodItemEditConflict(error.id()));
+
+        FoodItemEditConflictData actual = observable.values().get(0);
+        assertEquals(error.id(), actual.errorId());
+        assertEquals(localEdit.id(), actual.id());
+        assertEquals(localEdit.version(), actual.originalVersion());
+        assertEquals(localiser.toLocalDate(original.eatBy()), actual.eatBy().original());
+        assertEquals(remoteEdit.eatBy(), actual.eatBy().remote());
+        assertEquals(localiser.toLocalDate(localEdit.eatBy()), actual.eatBy().local());
+        assertEquals(original.storedIn(), actual.storedIn().original().id());
+        assertEquals(remoteEdit.storedIn(), actual.storedIn().remote().id());
+        assertEquals(localEdit.storedIn(), actual.storedIn().local().id());
+        assertEquals(original.unit(), actual.unit().original().id());
+        assertEquals(remoteEdit.unit(), actual.unit().remote().id());
+        assertEquals(localEdit.unit(), actual.unit().local().id());
     }
 }

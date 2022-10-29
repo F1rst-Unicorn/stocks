@@ -21,17 +21,31 @@
 
 package de.njsm.stocks.client.business;
 
-import de.njsm.stocks.client.business.entities.conflict.*;
+import de.njsm.stocks.client.business.entities.conflict.FoodItemEditConflictFormData;
 import io.reactivex.rxjava3.core.Observable;
+import io.reactivex.rxjava3.subjects.BehaviorSubject;
 
-public interface ConflictRepository {
-    Observable<LocationEditConflictData> getLocationEditConflict(long errorId);
+import javax.inject.Inject;
 
-    Observable<UnitEditConflictData> getUnitEditConflict(long errorId);
+public class FakeFoodItemConflictInteractor implements FoodItemConflictInteractor {
 
-    Observable<ScaledUnitEditConflictData> getScaledUnitEditConflict(long errorId);
+    private BehaviorSubject<FoodItemEditConflictFormData> data;
 
-    Observable<FoodEditConflictData> getFoodEditConflict(long errorId);
+    @Inject
+    FakeFoodItemConflictInteractor() {
+        reset();
+    }
 
-    Observable<FoodItemEditConflictData> getFoodItemEditConflict(long errorId);
+    public void setData(FoodItemEditConflictFormData data) {
+        this.data.onNext(data);
+    }
+
+    @Override
+    public Observable<FoodItemEditConflictFormData> getEditConflict(long errorId) {
+        return data;
+    }
+
+    public void reset() {
+        data = BehaviorSubject.create();
+    }
 }

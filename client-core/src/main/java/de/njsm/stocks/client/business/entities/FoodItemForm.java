@@ -38,7 +38,7 @@ public abstract class FoodItemForm {
     public abstract int unit();
 
     public FoodItemToAdd toNetwork(Localiser localiser) {
-        return FoodItemToAdd.create(localiser.toInstant(eatBy()),
+        return FoodItemToAdd.create(localiser.toUtcInstant(eatBy()),
                 ofType(),
                 storedIn(),
                 unit());

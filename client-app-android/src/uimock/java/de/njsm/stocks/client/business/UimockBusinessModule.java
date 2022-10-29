@@ -158,4 +158,7 @@ public interface UimockBusinessModule {
 
     @Binds
     FoodItemEditInteractor FoodItemEditInteractor(InMemoryFoodItemEditInteractorImpl impl);
+
+    @Binds
+    FoodItemConflictInteractor FoodItemConflictInteractor(InMemoryFoodItemConflictInteractorImpl impl);
 }

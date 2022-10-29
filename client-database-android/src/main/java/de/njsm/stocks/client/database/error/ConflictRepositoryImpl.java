@@ -22,20 +22,14 @@
 package de.njsm.stocks.client.database.error;
 
 import de.njsm.stocks.client.business.ConflictRepository;
+import de.njsm.stocks.client.business.Localiser;
 import de.njsm.stocks.client.business.entities.LocationForListing;
 import de.njsm.stocks.client.business.entities.ScaledUnitForListing;
 import de.njsm.stocks.client.business.entities.UnitForListing;
-import de.njsm.stocks.client.business.entities.conflict.FoodEditConflictData;
-import de.njsm.stocks.client.business.entities.conflict.LocationEditConflictData;
-import de.njsm.stocks.client.business.entities.conflict.ScaledUnitEditConflictData;
-import de.njsm.stocks.client.business.entities.conflict.UnitEditConflictData;
-import de.njsm.stocks.client.database.FoodDbEntity;
-import de.njsm.stocks.client.database.LocationDbEntity;
-import de.njsm.stocks.client.database.ScaledUnitDbEntity;
-import de.njsm.stocks.client.database.UnitDbEntity;
+import de.njsm.stocks.client.business.entities.conflict.*;
+import de.njsm.stocks.client.database.*;
 import io.reactivex.rxjava3.core.Observable;
 
-import javax.crypto.spec.OAEPParameterSpec;
 import javax.inject.Inject;
 import java.util.Optional;
 
@@ -45,9 +39,12 @@ public class ConflictRepositoryImpl implements ConflictRepository {
 
     private final ErrorDao errorDao;
 
+    private final Localiser localiser;
+
     @Inject
-    ConflictRepositoryImpl(ErrorDao errorDao) {
+    ConflictRepositoryImpl(ErrorDao errorDao, Localiser localiser) {
         this.errorDao = errorDao;
+        this.localiser = localiser;
     }
 
     @Override
@@ -137,6 +134,43 @@ public class ConflictRepositoryImpl implements ConflictRepository {
                     ScaledUnitForListing.create(remoteScaledUnit.id(), remoteUnit.abbreviation(), remoteScaledUnit.scale()),
                     ScaledUnitForListing.create(localScaledUnit.id(), localUnit.abbreviation(), localScaledUnit.scale()),
                     original.description(), remote.description(), local.description());
+        });
+    }
+
+    @Override
+    public Observable<FoodItemEditConflictData> getFoodItemEditConflict(long errorId) {
+        return errorDao.observeError(errorId).map(error -> {
+            if (error.action() != ErrorEntity.Action.EDIT_FOOD_ITEM)
+                throw new IllegalArgumentException("error " + errorId + " does not belong to " + ErrorEntity.Action.EDIT_FOOD_ITEM + " but to " + error.action());
+
+            FoodItemEditEntity local = errorDao.getFoodItemEdit(error.dataId());
+            FoodItemDbEntity original = errorDao.getCurrentFoodItemAsKnownAt(local.foodItem().id(), local.foodItem().transactionTime());
+            FoodItemDbEntity remote = errorDao.getCurrentFoodItemAsKnownAt(local.foodItem().id(), local.executionTime());
+
+            FoodDbEntity food = errorDao.getCurrentFoodAsKnownAt(original.ofType(), local.foodItem().transactionTime());
+
+            LocationDbEntity originalLocation = errorDao.getCurrentLocationAsKnownAt(original.storedIn(), local.storedIn().transactionTime());
+            LocationDbEntity remoteLocation = errorDao.getCurrentLocationAsKnownAt(remote.storedIn(), local.executionTime());
+            LocationDbEntity localLocation = errorDao.getCurrentLocationAsKnownAt(local.storedIn().id(), local.storedIn().transactionTime());
+
+            ScaledUnitDbEntity originalScaledUnit = errorDao.getCurrentScaledUnitAsKnownAt(original.unit(), local.unit().transactionTime());
+            ScaledUnitDbEntity remoteScaledUnit = errorDao.getCurrentScaledUnitAsKnownAt(remote.unit(), local.executionTime());
+            ScaledUnitDbEntity localScaledUnit = errorDao.getCurrentScaledUnitAsKnownAt(local.unit().id(), local.unit().transactionTime());
+
+            UnitDbEntity originalUnit = errorDao.getCurrentUnitAsKnownAt(originalScaledUnit.unit(), local.unit().transactionTime());
+            UnitDbEntity remoteUnit = errorDao.getCurrentUnitAsKnownAt(remoteScaledUnit.unit(), local.executionTime());
+            UnitDbEntity localUnit = errorDao.getCurrentUnitAsKnownAt(localScaledUnit.unit(), local.unit().transactionTime());
+
+            return FoodItemEditConflictData.create(error.id(), local.foodItem().id(), local.version(), food.name(),
+                    localiser.toLocalDate(original.eatBy()),
+                    localiser.toLocalDate(remote.eatBy()),
+                    localiser.toLocalDate(local.eatBy()),
+                    LocationForListing.create(originalLocation.id(), originalLocation.name()),
+                    LocationForListing.create(remoteLocation.id(), remoteLocation.name()),
+                    LocationForListing.create(localLocation.id(), localLocation.name()),
+                    ScaledUnitForListing.create(originalScaledUnit.id(), originalUnit.abbreviation(), originalScaledUnit.scale()),
+                    ScaledUnitForListing.create(remoteScaledUnit.id(), remoteUnit.abbreviation(), remoteScaledUnit.scale()),
+                    ScaledUnitForListing.create(localScaledUnit.id(), localUnit.abbreviation(), localScaledUnit.scale()));
         });
     }
 

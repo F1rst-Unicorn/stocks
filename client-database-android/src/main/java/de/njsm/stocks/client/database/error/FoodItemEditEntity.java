@@ -29,12 +29,13 @@ import androidx.room.Ignore;
 import com.google.auto.value.AutoValue;
 import de.njsm.stocks.client.database.IdFields;
 import de.njsm.stocks.client.database.PreservedId;
+import de.njsm.stocks.client.database.VersionFields;
 
 import java.time.Instant;
 
 @AutoValue
 @Entity(tableName = "food_item_to_edit")
-public abstract class FoodItemEditEntity implements IdFields {
+public abstract class FoodItemEditEntity implements IdFields, VersionFields {
 
     @Embedded(prefix = "food_item_")
     @AutoValue.CopyAnnotations
@@ -57,12 +58,12 @@ public abstract class FoodItemEditEntity implements IdFields {
     @AutoValue.CopyAnnotations
     public abstract Instant executionTime();
 
-    public static FoodItemEditEntity create(int id, PreservedId foodItem, Instant eatBy, PreservedId storedIn, PreservedId unit, Instant executionTime) {
-        return new AutoValue_FoodItemEditEntity(id, foodItem, eatBy, storedIn, unit, executionTime);
+    public static FoodItemEditEntity create(int id, int version, PreservedId foodItem, Instant eatBy, PreservedId storedIn, PreservedId unit, Instant executionTime) {
+        return new AutoValue_FoodItemEditEntity(id, version, foodItem, eatBy, storedIn, unit, executionTime);
     }
 
     @Ignore
-    public static FoodItemEditEntity create(PreservedId foodItem, Instant eatBy, PreservedId storedIn, PreservedId unit, Instant executionTime) {
-        return new AutoValue_FoodItemEditEntity(0, foodItem, eatBy, storedIn, unit, executionTime);
+    public static FoodItemEditEntity create(int version, PreservedId foodItem, Instant eatBy, PreservedId storedIn, PreservedId unit, Instant executionTime) {
+        return new AutoValue_FoodItemEditEntity(0, version, foodItem, eatBy, storedIn, unit, executionTime);
     }
 }

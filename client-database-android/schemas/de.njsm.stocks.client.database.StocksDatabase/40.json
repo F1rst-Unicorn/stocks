@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 40,
-    "identityHash": "ea4d07eaf51fb070b59db2418ae881cc",
+    "identityHash": "15171d9332fa07ecf54b6d80ac819de6",
     "entities": [
       {
         "tableName": "updates",
@@ -2105,11 +2105,17 @@
       },
       {
         "tableName": "food_item_to_edit",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `eat_by` TEXT NOT NULL, `execution_time` TEXT, `food_item_id` INTEGER, `food_item_transaction_time` TEXT, `stored_inid` INTEGER, `stored_intransaction_time` TEXT, `unit_id` INTEGER, `unit_transaction_time` TEXT)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `version` INTEGER NOT NULL, `eat_by` TEXT NOT NULL, `execution_time` TEXT, `food_item_id` INTEGER, `food_item_transaction_time` TEXT, `stored_inid` INTEGER, `stored_intransaction_time` TEXT, `unit_id` INTEGER, `unit_transaction_time` TEXT)",
         "fields": [
           {
             "fieldPath": "id",
             "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "version",
+            "columnName": "version",
             "affinity": "INTEGER",
             "notNull": true
           },
@@ -2220,7 +2226,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'ea4d07eaf51fb070b59db2418ae881cc')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '15171d9332fa07ecf54b6d80ac819de6')"
     ]
   }
 }

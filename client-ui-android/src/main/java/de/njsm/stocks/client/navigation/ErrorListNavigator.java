@@ -32,4 +32,6 @@ public interface ErrorListNavigator {
     void resolveScaledUnitEditConflict(long id);
 
     void resolveFoodEditConflict(long input);
+
+    void resolveFoodItemEditConflict(long id);
 }

@@ -23,9 +23,10 @@ package de.njsm.stocks.client.fragment.view;
 
 import android.view.View;
 import android.widget.ArrayAdapter;
-import de.njsm.stocks.client.business.entities.ListWithSuggestion;
-import de.njsm.stocks.client.business.entities.LocationForSelection;
-import de.njsm.stocks.client.business.entities.ScaledUnitForSelection;
+import de.njsm.stocks.client.business.Localiser;
+import de.njsm.stocks.client.business.entities.*;
+import de.njsm.stocks.client.business.entities.conflict.ConflictData;
+import de.njsm.stocks.client.presenter.DateRenderStrategy;
 import de.njsm.stocks.client.presenter.UnitAmountRenderStrategy;
 import de.njsm.stocks.client.ui.R;
 
@@ -97,5 +98,31 @@ public class FoodItemForm {
 
     public ScaledUnitForSelection unit() {
         return unit.<EntityStringDisplayWrapper<ScaledUnitForSelection>>getSelectedItem().delegate();
+    }
+
+    public void showEatByConflict(ConflictData<LocalDate> eatBy, Localiser localiser) {
+        date.setSelection(eatBy.suggestedValue());
+        setPredictionDate(eatBy.suggestedValue());
+        date.showConflictInfo(eatBy, new DateRenderStrategy(localiser)::render);
+    }
+
+    public void hideEatBy() {
+        date.hide();
+    }
+
+    public void showLocationConflict(ConflictData<LocationForListing> location) {
+        this.location.showConflictInfo(location, LocationForListing::name);
+    }
+
+    public void hideLocation() {
+        location.hide();
+    }
+
+    public void showUnitConflict(ConflictData<ScaledUnitForListing> unit) {
+        this.unit.showConflictInfo(unit, new UnitAmountRenderStrategy()::render);
+    }
+
+    public void hideUnit() {
+        unit.hide();
     }
 }

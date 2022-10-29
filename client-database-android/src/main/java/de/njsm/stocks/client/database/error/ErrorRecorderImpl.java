@@ -234,6 +234,7 @@ public class ErrorRecorderImpl implements ErrorRecorder {
         Instant currentLocationTransactionTime = errorDao.getTransactionTimeOf(EntityType.LOCATION);
         Instant currentScaledUnitTransactionTime = errorDao.getTransactionTimeOf(EntityType.SCALED_UNIT);
         FoodItemEditEntity entity = FoodItemEditEntity.create(
+                item.version(),
                 PreservedId.create(item.id(), currentTransactionTime),
                 item.eatBy(),
                 PreservedId.create(item.storedIn(), currentLocationTransactionTime),

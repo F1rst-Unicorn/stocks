@@ -43,7 +43,7 @@ public abstract class FoodItemToEdit implements Id<FoodItem> {
         return FoodItemForEditing.create(
                 id(),
                 version,
-                localiser.toInstant(eatBy()),
+                localiser.toUtcInstant(eatBy()),
                 storedIn(),
                 unit()
         );

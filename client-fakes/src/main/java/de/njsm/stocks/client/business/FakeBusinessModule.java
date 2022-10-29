@@ -300,4 +300,13 @@ public interface FakeBusinessModule {
     static FakeFoodItemEditInteractor FakeFoodItemEditInteractor() {
         return new FakeFoodItemEditInteractor();
     }
+
+    @Binds
+    FoodItemConflictInteractor FoodItemConflictInteractor(FakeFoodItemConflictInteractor impl);
+
+    @Provides
+    @Singleton
+    static FakeFoodItemConflictInteractor FakeFoodItemConflictInteractor() {
+        return new FakeFoodItemConflictInteractor();
+    }
 }

@@ -21,17 +21,10 @@
 
 package de.njsm.stocks.client.business;
 
-import de.njsm.stocks.client.business.entities.conflict.*;
+import de.njsm.stocks.client.business.entities.conflict.FoodItemEditConflictFormData;
 import io.reactivex.rxjava3.core.Observable;
 
-public interface ConflictRepository {
-    Observable<LocationEditConflictData> getLocationEditConflict(long errorId);
+public interface FoodItemConflictInteractor {
 
-    Observable<UnitEditConflictData> getUnitEditConflict(long errorId);
-
-    Observable<ScaledUnitEditConflictData> getScaledUnitEditConflict(long errorId);
-
-    Observable<FoodEditConflictData> getFoodEditConflict(long errorId);
-
-    Observable<FoodItemEditConflictData> getFoodItemEditConflict(long errorId);
+    Observable<FoodItemEditConflictFormData> getEditConflict(long errorId);
 }

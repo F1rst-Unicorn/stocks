@@ -40,8 +40,8 @@ public class Localiser {
         return d.atStartOfDay(ZoneId.systemDefault()).toInstant();
     }
 
-    public Instant toInstant(LocalDateTime d) {
-        return d.atZone(ZoneId.systemDefault()).toInstant();
+    public Instant toUtcInstant(LocalDate d) {
+        return d.atStartOfDay(ZoneId.of("UTC")).toInstant();
     }
 
     public LocalDate toLocalDate(Instant i) {

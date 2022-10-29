@@ -61,7 +61,8 @@ class ConflictNavigator implements ErrorDetailsVisitor.Default<ErrorDescription,
 
     @Override
     public Void foodItemEditErrorDetails(FoodItemEditErrorDetails foodItemEditErrorDetails, ErrorDescription input) {
-        throw new UnsupportedOperationException("TODO");
+        errorListNavigator.resolveFoodItemEditConflict(input.id());
+        return null;
     }
 
     @Override

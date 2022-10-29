@@ -132,6 +132,9 @@
         <action
             android:id="@+id/action_nav_fragment_error_list_to_nav_fragment_food_conflict"
             app:destination="@id/nav_fragment_food_conflict"/>
+        <action
+            android:id="@+id/action_nav_fragment_error_list_to_nav_fragment_food_item_conflict"
+            app:destination="@id/nav_fragment_food_item_conflict"/>
     </fragment>
     <fragment
         android:id="@+id/nav_fragment_error_detail"
@@ -316,6 +319,14 @@
         <argument
                 android:name="id"
                 app:argType="integer"/>
+    </fragment>
+    <fragment
+            android:id="@+id/nav_fragment_food_item_conflict"
+            android:name="de.njsm.stocks.client.fragment.fooditemconflict.FoodItemConflictFragment"
+            android:label="@string/title_conflict">
+        <argument
+                android:name="id"
+                app:argType="long"/>
     </fragment>
     <action
             android:id="@+id/action_global_nav_fragment_error_list"

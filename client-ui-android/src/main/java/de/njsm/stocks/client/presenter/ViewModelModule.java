@@ -230,4 +230,11 @@ public class ViewModelModule {
     ViewModel FoodItemEditViewModel(FoodItemEditInteractor interactor) {
         return new FoodItemEditViewModel(interactor);
     }
+
+    @Provides
+    @IntoMap
+    @ViewModelKey(FoodItemConflictViewModel.class)
+    ViewModel FoodItemConflictViewModel(FoodItemConflictInteractor interactor, ErrorRetryInteractor errorRetryInteractor) {
+        return new FoodItemConflictViewModel(interactor, errorRetryInteractor);
+    }
 }
