@@ -212,4 +212,10 @@ class FakeNavigationModule {
     UserDeviceListNavigator UserDeviceListNavigator() {
         return mock(UserDeviceListNavigator.class);
     }
+
+    @Provides
+    @Singleton
+    FoodItemTabsNavigator FoodItemTabsNavigator() {
+        return mock(FoodItemTabsNavigator.class);
+    }
 }

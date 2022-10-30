@@ -43,8 +43,12 @@
         <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
         <item name="android:windowLightStatusBar">false</item>
         <item name="drawerArrowStyle">@style/DrawerArrow</item>
+        <item name="actionOverflowButtonStyle">@style/actionButtonOverflow</item>
     </style>
 
+    <style name="actionButtonOverflow" parent="Widget.AppCompat.Light.ActionButton.Overflow">
+        <item name="android:tint">@color/colorOnPrimary</item>
+    </style>
     <style name="Toolbar">
         <item name="android:background">?attr/colorPrimary</item>
         <item name="titleTextColor">?attr/colorOnPrimary</item>
