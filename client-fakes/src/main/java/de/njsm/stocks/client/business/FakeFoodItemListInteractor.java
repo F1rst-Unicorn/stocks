@@ -23,6 +23,7 @@ package de.njsm.stocks.client.business;
 
 import de.njsm.stocks.client.business.entities.Food;
 import de.njsm.stocks.client.business.entities.FoodItemForListing;
+import de.njsm.stocks.client.business.entities.FoodItemsForListing;
 import de.njsm.stocks.client.business.entities.Id;
 import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.subjects.BehaviorSubject;
@@ -32,7 +33,7 @@ import java.util.List;
 
 public class FakeFoodItemListInteractor implements FoodItemListInteractor {
 
-    private final BehaviorSubject<List<FoodItemForListing>> data;
+    private final BehaviorSubject<FoodItemsForListing> data;
 
     @Inject
     FakeFoodItemListInteractor() {
@@ -40,11 +41,11 @@ public class FakeFoodItemListInteractor implements FoodItemListInteractor {
     }
 
     public void setData(List<FoodItemForListing> data) {
-        this.data.onNext(data);
+        this.data.onNext(FoodItemsForListing.create(data, "Banana"));
     }
 
     @Override
-    public Observable<List<FoodItemForListing>> get(Id<Food> food) {
+    public Observable<FoodItemsForListing> get(Id<Food> food) {
         return data;
     }
 }

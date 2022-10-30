@@ -22,13 +22,11 @@
 package de.njsm.stocks.client.business;
 
 import de.njsm.stocks.client.business.entities.Food;
-import de.njsm.stocks.client.business.entities.FoodItemForListing;
+import de.njsm.stocks.client.business.entities.FoodItemsForListing;
 import de.njsm.stocks.client.business.entities.Id;
 import io.reactivex.rxjava3.core.Observable;
 
-import java.util.List;
-
 public interface FoodItemListInteractor {
 
-    Observable<List<FoodItemForListing>> get(Id<Food> food);
+    Observable<FoodItemsForListing> get(Id<Food> food);
 }

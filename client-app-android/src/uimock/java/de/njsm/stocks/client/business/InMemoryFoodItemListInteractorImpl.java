@@ -22,13 +22,11 @@
 package de.njsm.stocks.client.business;
 
 import de.njsm.stocks.client.business.entities.Food;
-import de.njsm.stocks.client.business.entities.FoodItemForListing;
 import de.njsm.stocks.client.business.entities.Id;
 import de.njsm.stocks.client.testdata.FoodItemsForListing;
 import io.reactivex.rxjava3.core.Observable;
 
 import javax.inject.Inject;
-import java.util.List;
 
 class InMemoryFoodItemListInteractorImpl implements FoodItemListInteractor {
 
@@ -37,7 +35,7 @@ class InMemoryFoodItemListInteractorImpl implements FoodItemListInteractor {
     }
 
     @Override
-    public Observable<List<FoodItemForListing>> get(Id<Food> food) {
-        return Observable.just(FoodItemsForListing.get());
+    public Observable<de.njsm.stocks.client.business.entities.FoodItemsForListing> get(Id<Food> food) {
+        return Observable.just(de.njsm.stocks.client.business.entities.FoodItemsForListing.create(FoodItemsForListing.get(), "Banana"));
     }
 }

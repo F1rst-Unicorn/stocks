@@ -19,15 +19,20 @@
  *
  */
 
-package de.njsm.stocks.client.business;
+package de.njsm.stocks.client.business.entities;
 
-import de.njsm.stocks.client.business.entities.*;
-import io.reactivex.rxjava3.core.Observable;
+import com.google.auto.value.AutoValue;
 
 import java.util.List;
 
-public interface FoodItemListRepository {
-    Observable<List<FoodItemForListingData>> get(Id<Food> food);
+@AutoValue
+public abstract class FoodItemsForListing {
 
-    Observable<FoodForSelection> getFood(Id<Food> food);
+    public abstract List<FoodItemForListing> foodItems();
+
+    public abstract String foodName();
+
+    public static FoodItemsForListing create(List<FoodItemForListing> foodItems, String foodName) {
+        return new AutoValue_FoodItemsForListing(foodItems, foodName);
+    }
 }

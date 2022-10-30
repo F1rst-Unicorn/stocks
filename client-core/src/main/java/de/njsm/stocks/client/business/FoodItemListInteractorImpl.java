@@ -22,12 +22,11 @@
 package de.njsm.stocks.client.business;
 
 import de.njsm.stocks.client.business.entities.Food;
-import de.njsm.stocks.client.business.entities.FoodItemForListing;
+import de.njsm.stocks.client.business.entities.FoodItemsForListing;
 import de.njsm.stocks.client.business.entities.Id;
 import io.reactivex.rxjava3.core.Observable;
 
 import javax.inject.Inject;
-import java.util.List;
 
 import static java.util.stream.Collectors.toList;
 
@@ -44,7 +43,8 @@ class FoodItemListInteractorImpl implements FoodItemListInteractor {
     }
 
     @Override
-    public Observable<List<FoodItemForListing>> get(Id<Food> food) {
-        return repository.get(food).map(v -> v.stream().map(item -> item.map(localiser)).collect(toList()));
+    public Observable<FoodItemsForListing> get(Id<Food> foodId) {
+        return repository.get(foodId).map(v -> v.stream().map(item -> item.map(localiser)).collect(toList()))
+                .zipWith(repository.getFood(foodId), (items, food) -> FoodItemsForListing.create(items, food.name()));
     }
 }

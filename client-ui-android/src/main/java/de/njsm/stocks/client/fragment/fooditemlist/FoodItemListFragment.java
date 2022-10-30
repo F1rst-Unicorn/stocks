@@ -33,7 +33,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.RecyclerView;
 import de.njsm.stocks.client.business.Localiser;
 import de.njsm.stocks.client.business.entities.Food;
-import de.njsm.stocks.client.business.entities.FoodItemForListing;
+import de.njsm.stocks.client.business.entities.FoodItemsForListing;
 import de.njsm.stocks.client.business.entities.Id;
 import de.njsm.stocks.client.databind.ExpirationIconProvider;
 import de.njsm.stocks.client.fragment.InjectableFragment;
@@ -44,7 +44,6 @@ import de.njsm.stocks.client.presenter.FoodItemListViewModel;
 import de.njsm.stocks.client.ui.R;
 
 import javax.inject.Inject;
-import java.util.List;
 
 public class FoodItemListFragment extends InjectableFragment {
 
@@ -86,13 +85,14 @@ public class FoodItemListFragment extends InjectableFragment {
         return root;
     }
 
-    private void onListDataReceived(List<FoodItemForListing> foodItemsForListing) {
-        if (foodItemsForListing.isEmpty()) {
+    private void onListDataReceived(FoodItemsForListing foodItemsForListing) {
+        if (foodItemsForListing.foodItems().isEmpty()) {
             templateSwipeList.setEmpty(R.string.hint_no_food_items);
         } else {
             templateSwipeList.setList();
         }
-        adapter.setData(foodItemsForListing);
+        adapter.setData(foodItemsForListing.foodItems());
+        requireActivity().setTitle(foodItemsForListing.foodName());
     }
 
     private void onItemClicked(View listItem) {
