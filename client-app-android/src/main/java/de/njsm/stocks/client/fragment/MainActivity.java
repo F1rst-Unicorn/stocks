@@ -23,9 +23,12 @@ package de.njsm.stocks.client.fragment;
 
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.TextView;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.NavigationUI;
@@ -34,6 +37,7 @@ import dagger.android.AndroidInjection;
 import de.njsm.stocks.R;
 import de.njsm.stocks.client.navigation.NavigationArgConsumerImpl;
 import de.njsm.stocks.client.navigation.NavigationGraphDirections;
+import de.njsm.stocks.client.presenter.MainActivityViewModel;
 
 import javax.inject.Inject;
 
@@ -46,6 +50,8 @@ public class MainActivity extends BaseActivity {
     private NavigationArgConsumerImpl navigationArgConsumer;
 
     private DialogDisplayerImpl dialogDisplayer;
+
+    private MainActivityViewModel viewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,6 +70,21 @@ public class MainActivity extends BaseActivity {
         navController = Navigation.findNavController(this, R.id.activity_main_nav_host_fragment);
         navigationArgConsumer.setNavController(navController);
         NavigationUI.setupWithNavController(toolbar, navController, drawerLayout);
+
+        setAccountInformation();
+    }
+
+    private void setAccountInformation() {
+        viewModel.get().observe(this, accountInformation -> {
+            NavigationView nav = findViewById(R.id.main_nav);
+            View headerView = nav.getHeaderView(0);
+            TextView view = headerView.findViewById(R.id.nav_header_main_username);
+            view.setText(accountInformation.userName());
+            view = headerView.findViewById(R.id.nav_header_main_dev);
+            view.setText(accountInformation.deviceName());
+            view = headerView.findViewById(R.id.nav_header_main_server);
+            view.setText(accountInformation.serverName());
+        });
     }
 
     private boolean onNavigationItemSelected(MenuItem menuItem) {
@@ -108,5 +129,11 @@ public class MainActivity extends BaseActivity {
     void setDialogDisplayer(DialogDisplayerImpl dialogDisplayer) {
         this.dialogDisplayer = dialogDisplayer;
         this.dialogDisplayer.setActivity(this);
+    }
+
+    @Inject
+    void setViewModel(ViewModelProvider.Factory viewModelFactory) {
+        ViewModelProvider viewModelProvider = new ViewModelProvider(this, viewModelFactory);
+        viewModel = viewModelProvider.get(MainActivityViewModel.class);
     }
 }

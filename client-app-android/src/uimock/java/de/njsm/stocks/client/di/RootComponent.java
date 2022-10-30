@@ -28,10 +28,11 @@ import dagger.Component;
 import dagger.android.AndroidInjectionModule;
 import de.njsm.stocks.client.Application;
 import de.njsm.stocks.client.business.UimockBusinessModule;
+import de.njsm.stocks.client.fragment.FragmentModule;
 import de.njsm.stocks.client.navigation.NavigationModule;
+import de.njsm.stocks.client.presenter.ActivityViewModelModule;
 import de.njsm.stocks.client.presenter.ViewModelModule;
 import de.njsm.stocks.client.testdata.DataModule;
-import de.njsm.stocks.client.fragment.FragmentModule;
 
 import javax.inject.Singleton;
 
@@ -46,6 +47,7 @@ import javax.inject.Singleton;
                 NavigationModule.class,
                 NavigationArgConsumerModule.class,
                 AppNavigationModule.class,
+                ActivityViewModelModule.class,
                 ActivityModule.class,
                 FragmentModule.class,
         }

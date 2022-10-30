@@ -167,4 +167,7 @@ public interface UimockBusinessModule {
 
     @Binds
     UserDeviceListInteractor UserDeviceListInteractor(InMemoryUserDeviceListInteractorImpl impl);
+
+    @Binds
+    AccountInformationInteractor AccountInformationInteractor(InMemoryAccountInformationInteractorImpl impl);
 }

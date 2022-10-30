@@ -327,4 +327,14 @@ public interface FakeBusinessModule {
     static FakeUserDeviceListInteractor FakeUserDeviceListInteractor() {
         return new FakeUserDeviceListInteractor();
     }
+
+    @Provides
+    @Singleton
+    static AccountInformationInteractor AccountInformationInteractor() {
+        return () -> Observable.just(AccountInformation.create(
+                "Jack",
+                "Mobile",
+                "stocks.example"
+        ));
+    }
 }

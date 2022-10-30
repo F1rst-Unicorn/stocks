@@ -26,6 +26,7 @@ import dagger.android.AndroidInjectionModule;
 import de.njsm.stocks.client.TestApplication;
 import de.njsm.stocks.client.business.FakeBusinessModule;
 import de.njsm.stocks.client.execution.FakeExecutionModule;
+import de.njsm.stocks.client.presenter.ActivityViewModelModule;
 import de.njsm.stocks.client.presenter.ViewModelModule;
 import de.njsm.stocks.client.fragment.FragmentModule;
 import de.njsm.stocks.client.fragment.StartupActivityTest;
@@ -39,6 +40,7 @@ import javax.inject.Singleton;
         FakeBusinessModule.class,
         FakeExecutionModule.class,
         ViewModelModule.class,
+        ActivityViewModelModule.class,
         FragmentModule.class,
         ActivityModule.class,
         FakePrimitiveModule.class,

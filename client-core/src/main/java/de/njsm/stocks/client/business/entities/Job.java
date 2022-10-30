@@ -168,6 +168,13 @@ public abstract class Job {
             }
         },
 
+        GET_ACCOUNT_INFORMATION {
+            @Override
+            public <I, O> O accept(TypeVisitor<I, O> visitor, I input) {
+                return visitor.getAccountInformation(this, input);
+            }
+        },
+
         UNKNOWN {
             @Override
             public <I, O> O accept(TypeVisitor<I, O> visitor, I input) {
@@ -223,6 +230,8 @@ public abstract class Job {
         O deleteFoodItem(Type type, I input);
 
         O editFoodItem(Type type, I input);
+
+        O getAccountInformation(Type type, I input);
     }
 
     public interface DefaultTypeVisitor<I, O> extends TypeVisitor<I, O> {
@@ -326,6 +335,11 @@ public abstract class Job {
 
         @Override
         default O editFoodItem(Type type, I input) {
+            return defaultImpl(type, input);
+        }
+
+        @Override
+        default O getAccountInformation(Type type, I input) {
             return defaultImpl(type, input);
         }
     }

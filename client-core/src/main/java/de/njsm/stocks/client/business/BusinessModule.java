@@ -153,4 +153,7 @@ public interface BusinessModule {
 
     @Binds
     UserDeviceListInteractor UserDeviceListInteractor(UserDeviceListInteractorImpl impl);
+
+    @Binds
+    AccountInformationInteractor AccountInformationInteractor(AccountInformationInteractorImpl impl);
 }
