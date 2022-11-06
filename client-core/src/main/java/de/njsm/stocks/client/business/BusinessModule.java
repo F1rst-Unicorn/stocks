@@ -156,4 +156,7 @@ public interface BusinessModule {
 
     @Binds
     AccountInformationInteractor AccountInformationInteractor(AccountInformationInteractorImpl impl);
+
+    @Binds
+    RecipeListInteractor RecipeListInteractor(RecipeListInteractorImpl impl);
 }

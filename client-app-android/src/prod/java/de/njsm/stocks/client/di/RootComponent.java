@@ -30,11 +30,12 @@ import de.njsm.stocks.client.Application;
 import de.njsm.stocks.client.business.BusinessModule;
 import de.njsm.stocks.client.crypto.CryptoModule;
 import de.njsm.stocks.client.database.DatabaseModule;
+import de.njsm.stocks.client.fragment.FragmentModule;
 import de.njsm.stocks.client.navigation.NavigationModule;
 import de.njsm.stocks.client.network.NetworkModule;
+import de.njsm.stocks.client.presenter.ActivityViewModelModule;
 import de.njsm.stocks.client.presenter.ViewModelModule;
 import de.njsm.stocks.client.settings.SettingsModule;
-import de.njsm.stocks.client.fragment.FragmentModule;
 
 import javax.inject.Singleton;
 
@@ -52,6 +53,7 @@ import javax.inject.Singleton;
                 CryptoModule.class,
                 DatabaseModule.class,
                 PrimitiveModule.class,
+                ActivityViewModelModule.class,
                 ActivityModule.class,
                 ServiceModule.class,
                 FragmentModule.class,

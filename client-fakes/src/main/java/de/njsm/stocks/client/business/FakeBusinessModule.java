@@ -328,6 +328,15 @@ public interface FakeBusinessModule {
         return new FakeUserDeviceListInteractor();
     }
 
+    @Binds
+    RecipeListInteractor RecipeListInteractor(FakeRecipeListInteractor impl);
+
+    @Provides
+    @Singleton
+    static FakeRecipeListInteractor FakeRecipeListInteractor() {
+        return new FakeRecipeListInteractor();
+    }
+
     @Provides
     @Singleton
     static AccountInformationInteractor AccountInformationInteractor() {

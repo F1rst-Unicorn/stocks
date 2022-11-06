@@ -170,4 +170,7 @@ public interface UimockBusinessModule {
 
     @Binds
     AccountInformationInteractor AccountInformationInteractor(InMemoryAccountInformationInteractorImpl impl);
+
+    @Binds
+    RecipeListInteractor RecipeListInteractor(InMemoryRecipeListInteractorImpl impl);
 }

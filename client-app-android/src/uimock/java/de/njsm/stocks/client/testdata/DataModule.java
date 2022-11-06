@@ -70,4 +70,10 @@ public class DataModule {
     public UserDevicesForListing UserDevicesForListing() {
         return new UserDevicesForListing(UserDevicesForListing.generate());
     }
+
+    @Provides
+    @Singleton
+    public RecipeTestData RecipeTestData() {
+        return new RecipeTestData(RecipeTestData.generate());
+    }
 }

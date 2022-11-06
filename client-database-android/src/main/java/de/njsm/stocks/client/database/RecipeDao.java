@@ -22,6 +22,8 @@ package de.njsm.stocks.client.database;
 
 import androidx.room.Dao;
 import androidx.room.Query;
+import de.njsm.stocks.client.business.entities.RecipeForListingBaseData;
+import io.reactivex.rxjava3.core.Observable;
 
 import java.util.List;
 
@@ -31,4 +33,25 @@ abstract class RecipeDao {
     @Query("select * " +
             "from current_recipe")
     abstract List<RecipeDbEntity> getAll();
+
+    @Query("select * " +
+            "from current_recipe " +
+            "order by name")
+    abstract Observable<List<RecipeForListingBaseData>> getRecipes();
+
+    @Query("select i.recipe, i.id as ingredient, u.id as unit, s.scale as scale, count(*) as amount " +
+            "from current_recipe_ingredient i " +
+            "join current_food_item f on f.of_type = i.ingredient " +
+            "join current_scaled_unit s on f.unit = s.id " +
+            "join current_unit u on u.id = s.unit " +
+            "group by i.recipe, i.id, u.id, s.scale " +
+            "order by i.id")
+    abstract Observable<List<RecipeListRepositoryImpl.RecipeIngredientAmountBaseData>> getIngredientsPresentAmounts();
+
+    @Query("select i.recipe, i.id as ingredient, u.id as unit, s.scale, i.amount " +
+            "from current_recipe_ingredient i " +
+            "join current_scaled_unit s on i.unit = s.id " +
+            "join current_unit u on u.id = s.unit " +
+            "order by i.id")
+    abstract Observable<List<RecipeListRepositoryImpl.RecipeIngredientAmountBaseData>> getIngredientsRequiredAmount();
 }

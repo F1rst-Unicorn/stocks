@@ -376,6 +376,33 @@
                 android:name="id"
                 app:argType="integer"/>
     </fragment>
+    <fragment
+            android:id="@+id/nav_fragment_recipe_list"
+            android:name="de.njsm.stocks.client.fragment.recipelist.RecipeListFragment"
+            android:label="@string/title_recipes">
+        <action
+                android:id="@+id/action_nav_fragment_recipe_list_to_nav_fragment_recipe_add"
+                app:destination="@id/nav_fragment_recipe_add">
+        </action>
+        <action
+                android:id="@+id/action_nav_fragment_recipe_list_to_nav_fragment_recipe"
+                app:destination="@id/nav_fragment_recipe">
+            <argument
+                    android:name="id"
+                    app:argType="integer"/>
+        </action>
+    </fragment>
+    <fragment
+            android:id="@+id/nav_fragment_recipe_add"
+            android:name="androidx.fragment.app.Fragment">
+    </fragment>
+    <fragment
+            android:id="@+id/nav_fragment_recipe"
+            android:name="androidx.fragment.app.Fragment">
+        <argument
+                android:name="id"
+                app:argType="integer"/>
+    </fragment>
     <action
             android:id="@+id/action_global_nav_fragment_error_list"
             app:destination="@id/nav_fragment_error_list" />
@@ -388,4 +415,7 @@
     <action
             android:id="@+id/action_global_nav_fragment_users"
             app:destination="@id/nav_fragment_user_list" />
+    <action
+            android:id="@+id/action_global_nav_fragment_recipes"
+            app:destination="@id/nav_fragment_recipe_list" />
 </navigation>

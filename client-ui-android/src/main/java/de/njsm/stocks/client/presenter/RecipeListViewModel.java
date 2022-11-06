@@ -24,34 +24,40 @@ package de.njsm.stocks.client.presenter;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.LiveDataReactiveStreams;
 import androidx.lifecycle.ViewModel;
+import de.njsm.stocks.client.business.RecipeListInteractor;
 import de.njsm.stocks.client.business.Synchroniser;
-import de.njsm.stocks.client.business.UserListInteractor;
-import de.njsm.stocks.client.business.entities.UserForListing;
+import de.njsm.stocks.client.business.entities.Id;
+import de.njsm.stocks.client.business.entities.Recipe;
+import de.njsm.stocks.client.business.entities.RecipeForListing;
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.core.BackpressureStrategy;
 import io.reactivex.rxjava3.core.Observable;
 
-import javax.inject.Inject;
 import java.util.List;
 import java.util.function.Consumer;
 
-public class UserListViewModel extends ViewModel {
+public class RecipeListViewModel extends ViewModel {
 
-    private final UserListInteractor userListInteractor;
+    private final RecipeListInteractor interactor;
 
     private final Synchroniser synchroniser;
 
-    private Observable<List<UserForListing>> data;
+    private Observable<List<RecipeForListing>> data;
 
-    @Inject
-    UserListViewModel(UserListInteractor userListInteractor, Synchroniser synchroniser) {
-        this.userListInteractor = userListInteractor;
+    public RecipeListViewModel(RecipeListInteractor interactor, Synchroniser synchroniser) {
+        this.interactor = interactor;
         this.synchroniser = synchroniser;
     }
 
-    public LiveData<List<UserForListing>> get() {
-        return LiveDataReactiveStreams.fromPublisher(
-                getData().toFlowable(BackpressureStrategy.LATEST));
+    public LiveData<List<RecipeForListing>> get() {
+        return LiveDataReactiveStreams.fromPublisher(getData().toFlowable(BackpressureStrategy.LATEST));
+    }
+
+    private Observable<List<RecipeForListing>> getData() {
+        if (data == null) {
+            data = interactor.get();
+        }
+        return data;
     }
 
     public void delete(int listItemIndex) {
@@ -62,20 +68,14 @@ public class UserListViewModel extends ViewModel {
         synchroniser.synchronise();
     }
 
-    public void resolveId(int listItemIndex, Consumer<Integer> callback) {
-        performOnCurrentData(list -> callback.accept(list.get(listItemIndex).id()));
+    public void resolveId(int listItemIndex, Consumer<Id<Recipe>> callback) {
+        performOnCurrentData(list -> callback.accept(list.get(listItemIndex)));
     }
 
-    private void performOnCurrentData(Consumer<List<UserForListing>> runnable) {
+    private void performOnCurrentData(Consumer<List<RecipeForListing>> runnable) {
         getData()
                 .firstElement()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(runnable::accept);
-    }
-
-    private Observable<List<UserForListing>> getData() {
-        if (data == null)
-            data = userListInteractor.getUsers();
-        return data;
     }
 }

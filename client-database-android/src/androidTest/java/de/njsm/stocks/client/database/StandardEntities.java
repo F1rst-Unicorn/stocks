@@ -101,14 +101,14 @@ public class StandardEntities {
                 .abbreviation("abbreviation");
     }
 
-    public ScaledUnitDbEntity scaledUnitDbEntity() {
-        return scaledUnitDbEntityBuilder().build();
-    }
-
     public ScaledUnitDbEntity.Builder scaledUnitDbEntityBuilder() {
         return initialiseBuilder(ScaledUnitDbEntity.builder())
                 .scale(BigDecimal.TEN)
                 .unit(randomnessProvider.getId("scaled_unit unit"));
+    }
+
+    public RecipeDbEntity recipeDbEntity() {
+        return recipeDbEntityBuilder().build();
     }
 
     RecipeDbEntity.Builder recipeDbEntityBuilder() {

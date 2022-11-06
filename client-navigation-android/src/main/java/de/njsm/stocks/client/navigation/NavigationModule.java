@@ -110,4 +110,7 @@ public interface NavigationModule {
 
     @Binds
     FoodItemTabsNavigator FoodItemTabsNavigator(FoodItemTabsNavigatorImpl impl);
+
+    @Binds
+    RecipeListNavigator RecipeListNavigator(RecipeListNavigatorImpl impl);
 }
