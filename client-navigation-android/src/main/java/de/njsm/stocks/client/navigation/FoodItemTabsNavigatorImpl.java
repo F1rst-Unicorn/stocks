@@ -46,4 +46,10 @@ class FoodItemTabsNavigatorImpl extends BaseNavigator implements FoodItemTabsNav
         var direction = FoodItemTabsFragmentDirections.actionNavFragmentFoodItemTabsToNavFragmentEditFood(foodId.id());
         getNavigationArgConsumer().navigate(direction);
     }
+
+    @Override
+    public void showEanNumbers(Id<Food> foodId) {
+        var direction = FoodItemTabsFragmentDirections.actionNavFragmentFoodItemTabsToNavFragmentEanNumbers(foodId.id());
+        getNavigationArgConsumer().navigate(direction);
+    }
 }

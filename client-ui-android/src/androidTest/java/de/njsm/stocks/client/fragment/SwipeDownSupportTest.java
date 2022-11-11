@@ -29,6 +29,7 @@ import androidx.test.platform.app.InstrumentationRegistry;
 import de.njsm.stocks.client.Application;
 import de.njsm.stocks.client.business.Synchroniser;
 import de.njsm.stocks.client.fragment.allfood.AllFoodFragment;
+import de.njsm.stocks.client.fragment.eanlist.EanNumberListFragment;
 import de.njsm.stocks.client.fragment.emptyfood.EmptyFoodFragment;
 import de.njsm.stocks.client.fragment.errorlist.ErrorListFragment;
 import de.njsm.stocks.client.fragment.foodinlocation.FoodInLocationFragment;
@@ -64,7 +65,8 @@ public class SwipeDownSupportTest {
             new TestCaseData(FoodItemTabsFragment .class, R.id.template_swipe_list_swipe),
             new TestCaseData(UserListFragment.class, R.id.template_swipe_list_swipe),
             new TestCaseData(UserDeviceListFragment.class, R.id.template_swipe_list_swipe),
-            new TestCaseData(RecipeListFragment .class, R.id.template_swipe_list_swipe)
+            new TestCaseData(RecipeListFragment .class, R.id.template_swipe_list_swipe),
+            new TestCaseData(EanNumberListFragment .class, R.id.template_swipe_list_swipe)
     );
 
     private Synchroniser synchroniser;

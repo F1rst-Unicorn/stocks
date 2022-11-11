@@ -19,17 +19,32 @@
  *
  */
 
-package de.njsm.stocks.client.navigation;
+package de.njsm.stocks.client.business;
 
-import android.os.Bundle;
+import de.njsm.stocks.client.business.entities.EanNumberForListing;
 import de.njsm.stocks.client.business.entities.Food;
 import de.njsm.stocks.client.business.entities.Id;
+import io.reactivex.rxjava3.core.Observable;
+import io.reactivex.rxjava3.subjects.BehaviorSubject;
 
-public interface FoodItemTabsNavigator {
+import javax.inject.Inject;
+import java.util.List;
 
-    Id<Food> get(Bundle requireArguments);
+public class FakeEanNumberListInteractor implements EanNumberListInteractor {
 
-    void editFood(Id<Food> foodId);
+    private final BehaviorSubject<List<EanNumberForListing>> data;
 
-    void showEanNumbers(Id<Food> foodId);
+    @Inject
+    FakeEanNumberListInteractor() {
+        this.data = BehaviorSubject.create();
+    }
+
+    public void setData(List<EanNumberForListing> data) {
+        this.data.onNext(data);
+    }
+
+    @Override
+    public Observable<List<EanNumberForListing>> get(Id<Food> food) {
+        return data;
+    }
 }

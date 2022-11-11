@@ -159,4 +159,7 @@ public interface BusinessModule {
 
     @Binds
     RecipeListInteractor RecipeListInteractor(RecipeListInteractorImpl impl);
+
+    @Binds
+    EanNumberListInteractor EanNumberListInteractor(EanNumberListInteractorImpl impl);
 }

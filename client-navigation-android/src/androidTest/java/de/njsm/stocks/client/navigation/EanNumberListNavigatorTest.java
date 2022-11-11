@@ -24,12 +24,28 @@ package de.njsm.stocks.client.navigation;
 import android.os.Bundle;
 import de.njsm.stocks.client.business.entities.Food;
 import de.njsm.stocks.client.business.entities.Id;
+import org.junit.Before;
+import org.junit.Test;
 
-public interface FoodItemTabsNavigator {
+import static org.junit.Assert.assertEquals;
 
-    Id<Food> get(Bundle requireArguments);
+public class EanNumberListNavigatorTest extends NavigationTest {
 
-    void editFood(Id<Food> foodId);
+    private EanNumberListNavigator uut;
 
-    void showEanNumbers(Id<Food> foodId);
+    @Before
+    public void setUp() {
+        uut = new EanNumberListNavigatorImpl(navigationArgConsumer);
+    }
+
+    @Test
+    public void argumentIsExtracted() {
+        Bundle input = new Bundle();
+        int expected = 42;
+        input.putInt("foodId", expected);
+
+        Id<Food> actual = uut.getFood(input);
+
+        assertEquals(expected, actual.id());
+    }
 }

@@ -19,17 +19,16 @@
  *
  */
 
-package de.njsm.stocks.client.navigation;
+package de.njsm.stocks.client.business;
 
-import android.os.Bundle;
+import de.njsm.stocks.client.business.entities.EanNumberForListing;
 import de.njsm.stocks.client.business.entities.Food;
 import de.njsm.stocks.client.business.entities.Id;
+import io.reactivex.rxjava3.core.Observable;
 
-public interface FoodItemTabsNavigator {
+import java.util.List;
 
-    Id<Food> get(Bundle requireArguments);
+public interface EanNumberListInteractor {
 
-    void editFood(Id<Food> foodId);
-
-    void showEanNumbers(Id<Food> foodId);
+    Observable<List<EanNumberForListing>> get(Id<Food> food);
 }

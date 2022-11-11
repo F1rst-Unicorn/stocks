@@ -24,12 +24,19 @@ package de.njsm.stocks.client.navigation;
 import android.os.Bundle;
 import de.njsm.stocks.client.business.entities.Food;
 import de.njsm.stocks.client.business.entities.Id;
+import de.njsm.stocks.client.fragment.eanlist.EanNumberListFragmentArgs;
 
-public interface FoodItemTabsNavigator {
+import javax.inject.Inject;
 
-    Id<Food> get(Bundle requireArguments);
+class EanNumberListNavigatorImpl extends BaseNavigator implements EanNumberListNavigator {
 
-    void editFood(Id<Food> foodId);
+    @Inject
+    EanNumberListNavigatorImpl(NavigationArgConsumer navigationArgConsumer) {
+        super(navigationArgConsumer);
+    }
 
-    void showEanNumbers(Id<Food> foodId);
+    @Override
+    public Id<Food> getFood(Bundle arguments) {
+        return EanNumberListFragmentArgs.fromBundle(arguments)::getFoodId;
+    }
 }

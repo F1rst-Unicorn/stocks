@@ -19,17 +19,32 @@
  *
  */
 
-package de.njsm.stocks.client.navigation;
+package de.njsm.stocks.client.database;
 
-import android.os.Bundle;
+import de.njsm.stocks.client.business.EanNumberListRepository;
+import de.njsm.stocks.client.business.entities.EanNumberForListing;
 import de.njsm.stocks.client.business.entities.Food;
 import de.njsm.stocks.client.business.entities.Id;
+import io.reactivex.rxjava3.core.Observable;
 
-public interface FoodItemTabsNavigator {
+import javax.inject.Inject;
+import java.util.List;
 
-    Id<Food> get(Bundle requireArguments);
+import static java.util.stream.Collectors.toList;
 
-    void editFood(Id<Food> foodId);
+class EanNumberListRepositoryImpl implements EanNumberListRepository {
 
-    void showEanNumbers(Id<Food> foodId);
+    private final EanNumberDao eanNumberDao;
+
+    @Inject
+    EanNumberListRepositoryImpl(EanNumberDao eanNumberDao) {
+        this.eanNumberDao = eanNumberDao;
+    }
+
+    @Override
+    public Observable<List<EanNumberForListing>> get(Id<Food> food) {
+        return eanNumberDao.get(food.id()).map(v -> v.stream()
+                .map(row -> EanNumberForListing.create(row.id(), row.number()))
+                .collect(toList()));
+    }
 }

@@ -133,6 +133,11 @@ public interface DatabaseModule {
         return database.recipeDao();
     }
 
+    @Provides
+    static EanNumberDao EanNumberDao(StocksDatabase database) {
+        return database.eanNumberDao();
+    }
+
     @Binds
     ErrorRepository errorRepository(ErrorRepositoryImpl impl);
 
@@ -192,4 +197,7 @@ public interface DatabaseModule {
 
     @Binds
     RecipeListRepository RecipeListRepository(RecipeListRepositoryImpl impl);
+
+    @Binds
+    EanNumberListRepository EanNumberListRepository(EanNumberListRepositoryImpl impl);
 }

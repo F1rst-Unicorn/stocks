@@ -258,4 +258,11 @@ public class ViewModelModule {
     ViewModel RecipeListViewModel(RecipeListInteractor interactor, Synchroniser errorRetryInteractor) {
         return new RecipeListViewModel(interactor, errorRetryInteractor);
     }
+
+    @Provides
+    @IntoMap
+    @ViewModelKey(EanNumberListViewModel.class)
+    ViewModel EanNumberListViewModel(EanNumberListInteractor interactor, Synchroniser synchroniser) {
+        return new EanNumberListViewModel(interactor, synchroniser);
+    }
 }

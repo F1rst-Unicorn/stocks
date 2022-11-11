@@ -134,6 +134,10 @@ public class StandardEntities {
                 .recipe(randomnessProvider.getId("recipe_ingredient recipe"));
     }
 
+    EanNumberDbEntity eanNumberDbEntity() {
+        return eanNumberDbEntityBuilder().build();
+    }
+
     EanNumberDbEntity.Builder eanNumberDbEntityBuilder() {
         return initialiseBuilder(EanNumberDbEntity.builder())
                 .number("number")

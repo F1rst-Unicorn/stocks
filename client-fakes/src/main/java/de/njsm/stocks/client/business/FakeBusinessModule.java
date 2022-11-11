@@ -346,4 +346,13 @@ public interface FakeBusinessModule {
                 "stocks.example"
         ));
     }
+
+    @Binds
+    EanNumberListInteractor EanNumberListInteractor(FakeEanNumberListInteractor impl);
+
+    @Provides
+    @Singleton
+    static FakeEanNumberListInteractor FakeEanNumberListInteractor() {
+        return new FakeEanNumberListInteractor();
+    }
 }

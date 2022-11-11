@@ -21,21 +21,30 @@
 
 package de.njsm.stocks.client.database;
 
-import androidx.room.Dao;
-import androidx.room.Query;
-import io.reactivex.rxjava3.core.Observable;
+import de.njsm.stocks.client.business.entities.EanNumberForListing;
+import org.junit.Before;
+import org.junit.Test;
 
 import java.util.List;
 
-@Dao
-abstract class EanNumberDao {
+import static de.njsm.stocks.client.database.util.Util.testList;
 
-    @Query("select * " +
-            "from current_ean_number")
-    abstract List<EanNumberDbEntity> getAll();
+public class EanNumberListRepositoryImplTest extends DbTestCase {
 
-    @Query("select * " +
-            "from current_ean_number " +
-            "where identifies = :food")
-    abstract Observable<List<EanNumberDbEntity>> get(int food);
+    private EanNumberListRepositoryImpl uut;
+
+    @Before
+    public void setUp() {
+        uut = new EanNumberListRepositoryImpl(stocksDatabase.eanNumberDao());
+    }
+
+    @Test
+    public void gettingUsersWorks() {
+        EanNumberDbEntity eanNumber = standardEntities.eanNumberDbEntity();
+        stocksDatabase.synchronisationDao().writeEanNumbers(List.of(eanNumber));
+
+        var actual = uut.get(eanNumber::identifies);
+
+        testList(actual).assertValue(List.of(EanNumberForListing.create(eanNumber.id(), eanNumber.number())));
+    }
 }

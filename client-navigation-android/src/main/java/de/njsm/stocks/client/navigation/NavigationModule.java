@@ -113,4 +113,7 @@ public interface NavigationModule {
 
     @Binds
     RecipeListNavigator RecipeListNavigator(RecipeListNavigatorImpl impl);
+
+    @Binds
+    EanNumberListNavigator EanNumberListNavigator(EanNumberListNavigatorImpl impl);
 }

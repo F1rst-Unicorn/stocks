@@ -59,4 +59,14 @@ public class FoodItemTabsNavigatorImplTest extends NavigationTest {
         var actual = navigationArgConsumer.getLastArgument(FoodItemTabsFragmentDirections.ActionNavFragmentFoodItemTabsToNavFragmentEditFood.class);
         assertEquals(actual.getId(), expected);
     }
+
+    @Test
+    public void showingEanNumbersBindsCorrectly() {
+        int expected = 42;
+
+        uut.showEanNumbers(() -> expected);
+
+        var actual = navigationArgConsumer.getLastArgument(FoodItemTabsFragmentDirections.ActionNavFragmentFoodItemTabsToNavFragmentEanNumbers.class);
+        assertEquals(actual.getFoodId(), expected);
+    }
 }

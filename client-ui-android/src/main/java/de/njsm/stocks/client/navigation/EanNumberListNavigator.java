@@ -25,11 +25,7 @@ import android.os.Bundle;
 import de.njsm.stocks.client.business.entities.Food;
 import de.njsm.stocks.client.business.entities.Id;
 
-public interface FoodItemTabsNavigator {
+public interface EanNumberListNavigator {
 
-    Id<Food> get(Bundle requireArguments);
-
-    void editFood(Id<Food> foodId);
-
-    void showEanNumbers(Id<Food> foodId);
+    Id<Food> getFood(Bundle arguments);
 }

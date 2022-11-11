@@ -61,6 +61,10 @@ public class FoodItemTabsFragment extends TabsFragment {
             Id<Food> foodId = navigator.get(requireArguments());
             navigator.editFood(foodId);
             return true;
+        } else if (item.getItemId() == R.id.menu_food_items_ean_codes) {
+            Id<Food> foodId = navigator.get(requireArguments());
+            navigator.showEanNumbers(foodId);
+            return true;
         } else {
             return super.onOptionsItemSelected(item);
         }

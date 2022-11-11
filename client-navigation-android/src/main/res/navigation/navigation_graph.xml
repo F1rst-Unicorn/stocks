@@ -289,6 +289,13 @@
                     app:argType="integer"/>
         </action>
         <action
+                android:id="@+id/action_nav_fragment_food_item_tabs_to_nav_fragment_ean_numbers"
+                app:destination="@id/nav_fragment_ean_numbers">
+            <argument
+                    android:name="foodId"
+                    app:argType="integer"/>
+        </action>
+        <action
                 android:id="@+id/action_nav_fragment_food_item_tabs_to_nav_fragment_edit_food"
                 app:destination="@id/nav_fragment_edit_food">
             <argument
@@ -401,6 +408,13 @@
             android:name="androidx.fragment.app.Fragment">
         <argument
                 android:name="id"
+                app:argType="integer"/>
+    </fragment>
+    <fragment
+            android:id="@+id/nav_fragment_ean_numbers"
+            android:name="de.njsm.stocks.client.fragment.eanlist.EanNumberListFragment">
+        <argument
+                android:name="foodId"
                 app:argType="integer"/>
     </fragment>
     <action

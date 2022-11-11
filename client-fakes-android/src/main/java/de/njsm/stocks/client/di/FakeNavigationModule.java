@@ -224,4 +224,10 @@ class FakeNavigationModule {
     RecipeListNavigator RecipeListNavigator() {
         return mock(RecipeListNavigator.class);
     }
+
+    @Provides
+    @Singleton
+    EanNumberListNavigator EanNumberListNavigator() {
+        return mock(EanNumberListNavigator.class);
+    }
 }

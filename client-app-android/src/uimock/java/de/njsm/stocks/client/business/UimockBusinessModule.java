@@ -173,4 +173,7 @@ public interface UimockBusinessModule {
 
     @Binds
     RecipeListInteractor RecipeListInteractor(InMemoryRecipeListInteractorImpl impl);
+
+    @Binds
+    EanNumberListInteractor EanNumberListInteractor(InMemoryEanNumberListInteractorImpl impl);
 }

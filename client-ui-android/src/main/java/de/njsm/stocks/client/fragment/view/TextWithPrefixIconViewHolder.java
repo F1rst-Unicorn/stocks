@@ -32,12 +32,17 @@ public class TextWithPrefixIconViewHolder extends RecyclerView.ViewHolder {
 
     private final TextView text;
 
+    public TextWithPrefixIconViewHolder(@NonNull View itemView) {
+        this(itemView, 0);
+    }
+
     public TextWithPrefixIconViewHolder(@NonNull View itemView, @DrawableRes int icon) {
         super(itemView);
         text = itemView.findViewById(R.id.item_text_with_prefix_icon_name);
         itemView.setTag(this);
 
-        text.setCompoundDrawablesRelativeWithIntrinsicBounds(icon, 0, 0, 0);
+        if (icon != 0)
+            text.setCompoundDrawablesRelativeWithIntrinsicBounds(icon, 0, 0, 0);
     }
 
     public void setText(CharSequence text) {
