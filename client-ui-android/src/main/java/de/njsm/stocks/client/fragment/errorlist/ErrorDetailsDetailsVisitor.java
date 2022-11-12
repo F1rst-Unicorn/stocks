@@ -118,4 +118,9 @@ public class ErrorDetailsDetailsVisitor implements ErrorDetailsVisitor<Void, Str
     public String foodItemEditErrorDetails(FoodItemEditErrorDetails foodItemEditErrorDetails, Void input) {
         return foodItemEditErrorDetails.foodName();
     }
+
+    @Override
+    public String eanNumberAddErrorDetails(EanNumberAddErrorDetails eanNumberAddErrorDetails, Void input) {
+        return String.format("%s (%s)", eanNumberAddErrorDetails.foodName(), eanNumberAddErrorDetails.eanNumber());
+    }
 }

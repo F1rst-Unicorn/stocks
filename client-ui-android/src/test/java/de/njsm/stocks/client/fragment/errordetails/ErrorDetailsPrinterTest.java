@@ -160,4 +160,10 @@ public class ErrorDetailsPrinterTest {
         FoodItemEditErrorDetails data = FoodItemEditErrorDetails.create(1, "Banana", LocalDate.ofEpochDay(2), 3, 4);
         assertEquals(data.foodName(), uut.visit(data, null));
     }
+
+    @Test
+    public void eanNumberAddingShowsDetails() {
+        EanNumberAddErrorDetails data = EanNumberAddErrorDetails.create(1, "Banana", "123");
+        assertEquals("Banana (123)", uut.visit(data, null));
+    }
 }

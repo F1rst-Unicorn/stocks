@@ -99,6 +99,9 @@ public interface NetworkModule {
     @Binds
     FoodItemEditService FoodItemEditService(FoodItemEditServiceImpl impl);
 
+    @Binds
+    EanNumberAddService EanNumberAddService(EanNumberAddServiceImpl impl);
+
 
     @Provides
     @Singleton

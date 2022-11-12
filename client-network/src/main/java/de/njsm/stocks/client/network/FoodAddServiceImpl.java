@@ -29,7 +29,7 @@ import retrofit2.Call;
 
 import javax.inject.Inject;
 
-public class FoodAddServiceImpl extends ServiceBase<FoodAddForm> implements FoodAddService {
+class FoodAddServiceImpl extends ServiceBase<FoodAddForm> implements FoodAddService {
 
     @Inject
     FoodAddServiceImpl(ServerApi api, CallHandler callHandler) {

@@ -24,13 +24,17 @@ package de.njsm.stocks.client.business.entities;
 import com.google.auto.value.AutoValue;
 
 @AutoValue
-public abstract class IdImpl<T extends Entity<T>> implements Id<T> {
+public abstract class EanNumberAddForm {
 
-    public static <T extends Entity<T>> IdImpl<T> create(int id) {
-        return new AutoValue_IdImpl<>(id);
+    abstract IdImpl<Food> food();
+
+    public Id<Food> identifies() {
+        return food();
     }
 
-    public static <T extends Entity<T>> IdImpl<T> from(Id<T> id) {
-        return new AutoValue_IdImpl<>(id.id());
+    public abstract String eanNumber();
+
+    public static EanNumberAddForm create(Id<Food> identifies, String eanNumber) {
+        return new AutoValue_EanNumberAddForm(IdImpl.from(identifies), eanNumber);
     }
 }

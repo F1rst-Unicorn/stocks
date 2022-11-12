@@ -512,5 +512,21 @@ public abstract class ErrorDao {
     @Query("select * " +
             "from food_item_to_edit " +
             "where id = :id")
-    abstract FoodItemEditEntity getFoodItemEdit(Long id);
+    abstract FoodItemEditEntity getFoodItemEdit(long id);
+
+    @Query("select * " +
+            "from ean_number_to_add")
+    abstract List<EanNumberAddEntity> getEanNumberAdds();
+
+    @Insert
+    abstract long insert(EanNumberAddEntity entity);
+
+    @Query("select * " +
+            "from ean_number_to_add " +
+            "where id = :id")
+    abstract EanNumberAddEntity getEanNumberAdd(long id);
+
+    @Query("delete from ean_number_to_add " +
+            "where id = :id")
+    abstract void deleteEanNumberAdd(Long id);
 }

@@ -22,11 +22,13 @@
 package de.njsm.stocks.client.fragment.eanlist;
 
 
+import android.app.Activity;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import androidx.activity.result.ActivityResultLauncher;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
@@ -36,6 +38,7 @@ import de.njsm.stocks.client.business.entities.Food;
 import de.njsm.stocks.client.business.entities.Id;
 import de.njsm.stocks.client.fragment.BottomToolbarFragment;
 import de.njsm.stocks.client.fragment.listswipe.SwipeCallback;
+import de.njsm.stocks.client.fragment.util.CameraPermissionProber;
 import de.njsm.stocks.client.fragment.view.TemplateSwipeList;
 import de.njsm.stocks.client.navigation.EanNumberListNavigator;
 import de.njsm.stocks.client.presenter.EanNumberListViewModel;
@@ -44,7 +47,7 @@ import de.njsm.stocks.client.ui.R;
 import javax.inject.Inject;
 import java.util.List;
 
-public class EanNumberListFragment extends BottomToolbarFragment {
+public class EanNumberListFragment extends BottomToolbarFragment implements CameraPermissionProber {
 
     private EanNumberListViewModel eanNumberListViewModel;
 
@@ -54,7 +57,14 @@ public class EanNumberListFragment extends BottomToolbarFragment {
 
     private TemplateSwipeList templateSwipeList;
 
+    private final ActivityResultLauncher<Activity> eanNumberScanOperation;
+
     private Id<Food> food;
+
+    public EanNumberListFragment() {
+        this.eanNumberScanOperation = registerForActivityResult(new ScanEanNumberContract(),
+                v -> v.ifPresent(s -> eanNumberListViewModel.add(food, s)));
+    }
 
     @Override
     @NonNull
@@ -84,7 +94,7 @@ public class EanNumberListFragment extends BottomToolbarFragment {
     }
 
     private void onAddItem(View view) {
-        throw new UnsupportedOperationException("TODO");
+        eanNumberScanOperation.launch(requireActivity());
     }
 
     private void onListDataReceived(List<EanNumberForListing> data) {

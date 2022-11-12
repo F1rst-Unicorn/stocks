@@ -19,44 +19,29 @@
  *
  */
 
-package de.njsm.stocks.client.business;
+package de.njsm.stocks.client.network;
 
+import de.njsm.stocks.client.business.EanNumberAddService;
 import de.njsm.stocks.client.business.entities.EanNumberAddForm;
-import de.njsm.stocks.client.business.entities.EanNumberForListing;
-import de.njsm.stocks.client.business.entities.Food;
-import de.njsm.stocks.client.business.entities.Id;
-import io.reactivex.rxjava3.core.Observable;
-import io.reactivex.rxjava3.subjects.BehaviorSubject;
+import de.njsm.stocks.common.api.Response;
+import retrofit2.Call;
 
 import javax.inject.Inject;
-import java.util.List;
 
-public class FakeEanNumberListInteractor implements EanNumberListInteractor {
-
-    private final BehaviorSubject<List<EanNumberForListing>> data;
-
-    private EanNumberAddForm eanNumberAddForm;
+class EanNumberAddServiceImpl extends ServiceBase<EanNumberAddForm> implements EanNumberAddService {
 
     @Inject
-    FakeEanNumberListInteractor() {
-        this.data = BehaviorSubject.create();
-    }
-
-    public void setData(List<EanNumberForListing> data) {
-        this.data.onNext(data);
-    }
-
-    @Override
-    public Observable<List<EanNumberForListing>> get(Id<Food> food) {
-        return data;
+    EanNumberAddServiceImpl(ServerApi api, CallHandler callHandler) {
+        super(api, callHandler);
     }
 
     @Override
     public void add(EanNumberAddForm eanNumberAddForm) {
-        this.eanNumberAddForm = eanNumberAddForm;
+        perform(eanNumberAddForm);
     }
 
-    public EanNumberAddForm getEanNumberAddForm() {
-        return eanNumberAddForm;
+    @Override
+    Call<? extends Response> buildCall(EanNumberAddForm input) {
+        return api.addEanNumber(input.eanNumber(), input.identifies().id());
     }
 }

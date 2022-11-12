@@ -30,6 +30,7 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import de.njsm.stocks.client.fragment.InjectableFragment;
+import de.njsm.stocks.client.fragment.util.CameraPermissionProber;
 import de.njsm.stocks.client.navigation.SetupGreetingNavigator;
 import de.njsm.stocks.client.ui.R;
 

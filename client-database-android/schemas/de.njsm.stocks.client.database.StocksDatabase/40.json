@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 40,
-    "identityHash": "15171d9332fa07ecf54b6d80ac819de6",
+    "identityHash": "02b3aca011123ffc1fa604ec719ffa4c",
     "entities": [
       {
         "tableName": "updates",
@@ -2176,6 +2176,44 @@
         },
         "indices": [],
         "foreignKeys": []
+      },
+      {
+        "tableName": "ean_number_to_add",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `ean_number` TEXT NOT NULL, `identifies_id` INTEGER NOT NULL, `identifies_transaction_time` TEXT NOT NULL)",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "eanNumber",
+            "columnName": "ean_number",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "identifies.id",
+            "columnName": "identifies_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "identifies.transactionTime",
+            "columnName": "identifies_transaction_time",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "id"
+          ],
+          "autoGenerate": true
+        },
+        "indices": [],
+        "foreignKeys": []
       }
     ],
     "views": [
@@ -2226,7 +2264,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '15171d9332fa07ecf54b6d80ac819de6')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '02b3aca011123ffc1fa604ec719ffa4c')"
     ]
   }
 }

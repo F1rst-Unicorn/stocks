@@ -19,7 +19,7 @@
  *
  */
 
-package de.njsm.stocks.client.fragment.setupgreet;
+package de.njsm.stocks.client.fragment.util;
 
 import android.Manifest;
 import android.app.Activity;

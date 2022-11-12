@@ -175,6 +175,13 @@ public abstract class Job {
             }
         },
 
+        ADD_EAN_NUMBER {
+            @Override
+            public <I, O> O accept(TypeVisitor<I, O> visitor, I input) {
+                return visitor.addEanNumber(this, input);
+            }
+        },
+
         UNKNOWN {
             @Override
             public <I, O> O accept(TypeVisitor<I, O> visitor, I input) {
@@ -232,6 +239,8 @@ public abstract class Job {
         O editFoodItem(Type type, I input);
 
         O getAccountInformation(Type type, I input);
+
+        O addEanNumber(Type type, I input);
     }
 
     public interface DefaultTypeVisitor<I, O> extends TypeVisitor<I, O> {
@@ -340,6 +349,11 @@ public abstract class Job {
 
         @Override
         default O getAccountInformation(Type type, I input) {
+            return defaultImpl(type, input);
+        }
+
+        @Override
+        default O addEanNumber(Type type, I input) {
             return defaultImpl(type, input);
         }
     }

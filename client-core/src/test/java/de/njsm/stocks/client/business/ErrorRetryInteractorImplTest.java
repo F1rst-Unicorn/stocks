@@ -89,6 +89,9 @@ public class ErrorRetryInteractorImplTest {
     private FoodItemEditInteractor foodItemEditInteractor;
 
     @Mock
+    private EanNumberListInteractor eanNumberListInteractor;
+
+    @Mock
     private Synchroniser synchroniser;
 
     @Mock
@@ -114,6 +117,7 @@ public class ErrorRetryInteractorImplTest {
                 foodItemAddInteractor,
                 foodItemDeleter,
                 foodItemEditInteractor,
+                eanNumberListInteractor,
                 synchroniser,
                 scheduler,
                 errorRepository);
@@ -378,6 +382,18 @@ public class ErrorRetryInteractorImplTest {
         uut.retryInBackground(input);
 
         verify(foodItemEditInteractor).edit(expected);
+        verify(errorRepository).deleteError(input);
+    }
+
+    @Test
+    void retryingEanNumberAddingDispatches() {
+        EanNumberAddErrorDetails eanNumberAddForm = EanNumberAddErrorDetails.create(2, "Banana", "123");
+        ErrorDescription input = ErrorDescription.create(1, StatusCode.DATABASE_UNREACHABLE, "", "test", eanNumberAddForm);
+        EanNumberAddForm expected = EanNumberAddForm.create(eanNumberAddForm.identifies(), eanNumberAddForm.eanNumber());
+
+        uut.retryInBackground(input);
+
+        verify(eanNumberListInteractor).add(expected);
         verify(errorRepository).deleteError(input);
     }
 }

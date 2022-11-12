@@ -308,6 +308,7 @@
     <string name="error_details_food_item_add_error_list">Lebensmittel hinzufügen</string>
     <string name="error_details_food_item_delete_error_list">Lebensmittel konsumieren</string>
     <string name="error_details_food_item_edit_error_list">Lebensmittel bearbeiten</string>
+    <string name="error_details_ean_number_add_error_list">EAN-Code hinzufügen</string>
 
     <string name="text_no_errors">Alles in Ordnung.</string>
 </resources>

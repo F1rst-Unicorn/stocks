@@ -19,18 +19,10 @@
  *
  */
 
-package de.njsm.stocks.client.business.entities;
+package de.njsm.stocks.client.business;
 
-import com.google.auto.value.AutoValue;
+import de.njsm.stocks.client.business.entities.EanNumberAddForm;
 
-@AutoValue
-public abstract class IdImpl<T extends Entity<T>> implements Id<T> {
-
-    public static <T extends Entity<T>> IdImpl<T> create(int id) {
-        return new AutoValue_IdImpl<>(id);
-    }
-
-    public static <T extends Entity<T>> IdImpl<T> from(Id<T> id) {
-        return new AutoValue_IdImpl<>(id.id());
-    }
+public interface EanNumberAddService {
+    void add(EanNumberAddForm eanNumberAddForm);
 }

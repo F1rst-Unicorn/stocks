@@ -58,6 +58,8 @@ class ErrorRetryInteractorImpl implements ErrorRetryInteractor, ErrorDetailsVisi
 
     private final FoodItemEditInteractor foodItemEditInteractor;
 
+    private final EanNumberListInteractor eanNumberListInteractor;
+
     private final Synchroniser synchroniser;
 
     private final Scheduler scheduler;
@@ -82,7 +84,7 @@ class ErrorRetryInteractorImpl implements ErrorRetryInteractor, ErrorDetailsVisi
                              FoodItemAddInteractor foodItemAddInteractor,
                              EntityDeleter<FoodItem> foodItemDeleter,
                              FoodItemEditInteractor foodItemEditInteractor,
-                             Synchroniser synchroniser,
+                             EanNumberListInteractor eanNumberListInteractor, Synchroniser synchroniser,
                              Scheduler scheduler,
                              ErrorRepository errorRepository) {
         this.locationAddInteractor = locationAddInteractor;
@@ -100,6 +102,7 @@ class ErrorRetryInteractorImpl implements ErrorRetryInteractor, ErrorDetailsVisi
         this.foodItemAddInteractor = foodItemAddInteractor;
         this.foodItemDeleter = foodItemDeleter;
         this.foodItemEditInteractor = foodItemEditInteractor;
+        this.eanNumberListInteractor = eanNumberListInteractor;
         this.synchroniser = synchroniser;
         this.scheduler = scheduler;
         this.errorRepository = errorRepository;
@@ -255,6 +258,12 @@ class ErrorRetryInteractorImpl implements ErrorRetryInteractor, ErrorDetailsVisi
         return null;
     }
 
+    @Override
+    public Void eanNumberAddErrorDetails(EanNumberAddErrorDetails eanNumberAddErrorDetails, Void input) {
+        eanNumberListInteractor.add(EanNumberAddForm.create(eanNumberAddErrorDetails.identifies(), eanNumberAddErrorDetails.eanNumber()));
+        return null;
+    }
+
     private static final class JobTypeTranslator implements ErrorDetailsVisitor<Void, Job.Type> {
 
         @Override
@@ -335,6 +344,11 @@ class ErrorRetryInteractorImpl implements ErrorRetryInteractor, ErrorDetailsVisi
         @Override
         public Job.Type foodItemEditErrorDetails(FoodItemEditErrorDetails foodItemEditErrorDetails, Void input) {
             return Job.Type.EDIT_FOOD_ITEM;
+        }
+
+        @Override
+        public Job.Type eanNumberAddErrorDetails(EanNumberAddErrorDetails eanNumberAddErrorDetails, Void input) {
+            return Job.Type.ADD_EAN_NUMBER;
         }
     }
 }

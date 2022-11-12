@@ -19,42 +19,40 @@
  *
  */
 
-package de.njsm.stocks.client.fragment.setupgreet;
+package de.njsm.stocks.client.fragment.eanlist;
 
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import androidx.activity.result.contract.ActivityResultContract;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
-import de.njsm.stocks.client.business.entities.RegistrationForm;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Optional;
 
-class ScanRegistrationFormContract extends ActivityResultContract<Activity, Optional<RegistrationForm>> {
+public class ScanEanNumberContract extends ActivityResultContract<Activity, Optional<String>> {
 
-    private static final Logger LOG = LoggerFactory.getLogger(ScanRegistrationFormContract.class);
+    private static final Logger LOG = LoggerFactory.getLogger(ScanEanNumberContract.class);
 
-    @NonNull
+    @NotNull
     @Override
-    public Intent createIntent(@NonNull Context context, Activity input) {
-        LOG.info("Starting QR code scanner");
-        IntentIntegrator integrator = new IntentIntegrator(input);
+    public Intent createIntent(@NotNull Context context, Activity activity) {
+        LOG.info("Starting EAN number scanner");
+        IntentIntegrator integrator = new IntentIntegrator(activity);
         return integrator.createScanIntent();
     }
 
     @Override
-    public Optional<RegistrationForm> parseResult(int resultCode, @Nullable Intent intent) {
+    public Optional<String> parseResult(int resultCode, @Nullable Intent intent) {
         return Optional.ofNullable(IntentIntegrator.parseActivityResult(IntentIntegrator.REQUEST_CODE, resultCode, intent))
                 .map(IntentResult::getContents)
                 .map(v -> {
-                    LOG.info("Scanned QR code: " + v);
+                    LOG.info("Scanned EAN number: " + v);
                     return v;
-                })
-                .map(RegistrationForm::parseRawString);
+                });
     }
 }

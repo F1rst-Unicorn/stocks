@@ -24,13 +24,24 @@ package de.njsm.stocks.client.business.entities;
 import com.google.auto.value.AutoValue;
 
 @AutoValue
-public abstract class IdImpl<T extends Entity<T>> implements Id<T> {
+public abstract class EanNumberAddErrorDetails implements ErrorDetails {
 
-    public static <T extends Entity<T>> IdImpl<T> create(int id) {
-        return new AutoValue_IdImpl<>(id);
+    public abstract String foodName();
+
+    abstract IdImpl<Food> foodId();
+
+    public Id<Food> identifies() {
+        return foodId();
     }
 
-    public static <T extends Entity<T>> IdImpl<T> from(Id<T> id) {
-        return new AutoValue_IdImpl<>(id.id());
+    public abstract String eanNumber();
+
+    public static EanNumberAddErrorDetails create(int identifies, String foodName, String eanNumber) {
+        return new AutoValue_EanNumberAddErrorDetails(foodName, IdImpl.create(identifies), eanNumber);
+    }
+
+    @Override
+    public <I, O> O accept(ErrorDetailsVisitor<I, O> visitor, I input) {
+        return visitor.eanNumberAddErrorDetails(this, input);
     }
 }

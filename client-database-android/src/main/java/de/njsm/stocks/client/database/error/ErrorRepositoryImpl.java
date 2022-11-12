@@ -217,4 +217,11 @@ public class ErrorRepositoryImpl implements ErrorRepository, ErrorEntity.ActionV
         FoodDbEntity food = errorDao.getFoodByValidOrTransactionTime(PreservedId.create(foodItem.ofType(), entity.foodItem().transactionTime()));
         return FoodItemEditErrorDetails.create(entity.foodItem().id(), food.name(), localiser.toLocalDate(entity.eatBy()), entity.storedIn().id(), entity.unit().id());
     }
+
+    @Override
+    public ErrorDetails addEanNumber(ErrorEntity.Action action, Long input) {
+        EanNumberAddEntity eanNumberAddEntity = errorDao.getEanNumberAdd(input);
+        var food = errorDao.getFoodByValidOrTransactionTime(eanNumberAddEntity.identifies());
+        return EanNumberAddErrorDetails.create(food.id(), food.name(), eanNumberAddEntity.eanNumber());
+    }
 }

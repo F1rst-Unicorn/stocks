@@ -21,6 +21,7 @@
 
 package de.njsm.stocks.client.business;
 
+import de.njsm.stocks.client.business.entities.EanNumberAddForm;
 import de.njsm.stocks.client.business.entities.EanNumberForListing;
 import de.njsm.stocks.client.business.entities.Food;
 import de.njsm.stocks.client.business.entities.Id;
@@ -44,5 +45,10 @@ class InMemoryEanNumberListInteractorImpl implements EanNumberListInteractor {
     @Override
     public Observable<List<EanNumberForListing>> get(Id<Food> user) {
         return data.delay(1, TimeUnit.SECONDS);
+    }
+
+    @Override
+    public void add(EanNumberAddForm eanNumberAddForm) {
+
     }
 }

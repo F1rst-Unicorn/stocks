@@ -159,4 +159,8 @@ public interface ServerApi {
                                 @Query("eatByDate") String eatBy,
                                 @Query("storedIn") int storedIn,
                                 @Query("unit") int unit);
+
+    @PUT("/v2/ean")
+    Call<DataResponse<Integer>> addEanNumber(@Query("code") String eanNumber,
+                                             @Query("identifies") int identifies);
 }

@@ -21,9 +21,8 @@
 
 package de.njsm.stocks.client.business;
 
-import de.njsm.stocks.client.business.entities.EanNumberForListing;
-import de.njsm.stocks.client.business.entities.Food;
-import de.njsm.stocks.client.business.entities.Id;
+import de.njsm.stocks.client.business.entities.*;
+import de.njsm.stocks.client.execution.Scheduler;
 import io.reactivex.rxjava3.core.Observable;
 
 import javax.inject.Inject;
@@ -33,14 +32,40 @@ class EanNumberListInteractorImpl implements EanNumberListInteractor {
 
     private final EanNumberListRepository repository;
 
+    private final EanNumberAddService service;
+
+    private final Scheduler scheduler;
+
+    private final Synchroniser synchroniser;
+
+    private final ErrorRecorder errorRecorder;
+
     @Inject
-    EanNumberListInteractorImpl(EanNumberListRepository repository) {
+    EanNumberListInteractorImpl(EanNumberListRepository repository, EanNumberAddService service, Scheduler scheduler, Synchroniser synchroniser, ErrorRecorder errorRecorder) {
         this.repository = repository;
+        this.service = service;
+        this.scheduler = scheduler;
+        this.synchroniser = synchroniser;
+        this.errorRecorder = errorRecorder;
     }
 
 
     @Override
     public Observable<List<EanNumberForListing>> get(Id<Food> food) {
         return repository.get(food);
+    }
+
+    @Override
+    public void add(EanNumberAddForm eanNumberAddForm) {
+        scheduler.schedule(Job.create(Job.Type.ADD_EAN_NUMBER, () -> addInBackground(eanNumberAddForm)));
+    }
+
+    private void addInBackground(EanNumberAddForm eanNumberAddForm) {
+        try {
+            service.add(eanNumberAddForm);
+            synchroniser.synchronise();
+        } catch (SubsystemException e) {
+            errorRecorder.recordEanNumberAddError(e, eanNumberAddForm);
+        }
     }
 }

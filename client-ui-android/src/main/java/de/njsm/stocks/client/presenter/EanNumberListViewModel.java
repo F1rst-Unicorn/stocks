@@ -26,6 +26,7 @@ import androidx.lifecycle.LiveDataReactiveStreams;
 import androidx.lifecycle.ViewModel;
 import de.njsm.stocks.client.business.EanNumberListInteractor;
 import de.njsm.stocks.client.business.Synchroniser;
+import de.njsm.stocks.client.business.entities.EanNumberAddForm;
 import de.njsm.stocks.client.business.entities.EanNumberForListing;
 import de.njsm.stocks.client.business.entities.Food;
 import de.njsm.stocks.client.business.entities.Id;
@@ -57,5 +58,9 @@ public class EanNumberListViewModel extends ViewModel {
         return LiveDataReactiveStreams.fromPublisher(
             interactor.get(food).toFlowable(BackpressureStrategy.LATEST)
         );
+    }
+
+    public void add(Id<Food> food, String eanCode) {
+        interactor.add(EanNumberAddForm.create(food, eanCode));
     }
 }

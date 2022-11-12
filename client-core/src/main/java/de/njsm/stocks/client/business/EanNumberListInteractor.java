@@ -21,6 +21,7 @@
 
 package de.njsm.stocks.client.business;
 
+import de.njsm.stocks.client.business.entities.EanNumberAddForm;
 import de.njsm.stocks.client.business.entities.EanNumberForListing;
 import de.njsm.stocks.client.business.entities.Food;
 import de.njsm.stocks.client.business.entities.Id;
@@ -31,4 +32,6 @@ import java.util.List;
 public interface EanNumberListInteractor {
 
     Observable<List<EanNumberForListing>> get(Id<Food> food);
+
+    void add(EanNumberAddForm eanNumberAddForm);
 }

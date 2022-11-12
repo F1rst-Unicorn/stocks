@@ -452,6 +452,20 @@ public class ErrorRecorderImplTest extends DbTestCase {
         );
     }
 
+    @Test
+    public void recordingErrorAddingEanNumberWorks() {
+        test(EanNumberAddForm.create(() -> 42, "123"),
+                uut::recordEanNumberAddError,
+                ErrorEntity.Action.ADD_EAN_NUMBER,
+                stocksDatabase.errorDao()::getEanNumberAdds,
+                (expected, actual) -> {
+                    assertEquals(expected.eanNumber(), actual.eanNumber());
+                    assertEquals(expected.identifies().id(), actual.identifies().id());
+                    assertEquals(stocksDatabase.errorDao().getTransactionTimeOf(EntityType.FOOD), actual.identifies().transactionTime());
+                }
+        );
+    }
+
     private <T, E> void test(T input,
                              BiConsumer<? super SubsystemException, T> recorder,
                              ErrorEntity.Action action,
