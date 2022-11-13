@@ -19,29 +19,14 @@
  *
  */
 
-package de.njsm.stocks.client.database;
+package de.njsm.stocks.client.business.entities;
 
-import androidx.room.Dao;
-import androidx.room.Query;
-import de.njsm.stocks.client.business.entities.EanNumberForDeletion;
-import io.reactivex.rxjava3.core.Observable;
+import com.google.auto.value.AutoValue;
 
-import java.util.List;
+@AutoValue
+public abstract class EanNumberForDeletion implements Versionable<EanNumber> {
 
-@Dao
-abstract class EanNumberDao {
-
-    @Query("select * " +
-            "from current_ean_number")
-    abstract List<EanNumberDbEntity> getAll();
-
-    @Query("select * " +
-            "from current_ean_number " +
-            "where identifies = :food")
-    abstract Observable<List<EanNumberDbEntity>> get(int food);
-
-    @Query("select * " +
-            "from current_ean_number " +
-            "where id = :id")
-    public abstract EanNumberForDeletion getForDeletion(int id);
+    public static EanNumberForDeletion create(int id, int version) {
+        return new AutoValue_EanNumberForDeletion(id, version);
+    }
 }

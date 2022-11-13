@@ -466,6 +466,20 @@ public class ErrorRecorderImplTest extends DbTestCase {
         );
     }
 
+    @Test
+    public void recordingErrorDeletingEanNumberWorks() {
+        test(EanNumberForDeletion.create(1, 2),
+                uut::recordEanNumberDeleteError,
+                ErrorEntity.Action.DELETE_EAN_NUMBER,
+                stocksDatabase.errorDao()::getEanNumberDeletes,
+                (expected, actual) -> {
+                    assertEquals(expected.id(), actual.eanNumber().id());
+                    assertEquals(expected.version(), actual.version());
+                    assertEquals(stocksDatabase.errorDao().getTransactionTimeOf(EntityType.EAN_NUMBER), actual.eanNumber().transactionTime());
+                }
+        );
+    }
+
     private <T, E> void test(T input,
                              BiConsumer<? super SubsystemException, T> recorder,
                              ErrorEntity.Action action,

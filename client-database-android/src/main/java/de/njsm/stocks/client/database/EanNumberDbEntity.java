@@ -66,8 +66,8 @@ public abstract class EanNumberDbEntity extends ServerDbEntity<EanNumberDbEntity
     abstract Builder toBuilder();
 
     @AutoValue.Builder
-    abstract static class Builder extends ServerDbEntity.Builder<EanNumberDbEntity, Builder> implements EanNumberFields.Builder<EanNumberDbEntity, Builder> {
+    public abstract static class Builder extends ServerDbEntity.Builder<EanNumberDbEntity, Builder> implements EanNumberFields.Builder<EanNumberDbEntity, Builder> {
 
-        abstract EanNumberDbEntity build();
+        public abstract EanNumberDbEntity build();
     }
 }

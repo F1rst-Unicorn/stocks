@@ -58,4 +58,6 @@ public interface ErrorRecorder {
     void recordFoodItemEditError(SubsystemException exception, FoodItemForEditing item);
 
     void recordEanNumberAddError(SubsystemException e, EanNumberAddForm eanNumberAddForm);
+
+    void recordEanNumberDeleteError(SubsystemException e, Versionable<EanNumber> data);
 }

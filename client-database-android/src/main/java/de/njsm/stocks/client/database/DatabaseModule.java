@@ -200,4 +200,7 @@ public interface DatabaseModule {
 
     @Binds
     EanNumberListRepository EanNumberListRepository(EanNumberListRepositoryImpl impl);
+
+    @Binds
+    EntityDeleteRepository<EanNumber> EanNumberDeleteRepository(EanNumberListRepositoryImpl impl);
 }

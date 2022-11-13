@@ -34,6 +34,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.Period;
 
+import static de.njsm.stocks.client.business.Matchers.equalBy;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
@@ -92,6 +93,9 @@ public class ErrorRetryInteractorImplTest {
     private EanNumberListInteractor eanNumberListInteractor;
 
     @Mock
+    private EntityDeleter<EanNumber> eanNumberDeleteInteractor;
+
+    @Mock
     private Synchroniser synchroniser;
 
     @Mock
@@ -118,6 +122,7 @@ public class ErrorRetryInteractorImplTest {
                 foodItemDeleter,
                 foodItemEditInteractor,
                 eanNumberListInteractor,
+                eanNumberDeleteInteractor,
                 synchroniser,
                 scheduler,
                 errorRepository);
@@ -369,7 +374,7 @@ public class ErrorRetryInteractorImplTest {
 
         uut.retryInBackground(input);
 
-        verify(foodItemDeleter).delete(Matchers.equalBy(foodDeleteErrorDetails));
+        verify(foodItemDeleter).delete(equalBy(foodDeleteErrorDetails));
         verify(errorRepository).deleteError(input);
     }
 
@@ -394,6 +399,18 @@ public class ErrorRetryInteractorImplTest {
         uut.retryInBackground(input);
 
         verify(eanNumberListInteractor).add(expected);
+        verify(errorRepository).deleteError(input);
+    }
+
+    @Test
+    void retryingEanNumberDeletingDispatches() {
+        EanNumberDeleteErrorDetails eanNumber = EanNumberDeleteErrorDetails.create(2, "Banana", "123");
+        ErrorDescription input = ErrorDescription.create(1, StatusCode.DATABASE_UNREACHABLE, "", "test", eanNumber);
+        EanNumberForDeletion expected = EanNumberForDeletion.create(eanNumber.id(), 3);
+
+        uut.retryInBackground(input);
+
+        verify(eanNumberDeleteInteractor).delete(equalBy(expected));
         verify(errorRepository).deleteError(input);
     }
 }

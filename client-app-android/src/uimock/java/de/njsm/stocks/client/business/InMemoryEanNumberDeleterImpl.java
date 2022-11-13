@@ -19,29 +19,20 @@
  *
  */
 
-package de.njsm.stocks.client.database;
+package de.njsm.stocks.client.business;
 
-import androidx.room.Dao;
-import androidx.room.Query;
-import de.njsm.stocks.client.business.entities.EanNumberForDeletion;
-import io.reactivex.rxjava3.core.Observable;
+import de.njsm.stocks.client.business.entities.EanNumber;
+import de.njsm.stocks.client.business.entities.Id;
 
-import java.util.List;
+import javax.inject.Inject;
 
-@Dao
-abstract class EanNumberDao {
+class InMemoryEanNumberDeleterImpl implements EntityDeleter<EanNumber> {
 
-    @Query("select * " +
-            "from current_ean_number")
-    abstract List<EanNumberDbEntity> getAll();
+    @Inject
+    InMemoryEanNumberDeleterImpl() {
+    }
 
-    @Query("select * " +
-            "from current_ean_number " +
-            "where identifies = :food")
-    abstract Observable<List<EanNumberDbEntity>> get(int food);
-
-    @Query("select * " +
-            "from current_ean_number " +
-            "where id = :id")
-    public abstract EanNumberForDeletion getForDeletion(int id);
+    @Override
+    public void delete(Id<EanNumber> location) {
+    }
 }

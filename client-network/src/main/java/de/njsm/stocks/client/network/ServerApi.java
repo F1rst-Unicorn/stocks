@@ -163,4 +163,8 @@ public interface ServerApi {
     @PUT("/v2/ean")
     Call<DataResponse<Integer>> addEanNumber(@Query("code") String eanNumber,
                                              @Query("identifies") int identifies);
+
+    @DELETE("v2/ean")
+    Call<Response> deleteEanNumber(@Query("id") int id,
+                                   @Query("version") int version);
 }

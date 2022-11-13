@@ -138,7 +138,7 @@ public class StandardEntities {
         return eanNumberDbEntityBuilder().build();
     }
 
-    EanNumberDbEntity.Builder eanNumberDbEntityBuilder() {
+    public EanNumberDbEntity.Builder eanNumberDbEntityBuilder() {
         return initialiseBuilder(EanNumberDbEntity.builder())
                 .number("number")
                 .identifies(randomnessProvider.getId("ean_number identifies"));

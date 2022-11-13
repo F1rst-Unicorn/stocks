@@ -355,4 +355,11 @@ public interface FakeBusinessModule {
     static FakeEanNumberListInteractor FakeEanNumberListInteractor() {
         return new FakeEanNumberListInteractor();
     }
+
+    @Provides
+    @Singleton
+    @SuppressWarnings("unchecked")
+    static EntityDeleter<EanNumber> eanNumberDeleter() {
+        return mock(EntityDeleter.class);
+    }
 }

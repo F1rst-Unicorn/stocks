@@ -22,9 +22,8 @@
 package de.njsm.stocks.client.database;
 
 import de.njsm.stocks.client.business.EanNumberListRepository;
-import de.njsm.stocks.client.business.entities.EanNumberForListing;
-import de.njsm.stocks.client.business.entities.Food;
-import de.njsm.stocks.client.business.entities.Id;
+import de.njsm.stocks.client.business.EntityDeleteRepository;
+import de.njsm.stocks.client.business.entities.*;
 import io.reactivex.rxjava3.core.Observable;
 
 import javax.inject.Inject;
@@ -32,7 +31,7 @@ import java.util.List;
 
 import static java.util.stream.Collectors.toList;
 
-class EanNumberListRepositoryImpl implements EanNumberListRepository {
+class EanNumberListRepositoryImpl implements EanNumberListRepository, EntityDeleteRepository<EanNumber> {
 
     private final EanNumberDao eanNumberDao;
 
@@ -46,5 +45,10 @@ class EanNumberListRepositoryImpl implements EanNumberListRepository {
         return eanNumberDao.get(food.id()).map(v -> v.stream()
                 .map(row -> EanNumberForListing.create(row.id(), row.number()))
                 .collect(toList()));
+    }
+
+    @Override
+    public Versionable<EanNumber> getEntityForDeletion(Id<EanNumber> id) {
+        return eanNumberDao.getForDeletion(id.id());
     }
 }

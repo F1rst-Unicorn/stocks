@@ -166,4 +166,10 @@ public class ErrorDetailsPrinterTest {
         EanNumberAddErrorDetails data = EanNumberAddErrorDetails.create(1, "Banana", "123");
         assertEquals("Banana (123)", uut.visit(data, null));
     }
+
+    @Test
+    public void eanNumberDeletingShowsDetails() {
+        EanNumberDeleteErrorDetails data = EanNumberDeleteErrorDetails.create(1, "Banana", "123");
+        assertEquals("Banana (123)", uut.visit(data, null));
+    }
 }

@@ -70,6 +70,7 @@ public class FoodItemListViewModel extends ViewModel {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(runnable::accept);
     }
+
     public LiveData<FoodItemsForListing> get(Id<Food> id) {
         return LiveDataReactiveStreams.fromPublisher(getData(id)
                 .toFlowable(BackpressureStrategy.LATEST));

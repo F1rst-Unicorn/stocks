@@ -61,6 +61,7 @@ import java.time.format.DateTimeFormatter;
                 FoodItemDeleteEntity.class,
                 FoodItemEditEntity.class,
                 EanNumberAddEntity.class,
+                EanNumberDeleteEntity.class,
         },
         views = {
                 CurrentLocationDbView.class,

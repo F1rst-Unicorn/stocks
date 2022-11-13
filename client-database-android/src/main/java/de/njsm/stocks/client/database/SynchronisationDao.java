@@ -101,7 +101,7 @@ public abstract class SynchronisationDao {
     }
 
     @Insert(onConflict = REPLACE)
-    abstract void writeEanNumbers(List<EanNumberDbEntity> data);
+    public abstract void writeEanNumbers(List<EanNumberDbEntity> data);
 
     @Query("delete from ean_number")
     abstract void deleteEanNumbers();

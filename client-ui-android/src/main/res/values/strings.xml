@@ -309,6 +309,7 @@
     <string name="error_details_food_item_delete_error_list">Consume Food Item</string>
     <string name="error_details_food_item_edit_error_list">Edit Food Item</string>
     <string name="error_details_ean_number_add_error_list">Add EAN Code</string>
+    <string name="error_details_ean_number_delete_error_list">Delete EAN Code</string>
 
     <string name="text_no_errors">Everything is fine.</string>
 

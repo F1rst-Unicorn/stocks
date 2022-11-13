@@ -162,4 +162,7 @@ public interface BusinessModule {
 
     @Binds
     EanNumberListInteractor EanNumberListInteractor(EanNumberListInteractorImpl impl);
+
+    @Binds
+    EntityDeleter<EanNumber> EanNumberDeleter(EanNumberDeleterImpl impl);
 }

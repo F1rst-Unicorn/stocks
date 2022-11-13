@@ -176,4 +176,7 @@ public interface UimockBusinessModule {
 
     @Binds
     EanNumberListInteractor EanNumberListInteractor(InMemoryEanNumberListInteractorImpl impl);
+
+    @Binds
+    EntityDeleter<EanNumber> InMemoryEanNumberDeleterImpl(InMemoryEanNumberDeleterImpl impl);
 }

@@ -102,6 +102,8 @@ public interface NetworkModule {
     @Binds
     EanNumberAddService EanNumberAddService(EanNumberAddServiceImpl impl);
 
+    @Binds
+    EntityDeleteService<EanNumber> EanNumberDeleteServiceImpl(EanNumberDeleteServiceImpl impl);
 
     @Provides
     @Singleton

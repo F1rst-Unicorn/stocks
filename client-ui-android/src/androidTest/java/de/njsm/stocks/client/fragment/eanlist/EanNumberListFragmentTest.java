@@ -30,8 +30,10 @@ import androidx.test.espresso.intent.Intents;
 import androidx.test.espresso.intent.matcher.IntentMatchers;
 import androidx.test.platform.app.InstrumentationRegistry;
 import de.njsm.stocks.client.Application;
+import de.njsm.stocks.client.business.EntityDeleter;
 import de.njsm.stocks.client.business.FakeEanNumberListInteractor;
 import de.njsm.stocks.client.business.Synchroniser;
+import de.njsm.stocks.client.business.entities.EanNumber;
 import de.njsm.stocks.client.business.entities.EanNumberAddForm;
 import de.njsm.stocks.client.business.entities.EanNumberForListing;
 import de.njsm.stocks.client.navigation.EanNumberListNavigator;
@@ -42,12 +44,16 @@ import org.junit.Before;
 import org.junit.Test;
 
 import javax.inject.Inject;
+import java.util.List;
 
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
+import static androidx.test.espresso.action.ViewActions.swipeRight;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
+import static androidx.test.espresso.contrib.RecyclerViewActions.actionOnItemAtPosition;
 import static androidx.test.espresso.matcher.ViewMatchers.*;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -58,6 +64,8 @@ public class EanNumberListFragmentTest {
     private FakeEanNumberListInteractor eanNumberListInteractor;
 
     private EanNumberListNavigator eanNumberListNavigator;
+
+    private EntityDeleter<EanNumber> eanNumberDeleter;
 
     private Synchroniser synchroniser;
 
@@ -97,6 +105,19 @@ public class EanNumberListFragmentTest {
         assertEquals(expected, eanNumberListInteractor.getEanNumberAddForm());
     }
 
+    @Test
+    public void deletingListItemPropagates() {
+        List<EanNumberForListing> data = EanNumbersForListing.generate();
+        assertFalse(data.isEmpty());
+        eanNumberListInteractor.setData(data);
+        int itemIndex = 0;
+
+        onView(withId(R.id.template_swipe_list_list))
+                .perform(actionOnItemAtPosition(itemIndex, swipeRight()));
+
+        verify(eanNumberDeleter).delete(data.get(itemIndex));
+    }
+
     private Instrumentation.ActivityResult returnDataUponScanning(EanNumberAddForm eanNumberAddForm) {
         Intent intent = new Intent();
         intent.putExtra("SCAN_RESULT", eanNumberAddForm.eanNumber());
@@ -116,5 +137,10 @@ public class EanNumberListFragmentTest {
     @Inject
     public void setEanNumberListNavigator(EanNumberListNavigator EanNumberListNavigator) {
         this.eanNumberListNavigator = EanNumberListNavigator;
+    }
+
+    @Inject
+    public void setEanNumberDeleter(EntityDeleter<EanNumber> eanNumberDeleter) {
+        this.eanNumberDeleter = eanNumberDeleter;
     }
 }

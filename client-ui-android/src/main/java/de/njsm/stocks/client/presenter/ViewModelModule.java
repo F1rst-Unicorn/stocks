@@ -262,7 +262,7 @@ public class ViewModelModule {
     @Provides
     @IntoMap
     @ViewModelKey(EanNumberListViewModel.class)
-    ViewModel EanNumberListViewModel(EanNumberListInteractor interactor, Synchroniser synchroniser) {
-        return new EanNumberListViewModel(interactor, synchroniser);
+    ViewModel EanNumberListViewModel(EanNumberListInteractor interactor, Synchroniser synchroniser, EntityDeleter<EanNumber> deleter) {
+        return new EanNumberListViewModel(interactor, deleter, synchroniser);
     }
 }

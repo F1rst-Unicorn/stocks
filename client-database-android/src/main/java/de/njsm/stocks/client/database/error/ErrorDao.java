@@ -529,4 +529,64 @@ public abstract class ErrorDao {
     @Query("delete from ean_number_to_add " +
             "where id = :id")
     abstract void deleteEanNumberAdd(Long id);
+
+    @Query("select * " +
+            "from ean_number_to_delete")
+    abstract List<EanNumberDeleteEntity> getEanNumberDeletes();
+
+    @Insert
+    abstract long insert(EanNumberDeleteEntity entity);
+
+    @Query("select * " +
+            "from ean_number_to_delete " +
+            "where id = :id")
+    abstract EanNumberDeleteEntity getEanNumberDelete(Long id);
+
+    public EanNumberDbEntity getEanNumberByValidOrTransactionTime(PreservedId id) {
+        EanNumberDbEntity eanNumber = getCurrentEanNumber(id.id());
+        if (eanNumber == null) {
+            eanNumber = getLatestEanNumberAsBestKnown(id.id());
+        }
+        if (eanNumber == null) {
+            eanNumber = getCurrentEanNumberAsKnownAt(id.id(), id.transactionTime());
+        }
+        return eanNumber;
+    }
+
+    @Query("select * " +
+            "from current_ean_number " +
+            "where id = :id")
+    abstract EanNumberDbEntity getCurrentEanNumber(int id);
+
+    @Query("select * " +
+            "from ean_number " +
+            "where id = :id " +
+            "and transaction_time_end = " + DATABASE_INFINITY_STRING_SQL +
+            "and valid_time_start = (" +
+            "   select max(valid_time_start) " +
+            "   from ean_number " +
+            "   where id = :id" +
+            "   and valid_time_start <= " + NOW +
+            "   and transaction_time_end = " + DATABASE_INFINITY_STRING_SQL +
+            ")")
+    abstract EanNumberDbEntity getLatestEanNumberAsBestKnown(int id);
+
+    @Query("select * " +
+            "from ean_number " +
+            "where id = :id " +
+            "and transaction_time_start <= :transactionTime " +
+            "and :transactionTime < transaction_time_end " +
+            "and valid_time_start = (" +
+            "   select max(valid_time_start) " +
+            "   from ean_number " +
+            "   where id = :id" +
+            "   and valid_time_start <= " + NOW +
+            "   and transaction_time_start <= :transactionTime " +
+            "   and :transactionTime < transaction_time_end " +
+            ")")
+    abstract EanNumberDbEntity getCurrentEanNumberAsKnownAt(int id, Instant transactionTime);
+
+    @Query("delete from ean_number_to_delete " +
+            "where id = :input")
+    abstract void deleteEanNumberDelete(Long input);
 }

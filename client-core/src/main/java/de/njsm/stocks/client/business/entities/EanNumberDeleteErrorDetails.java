@@ -19,29 +19,23 @@
  *
  */
 
-package de.njsm.stocks.client.database;
+package de.njsm.stocks.client.business.entities;
 
-import androidx.room.Dao;
-import androidx.room.Query;
-import de.njsm.stocks.client.business.entities.EanNumberForDeletion;
-import io.reactivex.rxjava3.core.Observable;
+import com.google.auto.value.AutoValue;
 
-import java.util.List;
+@AutoValue
+public abstract class EanNumberDeleteErrorDetails implements ErrorDetails, Id<EanNumber> {
 
-@Dao
-abstract class EanNumberDao {
+    public abstract String foodName();
 
-    @Query("select * " +
-            "from current_ean_number")
-    abstract List<EanNumberDbEntity> getAll();
+    public abstract String eanNumber();
 
-    @Query("select * " +
-            "from current_ean_number " +
-            "where identifies = :food")
-    abstract Observable<List<EanNumberDbEntity>> get(int food);
+    public static EanNumberDeleteErrorDetails create(int id, String foodName, String eanNumber) {
+        return new AutoValue_EanNumberDeleteErrorDetails(id, foodName, eanNumber);
+    }
 
-    @Query("select * " +
-            "from current_ean_number " +
-            "where id = :id")
-    public abstract EanNumberForDeletion getForDeletion(int id);
+    @Override
+    public <I, O> O accept(ErrorDetailsVisitor<I, O> visitor, I input) {
+        return visitor.eanNumberDeleteErrorDetails(this, input);
+    }
 }

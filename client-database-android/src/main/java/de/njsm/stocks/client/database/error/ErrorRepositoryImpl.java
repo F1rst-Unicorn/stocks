@@ -224,4 +224,16 @@ public class ErrorRepositoryImpl implements ErrorRepository, ErrorEntity.ActionV
         var food = errorDao.getFoodByValidOrTransactionTime(eanNumberAddEntity.identifies());
         return EanNumberAddErrorDetails.create(food.id(), food.name(), eanNumberAddEntity.eanNumber());
     }
+
+    @Override
+    public ErrorDetails deleteEanNumber(ErrorEntity.Action action, Long input) {
+        EanNumberDeleteEntity entity = errorDao.getEanNumberDelete(input);
+        EanNumberDbEntity eanNumber = errorDao.getEanNumberByValidOrTransactionTime(entity.eanNumber());
+        FoodDbEntity food = errorDao.getFoodByValidOrTransactionTime(PreservedId.create(eanNumber.identifies(), entity.eanNumber().transactionTime()));
+        return EanNumberDeleteErrorDetails.create(
+                eanNumber.id(),
+                food.name(),
+                eanNumber.number()
+        );
+    }
 }

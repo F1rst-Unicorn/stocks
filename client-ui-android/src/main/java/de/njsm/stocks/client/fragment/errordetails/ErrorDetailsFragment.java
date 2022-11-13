@@ -218,5 +218,10 @@ public class ErrorDetailsFragment extends InjectableFragment {
         public String eanNumberAddErrorDetails(EanNumberAddErrorDetails eanNumberAddErrorDetails, Void input) {
             return String.format("%s (%s)", eanNumberAddErrorDetails.foodName(), eanNumberAddErrorDetails.eanNumber());
         }
+
+        @Override
+        public String eanNumberDeleteErrorDetails(EanNumberDeleteErrorDetails eanNumberDeleteErrorDetails, Void input) {
+            return String.format("%s (%s)", eanNumberDeleteErrorDetails.foodName(), eanNumberDeleteErrorDetails.eanNumber());
+        }
     }
 }
