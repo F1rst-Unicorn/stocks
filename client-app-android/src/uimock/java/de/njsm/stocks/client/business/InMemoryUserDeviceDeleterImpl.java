@@ -19,31 +19,20 @@
  *
  */
 
-package de.njsm.stocks.client.database;
+package de.njsm.stocks.client.business;
 
-import androidx.room.Dao;
-import androidx.room.Query;
-import de.njsm.stocks.client.business.entities.UserDeviceForDeletion;
-import de.njsm.stocks.client.business.entities.UserDeviceForListing;
-import io.reactivex.rxjava3.core.Observable;
+import de.njsm.stocks.client.business.entities.UserDevice;
+import de.njsm.stocks.client.business.entities.Id;
 
-import java.util.List;
+import javax.inject.Inject;
 
-@Dao
-abstract class UserDeviceDao {
+class InMemoryUserDeviceDeleterImpl implements EntityDeleter<UserDevice> {
 
-    @Query("select * " +
-            "from current_user_device")
-    abstract List<UserDeviceDbEntity> getAll();
+    @Inject
+    InMemoryUserDeviceDeleterImpl() {
+    }
 
-    @Query("select * " +
-            "from current_user_device " +
-            "where belongs_to = :id " +
-            "order by name, id")
-    abstract Observable<List<UserDeviceForListing>> getUserDevices(int id);
-
-    @Query("select * " +
-            "from current_user_device " +
-            "where id = :id")
-    abstract UserDeviceForDeletion get(int id);
+    @Override
+    public void delete(Id<UserDevice> location) {
+    }
 }

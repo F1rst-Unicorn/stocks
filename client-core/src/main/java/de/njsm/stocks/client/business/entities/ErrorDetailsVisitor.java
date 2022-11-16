@@ -63,6 +63,8 @@ public interface ErrorDetailsVisitor<I, O> {
 
     O eanNumberDeleteErrorDetails(EanNumberDeleteErrorDetails eanNumberDeleteErrorDetails, I input);
 
+    O userDeviceDeleteErrorDetails(UserDeviceDeleteErrorDetails userDeviceDeleteErrorDetails, I input);
+
     interface Default<I, O> extends ErrorDetailsVisitor<I, O> {
 
         O defaultImpl(ErrorDetails errorDetails, I input);
@@ -154,6 +156,11 @@ public interface ErrorDetailsVisitor<I, O> {
 
         @Override
         default O eanNumberDeleteErrorDetails(EanNumberDeleteErrorDetails eanNumberAddErrorDetails, I input) {
+            return defaultImpl(eanNumberAddErrorDetails, input);
+        }
+
+        @Override
+        default O userDeviceDeleteErrorDetails(UserDeviceDeleteErrorDetails eanNumberAddErrorDetails, I input) {
             return defaultImpl(eanNumberAddErrorDetails, input);
         }
     }

@@ -64,7 +64,7 @@ public abstract class SynchronisationDao {
     }
 
     @Insert(onConflict = REPLACE)
-    abstract void writeUsers(List<UserDbEntity> data);
+    public abstract void writeUsers(List<UserDbEntity> data);
 
     @Query("delete from user")
     abstract void deleteUsers();
@@ -76,7 +76,7 @@ public abstract class SynchronisationDao {
     }
 
     @Insert(onConflict = REPLACE)
-    abstract void writeUserDevices(List<UserDeviceDbEntity> data);
+    public abstract void writeUserDevices(List<UserDeviceDbEntity> data);
 
     @Query("delete from user_device")
     abstract void deleteUserDevices();

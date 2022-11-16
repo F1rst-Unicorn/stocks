@@ -33,6 +33,7 @@ import de.njsm.stocks.client.databind.StatusCodeTranslator;
 import de.njsm.stocks.client.ui.R;
 
 import java.util.List;
+import java.util.function.Function;
 
 import static de.njsm.stocks.client.fragment.util.ListDiffer.byId;
 
@@ -48,11 +49,11 @@ public class ErrorDescriptionAdapter extends RecyclerView.Adapter<ErrorDescripti
 
     private final ErrorDetailsDetailsVisitor errorDetailsDetailsVisitor;
 
-    public ErrorDescriptionAdapter(View.OnClickListener onClickListener) {
+    public ErrorDescriptionAdapter(View.OnClickListener onClickListener, Function<Integer, String> dictionary) {
         this.onClickListener = onClickListener;
         statusCodeTranslator = new StatusCodeTranslator();
         errorDetailsHeadlineVisitor = new ErrorDetailsHeadlineVisitor();
-        errorDetailsDetailsVisitor = new ErrorDetailsDetailsVisitor();
+        errorDetailsDetailsVisitor = new ErrorDetailsDetailsVisitor(dictionary);
     }
 
     public void setData(List<ErrorDescription> newList) {

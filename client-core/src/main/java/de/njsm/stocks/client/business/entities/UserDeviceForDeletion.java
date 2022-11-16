@@ -19,31 +19,14 @@
  *
  */
 
-package de.njsm.stocks.client.database;
+package de.njsm.stocks.client.business.entities;
 
-import androidx.room.Dao;
-import androidx.room.Query;
-import de.njsm.stocks.client.business.entities.UserDeviceForDeletion;
-import de.njsm.stocks.client.business.entities.UserDeviceForListing;
-import io.reactivex.rxjava3.core.Observable;
+import com.google.auto.value.AutoValue;
 
-import java.util.List;
+@AutoValue
+public abstract class UserDeviceForDeletion implements Versionable<UserDevice> {
 
-@Dao
-abstract class UserDeviceDao {
-
-    @Query("select * " +
-            "from current_user_device")
-    abstract List<UserDeviceDbEntity> getAll();
-
-    @Query("select * " +
-            "from current_user_device " +
-            "where belongs_to = :id " +
-            "order by name, id")
-    abstract Observable<List<UserDeviceForListing>> getUserDevices(int id);
-
-    @Query("select * " +
-            "from current_user_device " +
-            "where id = :id")
-    abstract UserDeviceForDeletion get(int id);
+    public static UserDeviceForDeletion create(int id, int version) {
+        return new AutoValue_UserDeviceForDeletion(id, version);
+    }
 }

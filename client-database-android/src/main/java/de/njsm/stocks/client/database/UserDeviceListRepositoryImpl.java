@@ -21,15 +21,14 @@
 
 package de.njsm.stocks.client.database;
 
+import de.njsm.stocks.client.business.EntityDeleteRepository;
 import de.njsm.stocks.client.business.UserDeviceListRepository;
-import de.njsm.stocks.client.business.entities.Id;
-import de.njsm.stocks.client.business.entities.User;
-import de.njsm.stocks.client.business.entities.UserDevicesForListing;
+import de.njsm.stocks.client.business.entities.*;
 import io.reactivex.rxjava3.core.Observable;
 
 import javax.inject.Inject;
 
-class UserDeviceListRepositoryImpl implements UserDeviceListRepository {
+class UserDeviceListRepositoryImpl implements UserDeviceListRepository, EntityDeleteRepository<UserDevice> {
 
     private final UserDeviceDao userDeviceDao;
 
@@ -47,5 +46,10 @@ class UserDeviceListRepositoryImpl implements UserDeviceListRepository {
         var user = userDao.getUser(userId.id());
 
         return devices.zipWith(user, (d, u) -> UserDevicesForListing.create(d, u.name()));
+    }
+
+    @Override
+    public UserDeviceForDeletion getEntityForDeletion(Id<UserDevice> id) {
+        return userDeviceDao.get(id.id());
     }
 }

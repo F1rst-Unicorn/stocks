@@ -57,7 +57,7 @@ public class StandardEntities {
                 .name("name");
     }
 
-    UserDeviceDbEntity.Builder userDeviceDbEntityBuilder() {
+    public UserDeviceDbEntity.Builder userDeviceDbEntityBuilder() {
         return initialiseBuilder(UserDeviceDbEntity.builder())
                 .name("name")
                 .belongsTo(randomnessProvider.getId("user_device belongs_to"));

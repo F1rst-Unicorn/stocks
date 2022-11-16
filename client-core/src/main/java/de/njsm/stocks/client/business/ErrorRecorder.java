@@ -60,4 +60,6 @@ public interface ErrorRecorder {
     void recordEanNumberAddError(SubsystemException e, EanNumberAddForm eanNumberAddForm);
 
     void recordEanNumberDeleteError(SubsystemException e, Versionable<EanNumber> data);
+
+    void recordUserDeviceDeleteError(SubsystemException e, Versionable<UserDevice> data);
 }

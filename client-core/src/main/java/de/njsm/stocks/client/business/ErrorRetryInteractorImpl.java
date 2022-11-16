@@ -62,6 +62,8 @@ class ErrorRetryInteractorImpl implements ErrorRetryInteractor, ErrorDetailsVisi
 
     private final EntityDeleter<EanNumber> eanNumberDeleteInteractor;
 
+    private final EntityDeleter<UserDevice> userDeviceDeleteInteractor;
+
     private final Synchroniser synchroniser;
 
     private final Scheduler scheduler;
@@ -88,6 +90,7 @@ class ErrorRetryInteractorImpl implements ErrorRetryInteractor, ErrorDetailsVisi
                              FoodItemEditInteractor foodItemEditInteractor,
                              EanNumberListInteractor eanNumberListInteractor,
                              EntityDeleter<EanNumber> eanNumberDeleteInteractor,
+                             EntityDeleter<UserDevice> userDeviceDeleteInteractor,
                              Synchroniser synchroniser,
                              Scheduler scheduler,
                              ErrorRepository errorRepository) {
@@ -108,6 +111,7 @@ class ErrorRetryInteractorImpl implements ErrorRetryInteractor, ErrorDetailsVisi
         this.foodItemEditInteractor = foodItemEditInteractor;
         this.eanNumberListInteractor = eanNumberListInteractor;
         this.eanNumberDeleteInteractor = eanNumberDeleteInteractor;
+        this.userDeviceDeleteInteractor = userDeviceDeleteInteractor;
         this.synchroniser = synchroniser;
         this.scheduler = scheduler;
         this.errorRepository = errorRepository;
@@ -275,6 +279,12 @@ class ErrorRetryInteractorImpl implements ErrorRetryInteractor, ErrorDetailsVisi
         return null;
     }
 
+    @Override
+    public Void userDeviceDeleteErrorDetails(UserDeviceDeleteErrorDetails userDeviceDeleteErrorDetails, Void input) {
+        userDeviceDeleteInteractor.delete(userDeviceDeleteErrorDetails.id());
+        return null;
+    }
+
     private static final class JobTypeTranslator implements ErrorDetailsVisitor<Void, Job.Type> {
 
         @Override
@@ -365,6 +375,11 @@ class ErrorRetryInteractorImpl implements ErrorRetryInteractor, ErrorDetailsVisi
         @Override
         public Job.Type eanNumberDeleteErrorDetails(EanNumberDeleteErrorDetails eanNumberDeleteErrorDetails, Void input) {
             return Job.Type.DELETE_EAN_NUMBER;
+        }
+
+        @Override
+        public Job.Type userDeviceDeleteErrorDetails(UserDeviceDeleteErrorDetails userDeviceDeleteErrorDetails, Void input) {
+            return Job.Type.DELETE_USER_DEVICE;
         }
     }
 }

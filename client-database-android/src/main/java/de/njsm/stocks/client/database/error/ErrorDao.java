@@ -589,4 +589,108 @@ public abstract class ErrorDao {
     @Query("delete from ean_number_to_delete " +
             "where id = :input")
     abstract void deleteEanNumberDelete(Long input);
+
+    @Query("select * " +
+            "from user_device_to_delete")
+    abstract List<UserDeviceDeleteEntity> getUserDeviceDeletes();
+
+    @Insert
+    abstract long insert(UserDeviceDeleteEntity entity);
+
+    @Query("select * " +
+            "from user_device_to_delete " +
+            "where id = :id")
+    abstract UserDeviceDeleteEntity getUserDeviceDelete(Long id);
+
+    public UserDeviceDbEntity getUserDeviceByValidOrTransactionTime(PreservedId id) {
+        UserDeviceDbEntity userDevice = getCurrentUserDevice(id.id());
+        if (userDevice == null) {
+            userDevice = getLatestUserDeviceAsBestKnown(id.id());
+        }
+        if (userDevice == null) {
+            userDevice = getCurrentUserDeviceAsKnownAt(id.id(), id.transactionTime());
+        }
+        return userDevice;
+    }
+
+    @Query("select * " +
+            "from current_user_device " +
+            "where id = :id")
+    abstract UserDeviceDbEntity getCurrentUserDevice(int id);
+
+    @Query("select * " +
+            "from user_device " +
+            "where id = :id " +
+            "and transaction_time_end = " + DATABASE_INFINITY_STRING_SQL +
+            "and valid_time_start = (" +
+            "   select max(valid_time_start) " +
+            "   from user_device " +
+            "   where id = :id" +
+            "   and valid_time_start <= " + NOW +
+            "   and transaction_time_end = " + DATABASE_INFINITY_STRING_SQL +
+            ")")
+    abstract UserDeviceDbEntity getLatestUserDeviceAsBestKnown(int id);
+
+    @Query("select * " +
+            "from user_device " +
+            "where id = :id " +
+            "and transaction_time_start <= :transactionTime " +
+            "and :transactionTime < transaction_time_end " +
+            "and valid_time_start = (" +
+            "   select max(valid_time_start) " +
+            "   from user_device " +
+            "   where id = :id" +
+            "   and valid_time_start <= " + NOW +
+            "   and transaction_time_start <= :transactionTime " +
+            "   and :transactionTime < transaction_time_end " +
+            ")")
+    abstract UserDeviceDbEntity getCurrentUserDeviceAsKnownAt(int id, Instant transactionTime);
+
+    public UserDbEntity getUserByValidOrTransactionTime(PreservedId id) {
+        UserDbEntity user = getCurrentUser(id.id());
+        if (user == null) {
+            user = getLatestUserAsBestKnown(id.id());
+        }
+        if (user == null) {
+            user = getCurrentUserAsKnownAt(id.id(), id.transactionTime());
+        }
+        return user;
+    }
+
+    @Query("select * " +
+            "from current_user " +
+            "where id = :id")
+    abstract UserDbEntity getCurrentUser(int id);
+
+    @Query("select * " +
+            "from user " +
+            "where id = :id " +
+            "and transaction_time_end = " + DATABASE_INFINITY_STRING_SQL +
+            "and valid_time_start = (" +
+            "   select max(valid_time_start) " +
+            "   from user " +
+            "   where id = :id" +
+            "   and valid_time_start <= " + NOW +
+            "   and transaction_time_end = " + DATABASE_INFINITY_STRING_SQL +
+            ")")
+    abstract UserDbEntity getLatestUserAsBestKnown(int id);
+
+    @Query("select * " +
+            "from user " +
+            "where id = :id " +
+            "and transaction_time_start <= :transactionTime " +
+            "and :transactionTime < transaction_time_end " +
+            "and valid_time_start = (" +
+            "   select max(valid_time_start) " +
+            "   from user " +
+            "   where id = :id" +
+            "   and valid_time_start <= " + NOW +
+            "   and transaction_time_start <= :transactionTime " +
+            "   and :transactionTime < transaction_time_end " +
+            ")")
+    abstract UserDbEntity getCurrentUserAsKnownAt(int id, Instant transactionTime);
+
+    @Query("delete from user_device_to_delete " +
+            "where id = :id")
+    abstract void deleteUserDeviceDelete(Long id);
 }

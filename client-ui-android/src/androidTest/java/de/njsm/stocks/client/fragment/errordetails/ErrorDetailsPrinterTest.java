@@ -21,13 +21,17 @@
 
 package de.njsm.stocks.client.fragment.errordetails;
 
+import androidx.test.platform.app.InstrumentationRegistry;
+import de.njsm.stocks.client.Application;
 import de.njsm.stocks.client.business.entities.*;
+import de.njsm.stocks.client.ui.R;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.Period;
+import java.util.function.Function;
 
 import static org.junit.Assert.assertEquals;
 
@@ -35,9 +39,12 @@ public class ErrorDetailsPrinterTest {
 
     private ErrorDetailsFragment.ErrorDetailsPrinter uut;
 
+    private Function<Integer, String> dictionary;
+
     @Before
     public void setup() {
-        uut = new ErrorDetailsFragment.ErrorDetailsPrinter();
+        dictionary = ((Application) InstrumentationRegistry.getInstrumentation().getTargetContext().getApplicationContext())::getString;
+        uut = new ErrorDetailsFragment.ErrorDetailsPrinter(dictionary);
     }
 
     @Test
@@ -171,5 +178,11 @@ public class ErrorDetailsPrinterTest {
     public void eanNumberDeletingShowsDetails() {
         EanNumberDeleteErrorDetails data = EanNumberDeleteErrorDetails.create(1, "Banana", "123");
         assertEquals("Banana (123)", uut.visit(data, null));
+    }
+
+    @Test
+    public void userDeviceDeletingShowsDetails() {
+        UserDeviceDeleteErrorDetails data = UserDeviceDeleteErrorDetails.create(1, "Jack", "Mobile");
+        assertEquals(String.format(dictionary.apply(R.string.error_details_user_device_format), data.userName(), data.deviceName()), uut.visit(data, null));
     }
 }

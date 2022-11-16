@@ -19,31 +19,29 @@
  *
  */
 
-package de.njsm.stocks.client.database;
+package de.njsm.stocks.client.business.entities;
 
-import androidx.room.Dao;
-import androidx.room.Query;
-import de.njsm.stocks.client.business.entities.UserDeviceForDeletion;
-import de.njsm.stocks.client.business.entities.UserDeviceForListing;
-import io.reactivex.rxjava3.core.Observable;
+import com.google.auto.value.AutoValue;
 
-import java.util.List;
+@AutoValue
+public abstract class UserDeviceDeleteErrorDetails implements ErrorDetails {
 
-@Dao
-abstract class UserDeviceDao {
+    abstract IdImpl<UserDevice> idImpl();
 
-    @Query("select * " +
-            "from current_user_device")
-    abstract List<UserDeviceDbEntity> getAll();
+    public Id<UserDevice> id() {
+        return idImpl();
+    }
 
-    @Query("select * " +
-            "from current_user_device " +
-            "where belongs_to = :id " +
-            "order by name, id")
-    abstract Observable<List<UserDeviceForListing>> getUserDevices(int id);
+    public abstract String userName();
 
-    @Query("select * " +
-            "from current_user_device " +
-            "where id = :id")
-    abstract UserDeviceForDeletion get(int id);
+    public abstract String deviceName();
+
+    public static UserDeviceDeleteErrorDetails create(int id, String userName, String deviceName) {
+        return new AutoValue_UserDeviceDeleteErrorDetails(IdImpl.create(id), userName, deviceName);
+    }
+
+    @Override
+    public <I, O> O accept(ErrorDetailsVisitor<I, O> visitor, I input) {
+        return visitor.userDeviceDeleteErrorDetails(this, input);
+    }
 }

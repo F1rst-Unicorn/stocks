@@ -25,10 +25,12 @@ import android.os.Bundle;
 import androidx.fragment.app.testing.FragmentScenario;
 import androidx.test.platform.app.InstrumentationRegistry;
 import de.njsm.stocks.client.Application;
+import de.njsm.stocks.client.business.EntityDeleter;
 import de.njsm.stocks.client.business.FakeUserDeviceListInteractor;
 import de.njsm.stocks.client.business.Synchroniser;
 import de.njsm.stocks.client.business.entities.Id;
 import de.njsm.stocks.client.business.entities.User;
+import de.njsm.stocks.client.business.entities.UserDevice;
 import de.njsm.stocks.client.business.entities.UserDeviceForListing;
 import de.njsm.stocks.client.navigation.UserDeviceListNavigator;
 import de.njsm.stocks.client.testdata.UserDevicesForListing;
@@ -41,7 +43,9 @@ import javax.inject.Inject;
 
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
+import static androidx.test.espresso.action.ViewActions.swipeRight;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
+import static androidx.test.espresso.contrib.RecyclerViewActions.actionOnItemAtPosition;
 import static androidx.test.espresso.matcher.ViewMatchers.*;
 import static de.njsm.stocks.client.Matchers.equalBy;
 import static org.mockito.ArgumentMatchers.any;
@@ -54,6 +58,8 @@ public class UserDeviceListFragmentTest {
     private FakeUserDeviceListInteractor userDeviceListInteractor;
 
     private UserDeviceListNavigator userDeviceListNavigator;
+
+    private EntityDeleter<UserDevice> deleter;
 
     private Synchroniser synchroniser;
 
@@ -91,18 +97,35 @@ public class UserDeviceListFragmentTest {
         verify(userDeviceListNavigator).add(equalBy(userId));
     }
 
+    @Test
+    public void rightSwipingDeletesItem() {
+        var data = UserDevicesForListing.generate();
+        userDeviceListInteractor.setData(data);
+        int itemIndex = 0;
+
+        onView(withId(R.id.template_swipe_list_list))
+                .perform(actionOnItemAtPosition(itemIndex, swipeRight()));
+
+        verify(deleter).delete(data.devices().get(itemIndex));
+    }
+
     @Inject
-    public void setUserDeviceListInteractor(FakeUserDeviceListInteractor userDeviceListInteractor) {
+    void setUserDeviceListInteractor(FakeUserDeviceListInteractor userDeviceListInteractor) {
         this.userDeviceListInteractor = userDeviceListInteractor;
     }
 
     @Inject
-    public void setSynchroniser(Synchroniser synchroniser) {
+    void setSynchroniser(Synchroniser synchroniser) {
         this.synchroniser = synchroniser;
     }
 
     @Inject
-    public void setUserDeviceListNavigator(UserDeviceListNavigator userDeviceListNavigator) {
+    void setUserDeviceListNavigator(UserDeviceListNavigator userDeviceListNavigator) {
         this.userDeviceListNavigator = userDeviceListNavigator;
+    }
+
+    @Inject
+    void setDeleter(EntityDeleter<UserDevice> deleter) {
+        this.deleter = deleter;
     }
 }

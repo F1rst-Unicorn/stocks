@@ -21,7 +21,7 @@
 
 package de.njsm.stocks.client.database;
 
-import de.njsm.stocks.client.business.UserDeviceListRepository;
+import de.njsm.stocks.client.business.entities.UserDeviceForDeletion;
 import de.njsm.stocks.client.business.entities.UserDeviceForListing;
 import de.njsm.stocks.client.business.entities.UserDevicesForListing;
 import org.junit.Before;
@@ -30,10 +30,11 @@ import org.junit.Test;
 import java.util.List;
 
 import static de.njsm.stocks.client.database.util.Util.test;
+import static org.junit.Assert.assertEquals;
 
 public class UserDeviceListRepositoryImplTest extends DbTestCase {
 
-    private UserDeviceListRepository uut;
+    private UserDeviceListRepositoryImpl uut;
 
     @Before
     public void setUp() {
@@ -41,7 +42,7 @@ public class UserDeviceListRepositoryImplTest extends DbTestCase {
     }
 
     @Test
-    public void gettingUsersWorks() {
+    public void gettingUserDevicesWorks() {
         UserDbEntity user = standardEntities.userDbEntity();
         stocksDatabase.synchronisationDao().writeUsers(List.of(user));
         UserDeviceDbEntity device1 = standardEntities.userDeviceDbEntityBuilder()
@@ -63,5 +64,23 @@ public class UserDeviceListRepositoryImplTest extends DbTestCase {
                 ),
                 user.name())
         );
+    }
+
+    @Test
+    public void gettingSingleDeviceWorks() {
+        UserDbEntity user = standardEntities.userDbEntity();
+        stocksDatabase.synchronisationDao().writeUsers(List.of(user));
+        UserDeviceDbEntity device = standardEntities.userDeviceDbEntityBuilder()
+                .name("first")
+                .belongsTo(user.id())
+                .build();
+        stocksDatabase.synchronisationDao().writeUserDevices(List.of(device));
+
+        var actual = uut.getEntityForDeletion(device::id);
+
+        assertEquals(UserDeviceForDeletion.create(
+                device.id(),
+                device.version()
+        ), actual);
     }
 }

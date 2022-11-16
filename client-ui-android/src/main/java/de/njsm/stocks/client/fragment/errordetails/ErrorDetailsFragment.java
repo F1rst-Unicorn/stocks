@@ -37,6 +37,7 @@ import de.njsm.stocks.client.presenter.UnitAmountRenderStrategy;
 import de.njsm.stocks.client.ui.R;
 
 import javax.inject.Inject;
+import java.util.function.Function;
 
 public class ErrorDetailsFragment extends InjectableFragment {
 
@@ -53,7 +54,7 @@ public class ErrorDetailsFragment extends InjectableFragment {
 
     public ErrorDetailsFragment() {
         statusCodeTranslator = new StatusCodeTranslator();
-        errorDetailsPrinter = new ErrorDetailsPrinter();
+        errorDetailsPrinter = new ErrorDetailsPrinter(this::getString);
         errorDetailsHeadlineVisitor = new ErrorDetailsHeadlineVisitor();
     }
 
@@ -108,7 +109,10 @@ public class ErrorDetailsFragment extends InjectableFragment {
 
         private final UnitAmountRenderStrategy unitAmountRenderStrategy;
 
-        ErrorDetailsPrinter() {
+        private final Function<Integer, String> dictionary;
+
+        ErrorDetailsPrinter(Function<Integer, String> dictionary) {
+            this.dictionary = dictionary;
             unitAmountRenderStrategy = new UnitAmountRenderStrategy();
         }
 
@@ -222,6 +226,11 @@ public class ErrorDetailsFragment extends InjectableFragment {
         @Override
         public String eanNumberDeleteErrorDetails(EanNumberDeleteErrorDetails eanNumberDeleteErrorDetails, Void input) {
             return String.format("%s (%s)", eanNumberDeleteErrorDetails.foodName(), eanNumberDeleteErrorDetails.eanNumber());
+        }
+
+        @Override
+        public String userDeviceDeleteErrorDetails(UserDeviceDeleteErrorDetails userDeviceDeleteErrorDetails, Void input) {
+            return String.format(dictionary.apply(R.string.error_details_user_device_format), userDeviceDeleteErrorDetails.userName(), userDeviceDeleteErrorDetails.deviceName());
         }
     }
 }

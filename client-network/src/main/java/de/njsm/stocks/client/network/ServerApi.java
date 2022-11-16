@@ -167,4 +167,7 @@ public interface ServerApi {
     @DELETE("v2/ean")
     Call<Response> deleteEanNumber(@Query("id") int id,
                                    @Query("version") int version);
+
+    Call<Response> deleteUserDevice(@Query("id") int id,
+                                    @Query("version") int version);
 }

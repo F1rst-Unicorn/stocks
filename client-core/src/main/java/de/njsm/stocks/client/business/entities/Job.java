@@ -189,6 +189,13 @@ public abstract class Job {
             }
         },
 
+        DELETE_USER_DEVICE {
+            @Override
+            public <I, O> O accept(TypeVisitor<I, O> visitor, I input) {
+                return visitor.deleteUserDevice(this, input);
+            }
+        },
+
         UNKNOWN {
             @Override
             public <I, O> O accept(TypeVisitor<I, O> visitor, I input) {
@@ -250,6 +257,8 @@ public abstract class Job {
         O addEanNumber(Type type, I input);
 
         O deleteEanNumber(Type type, I input);
+
+        O deleteUserDevice(Type type, I input);
     }
 
     public interface DefaultTypeVisitor<I, O> extends TypeVisitor<I, O> {
@@ -368,6 +377,11 @@ public abstract class Job {
 
         @Override
         default O deleteEanNumber(Type type, I input) {
+            return defaultImpl(type, input);
+        }
+
+        @Override
+        default O deleteUserDevice(Type type, I input) {
             return defaultImpl(type, input);
         }
     }

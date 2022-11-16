@@ -362,4 +362,11 @@ public interface FakeBusinessModule {
     static EntityDeleter<EanNumber> eanNumberDeleter() {
         return mock(EntityDeleter.class);
     }
+
+    @Provides
+    @Singleton
+    @SuppressWarnings("unchecked")
+    static EntityDeleter<UserDevice> UserDeviceDeleter() {
+        return mock(EntityDeleter.class);
+    }
 }

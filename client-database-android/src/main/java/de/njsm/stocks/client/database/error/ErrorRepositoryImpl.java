@@ -236,4 +236,16 @@ public class ErrorRepositoryImpl implements ErrorRepository, ErrorEntity.ActionV
                 eanNumber.number()
         );
     }
+
+    @Override
+    public ErrorDetails deleteUserDevice(ErrorEntity.Action action, Long input) {
+        UserDeviceDeleteEntity entity = errorDao.getUserDeviceDelete(input);
+        UserDeviceDbEntity userDevice = errorDao.getUserDeviceByValidOrTransactionTime(entity.userDevice());
+        UserDbEntity user = errorDao.getUserByValidOrTransactionTime(PreservedId.create(userDevice.belongsTo(), entity.userDevice().transactionTime()));
+        return UserDeviceDeleteErrorDetails.create(
+                userDevice.id(),
+                user.name(),
+                userDevice.name()
+        );
+    }
 }

@@ -310,6 +310,8 @@
     <string name="error_details_food_item_edit_error_list">Edit Food Item</string>
     <string name="error_details_ean_number_add_error_list">Add EAN Code</string>
     <string name="error_details_ean_number_delete_error_list">Delete EAN Code</string>
+    <string name="error_details_user_device_format">%1$s\'s %2$s</string>
+    <string name="error_details_user_device_delete_error_list">Delete Device</string>
 
     <string name="text_no_errors">Everything is fine.</string>
 

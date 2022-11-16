@@ -96,6 +96,9 @@ public class ErrorRetryInteractorImplTest {
     private EntityDeleter<EanNumber> eanNumberDeleteInteractor;
 
     @Mock
+    private EntityDeleter<UserDevice> userDeviceDeleteInteractor;
+
+    @Mock
     private Synchroniser synchroniser;
 
     @Mock
@@ -123,6 +126,7 @@ public class ErrorRetryInteractorImplTest {
                 foodItemEditInteractor,
                 eanNumberListInteractor,
                 eanNumberDeleteInteractor,
+                userDeviceDeleteInteractor,
                 synchroniser,
                 scheduler,
                 errorRepository);
@@ -411,6 +415,18 @@ public class ErrorRetryInteractorImplTest {
         uut.retryInBackground(input);
 
         verify(eanNumberDeleteInteractor).delete(equalBy(expected));
+        verify(errorRepository).deleteError(input);
+    }
+
+    @Test
+    void retryingUserDeviceDeletingDispatches() {
+        UserDeviceDeleteErrorDetails userDevice = UserDeviceDeleteErrorDetails.create(2, "Jack", "Mobile");
+        ErrorDescription input = ErrorDescription.create(1, StatusCode.DATABASE_UNREACHABLE, "", "test", userDevice);
+        UserDeviceForDeletion expected = UserDeviceForDeletion.create(userDevice.id().id(), 3);
+
+        uut.retryInBackground(input);
+
+        verify(userDeviceDeleteInteractor).delete(equalBy(expected));
         verify(errorRepository).deleteError(input);
     }
 }

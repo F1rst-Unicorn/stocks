@@ -62,7 +62,7 @@ public class ErrorListFragment extends BottomToolbarFragment {
         templateSwipeList = new TemplateSwipeList(swipeList);
         templateSwipeList.setLoading();
 
-        errorDescriptionAdapter = new ErrorDescriptionAdapter(this::onItemClicked);
+        errorDescriptionAdapter = new ErrorDescriptionAdapter(this::onItemClicked, this::getString);
         errorListViewModel.getErrors().observe(getViewLifecycleOwner(), this::onListDataReceived);
 
         SwipeCallback callback = new SwipeCallback(

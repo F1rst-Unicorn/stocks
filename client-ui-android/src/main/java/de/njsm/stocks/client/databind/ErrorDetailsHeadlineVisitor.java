@@ -115,4 +115,9 @@ public class ErrorDetailsHeadlineVisitor implements ErrorDetailsVisitor<Void, In
     public Integer eanNumberDeleteErrorDetails(EanNumberDeleteErrorDetails eanNumberAddErrorDetails, Void input) {
         return R.string.error_details_ean_number_delete_error_list;
     }
+
+    @Override
+    public Integer userDeviceDeleteErrorDetails(UserDeviceDeleteErrorDetails userDeviceDeleteErrorDetails, Void input) {
+        return R.string.error_details_user_device_delete_error_list;
+    }
 }

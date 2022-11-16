@@ -66,8 +66,8 @@ public abstract class UserDeviceDbEntity extends ServerDbEntity<UserDeviceDbEnti
     abstract Builder toBuilder();
 
     @AutoValue.Builder
-    abstract static class Builder extends ServerDbEntity.Builder<UserDeviceDbEntity, Builder> implements UserDeviceFields.Builder<UserDeviceDbEntity, Builder> {
+    public abstract static class Builder extends ServerDbEntity.Builder<UserDeviceDbEntity, Builder> implements UserDeviceFields.Builder<UserDeviceDbEntity, Builder> {
 
-        abstract UserDeviceDbEntity build();
+        public abstract UserDeviceDbEntity build();
     }
 }

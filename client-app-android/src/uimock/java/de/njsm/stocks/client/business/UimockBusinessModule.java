@@ -179,4 +179,7 @@ public interface UimockBusinessModule {
 
     @Binds
     EntityDeleter<EanNumber> InMemoryEanNumberDeleterImpl(InMemoryEanNumberDeleterImpl impl);
+
+    @Binds
+    EntityDeleter<UserDevice> InMemoryUserDeviceDeleterImpl(InMemoryUserDeviceDeleterImpl impl);
 }
