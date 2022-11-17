@@ -168,6 +168,11 @@ public interface ServerApi {
     Call<Response> deleteEanNumber(@Query("id") int id,
                                    @Query("version") int version);
 
+    @DELETE("v2/device")
     Call<Response> deleteUserDevice(@Query("id") int id,
                                     @Query("version") int version);
+
+    @DELETE("v2/user")
+    Call<Response> deleteUser(@Query("id") int id,
+                              @Query("version") int version);
 }

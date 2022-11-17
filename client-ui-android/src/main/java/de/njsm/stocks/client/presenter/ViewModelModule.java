@@ -241,8 +241,8 @@ public class ViewModelModule {
     @Provides
     @IntoMap
     @ViewModelKey(UserListViewModel.class)
-    ViewModel UserListViewModel(UserListInteractor interactor, Synchroniser errorRetryInteractor) {
-        return new UserListViewModel(interactor, errorRetryInteractor);
+    ViewModel UserListViewModel(UserListInteractor interactor, Synchroniser errorRetryInteractor, EntityDeleter<User> deleter) {
+        return new UserListViewModel(interactor, deleter, errorRetryInteractor);
     }
 
     @Provides

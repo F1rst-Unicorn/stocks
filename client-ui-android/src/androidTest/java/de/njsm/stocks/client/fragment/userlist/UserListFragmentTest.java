@@ -25,8 +25,10 @@ import android.os.Bundle;
 import androidx.fragment.app.testing.FragmentScenario;
 import androidx.test.platform.app.InstrumentationRegistry;
 import de.njsm.stocks.client.Application;
+import de.njsm.stocks.client.business.EntityDeleter;
 import de.njsm.stocks.client.business.FakeUserListInteractor;
 import de.njsm.stocks.client.business.Synchroniser;
+import de.njsm.stocks.client.business.entities.User;
 import de.njsm.stocks.client.business.entities.UserForListing;
 import de.njsm.stocks.client.navigation.UserListNavigator;
 import de.njsm.stocks.client.testdata.UsersForListing;
@@ -40,6 +42,7 @@ import java.util.List;
 
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
+import static androidx.test.espresso.action.ViewActions.swipeRight;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.contrib.RecyclerViewActions.actionOnItemAtPosition;
 import static androidx.test.espresso.matcher.ViewMatchers.*;
@@ -52,6 +55,8 @@ public class UserListFragmentTest {
     private FragmentScenario<UserListFragment> scenario;
 
     private FakeUserListInteractor userListInteractor;
+
+    private EntityDeleter<User> deleter;
 
     private UserListNavigator userListNavigator;
 
@@ -102,18 +107,35 @@ public class UserListFragmentTest {
         verify(userListNavigator).add();
     }
 
+    @Test
+    public void rightSwipingDeletesItem() {
+        var data = UsersForListing.generate();
+        userListInteractor.setData(data);
+        int itemIndex = 0;
+
+        onView(withId(R.id.template_swipe_list_list))
+                .perform(actionOnItemAtPosition(itemIndex, swipeRight()));
+
+        verify(deleter).delete(data.get(itemIndex));
+    }
+
     @Inject
-    public void setUserListInteractor(FakeUserListInteractor userListInteractor) {
+    void setUserListInteractor(FakeUserListInteractor userListInteractor) {
         this.userListInteractor = userListInteractor;
     }
 
     @Inject
-    public void setSynchroniser(Synchroniser synchroniser) {
+    void setSynchroniser(Synchroniser synchroniser) {
         this.synchroniser = synchroniser;
     }
 
     @Inject
-    public void setUserListNavigator(UserListNavigator userListNavigator) {
+    void setUserListNavigator(UserListNavigator userListNavigator) {
         this.userListNavigator = userListNavigator;
+    }
+
+    @Inject
+    void setDeleter(EntityDeleter<User> deleter) {
+        this.deleter = deleter;
     }
 }

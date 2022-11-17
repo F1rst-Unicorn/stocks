@@ -19,35 +19,20 @@
  *
  */
 
-package de.njsm.stocks.client.database;
+package de.njsm.stocks.client.business;
 
-import de.njsm.stocks.client.business.EntityDeleteRepository;
-import de.njsm.stocks.client.business.UserListRepository;
 import de.njsm.stocks.client.business.entities.Id;
 import de.njsm.stocks.client.business.entities.User;
-import de.njsm.stocks.client.business.entities.UserForListing;
-import de.njsm.stocks.client.business.entities.Versionable;
-import io.reactivex.rxjava3.core.Observable;
 
 import javax.inject.Inject;
-import java.util.List;
 
-class UserListRepositoryImpl implements UserListRepository, EntityDeleteRepository<User> {
-
-    private final UserDao userDao;
+class InMemoryUserDeleterImpl implements EntityDeleter<User> {
 
     @Inject
-    UserListRepositoryImpl(UserDao userDao) {
-        this.userDao = userDao;
+    InMemoryUserDeleterImpl() {
     }
 
     @Override
-    public Observable<List<UserForListing>> getUsers() {
-        return userDao.getUsers();
-    }
-
-    @Override
-    public Versionable<User> getEntityForDeletion(Id<User> id) {
-        return userDao.getUserForDeletion(id.id());
+    public void delete(Id<User> location) {
     }
 }

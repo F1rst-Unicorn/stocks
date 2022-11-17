@@ -21,7 +21,7 @@
 
 package de.njsm.stocks.client.database;
 
-import de.njsm.stocks.client.business.UserListRepository;
+import de.njsm.stocks.client.business.entities.UserForDeletion;
 import de.njsm.stocks.client.business.entities.UserForListing;
 import org.junit.Before;
 import org.junit.Test;
@@ -29,11 +29,11 @@ import org.junit.Test;
 import java.util.List;
 
 import static de.njsm.stocks.client.database.util.Util.testList;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 public class UserListRepositoryImplTest extends DbTestCase {
 
-    private UserListRepository uut;
+    private UserListRepositoryImpl uut;
 
     @Before
     public void setUp() {
@@ -48,5 +48,15 @@ public class UserListRepositoryImplTest extends DbTestCase {
         var actual = uut.getUsers();
 
         testList(actual).assertValue(List.of(UserForListing.create(user.id(), user.name())));
+    }
+
+    @Test
+    public void gettingUserForDeletionWorks() {
+        UserDbEntity user = standardEntities.userDbEntity();
+        stocksDatabase.synchronisationDao().writeUsers(List.of(user));
+
+        var actual = uut.getEntityForDeletion(user::id);
+
+        assertEquals(UserForDeletion.create(user.id(), user.version()), actual);
     }
 }

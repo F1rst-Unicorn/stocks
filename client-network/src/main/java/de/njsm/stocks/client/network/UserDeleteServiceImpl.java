@@ -19,35 +19,31 @@
  *
  */
 
-package de.njsm.stocks.client.database;
+package de.njsm.stocks.client.network;
 
-import de.njsm.stocks.client.business.EntityDeleteRepository;
-import de.njsm.stocks.client.business.UserListRepository;
-import de.njsm.stocks.client.business.entities.Id;
+
+import de.njsm.stocks.client.business.EntityDeleteService;
 import de.njsm.stocks.client.business.entities.User;
-import de.njsm.stocks.client.business.entities.UserForListing;
 import de.njsm.stocks.client.business.entities.Versionable;
-import io.reactivex.rxjava3.core.Observable;
+import de.njsm.stocks.common.api.Response;
+import retrofit2.Call;
 
 import javax.inject.Inject;
-import java.util.List;
 
-class UserListRepositoryImpl implements UserListRepository, EntityDeleteRepository<User> {
-
-    private final UserDao userDao;
+public class UserDeleteServiceImpl extends ServiceBase<Versionable<User>> implements EntityDeleteService<User> {
 
     @Inject
-    UserListRepositoryImpl(UserDao userDao) {
-        this.userDao = userDao;
+    UserDeleteServiceImpl(ServerApi api, CallHandler callHandler) {
+        super(api, callHandler);
     }
 
     @Override
-    public Observable<List<UserForListing>> getUsers() {
-        return userDao.getUsers();
+    Call<Response> buildCall(Versionable<User> entityForDeletion) {
+        return api.deleteUser(entityForDeletion.id(), entityForDeletion.version());
     }
 
     @Override
-    public Versionable<User> getEntityForDeletion(Id<User> id) {
-        return userDao.getUserForDeletion(id.id());
+    public void delete(Versionable<User> entityForDeletion) {
+        perform(entityForDeletion);
     }
 }

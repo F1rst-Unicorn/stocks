@@ -168,4 +168,7 @@ public interface BusinessModule {
 
     @Binds
     EntityDeleter<UserDevice> UserDeviceDeleter(UserDeviceDeleterImpl impl);
+
+    @Binds
+    EntityDeleter<User> UserDeleter(UserDeleterImpl impl);
 }

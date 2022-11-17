@@ -494,6 +494,20 @@ public class ErrorRecorderImplTest extends DbTestCase {
         );
     }
 
+    @Test
+    public void recordingErrorDeletingUserWorks() {
+        test(UserForDeletion.create(1, 2),
+                uut::recordUserDeleteError,
+                ErrorEntity.Action.DELETE_USER,
+                stocksDatabase.errorDao()::getUserDeletes,
+                (expected, actual) -> {
+                    assertEquals(expected.id(), actual.user().id());
+                    assertEquals(expected.version(), actual.version());
+                    assertEquals(stocksDatabase.errorDao().getTransactionTimeOf(EntityType.USER), actual.user().transactionTime());
+                }
+        );
+    }
+
     private <T, E> void test(T input,
                              BiConsumer<? super SubsystemException, T> recorder,
                              ErrorEntity.Action action,

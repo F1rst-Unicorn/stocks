@@ -54,6 +54,9 @@ public interface DatabaseModule {
                 .fallbackToDestructiveMigration()
                 .openHelperFactory(new RequerySQLiteOpenHelperFactory())
                 .setQueryCallback((sqlQuery, bindArgs) -> {
+                    if (!LOG.isTraceEnabled())
+                        return;
+
                     if (bindArgs.isEmpty())
                         LOG.trace(sqlQuery);
                     else
@@ -206,4 +209,7 @@ public interface DatabaseModule {
 
     @Binds
     EntityDeleteRepository<UserDevice> UserDeviceDeleteRepository(UserDeviceListRepositoryImpl impl);
+
+    @Binds
+    EntityDeleteRepository<User> UserDeleteRepository(UserListRepositoryImpl impl);
 }

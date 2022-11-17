@@ -24,8 +24,10 @@ package de.njsm.stocks.client.presenter;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.LiveDataReactiveStreams;
 import androidx.lifecycle.ViewModel;
+import de.njsm.stocks.client.business.EntityDeleter;
 import de.njsm.stocks.client.business.Synchroniser;
 import de.njsm.stocks.client.business.UserListInteractor;
+import de.njsm.stocks.client.business.entities.User;
 import de.njsm.stocks.client.business.entities.UserForListing;
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.core.BackpressureStrategy;
@@ -39,13 +41,16 @@ public class UserListViewModel extends ViewModel {
 
     private final UserListInteractor userListInteractor;
 
+    private final EntityDeleter<User> deleter;
+
     private final Synchroniser synchroniser;
 
     private Observable<List<UserForListing>> data;
 
     @Inject
-    UserListViewModel(UserListInteractor userListInteractor, Synchroniser synchroniser) {
+    UserListViewModel(UserListInteractor userListInteractor, EntityDeleter<User> deleter, Synchroniser synchroniser) {
         this.userListInteractor = userListInteractor;
+        this.deleter = deleter;
         this.synchroniser = synchroniser;
     }
 
@@ -55,7 +60,10 @@ public class UserListViewModel extends ViewModel {
     }
 
     public void delete(int listItemIndex) {
-        throw new UnsupportedOperationException("TODO");
+        if (data == null)
+            return;
+
+        performOnCurrentData(list -> deleter.delete(list.get(listItemIndex)));
     }
 
     public void synchronise() {

@@ -120,4 +120,9 @@ public class ErrorDetailsHeadlineVisitor implements ErrorDetailsVisitor<Void, In
     public Integer userDeviceDeleteErrorDetails(UserDeviceDeleteErrorDetails userDeviceDeleteErrorDetails, Void input) {
         return R.string.error_details_user_device_delete_error_list;
     }
+
+    @Override
+    public Integer userDeleteErrorDetails(UserDeleteErrorDetails userDeleteErrorDetails, Void input) {
+        return R.string.error_details_user_delete_error_list;
+    }
 }

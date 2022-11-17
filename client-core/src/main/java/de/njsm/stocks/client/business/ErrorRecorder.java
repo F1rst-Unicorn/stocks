@@ -62,4 +62,6 @@ public interface ErrorRecorder {
     void recordEanNumberDeleteError(SubsystemException e, Versionable<EanNumber> data);
 
     void recordUserDeviceDeleteError(SubsystemException e, Versionable<UserDevice> data);
+
+    void recordUserDeleteError(SubsystemException e, Versionable<User> data);
 }

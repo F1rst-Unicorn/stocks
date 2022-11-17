@@ -19,35 +19,34 @@
  *
  */
 
-package de.njsm.stocks.client.database;
+package de.njsm.stocks.client.business;
 
-import de.njsm.stocks.client.business.EntityDeleteRepository;
-import de.njsm.stocks.client.business.UserListRepository;
-import de.njsm.stocks.client.business.entities.Id;
+import de.njsm.stocks.client.business.entities.Job;
 import de.njsm.stocks.client.business.entities.User;
-import de.njsm.stocks.client.business.entities.UserForListing;
 import de.njsm.stocks.client.business.entities.Versionable;
-import io.reactivex.rxjava3.core.Observable;
+import de.njsm.stocks.client.execution.Scheduler;
 
 import javax.inject.Inject;
-import java.util.List;
 
-class UserListRepositoryImpl implements UserListRepository, EntityDeleteRepository<User> {
-
-    private final UserDao userDao;
+class UserDeleterImpl extends AbstractDeleterImpl<User> {
 
     @Inject
-    UserListRepositoryImpl(UserDao userDao) {
-        this.userDao = userDao;
+    UserDeleterImpl(
+            EntityDeleteService<User> deleteService,
+            EntityDeleteRepository<User> deleteRepository,
+            Synchroniser synchroniser,
+            ErrorRecorder errorRecorder,
+            Scheduler scheduler) {
+        super(deleteService, deleteRepository, synchroniser, errorRecorder, scheduler);
     }
 
     @Override
-    public Observable<List<UserForListing>> getUsers() {
-        return userDao.getUsers();
+    Job.Type getJobType() {
+        return Job.Type.DELETE_USER;
     }
 
     @Override
-    public Versionable<User> getEntityForDeletion(Id<User> id) {
-        return userDao.getUserForDeletion(id.id());
+    void recordError(SubsystemException e, Versionable<User> data) {
+        errorRecorder.recordUserDeleteError(e, data);
     }
 }

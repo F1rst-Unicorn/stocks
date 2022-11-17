@@ -182,4 +182,7 @@ public interface UimockBusinessModule {
 
     @Binds
     EntityDeleter<UserDevice> InMemoryUserDeviceDeleterImpl(InMemoryUserDeviceDeleterImpl impl);
+
+    @Binds
+    EntityDeleter<User> InMemoryUserDeleterImpl(InMemoryUserDeleterImpl impl);
 }

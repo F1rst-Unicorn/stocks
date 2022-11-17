@@ -369,4 +369,11 @@ public interface FakeBusinessModule {
     static EntityDeleter<UserDevice> UserDeviceDeleter() {
         return mock(EntityDeleter.class);
     }
+
+    @Provides
+    @Singleton
+    @SuppressWarnings("unchecked")
+    static EntityDeleter<User> UserDeleter() {
+        return mock(EntityDeleter.class);
+    }
 }

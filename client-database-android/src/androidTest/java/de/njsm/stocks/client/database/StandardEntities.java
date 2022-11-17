@@ -52,7 +52,7 @@ public class StandardEntities {
         return userDbEntityBuilder().build();
     }
 
-    UserDbEntity.Builder userDbEntityBuilder() {
+    public UserDbEntity.Builder userDbEntityBuilder() {
         return initialiseBuilder(UserDbEntity.builder())
                 .name("name");
     }

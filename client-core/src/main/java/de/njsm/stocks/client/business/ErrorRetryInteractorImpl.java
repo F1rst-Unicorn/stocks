@@ -64,6 +64,8 @@ class ErrorRetryInteractorImpl implements ErrorRetryInteractor, ErrorDetailsVisi
 
     private final EntityDeleter<UserDevice> userDeviceDeleteInteractor;
 
+    private final EntityDeleter<User> userDeleteInteractor;
+
     private final Synchroniser synchroniser;
 
     private final Scheduler scheduler;
@@ -91,6 +93,7 @@ class ErrorRetryInteractorImpl implements ErrorRetryInteractor, ErrorDetailsVisi
                              EanNumberListInteractor eanNumberListInteractor,
                              EntityDeleter<EanNumber> eanNumberDeleteInteractor,
                              EntityDeleter<UserDevice> userDeviceDeleteInteractor,
+                             EntityDeleter<User> userDeleteInteractor,
                              Synchroniser synchroniser,
                              Scheduler scheduler,
                              ErrorRepository errorRepository) {
@@ -112,6 +115,7 @@ class ErrorRetryInteractorImpl implements ErrorRetryInteractor, ErrorDetailsVisi
         this.eanNumberListInteractor = eanNumberListInteractor;
         this.eanNumberDeleteInteractor = eanNumberDeleteInteractor;
         this.userDeviceDeleteInteractor = userDeviceDeleteInteractor;
+        this.userDeleteInteractor = userDeleteInteractor;
         this.synchroniser = synchroniser;
         this.scheduler = scheduler;
         this.errorRepository = errorRepository;
@@ -285,6 +289,12 @@ class ErrorRetryInteractorImpl implements ErrorRetryInteractor, ErrorDetailsVisi
         return null;
     }
 
+    @Override
+    public Void userDeleteErrorDetails(UserDeleteErrorDetails userDeleteErrorDetails, Void input) {
+        userDeleteInteractor.delete(userDeleteErrorDetails.id());
+        return null;
+    }
+
     private static final class JobTypeTranslator implements ErrorDetailsVisitor<Void, Job.Type> {
 
         @Override
@@ -380,6 +390,11 @@ class ErrorRetryInteractorImpl implements ErrorRetryInteractor, ErrorDetailsVisi
         @Override
         public Job.Type userDeviceDeleteErrorDetails(UserDeviceDeleteErrorDetails userDeviceDeleteErrorDetails, Void input) {
             return Job.Type.DELETE_USER_DEVICE;
+        }
+
+        @Override
+        public Job.Type userDeleteErrorDetails(UserDeleteErrorDetails userDeleteErrorDetails, Void input) {
+            return Job.Type.DELETE_USER;
         }
     }
 }

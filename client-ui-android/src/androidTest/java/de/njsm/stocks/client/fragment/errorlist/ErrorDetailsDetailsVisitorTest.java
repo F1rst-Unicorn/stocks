@@ -165,4 +165,10 @@ public class ErrorDetailsDetailsVisitorTest {
         UserDeviceDeleteErrorDetails data = UserDeviceDeleteErrorDetails.create(1, "Jack", "Mobile");
         assertEquals(String.format(dictionary.apply(R.string.error_details_user_device_format), data.userName(), data.deviceName()), uut.visit(data, null));
     }
+
+    @Test
+    public void userDeletingShowsDetails() {
+        UserDeleteErrorDetails data = UserDeleteErrorDetails.create(1, "Jack");
+        assertEquals(data.name(), uut.visit(data, null));
+    }
 }

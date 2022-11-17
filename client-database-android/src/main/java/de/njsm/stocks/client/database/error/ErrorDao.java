@@ -693,4 +693,20 @@ public abstract class ErrorDao {
     @Query("delete from user_device_to_delete " +
             "where id = :id")
     abstract void deleteUserDeviceDelete(Long id);
+
+    @Query("select * " +
+            "from user_to_delete")
+    abstract List<UserDeleteEntity> getUserDeletes();
+
+    @Insert
+    abstract long insert(UserDeleteEntity entity);
+
+    @Query("select * " +
+            "from user_to_delete " +
+            "where id = :id")
+    abstract UserDeleteEntity getUserDelete(Long id);
+
+    @Query("delete from user_to_delete " +
+            "where id = :id")
+    abstract void deleteUserDelete(Long id);
 }

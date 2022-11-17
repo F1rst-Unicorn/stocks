@@ -138,4 +138,9 @@ public class ErrorDetailsDetailsVisitor implements ErrorDetailsVisitor<Void, Str
     public String userDeviceDeleteErrorDetails(UserDeviceDeleteErrorDetails userDeviceDeleteErrorDetails, Void input) {
         return String.format(dictionary.apply(R.string.error_details_user_device_format), userDeviceDeleteErrorDetails.userName(), userDeviceDeleteErrorDetails.deviceName());
     }
+
+    @Override
+    public String userDeleteErrorDetails(UserDeleteErrorDetails userDeleteErrorDetails, Void input) {
+        return userDeleteErrorDetails.name();
+    }
 }

@@ -248,4 +248,14 @@ public class ErrorRepositoryImpl implements ErrorRepository, ErrorEntity.ActionV
                 userDevice.name()
         );
     }
+
+    @Override
+    public ErrorDetails deleteUser(ErrorEntity.Action action, Long input) {
+        UserDeleteEntity entity = errorDao.getUserDelete(input);
+        UserDbEntity user = errorDao.getUserByValidOrTransactionTime(entity.user());
+        return UserDeleteErrorDetails.create(
+                user.id(),
+                user.name()
+        );
+    }
 }

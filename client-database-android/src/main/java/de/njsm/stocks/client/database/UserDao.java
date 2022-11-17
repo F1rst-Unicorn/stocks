@@ -23,6 +23,7 @@ package de.njsm.stocks.client.database;
 
 import androidx.room.Dao;
 import androidx.room.Query;
+import de.njsm.stocks.client.business.entities.UserForDeletion;
 import de.njsm.stocks.client.business.entities.UserForListing;
 import io.reactivex.rxjava3.core.Observable;
 
@@ -44,4 +45,9 @@ abstract class UserDao {
             "from current_user " +
             "where id = :id")
     abstract Observable<UserForListing> getUser(int id);
+
+    @Query("select * " +
+            "from current_user " +
+            "where id = :id")
+    abstract UserForDeletion getUserForDeletion(int id);
 }
