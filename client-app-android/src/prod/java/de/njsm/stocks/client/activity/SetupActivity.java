@@ -19,11 +19,12 @@
  *
  */
 
-package de.njsm.stocks.client.fragment;
+package de.njsm.stocks.client.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
 import de.njsm.stocks.client.background.setup.SetupService;
+import de.njsm.stocks.client.activity.SetupBaseActivity;
 
 public class SetupActivity extends SetupBaseActivity {
 

@@ -41,6 +41,7 @@ public class SwipeCallbackTest {
     private RecyclerView.ViewHolder viewHolder;
 
     @Before
+    @SuppressWarnings("unchecked")
     public void setup() {
         callback = mock(Consumer.class);
         leftCallback = mock(Consumer.class);

@@ -22,6 +22,7 @@
 
     <string name="app_name">Stocks</string>
     <string name="app_name_ui">Stocks UI</string>
+    <string name="app_name_demo">Stocks Demo</string>
 
     <string name="title_delete_location">Remove location</string>
     <string name="title_add_item">Add %1$s</string>

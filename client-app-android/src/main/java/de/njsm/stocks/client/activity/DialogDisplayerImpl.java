@@ -19,13 +19,14 @@
  *
  */
 
-package de.njsm.stocks.client.fragment;
+package de.njsm.stocks.client.activity;
 
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.widget.TextView;
 import androidx.annotation.StringRes;
 import de.njsm.stocks.R;
+import de.njsm.stocks.client.fragment.DialogDisplayer;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;

@@ -29,7 +29,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        tools:context="de.njsm.stocks.client.fragment.MainActivity">
+        tools:context="de.njsm.stocks.client.activity.MainActivity">
 
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/activity_setup_toolbar"

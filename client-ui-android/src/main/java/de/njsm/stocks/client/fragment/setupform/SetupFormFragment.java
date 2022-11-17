@@ -21,7 +21,6 @@
 
 package de.njsm.stocks.client.fragment.setupform;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -56,14 +55,9 @@ public class SetupFormFragment extends InjectableFragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View result = inflater.inflate(R.layout.fragment_setup_form, container, false);
         view = new SetupFormView(result, this::getString);
+        argumentProvider.visit(this, getArguments());
         view.bindSubmitButton(this::onSubmitForm);
         return result;
-    }
-
-    @Override
-    public void onAttach(@NonNull Context context) {
-        super.onAttach(context);
-        argumentProvider.visit(this, getArguments());
     }
 
     public void initialiseForm(RegistrationForm registrationForm) {

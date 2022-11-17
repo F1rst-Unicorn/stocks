@@ -38,6 +38,7 @@ public class FakeNavigationArgConsumer implements NavigationArgConsumer {
     public void back() {
     }
 
+    @SuppressWarnings("unchecked")
     <T extends NavDirections> T getLastArgument(Class<T> clazz) {
         if (clazz.isInstance(lastArgument))
             return (T) lastArgument;

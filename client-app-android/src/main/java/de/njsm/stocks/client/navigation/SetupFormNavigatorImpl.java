@@ -23,7 +23,7 @@ package de.njsm.stocks.client.navigation;
 
 import android.content.Context;
 import android.content.Intent;
-import de.njsm.stocks.client.fragment.MainActivity;
+import de.njsm.stocks.client.activity.MainActivity;
 
 import javax.inject.Inject;
 

@@ -42,6 +42,9 @@ android {
         prod {
             java.srcDir "src/prod/java"
         }
+        demo {
+            java.srcDir "src/demo/java"
+        }
     }
 
     buildTypes {
@@ -65,6 +68,15 @@ android {
             versionNameSuffix "-uimock"
             manifestPlaceholders = [
                     appName: "@string/app_name_ui"
+            ]
+        }
+
+        demo {
+            dimension "type"
+            applicationIdSuffix ".demo"
+            versionNameSuffix "-demo"
+            manifestPlaceholders = [
+                    appName: "@string/app_name_demo"
             ]
         }
 
@@ -112,6 +124,10 @@ dependencies {
     prodImplementation project(":client-database-android")
     prodImplementation project(":client-network")
     prodImplementation project(":client-crypto")
+    demoImplementation project(":client-settings-android")
+    demoImplementation project(":client-database-android")
+    demoImplementation project(":client-network")
+    demoImplementation project(":client-crypto")
     implementation "com.google.dagger:dagger:${dagger_version}"
     implementation "com.google.dagger:dagger-android:${dagger_version}"
     implementation "com.google.dagger:dagger-android-support:${dagger_version}"

@@ -30,7 +30,7 @@ import de.njsm.stocks.client.execution.FakeExecutionModule;
 import de.njsm.stocks.client.presenter.ActivityViewModelModule;
 import de.njsm.stocks.client.presenter.ViewModelModule;
 import de.njsm.stocks.client.fragment.FragmentModule;
-import de.njsm.stocks.client.fragment.StartupActivityTest;
+import de.njsm.stocks.client.activity.StartupActivityTest;
 
 import javax.inject.Singleton;
 
