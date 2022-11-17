@@ -67,7 +67,7 @@ android {
         checkAllWarnings true
         lintConfig file("$projectDir/../config/android-lint/lint.xml")
     }
-    namespace 'de.njsm.stocks.client'
+    namespace 'de.njsm.stocks.client.fakes'
 }
 
 dependencies {

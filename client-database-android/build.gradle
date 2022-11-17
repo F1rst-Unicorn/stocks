@@ -78,7 +78,7 @@ android {
         checkAllWarnings true
         lintConfig file("$projectDir/../config/android-lint/lint.xml")
     }
-    namespace 'de.njsm.stocks.databaseandroid'
+    namespace 'de.njsm.stocks.database'
 }
 
 dependencies {
