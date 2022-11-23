@@ -105,6 +105,7 @@
     <string name="action_checkout">Prepare</string>
     <string name="action_delete">Delete</string>
     <string name="action_retry">Retry</string>
+    <string name="action_add">ADD</string>
 
     <string name="hint_servername">Server host name</string>
     <string name="hint_expert">Expert options</string>

@@ -28,6 +28,7 @@ import de.njsm.stocks.client.business.entities.conflict.ConflictData;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Function;
 import java.util.function.Predicate;
 
 public class ListSearcher {
@@ -72,6 +73,11 @@ public class ListSearcher {
     public static <E extends Entity<E>, T extends Id<E>>
     int findFirst(List<T> list, int id) {
         return searchFirst(list, v -> v.id() == id).orElseThrow(() -> new IllegalStateException("No matching item found"));
+    }
+
+    public static <E extends Entity<E>, T>
+    int findFirstBy(List<T> list, Id<E> id, Function<T, Id<E>> mapper) {
+        return searchFirst(list, v -> mapper.apply(v).id() == id.id()).orElseThrow(() -> new IllegalStateException("No matching item found"));
     }
 
     private static <E extends Entity<E>, T extends Id<E>>

@@ -111,6 +111,9 @@ public interface NetworkModule {
     @Binds
     EntityDeleteService<User> UserDeleteServiceImpl(UserDeleteServiceImpl impl);
 
+    @Binds
+    RecipeAddService RecipeAddService(RecipeAddServiceImpl impl);
+
     @Provides
     @Singleton
     static ServerApi serverApi(ServerEndpoint serverEndpoint) {

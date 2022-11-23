@@ -111,11 +111,11 @@ public interface ServerApi {
                             @Query("name") String name,
                             @Query("abbreviation") String abbreviation);
 
-    @PUT("v2/scaled-unit")
+    @PUT("/v2/scaled-unit")
     Call<Response> addScaledUnit(@Query("scale") String scale,
                                  @Query("unit") int unit);
 
-    @PUT("v2/scaled-unit/edit")
+    @PUT("/v2/scaled-unit/edit")
     Call<Response> editScaledUnit(@Query("id") int id,
                                   @Query("version") int version,
                                   @Query("scale") String scale,
@@ -164,15 +164,18 @@ public interface ServerApi {
     Call<DataResponse<Integer>> addEanNumber(@Query("code") String eanNumber,
                                              @Query("identifies") int identifies);
 
-    @DELETE("v2/ean")
+    @DELETE("/v2/ean")
     Call<Response> deleteEanNumber(@Query("id") int id,
                                    @Query("version") int version);
 
-    @DELETE("v2/device")
+    @DELETE("/v2/device")
     Call<Response> deleteUserDevice(@Query("id") int id,
                                     @Query("version") int version);
 
-    @DELETE("v2/user")
+    @DELETE("/v2/user")
     Call<Response> deleteUser(@Query("id") int id,
                               @Query("version") int version);
+
+    @PUT("/v2/recipe")
+    Call<DataResponse<Integer>> addRecipe(@Body FullRecipeForInsertion recipe);
 }
