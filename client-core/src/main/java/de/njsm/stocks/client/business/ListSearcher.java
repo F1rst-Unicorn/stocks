@@ -72,17 +72,17 @@ public class ListSearcher {
 
     public static <E extends Entity<E>, T extends Id<E>>
     int findFirst(List<T> list, int id) {
-        return searchFirst(list, v -> v.id() == id).orElseThrow(() -> new IllegalStateException("No matching item found"));
+        return searchFirst(list, v -> v.id() == id).orElseThrow(() -> new IllegalStateException("No matching item " + id + " found: " + list));
     }
 
     public static <E extends Entity<E>, T>
     int findFirstBy(List<T> list, Id<E> id, Function<T, Id<E>> mapper) {
-        return searchFirst(list, v -> mapper.apply(v).id() == id.id()).orElseThrow(() -> new IllegalStateException("No matching item found"));
+        return searchFirst(list, v -> mapper.apply(v).id() == id.id()).orElseThrow(() -> new IllegalStateException("No matching item " + id.id() + " found: " + list));
     }
 
-    private static <E extends Entity<E>, T extends Id<E>>
+    public static <E extends Entity<E>, T extends Id<E>>
     int findFirst(List<T> list, Id<E> id) {
-        return searchFirst(list, v -> v.id() == id.id()).orElseThrow(() -> new IllegalStateException("No matching item found"));
+        return searchFirst(list, v -> v.id() == id.id()).orElseThrow(() -> new IllegalStateException("No matching item " + id.id() + " found: " + list));
     }
 
     public static <E extends Entity<E>, T extends Id<E>>

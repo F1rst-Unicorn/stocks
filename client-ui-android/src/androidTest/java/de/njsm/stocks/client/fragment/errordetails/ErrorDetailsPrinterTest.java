@@ -29,10 +29,12 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.math.BigDecimal;
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.function.Function;
 
+import static java.util.Collections.emptyList;
 import static org.junit.Assert.assertEquals;
 
 public class ErrorDetailsPrinterTest {
@@ -190,5 +192,11 @@ public class ErrorDetailsPrinterTest {
     public void userDeletingShowsDetails() {
         UserDeleteErrorDetails data = UserDeleteErrorDetails.create(1, "Jack");
         assertEquals(data.name(), uut.visit(data, null));
+    }
+
+    @Test
+    public void recipeAddingShowsName() {
+        var recipe = RecipeAddForm.create("Pizza", "just bake", Duration.ofMinutes(3), emptyList(), emptyList());
+        assertEquals(recipe.name(), uut.visit(recipe, null));
     }
 }

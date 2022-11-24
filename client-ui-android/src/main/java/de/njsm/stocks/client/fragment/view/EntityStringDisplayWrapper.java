@@ -25,13 +25,13 @@ import androidx.annotation.NonNull;
 
 import java.util.function.Function;
 
-final class EntityStringDisplayWrapper<T> {
+public final class EntityStringDisplayWrapper<T> {
 
     private final T delegate;
 
     private final Function<T, String> stringDisplayer;
 
-    EntityStringDisplayWrapper(T delegate, Function<T, String> stringDisplayer) {
+    public EntityStringDisplayWrapper(T delegate, Function<T, String> stringDisplayer) {
         this.delegate = delegate;
         this.stringDisplayer = stringDisplayer;
     }

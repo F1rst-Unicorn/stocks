@@ -27,9 +27,11 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.math.BigDecimal;
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.Period;
 
+import static java.util.Collections.emptyList;
 import static org.junit.Assert.assertEquals;
 
 public class ErrorDetailsHeadlineVisitorTest {
@@ -72,5 +74,6 @@ public class ErrorDetailsHeadlineVisitorTest {
         assertEquals(R.string.error_details_ean_number_delete_error_list, (long) uut.visit(EanNumberDeleteErrorDetails.create(1, "Banana", "123"), null));
         assertEquals(R.string.error_details_user_device_delete_error_list, (long) uut.visit(UserDeviceDeleteErrorDetails.create(1, "Jack", "Mobile"), null));
         assertEquals(R.string.error_details_user_delete_error_list, (long) uut.visit(UserDeleteErrorDetails.create(1, "Jack"), null));
+        assertEquals(R.string.error_details_recipe_add_error_list, (long) uut.visit(RecipeAddForm.create("Pizza", "just bake", Duration.ofMinutes(3), emptyList(), emptyList()), null));
     }
 }

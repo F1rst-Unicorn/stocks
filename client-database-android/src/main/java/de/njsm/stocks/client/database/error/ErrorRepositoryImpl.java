@@ -30,9 +30,9 @@ import io.reactivex.rxjava3.core.Observable;
 import javax.inject.Inject;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import static de.njsm.stocks.client.database.DataMapper.map;
+import static java.util.stream.Collectors.toList;
 
 public class ErrorRepositoryImpl implements ErrorRepository, ErrorEntity.ActionVisitor<Long, ErrorDetails> {
 
@@ -63,7 +63,7 @@ public class ErrorRepositoryImpl implements ErrorRepository, ErrorEntity.ActionV
     public Observable<List<ErrorDescription>> getErrors() {
         return errorDao.observeErrors()
                 .distinctUntilChanged()
-                .map(v -> v.stream().map(this::resolveData).collect(Collectors.toList()));
+                .map(v -> v.stream().map(this::resolveData).collect(toList()));
     }
 
     @Override
@@ -256,6 +256,21 @@ public class ErrorRepositoryImpl implements ErrorRepository, ErrorEntity.ActionV
         return UserDeleteErrorDetails.create(
                 user.id(),
                 user.name()
+        );
+    }
+
+    @Override
+    public ErrorDetails addRecipe(ErrorEntity.Action action, Long input) {
+        RecipeAddEntity recipe = errorDao.getRecipeAdd(input);
+        var ingredients = errorDao.getRecipeIngredientAdd(recipe.id());
+        var products = errorDao.getRecipeProductAdd(recipe.id());
+        return RecipeAddForm.create(recipe.name(), recipe.instructions(), recipe.duration(),
+                ingredients.stream()
+                        .map(v -> RecipeIngredientToAdd.create(v.amount(), v.ingredient().id(), v.unit().id()))
+                        .collect(toList()),
+                products.stream()
+                        .map(v -> RecipeProductToAdd.create(v.amount(), v.product().id(), v.unit().id()))
+                        .collect(toList())
         );
     }
 }

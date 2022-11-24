@@ -132,6 +132,7 @@
     <string name="hint_expiration_offset">Standardhaltbarkeit (Tage)</string>
     <string name="hint_description">Beschreibung</string>
     <string name="hint_duration">Dauer (min)</string>
+    <string name="hint_instructions">Anweisungen</string>
     <string name="hint_amount">Menge</string>
     <string name="hint_no_locations">Keine Orte.\nErstelle einen mit dem + Knopf.</string>
     <string name="hint_no_units">Keine Maßeinheiten.\nErstelle eine mit dem + Knopf.</string>
@@ -315,6 +316,7 @@
     <string name="error_details_user_device_format">%1$ss %2$s</string>
     <string name="error_details_user_device_delete_error_list">Gerät löschen</string>
     <string name="error_details_user_delete_error_list">Benutzer löschen</string>
+    <string name="error_details_recipe_add_error_list">Rezept anlegen</string>
 
     <string name="text_no_errors">Alles in Ordnung.</string>
 </resources>

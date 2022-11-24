@@ -376,4 +376,10 @@ public interface FakeBusinessModule {
     static EntityDeleter<User> UserDeleter() {
         return mock(EntityDeleter.class);
     }
+
+    @Provides
+    @Singleton
+    static RecipeAddInteractor RecipeAddInteractor() {
+        return mock(RecipeAddInteractor.class);
+    }
 }

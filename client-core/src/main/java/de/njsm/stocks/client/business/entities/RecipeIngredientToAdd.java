@@ -35,4 +35,8 @@ public abstract class RecipeIngredientToAdd {
     public static RecipeIngredientToAdd create(int amount, Id<Food> ingredient, Id<ScaledUnit> unit) {
         return new AutoValue_RecipeIngredientToAdd(amount, ingredient, unit);
     }
+
+    public static RecipeIngredientToAdd create(int amount, int ingredient, int unit) {
+        return new AutoValue_RecipeIngredientToAdd(amount, IdImpl.create(ingredient), IdImpl.create(unit));
+    }
 }

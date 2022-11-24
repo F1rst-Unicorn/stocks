@@ -19,7 +19,7 @@
     along with this program.  If not, see https://www.gnu.org/licenses/.
 -->
 
-<ScrollView
+<androidx.core.widget.NestedScrollView
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -39,15 +39,28 @@
                 layout="@layout/text_field_conflict"
                 android:id="@+id/fragment_recipe_form_duration"/>
 
+        <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/fragment_recipe_form_instructions"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/list_item_padding"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+
+            <com.google.android.material.textfield.TextInputEditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textMultiLine"/>
+        </com.google.android.material.textfield.TextInputLayout>
+
         <TextView
-                android:id="@+id/fragment_recipe_add_label_ingredients"
+                android:id="@+id/fragment_recipe_form_label_ingredients"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 style="@style/Subheader"
                 android:text="@string/title_ingredients" />
 
         <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/fragment_recipe_add_ingredient_list"
+                android:id="@+id/fragment_recipe_form_ingredient_list"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:scrollbars="vertical"
@@ -55,7 +68,7 @@
                 tools:itemCount="2"/>
 
         <ImageButton
-                android:id="@+id/fragment_recipe_add_add_ingredient"
+                android:id="@+id/fragment_recipe_form_add_ingredient"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="8dp"
@@ -64,14 +77,14 @@
                 android:contentDescription="@string/action_add"/>
 
         <TextView
-                android:id="@+id/fragment_recipe_add_label_products"
+                android:id="@+id/fragment_recipe_form_label_products"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 style="@style/Subheader"
                 android:text="@string/title_products"/>
 
         <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/fragment_recipe_add_product_list"
+                android:id="@+id/fragment_recipe_form_product_list"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:scrollbars="vertical"
@@ -79,16 +92,12 @@
                 tools:itemCount="1"/>
 
         <ImageButton
-                android:id="@+id/fragment_recipe_add_add_product"
+                android:id="@+id/fragment_recipe_form_add_product"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="8dp"
                 android:background="?android:selectableItemBackground"
                 android:src="@drawable/baseline_add_black_24"
                 android:contentDescription="@string/action_add"/>
-
-        <include
-                layout="@layout/text_field_conflict"
-                android:id="@+id/fragment_recipe_form_instructions"/>
     </LinearLayout>
-</ScrollView>
+</androidx.core.widget.NestedScrollView>

@@ -19,24 +19,36 @@
  *
  */
 
-package de.njsm.stocks.client.fragment.recipeadd;
+package de.njsm.stocks.client.database;
 
-import android.view.View;
+import de.njsm.stocks.client.business.RecipeAddRepository;
+import de.njsm.stocks.client.business.ScaledUnitRepository;
 import de.njsm.stocks.client.business.entities.FoodForSelection;
 import de.njsm.stocks.client.business.entities.ScaledUnitForSelection;
+import io.reactivex.rxjava3.core.Observable;
 
+import javax.inject.Inject;
 import java.util.List;
 
-public class RecipeFoodView {
-    public RecipeFoodView(View v) {
+class RecipeAddRepositoryImpl implements RecipeAddRepository {
 
+    private final FoodDao foodDao;
+
+    private final ScaledUnitRepository scaledUnitRepository;
+
+    @Inject
+    RecipeAddRepositoryImpl(FoodDao foodDao, ScaledUnitRepository scaledUnitRepository) {
+        this.foodDao = foodDao;
+        this.scaledUnitRepository = scaledUnitRepository;
     }
 
-    public void setFood(List<FoodForSelection> availableFood) {
-
+    @Override
+    public Observable<List<FoodForSelection>> getFood() {
+        return foodDao.getForSelection();
     }
 
-    public void setUnits(List<ScaledUnitForSelection> availableUnits) {
-
+    @Override
+    public Observable<List<ScaledUnitForSelection>> getUnits() {
+        return scaledUnitRepository.getScaledUnitsForSelection();
     }
 }

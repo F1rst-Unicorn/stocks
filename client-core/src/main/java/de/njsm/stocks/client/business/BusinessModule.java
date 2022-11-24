@@ -171,4 +171,7 @@ public interface BusinessModule {
 
     @Binds
     EntityDeleter<User> UserDeleter(UserDeleterImpl impl);
+
+    @Binds
+    RecipeAddInteractor RecipeAddInteractor(RecipeAddInteractorImpl impl);
 }

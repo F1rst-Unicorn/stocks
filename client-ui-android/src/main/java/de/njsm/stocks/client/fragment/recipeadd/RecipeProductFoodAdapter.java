@@ -21,16 +21,15 @@
 
 package de.njsm.stocks.client.fragment.recipeadd;
 
-import android.content.Context;
 import androidx.annotation.NonNull;
 import de.njsm.stocks.client.business.entities.*;
 
-import static de.njsm.stocks.client.business.ListSearcher.findFirstBy;
+import static de.njsm.stocks.client.business.ListSearcher.findFirst;
 
 public class RecipeProductFoodAdapter extends RecipeFoodAdapter<RecipeProductToAdd> {
 
-    public RecipeProductFoodAdapter(Context context, RecipeAddData data) {
-        super(context, data);
+    public RecipeProductFoodAdapter(RecipeAddData data) {
+        super(data);
     }
 
     public void add() {
@@ -44,8 +43,8 @@ public class RecipeProductFoodAdapter extends RecipeFoodAdapter<RecipeProductToA
     public void onBindViewHolder(@NonNull RecipeFoodViewHolder holder, int position) {
         RecipeProductToAdd data = list.get(position);
         holder.setAmount(data.amount());
-        holder.setFood(foodAdapter, findFirstBy(list, data.product(), RecipeProductToAdd::product));
-        holder.setUnit(unitAdapter, findFirstBy(list, data.unit(), RecipeProductToAdd::unit));
+        holder.setSelectedFood(findFirst(this.data.availableFood(), data.product()));
+        holder.setSelectedUnit(findFirst(this.data.availableUnits(), data.unit()));
         holder.setCallback(this::onItemEdit);
     }
 

@@ -212,4 +212,7 @@ public interface DatabaseModule {
 
     @Binds
     EntityDeleteRepository<User> UserDeleteRepository(UserListRepositoryImpl impl);
+
+    @Binds
+    RecipeAddRepository RecipeAddRepository(RecipeAddRepositoryImpl impl);
 }

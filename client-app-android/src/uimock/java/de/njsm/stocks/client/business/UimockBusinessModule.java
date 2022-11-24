@@ -75,7 +75,7 @@ public interface UimockBusinessModule {
 
     @Provides
     static SchedulerStatusReporter schedulerStatusReporter() {
-        return () -> Observable.just(1);
+        return () -> Observable.just(0);
     }
 
     @Binds
@@ -86,7 +86,7 @@ public interface UimockBusinessModule {
 
     @Provides
     static ErrorStatusReporter errorStatusReporter() {
-        return () -> Observable.just(1);
+        return () -> Observable.just(0);
     }
 
     @Binds
@@ -185,4 +185,7 @@ public interface UimockBusinessModule {
 
     @Binds
     EntityDeleter<User> InMemoryUserDeleterImpl(InMemoryUserDeleterImpl impl);
+
+    @Binds
+    RecipeAddInteractor InMemoryRecipeAddInteractorImpl(InMemoryRecipeAddInteractorImpl impl);
 }

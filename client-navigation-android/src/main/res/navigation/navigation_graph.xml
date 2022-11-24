@@ -401,7 +401,8 @@
     </fragment>
     <fragment
             android:id="@+id/nav_fragment_recipe_add"
-            android:name="androidx.fragment.app.Fragment">
+            android:name="de.njsm.stocks.client.fragment.recipeadd.RecipeAddFragment"
+            android:label="@string/title_add_recipe">
     </fragment>
     <fragment
             android:id="@+id/nav_fragment_recipe"

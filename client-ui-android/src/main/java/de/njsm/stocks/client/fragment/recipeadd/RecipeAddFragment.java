@@ -29,6 +29,7 @@ import androidx.annotation.Nullable;
 import androidx.lifecycle.ViewModelProvider;
 import de.njsm.stocks.client.business.entities.RecipeAddForm;
 import de.njsm.stocks.client.fragment.BottomToolbarFragment;
+import de.njsm.stocks.client.navigation.Navigator;
 import de.njsm.stocks.client.presenter.RecipeAddViewModel;
 import de.njsm.stocks.client.ui.R;
 
@@ -42,6 +43,8 @@ public class RecipeAddFragment extends BottomToolbarFragment {
 
     private RecipeProductFoodAdapter productAdapter;
 
+    private Navigator navigator;
+
     private RecipeForm form;
 
     @Override
@@ -50,17 +53,17 @@ public class RecipeAddFragment extends BottomToolbarFragment {
         View root = super.onCreateView(inflater, container, savedInstanceState);
 
         View view = insertContent(inflater, root, R.layout.fragment_recipe_form);
-        form = new RecipeForm(view);
+        form = new RecipeForm(view, this::getString);
 
         viewModel.get().observe(getViewLifecycleOwner(), data -> {
             if (data.availableFood().isEmpty() || data.availableUnits().isEmpty())
                 return;
 
-            ingredientAdapter = new RecipeIngredientFoodAdapter(requireContext(), data);
-            productAdapter = new RecipeProductFoodAdapter(requireContext(), data);
+            ingredientAdapter = new RecipeIngredientFoodAdapter(data);
+            productAdapter = new RecipeProductFoodAdapter(data);
 
-            form.setIngredients(ingredientAdapter);
-            form.setProducts(productAdapter);
+            form.setIngredients(ingredientAdapter, ingredientAdapter::delete);
+            form.setProducts(productAdapter, productAdapter::delete);
             form.setOnAddIngredient(ingredientAdapter::add);
             form.setOnAddProduct(productAdapter::add);
         });
@@ -89,6 +92,7 @@ public class RecipeAddFragment extends BottomToolbarFragment {
                 productAdapter.get()
         );
         viewModel.add(data);
+        navigator.back();
         return true;
     }
 
@@ -98,5 +102,10 @@ public class RecipeAddFragment extends BottomToolbarFragment {
         super.setViewModelFactory(viewModelFactory);
         ViewModelProvider viewModelProvider = new ViewModelProvider(this, viewModelFactory);
         viewModel = viewModelProvider.get(RecipeAddViewModel.class);
+    }
+
+    @Inject
+    void setNavigator(Navigator navigator) {
+        this.navigator = navigator;
     }
 }

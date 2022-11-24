@@ -27,7 +27,7 @@ import java.time.Duration;
 import java.util.List;
 
 @AutoValue
-public abstract class RecipeAddForm {
+public abstract class RecipeAddForm implements ErrorDetails {
 
     public abstract String name();
 
@@ -41,5 +41,10 @@ public abstract class RecipeAddForm {
 
     public static RecipeAddForm create(String name, String instructions, Duration duration, List<RecipeIngredientToAdd> ingredients, List<RecipeProductToAdd> products) {
         return new AutoValue_RecipeAddForm(name, instructions, duration, ingredients, products);
+    }
+
+    @Override
+    public <I, O> O accept(ErrorDetailsVisitor<I, O> visitor, I input) {
+        return visitor.recipeAddErrorDetails(this, input);
     }
 }

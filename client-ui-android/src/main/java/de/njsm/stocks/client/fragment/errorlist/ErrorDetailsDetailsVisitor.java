@@ -143,4 +143,9 @@ public class ErrorDetailsDetailsVisitor implements ErrorDetailsVisitor<Void, Str
     public String userDeleteErrorDetails(UserDeleteErrorDetails userDeleteErrorDetails, Void input) {
         return userDeleteErrorDetails.name();
     }
+
+    @Override
+    public String recipeAddErrorDetails(RecipeAddForm recipeAddForm, Void input) {
+        return recipeAddForm.name();
+    }
 }

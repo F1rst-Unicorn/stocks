@@ -21,7 +21,6 @@
 
 package de.njsm.stocks.client.fragment.recipeadd;
 
-import android.content.Context;
 import androidx.annotation.NonNull;
 import de.njsm.stocks.client.business.entities.*;
 
@@ -29,8 +28,8 @@ import static de.njsm.stocks.client.business.ListSearcher.findFirstBy;
 
 public class RecipeIngredientFoodAdapter extends RecipeFoodAdapter<RecipeIngredientToAdd> {
 
-    public RecipeIngredientFoodAdapter(Context context, RecipeAddData data) {
-        super(context, data);
+    public RecipeIngredientFoodAdapter(RecipeAddData data) {
+        super(data);
     }
 
     public void add() {
@@ -44,8 +43,8 @@ public class RecipeIngredientFoodAdapter extends RecipeFoodAdapter<RecipeIngredi
     public void onBindViewHolder(@NonNull RecipeFoodViewHolder holder, int position) {
         RecipeIngredientToAdd data = list.get(position);
         holder.setAmount(data.amount());
-        holder.setFood(foodAdapter, findFirstBy(list, data.ingredient(), RecipeIngredientToAdd::ingredient));
-        holder.setUnit(unitAdapter, findFirstBy(list, data.unit(), RecipeIngredientToAdd::unit));
+        holder.setSelectedFood(findFirstBy(this.data.availableFood(), data.ingredient(), f -> f));
+        holder.setSelectedUnit(findFirstBy(this.data.availableUnits(), data.unit(), u -> u));
         holder.setCallback(this::onItemEdit);
     }
 

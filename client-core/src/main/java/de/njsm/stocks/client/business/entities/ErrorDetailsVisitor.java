@@ -67,6 +67,8 @@ public interface ErrorDetailsVisitor<I, O> {
 
     O userDeleteErrorDetails(UserDeleteErrorDetails userDeleteErrorDetails, I input);
 
+    O recipeAddErrorDetails(RecipeAddForm recipeAddForm, I input);
+
     interface Default<I, O> extends ErrorDetailsVisitor<I, O> {
 
         O defaultImpl(ErrorDetails errorDetails, I input);
@@ -169,6 +171,11 @@ public interface ErrorDetailsVisitor<I, O> {
         @Override
         default O userDeleteErrorDetails(UserDeleteErrorDetails userDeleteErrorDetails, I input) {
             return defaultImpl(userDeleteErrorDetails, input);
+        }
+
+        @Override
+        default O recipeAddErrorDetails(RecipeAddForm recipeAddForm, I input) {
+            return defaultImpl(recipeAddForm, input);
         }
     }
 }

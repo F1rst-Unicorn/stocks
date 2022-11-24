@@ -19,24 +19,34 @@
  *
  */
 
-package de.njsm.stocks.client.business.entities;
+package de.njsm.stocks.client.database;
 
-import com.google.auto.value.AutoValue;
+import de.njsm.stocks.client.business.entities.FoodForSelection;
+import org.junit.Before;
+import org.junit.Test;
 
-@AutoValue
-public abstract class RecipeProductToAdd {
+import java.util.List;
 
-    public abstract int amount();
+import static de.njsm.stocks.client.database.util.Util.testList;
 
-    public abstract Id<Food> product();
+public class RecipeRepositoryImplTest extends DbTestCase {
 
-    public abstract Id<ScaledUnit> unit();
+    private RecipeAddRepositoryImpl uut;
 
-    public static RecipeProductToAdd create(int amount, Id<Food> product, Id<ScaledUnit> unit) {
-        return new AutoValue_RecipeProductToAdd(amount, product, unit);
+    @Before
+    public void setUp() {
+        uut = new RecipeAddRepositoryImpl(stocksDatabase.foodDao(), null);
     }
 
-    public static RecipeProductToAdd create(int amount, int product, int unit) {
-        return new AutoValue_RecipeProductToAdd(amount, IdImpl.create(product), IdImpl.create(unit));
+    @Test
+    public void gettingWorks() {
+        var food = standardEntities.foodDbEntity();
+        stocksDatabase.synchronisationDao().writeFood(List.of(food));
+
+        var actual = uut.getFood();
+
+        testList(actual).assertValue(List.of(FoodForSelection.create(
+                food.id(), food.name()
+        )));
     }
 }

@@ -24,41 +24,52 @@ package de.njsm.stocks.client.fragment.recipeadd;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Spinner;
-import android.widget.SpinnerAdapter;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.textfield.TextInputLayout;
+import de.njsm.stocks.client.business.entities.FoodForSelection;
+import de.njsm.stocks.client.business.entities.ScaledUnitForSelection;
+import de.njsm.stocks.client.fragment.view.EntityStringDisplayWrapper;
 import de.njsm.stocks.client.fragment.view.ViewUtility;
+import de.njsm.stocks.client.presenter.UnitAmountRenderStrategy;
 import de.njsm.stocks.client.ui.R;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.List;
+import java.util.function.Function;
+
+import static java.util.stream.Collectors.toList;
 
 public class RecipeFoodViewHolder extends RecyclerView.ViewHolder {
 
     private final TextInputLayout amount;
 
-    private final Spinner unitSpinner;
-
     private final Spinner foodSpinner;
+
+    private final Spinner unitSpinner;
 
     private RecipeFoodDataChanged callback;
 
-    public RecipeFoodViewHolder(@NonNull View itemView) {
+    public RecipeFoodViewHolder(@NonNull View itemView, List<FoodForSelection> availableFood, List<ScaledUnitForSelection> availableUnits) {
         super(itemView);
         amount = itemView.findViewById(R.id.item_recipe_food_amount);
-        unitSpinner = itemView.findViewById(R.id.item_recipe_food_unit);
         foodSpinner = itemView.findViewById(R.id.item_recipe_food_food);
-    }
+        unitSpinner = itemView.findViewById(R.id.item_recipe_food_unit);
 
-    public void setAmount(int amount) {
-        ViewUtility.setText(this.amount, amount);
+        setupAdapter(itemView, availableFood, foodSpinner, FoodForSelection::name);
+        setupAdapter(itemView, availableUnits, unitSpinner, new UnitAmountRenderStrategy()::render);
         ViewUtility.onEditorOf(this.amount, e -> e.addTextChangedListener(new TextWatcher() {
-
             @Override
             public void afterTextChanged(Editable s) {
-                callback.update(RecipeFoodViewHolder.this.getAbsoluteAdapterPosition(),
-                        Integer.parseInt(s.toString()),
-                        foodSpinner.getSelectedItemPosition(),
-                        unitSpinner.getSelectedItemPosition());
+                if (callback != null) {
+                    callback.update(RecipeFoodViewHolder.this.getAbsoluteAdapterPosition(),
+                            getParsedAmount(),
+                            foodSpinner.getSelectedItemPosition(),
+                            unitSpinner.getSelectedItemPosition());
+                }
             }
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
@@ -67,24 +78,50 @@ public class RecipeFoodViewHolder extends RecyclerView.ViewHolder {
         }));
     }
 
-    public void setUnit(SpinnerAdapter availableUnits, int position) {
-        unitSpinner.setAdapter(availableUnits);
-        unitSpinner.setSelection(position);
-        unitSpinner.setOnItemClickListener((parent, view, position1, id) ->
-                callback.update(getAbsoluteAdapterPosition(),
-                        Integer.parseInt(ViewUtility.stringFromForm(amount)),
-                        foodSpinner.getSelectedItemPosition(),
-                        position1));
+    private <T> void setupAdapter(@NotNull View itemView, List<T> data, Spinner spinner, Function<T, String> displayMapper) {
+        ArrayAdapter<EntityStringDisplayWrapper<T>> adapter = new ArrayAdapter<>(itemView.getContext(),
+                android.R.layout.simple_list_item_1, android.R.id.text1);
+        adapter.addAll(data.stream()
+                .map(v -> new EntityStringDisplayWrapper<>(v, displayMapper))
+                .collect(toList()));
+        adapter.notifyDataSetChanged();
+        spinner.setAdapter(adapter);
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if (callback != null) {
+                    callback.update(getAbsoluteAdapterPosition(),
+                            getParsedAmount(),
+                            foodSpinner.getSelectedItemPosition(),
+                            unitSpinner.getSelectedItemPosition());
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                throw new UnsupportedOperationException("not allowed");
+            }
+        });
     }
 
-    public void setFood(SpinnerAdapter availableFood, int position) {
-        foodSpinner.setAdapter(availableFood);
+    private int getParsedAmount() {
+        try {
+            return Integer.parseInt(ViewUtility.stringFromForm(amount));
+        } catch (NumberFormatException e) {
+            return 0;
+        }
+    }
+
+    public void setAmount(int amount) {
+        ViewUtility.setText(this.amount, amount);
+    }
+
+    public void setSelectedUnit(int position) {
+        unitSpinner.setSelection(position);
+    }
+
+    public void setSelectedFood(int position) {
         foodSpinner.setSelection(position);
-        foodSpinner.setOnItemClickListener((parent, view, position1, id) ->
-                callback.update(getAbsoluteAdapterPosition(),
-                        Integer.parseInt(ViewUtility.stringFromForm(amount)),
-                        position1,
-                        unitSpinner.getSelectedItemPosition()));
     }
 
     public void setCallback(RecipeFoodDataChanged callback) {

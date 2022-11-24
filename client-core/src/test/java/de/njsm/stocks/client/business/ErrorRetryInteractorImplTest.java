@@ -31,10 +31,12 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.Period;
 
 import static de.njsm.stocks.client.business.Matchers.equalBy;
+import static java.util.Collections.emptyList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
@@ -102,6 +104,9 @@ public class ErrorRetryInteractorImplTest {
     private EntityDeleter<User> userDeleteInteractor;
 
     @Mock
+    private RecipeAddInteractor recipeAddInteractor;
+
+    @Mock
     private Synchroniser synchroniser;
 
     @Mock
@@ -131,6 +136,7 @@ public class ErrorRetryInteractorImplTest {
                 eanNumberDeleteInteractor,
                 userDeviceDeleteInteractor,
                 userDeleteInteractor,
+                recipeAddInteractor,
                 synchroniser,
                 scheduler,
                 errorRepository);
@@ -443,6 +449,17 @@ public class ErrorRetryInteractorImplTest {
         uut.retryInBackground(input);
 
         verify(userDeleteInteractor).delete(equalBy(expected));
+        verify(errorRepository).deleteError(input);
+    }
+
+    @Test
+    void retryingRecipeAddDispatches() {
+        var recipe = RecipeAddForm.create("Pizza", "just bake", Duration.ofMinutes(3), emptyList(), emptyList());
+        ErrorDescription input = ErrorDescription.create(1, StatusCode.DATABASE_UNREACHABLE, "", "test", recipe);
+
+        uut.retryInBackground(input);
+
+        verify(recipeAddInteractor).add(recipe);
         verify(errorRepository).deleteError(input);
     }
 }

@@ -21,29 +21,24 @@
 
 package de.njsm.stocks.client.database;
 
-import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import com.google.auto.value.AutoValue;
 
 public interface RecipeIngredientFields {
 
     @ColumnInfo(name = "amount")
-    @NonNull
     @AutoValue.CopyAnnotations
     int amount();
 
     @ColumnInfo(name = "ingredient")
-    @NonNull
     @AutoValue.CopyAnnotations
     int ingredient();
 
     @ColumnInfo(name = "unit")
-    @NonNull
     @AutoValue.CopyAnnotations
     int unit();
 
     @ColumnInfo(name = "recipe")
-    @NonNull
     @AutoValue.CopyAnnotations
     int recipe();
 

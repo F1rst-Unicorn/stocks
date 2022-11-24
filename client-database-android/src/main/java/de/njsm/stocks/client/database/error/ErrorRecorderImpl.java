@@ -283,6 +283,37 @@ public class ErrorRecorderImpl implements ErrorRecorder {
         errorDao.insert(ErrorEntity.create(ErrorEntity.Action.DELETE_USER, dataId, exceptionData.exceptionType(), exceptionData.exceptionId()));
     }
 
+    @Override
+    public void recordRecipeAddError(SubsystemException e, RecipeAddForm input) {
+        ExceptionData exceptionData = new ExceptionInserter().visit(e, null);
+        Instant currentFoodTransactionTime = errorDao.getTransactionTimeOf(EntityType.FOOD);
+        Instant currentScaledUnitTransactionTime = errorDao.getTransactionTimeOf(EntityType.SCALED_UNIT);
+        RecipeAddEntity recipe = RecipeAddEntity.create(input.name(), input.instructions(), input.duration());
+        long dataId = errorDao.insert(recipe);
+
+        input.ingredients()
+                .stream()
+                .map(v -> RecipeIngredientAddEntity.create(
+                        v.amount(),
+                        PreservedId.create(v.ingredient().id(), currentFoodTransactionTime),
+                        PreservedId.create(v.unit().id(), currentScaledUnitTransactionTime),
+                        dataId
+                ))
+                .forEach(errorDao::insert);
+
+        input.products()
+                .stream()
+                .map(v -> RecipeProductAddEntity.create(
+                        v.amount(),
+                        PreservedId.create(v.product().id(), currentFoodTransactionTime),
+                        PreservedId.create(v.unit().id(), currentScaledUnitTransactionTime),
+                        dataId
+                ))
+                .forEach(errorDao::insert);
+
+        errorDao.insert(ErrorEntity.create(ErrorEntity.Action.ADD_RECIPE, dataId, exceptionData.exceptionType(), exceptionData.exceptionId()));
+    }
+
     @AutoValue
     abstract static class ExceptionData {
 

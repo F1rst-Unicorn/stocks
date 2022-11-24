@@ -21,16 +21,12 @@
 
 package de.njsm.stocks.client.fragment.recipeadd;
 
-import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-import de.njsm.stocks.client.business.entities.FoodForSelection;
 import de.njsm.stocks.client.business.entities.RecipeAddData;
-import de.njsm.stocks.client.business.entities.ScaledUnitForSelection;
 import de.njsm.stocks.client.ui.R;
 
 import java.util.ArrayList;
@@ -42,19 +38,9 @@ public abstract class RecipeFoodAdapter<T> extends RecyclerView.Adapter<RecipeFo
 
     final List<T> list;
 
-    final ArrayAdapter<FoodForSelection> foodAdapter;
-
-    final ArrayAdapter<ScaledUnitForSelection> unitAdapter;
-
-    public RecipeFoodAdapter(Context context, RecipeAddData data) {
+    public RecipeFoodAdapter(RecipeAddData data) {
         this.data = data;
         this.list = new ArrayList<>();
-        this.unitAdapter = new ArrayAdapter<>(context,
-                android.R.layout.simple_list_item_1, android.R.id.text1);
-        unitAdapter.addAll(data.availableUnits());
-        this.foodAdapter = new ArrayAdapter<>(context,
-                android.R.layout.simple_list_item_1, android.R.id.text1);
-        foodAdapter.addAll(data.availableFood());
     }
 
     @NonNull
@@ -62,11 +48,12 @@ public abstract class RecipeFoodAdapter<T> extends RecyclerView.Adapter<RecipeFo
     public RecipeFoodViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.item_recipe_food, parent, false);
-        RecipeFoodView view = new RecipeFoodView(v);
-        view.setFood(data.availableFood());
-        view.setUnits(data.availableUnits());
-        v.setTag(view);
-        return new RecipeFoodViewHolder(v);
+        return new RecipeFoodViewHolder(v, data.availableFood(), data.availableUnits());
+    }
+
+    public void delete(int listItemPosition) {
+        list.remove(listItemPosition);
+        notifyItemRemoved(listItemPosition);
     }
 
     public List<T> get() {

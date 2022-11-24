@@ -709,4 +709,52 @@ public abstract class ErrorDao {
     @Query("delete from user_to_delete " +
             "where id = :id")
     abstract void deleteUserDelete(Long id);
+
+    @Query("select * " +
+            "from recipe_to_add")
+    abstract List<RecipeAddEntity> getRecipeAdds();
+
+    @Query("select * " +
+            "from recipe_ingredient_to_add")
+    abstract List<RecipeIngredientAddEntity> getRecipeIngredientAdds();
+
+    @Query("select * " +
+            "from recipe_product_to_add")
+    abstract List<RecipeProductAddEntity> getRecipeProductAdds();
+
+    @Insert
+    abstract long insert(RecipeAddEntity recipe);
+
+    @Insert
+    abstract long insert(RecipeIngredientAddEntity ingredient);
+
+    @Insert
+    abstract long insert(RecipeProductAddEntity product);
+
+    @Query("select * " +
+            "from recipe_to_add " +
+            "where id = :id")
+    abstract RecipeAddEntity getRecipeAdd(long id);
+
+    @Query("select * " +
+            "from recipe_ingredient_to_add " +
+            "where recipe_to_add = :recipeToAdd")
+    abstract List<RecipeIngredientAddEntity> getRecipeIngredientAdd(long recipeToAdd);
+
+    @Query("select * " +
+            "from recipe_product_to_add " +
+            "where recipe_to_add = :recipeToAdd")
+    abstract List<RecipeProductAddEntity> getRecipeProductAdd(long recipeToAdd);
+
+    @Query("delete from recipe_to_add " +
+            "where id = :recipeToAdd")
+    abstract void deleteRecipeAdd(long recipeToAdd);
+
+    @Query("delete from recipe_ingredient_to_add " +
+            "where recipe_to_add = :recipeToAdd")
+    abstract void deleteRecipeIngredientAdd(long recipeToAdd);
+
+    @Query("delete from recipe_product_to_add " +
+            "where recipe_to_add = :recipeToAdd")
+    abstract void deleteRecipeProductAdd(long recipeToAdd);
 }

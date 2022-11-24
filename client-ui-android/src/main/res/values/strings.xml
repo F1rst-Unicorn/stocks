@@ -133,6 +133,7 @@
     <string name="hint_expiration_offset">Default expiration (days)</string>
     <string name="hint_description">Description</string>
     <string name="hint_duration">Duration (min)</string>
+    <string name="hint_instructions">Instructions</string>
     <string name="hint_amount">Amount</string>
     <string name="hint_no_locations">No locations.\nCreate one using the + button.</string>
     <string name="hint_no_units">No Units of Measure.\nCreate one using the + button.</string>
@@ -315,6 +316,7 @@
     <string name="error_details_user_device_format">%1$s\'s %2$s</string>
     <string name="error_details_user_device_delete_error_list">Delete Device</string>
     <string name="error_details_user_delete_error_list">Delete User</string>
+    <string name="error_details_recipe_add_error_list">Add Recipe</string>
 
     <string name="text_no_errors">Everything is fine.</string>
 

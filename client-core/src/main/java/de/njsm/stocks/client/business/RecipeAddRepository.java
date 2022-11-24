@@ -19,24 +19,17 @@
  *
  */
 
-package de.njsm.stocks.client.business.entities;
+package de.njsm.stocks.client.business;
 
-import com.google.auto.value.AutoValue;
+import de.njsm.stocks.client.business.entities.FoodForSelection;
+import de.njsm.stocks.client.business.entities.ScaledUnitForSelection;
+import io.reactivex.rxjava3.core.Observable;
 
-@AutoValue
-public abstract class RecipeProductToAdd {
+import java.util.List;
 
-    public abstract int amount();
+public interface RecipeAddRepository {
 
-    public abstract Id<Food> product();
+    Observable<List<FoodForSelection>> getFood();
 
-    public abstract Id<ScaledUnit> unit();
-
-    public static RecipeProductToAdd create(int amount, Id<Food> product, Id<ScaledUnit> unit) {
-        return new AutoValue_RecipeProductToAdd(amount, product, unit);
-    }
-
-    public static RecipeProductToAdd create(int amount, int product, int unit) {
-        return new AutoValue_RecipeProductToAdd(amount, IdImpl.create(product), IdImpl.create(unit));
-    }
+    Observable<List<ScaledUnitForSelection>> getUnits();
 }

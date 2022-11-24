@@ -125,4 +125,9 @@ public class ErrorDetailsHeadlineVisitor implements ErrorDetailsVisitor<Void, In
     public Integer userDeleteErrorDetails(UserDeleteErrorDetails userDeleteErrorDetails, Void input) {
         return R.string.error_details_user_delete_error_list;
     }
+
+    @Override
+    public Integer recipeAddErrorDetails(RecipeAddForm recipeAddForm, Void input) {
+        return R.string.error_details_recipe_add_error_list;
+    }
 }

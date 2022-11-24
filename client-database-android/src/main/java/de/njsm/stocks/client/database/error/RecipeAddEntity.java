@@ -19,24 +19,26 @@
  *
  */
 
-package de.njsm.stocks.client.business.entities;
+package de.njsm.stocks.client.database.error;
 
+import androidx.room.Entity;
+import androidx.room.Ignore;
 import com.google.auto.value.AutoValue;
+import de.njsm.stocks.client.database.IdFields;
+import de.njsm.stocks.client.database.RecipeFields;
+
+import java.time.Duration;
 
 @AutoValue
-public abstract class RecipeProductToAdd {
+@Entity(tableName = "recipe_to_add")
+public abstract class RecipeAddEntity implements IdFields, RecipeFields {
 
-    public abstract int amount();
-
-    public abstract Id<Food> product();
-
-    public abstract Id<ScaledUnit> unit();
-
-    public static RecipeProductToAdd create(int amount, Id<Food> product, Id<ScaledUnit> unit) {
-        return new AutoValue_RecipeProductToAdd(amount, product, unit);
+    public static RecipeAddEntity create(int id, String name, String instructions, Duration duration) {
+        return new AutoValue_RecipeAddEntity(id, name, instructions, duration);
     }
 
-    public static RecipeProductToAdd create(int amount, int product, int unit) {
-        return new AutoValue_RecipeProductToAdd(amount, IdImpl.create(product), IdImpl.create(unit));
+    @Ignore
+    public static RecipeAddEntity create(String name, String instructions, Duration duration) {
+        return new AutoValue_RecipeAddEntity(0, name, instructions, duration);
     }
 }
