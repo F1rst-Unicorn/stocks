@@ -21,9 +21,16 @@
 
 package de.njsm.stocks.client.business;
 
-import de.njsm.stocks.client.business.entities.RegistrationForm;
+import de.njsm.stocks.client.business.entities.Settings;
+import io.reactivex.rxjava3.core.Observable;
 
-public interface SettingsWriter {
+public interface SettingsInteractor {
+
+    Observable<Settings> getData();
+
+    void clearSearchHistory();
+
+    void performFullSync();
 
     void updateServerName(String v);
 
@@ -32,6 +39,4 @@ public interface SettingsWriter {
     void updateRegistrationPort(int port);
 
     void updateServerPort(int port);
-
-    void store(RegistrationForm form);
 }

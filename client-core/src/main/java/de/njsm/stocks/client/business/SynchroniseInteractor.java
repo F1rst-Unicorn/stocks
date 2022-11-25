@@ -24,4 +24,6 @@ package de.njsm.stocks.client.business;
 public interface SynchroniseInteractor {
 
     void synchronise();
+
+    void synchroniseFull();
 }

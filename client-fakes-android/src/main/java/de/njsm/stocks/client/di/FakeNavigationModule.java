@@ -230,4 +230,10 @@ class FakeNavigationModule {
     EanNumberListNavigator EanNumberListNavigator() {
         return mock(EanNumberListNavigator.class);
     }
+
+    @Provides
+    @Singleton
+    SettingsNavigator SettingsNavigator() {
+        return mock(SettingsNavigator.class);
+    }
 }

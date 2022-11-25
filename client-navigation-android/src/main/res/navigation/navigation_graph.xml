@@ -418,6 +418,10 @@
                 android:name="foodId"
                 app:argType="integer"/>
     </fragment>
+    <fragment
+            android:id="@+id/nav_fragment_settings"
+            android:name="de.njsm.stocks.client.fragment.settings.SettingsFragment">
+    </fragment>
     <action
             android:id="@+id/action_global_nav_fragment_error_list"
             app:destination="@id/nav_fragment_error_list" />
@@ -433,4 +437,7 @@
     <action
             android:id="@+id/action_global_nav_fragment_recipes"
             app:destination="@id/nav_fragment_recipe_list" />
+    <action
+            android:id="@+id/action_global_nav_fragment_settings"
+            app:destination="@id/nav_fragment_settings" />
 </navigation>

@@ -19,19 +19,22 @@
  *
  */
 
-package de.njsm.stocks.client.business;
+package de.njsm.stocks.client.business.entities;
 
-import de.njsm.stocks.client.business.entities.RegistrationForm;
+import com.google.auto.value.AutoValue;
 
-public interface SettingsWriter {
+@AutoValue
+public abstract class Settings {
 
-    void updateServerName(String v);
+    public abstract String serverName();
 
-    void updateCaPort(int port);
+    public abstract int caPort();
 
-    void updateRegistrationPort(int port);
+    public abstract int registrationPort();
 
-    void updateServerPort(int port);
+    public abstract int serverPort();
 
-    void store(RegistrationForm form);
+    public static Settings create(String serverName, int caPort, int registrationPort, int serverPort) {
+        return new AutoValue_Settings(serverName, caPort, registrationPort, serverPort);
+    }
 }

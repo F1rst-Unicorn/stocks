@@ -26,4 +26,6 @@ public interface Synchroniser {
     void synchronise();
 
     void synchroniseAfterError(SubsystemException e);
+
+    void synchroniseFull();
 }

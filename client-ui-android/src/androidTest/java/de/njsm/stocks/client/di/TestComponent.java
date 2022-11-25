@@ -53,6 +53,7 @@ import de.njsm.stocks.client.fragment.scaledunitadd.ScaledUnitAddFragmentTest;
 import de.njsm.stocks.client.fragment.scaledunitconflict.ScaledUnitConflictFragmentTest;
 import de.njsm.stocks.client.fragment.scaledunitedit.ScaledUnitEditFragmentTest;
 import de.njsm.stocks.client.fragment.scaledunitlist.ScaledUnitListFragmentTest;
+import de.njsm.stocks.client.fragment.settings.SettingsFragmentTest;
 import de.njsm.stocks.client.fragment.setupform.SetupFormFragmentTest;
 import de.njsm.stocks.client.fragment.setupgreet.SetupGreetingFragmentTest;
 import de.njsm.stocks.client.fragment.unitadd.UnitAddFragmentTest;
@@ -147,6 +148,8 @@ public interface TestComponent {
     void inject(EanNumberListFragmentTest test);
 
     void inject(RecipeAddFragmentTest test);
+
+    void inject(SettingsFragmentTest test);
 
     @Component.Builder
     interface Builder {

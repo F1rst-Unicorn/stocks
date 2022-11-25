@@ -19,19 +19,19 @@
  *
  */
 
-package de.njsm.stocks.client.business;
+package de.njsm.stocks.client.navigation;
 
-import de.njsm.stocks.client.business.entities.RegistrationForm;
+import javax.inject.Inject;
 
-public interface SettingsWriter {
+class SettingsNavigatorImpl extends BaseNavigator implements SettingsNavigator {
 
-    void updateServerName(String v);
+    @Inject
+    SettingsNavigatorImpl(NavigationArgConsumer navigationArgConsumer) {
+        super(navigationArgConsumer);
+    }
 
-    void updateCaPort(int port);
-
-    void updateRegistrationPort(int port);
-
-    void updateServerPort(int port);
-
-    void store(RegistrationForm form);
+    @Override
+    public void showCrashLogs() {
+        throw new UnsupportedOperationException("TODO");
+    }
 }

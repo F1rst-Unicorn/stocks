@@ -31,6 +31,7 @@ import java.time.Instant;
 import java.util.List;
 import java.util.Map;
 
+import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.reducing;
 
@@ -54,6 +55,17 @@ class SynchroniseInteractorImpl implements SynchroniseInteractor {
     @Override
     public void synchronise() {
         try {
+            trySynchronisationFallibly();
+        } catch (SubsystemException e) {
+            LOG.warn("failed to synchronise", e);
+            errorRecorder.recordSynchronisationError(e);
+        }
+    }
+
+    @Override
+    public void synchroniseFull() {
+        try {
+            synchronisationRepository.writeUpdates(emptyList());
             trySynchronisationFallibly();
         } catch (SubsystemException e) {
             LOG.warn("failed to synchronise", e);

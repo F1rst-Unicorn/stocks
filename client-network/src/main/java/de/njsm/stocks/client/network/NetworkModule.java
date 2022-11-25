@@ -114,9 +114,12 @@ public interface NetworkModule {
     @Binds
     RecipeAddService RecipeAddService(RecipeAddServiceImpl impl);
 
+    @Binds
+    NetworkConnectionUpdater NetworkConnectionUpdater(NetworkConnectionUpdaterImpl impl);
+
     @Provides
     @Singleton
-    static ServerApi serverApi(ServerEndpoint serverEndpoint) {
+    static ServerApi serverApi(ServerEndpoint serverEndpoint, HostnameInterceptor interceptor) {
         String url = String.format(Locale.US, "https://%s:%d/", serverEndpoint.hostname(), serverEndpoint.port());
 
         ObjectMapper objectMapper = new ObjectMapper();
@@ -124,13 +127,17 @@ public interface NetworkModule {
 
         return new Retrofit.Builder()
                 .baseUrl(url)
-                .client(getClient(serverEndpoint.trustManagerFactory(), serverEndpoint.keyManagerFactory()))
+                .client(getClient(serverEndpoint.trustManagerFactory(), serverEndpoint.keyManagerFactory(), interceptor))
                 .addConverterFactory(JacksonConverterFactory.create(objectMapper))
                 .build()
                 .create(ServerApi.class);
     }
 
     static OkHttpClient getClient(TrustManagerFactory trustManagerFactory, KeyManagerFactory keyManagerFactory) {
+        return getClient(trustManagerFactory, keyManagerFactory, new HostnameInterceptor());
+    }
+
+    static OkHttpClient getClient(TrustManagerFactory trustManagerFactory, KeyManagerFactory keyManagerFactory, HostnameInterceptor interceptor) {
         try {
             SSLContext context = SSLContext.getInstance("TLSv1.2");
             context.init(keyManagerFactory.getKeyManagers(),
@@ -140,6 +147,7 @@ public interface NetworkModule {
             return new OkHttpClient.Builder()
                     .sslSocketFactory(context.getSocketFactory(), (X509TrustManager) trustManagerFactory.getTrustManagers()[0])
                     .hostnameVerifier((s, sslSession) -> true)
+                    .addInterceptor(interceptor)
                     .build();
         } catch (NoSuchAlgorithmException | KeyManagementException e) {
             throw new NetworkException("setting up http client", e);

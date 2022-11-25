@@ -37,9 +37,9 @@ public abstract class SynchronisationDao {
     public abstract void insert(List<UpdateDbEntity> updates);
 
     @Transaction
-    void writeUpdates(List<UpdateDbEntity> locations) {
+    void writeUpdates(List<UpdateDbEntity> updates) {
         delete();
-        insert(locations);
+        insert(updates);
     }
 
     @Query("delete from updates")

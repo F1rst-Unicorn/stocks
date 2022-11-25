@@ -21,17 +21,54 @@
 
 package de.njsm.stocks.client.business;
 
-import de.njsm.stocks.client.business.entities.RegistrationForm;
+import de.njsm.stocks.client.business.entities.Settings;
+import io.reactivex.rxjava3.core.Observable;
 
-public interface SettingsWriter {
+import javax.inject.Inject;
 
-    void updateServerName(String v);
+class InMemorySettingsInteractorImpl implements SettingsInteractor {
 
-    void updateCaPort(int port);
+    @Inject
+    InMemorySettingsInteractorImpl() {
+    }
 
-    void updateRegistrationPort(int port);
+    @Override
+    public Observable<Settings> getData() {
+        return Observable.just(Settings.create(
+                "test.example",
+                123,
+                124,
+                125
+        ));
+    }
 
-    void updateServerPort(int port);
+    @Override
+    public void clearSearchHistory() {
 
-    void store(RegistrationForm form);
+    }
+
+    @Override
+    public void performFullSync() {
+
+    }
+
+    @Override
+    public void updateServerName(String v) {
+
+    }
+
+    @Override
+    public void updateCaPort(int port) {
+
+    }
+
+    @Override
+    public void updateRegistrationPort(int port) {
+
+    }
+
+    @Override
+    public void updateServerPort(int port) {
+
+    }
 }

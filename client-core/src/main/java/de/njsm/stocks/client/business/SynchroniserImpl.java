@@ -48,6 +48,11 @@ class SynchroniserImpl implements Synchroniser {
         new AfterErrorSynchroniser().visit(e, null);
     }
 
+    @Override
+    public void synchroniseFull() {
+        scheduler.schedule(Job.create(Job.Type.SYNCHRONISATION, synchroniseInteractor::synchroniseFull));
+    }
+
     private final class AfterErrorSynchroniser implements SubsystemException.Visitor<Void, Void> {
 
         @Override

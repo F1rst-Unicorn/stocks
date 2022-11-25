@@ -50,6 +50,34 @@ class SettingsImpl implements Settings, SettingsWriter, SetupStatusChecker {
     }
 
     @Override
+    public void updateServerName(String v) {
+        sharedPreferences.edit()
+                .putString(SERVER_NAME_KEY, v)
+                .commit();
+    }
+
+    @Override
+    public void updateCaPort(int port) {
+        sharedPreferences.edit()
+                .putInt(CA_PORT_KEY, port)
+                .commit();
+    }
+
+    @Override
+    public void updateRegistrationPort(int port) {
+        sharedPreferences.edit()
+                .putInt(REGISTRATION_PORT_KEY, port)
+                .commit();
+    }
+
+    @Override
+    public void updateServerPort(int port) {
+        sharedPreferences.edit()
+                .putInt(SERVER_PORT_KEY, port)
+                .commit();
+    }
+
+    @Override
     public void store(RegistrationForm form) {
         sharedPreferences.edit()
                 .putString(SERVER_NAME_KEY, form.serverName())
@@ -62,7 +90,7 @@ class SettingsImpl implements Settings, SettingsWriter, SetupStatusChecker {
                 .putString(USER_DEVICE_NAME_KEY, form.userDeviceName())
                 .putString(FINGERPRINT_KEY, form.fingerprint())
                 .putString(TICKET_KEY, form.ticket())
-                .apply();
+                .commit();
     }
 
     @Override

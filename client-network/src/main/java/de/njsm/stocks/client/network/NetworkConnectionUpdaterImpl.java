@@ -19,19 +19,28 @@
  *
  */
 
-package de.njsm.stocks.client.business;
+package de.njsm.stocks.client.network;
 
-import de.njsm.stocks.client.business.entities.RegistrationForm;
+import de.njsm.stocks.client.business.NetworkConnectionUpdater;
 
-public interface SettingsWriter {
+import javax.inject.Inject;
 
-    void updateServerName(String v);
+class NetworkConnectionUpdaterImpl implements NetworkConnectionUpdater {
 
-    void updateCaPort(int port);
+    private final HostnameInterceptor hostnameInterceptor;
 
-    void updateRegistrationPort(int port);
+    @Inject
+    NetworkConnectionUpdaterImpl(HostnameInterceptor hostnameInterceptor) {
+        this.hostnameInterceptor = hostnameInterceptor;
+    }
 
-    void updateServerPort(int port);
+    @Override
+    public void updateServerName(String serverName) {
+        hostnameInterceptor.setHost(serverName);
+    }
 
-    void store(RegistrationForm form);
+    @Override
+    public void updateServerPort(int port) {
+        hostnameInterceptor.setPort(port);
+    }
 }

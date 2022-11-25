@@ -174,4 +174,7 @@ public interface BusinessModule {
 
     @Binds
     RecipeAddInteractor RecipeAddInteractor(RecipeAddInteractorImpl impl);
+
+    @Binds
+    SettingsInteractor SettingsInteractor(SettingsInteractorImpl impl);
 }

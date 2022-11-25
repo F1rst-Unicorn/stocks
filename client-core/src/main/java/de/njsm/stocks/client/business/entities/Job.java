@@ -210,10 +210,24 @@ public abstract class Job {
             }
         },
 
+        GET_SETTINGS {
+            @Override
+            public <I, O> O accept(TypeVisitor<I, O> visitor, I input) {
+                return visitor.getSettings(this, input);
+            }
+        },
+
         UNKNOWN {
             @Override
             public <I, O> O accept(TypeVisitor<I, O> visitor, I input) {
                 return visitor.unknown(this, input);
+            }
+        },
+
+        SAVE_SETTINGS {
+            @Override
+            public <I, O> O accept(TypeVisitor<I, O> visitor, I input) {
+                return visitor.saveSettings(this, input);
             }
         };
 
@@ -277,6 +291,10 @@ public abstract class Job {
         O deleteUser(Type type, I input);
 
         O addRecipe(Type type, I input);
+
+        O getSettings(Type type, I input);
+
+        O saveSettings(Type type, I input);
     }
 
     public interface DefaultTypeVisitor<I, O> extends TypeVisitor<I, O> {
@@ -410,6 +428,16 @@ public abstract class Job {
 
         @Override
         default O addRecipe(Type type, I input) {
+            return defaultImpl(type, input);
+        }
+
+        @Override
+        default  O getSettings(Type type, I input) {
+            return defaultImpl(type, input);
+        }
+
+        @Override
+        default  O saveSettings(Type type, I input) {
             return defaultImpl(type, input);
         }
     }

@@ -51,6 +51,11 @@ public interface UimockBusinessModule {
             @Override
             public void synchroniseAfterError(SubsystemException e) {
             }
+
+            @Override
+            public void synchroniseFull() {
+
+            }
         };
     }
 
@@ -188,4 +193,7 @@ public interface UimockBusinessModule {
 
     @Binds
     RecipeAddInteractor InMemoryRecipeAddInteractorImpl(InMemoryRecipeAddInteractorImpl impl);
+
+    @Binds
+    SettingsInteractor InMemorySettingsInteractor(InMemorySettingsInteractorImpl impl);
 }

@@ -382,4 +382,10 @@ public interface FakeBusinessModule {
     static RecipeAddInteractor RecipeAddInteractor() {
         return mock(RecipeAddInteractor.class);
     }
+
+    @Provides
+    @Singleton
+    static SettingsInteractor SettingsInteractor() {
+        return mock(SettingsInteractor.class);
+    }
 }

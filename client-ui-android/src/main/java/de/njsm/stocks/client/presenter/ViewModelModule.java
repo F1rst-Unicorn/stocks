@@ -272,4 +272,11 @@ public class ViewModelModule {
     ViewModel RecipeAddViewModel(RecipeAddInteractor interactor) {
         return new RecipeAddViewModel(interactor);
     }
+
+    @Provides
+    @IntoMap
+    @ViewModelKey(SettingsViewModel.class)
+    ViewModel SettingsViewModel(SettingsInteractor interactor) {
+        return new SettingsViewModel(interactor);
+    }
 }

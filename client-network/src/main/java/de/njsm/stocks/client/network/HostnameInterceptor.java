@@ -26,37 +26,124 @@ import okhttp3.Interceptor;
 import okhttp3.Request;
 import okhttp3.Response;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
 import java.io.IOException;
 
-public class HostnameInterceptor implements Interceptor {
+@Singleton
+class HostnameInterceptor implements Interceptor {
 
-    private String host;
+    private State state;
 
-    private int port;
-
-    public HostnameInterceptor(String host, int port) {
-        this.host = host;
-        this.port = port;
-    }
-
-    public void setHost(String host) {
-        this.host = host;
-    }
-
-    public void setPort(int port) {
-        this.port = port;
+    @Inject
+    HostnameInterceptor() {
+        this.state = new NoInterceptionState();
     }
 
     @Override
     public Response intercept(Chain chain) throws IOException {
         Request request = chain.request();
-        HttpUrl newUrl = request.url().newBuilder()
-            .host(host)
-            .port(port)
-            .build();
         request = request.newBuilder()
-                .url(newUrl)
+                .url(state.intercept(request.url()))
                 .build();
         return chain.proceed(request);
+    }
+
+    public void setHost(String serverName) {
+        state = state.withHostName(serverName);
+    }
+
+    public void setPort(int port) {
+        state = state.withPort(port);
+    }
+
+    private interface State {
+        HttpUrl intercept(HttpUrl url);
+
+        default State withHostName(String hostName) {
+            return new UpdatedHostNameState(hostName);
+        }
+
+        default State withPort(int port) {
+            return new UpdatedPortState(port);
+        }
+    }
+
+    private static class NoInterceptionState implements State {
+        @Override
+        public HttpUrl intercept(HttpUrl url) {
+            return url;
+        }
+    }
+
+    private static class UpdatedHostNameState implements State {
+
+        private final String hostName;
+
+        public UpdatedHostNameState(String hostName) {
+            this.hostName = hostName;
+        }
+
+        @Override
+        public HttpUrl intercept(HttpUrl url) {
+            return url.newBuilder()
+                    .host(hostName)
+                    .build();
+        }
+
+        @Override
+        public State withPort(int port) {
+            return new UpdatedConnectionState(hostName, port);
+        }
+    }
+
+    private static class UpdatedPortState implements State {
+
+        private final int port;
+
+        public UpdatedPortState(int port) {
+            this.port = port;
+        }
+
+        @Override
+        public HttpUrl intercept(HttpUrl url) {
+            return url.newBuilder()
+                    .port(port)
+                    .build();
+        }
+
+        @Override
+        public State withHostName(String hostName) {
+            return new UpdatedConnectionState(hostName, port);
+        }
+    }
+
+    private static class UpdatedConnectionState implements State {
+
+        private final String hostName;
+        private final int port;
+
+        public UpdatedConnectionState(String hostName, int port) {
+            this.hostName = hostName;
+            this.port = port;
+        }
+
+        @Override
+        public HttpUrl intercept(HttpUrl url) {
+            return url.newBuilder()
+                    .host(hostName)
+                    .port(port)
+                    .build();
+        }
+
+        @Override
+        public State withHostName(String hostName) {
+            return new UpdatedConnectionState(hostName, port);
+        }
+
+        @Override
+        public State withPort(int port) {
+            return new UpdatedConnectionState(hostName, port);
+        }
     }
 }

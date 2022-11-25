@@ -19,19 +19,8 @@
  *
  */
 
-package de.njsm.stocks.client.business;
+package de.njsm.stocks.client.navigation;
 
-import de.njsm.stocks.client.business.entities.RegistrationForm;
-
-public interface SettingsWriter {
-
-    void updateServerName(String v);
-
-    void updateCaPort(int port);
-
-    void updateRegistrationPort(int port);
-
-    void updateServerPort(int port);
-
-    void store(RegistrationForm form);
+public interface SettingsNavigator extends Navigator {
+    void showCrashLogs();
 }

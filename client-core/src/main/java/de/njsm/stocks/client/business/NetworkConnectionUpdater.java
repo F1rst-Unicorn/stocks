@@ -21,17 +21,9 @@
 
 package de.njsm.stocks.client.business;
 
-import de.njsm.stocks.client.business.entities.RegistrationForm;
+public interface NetworkConnectionUpdater {
 
-public interface SettingsWriter {
-
-    void updateServerName(String v);
-
-    void updateCaPort(int port);
-
-    void updateRegistrationPort(int port);
+    void updateServerName(String serverName);
 
     void updateServerPort(int port);
-
-    void store(RegistrationForm form);
 }

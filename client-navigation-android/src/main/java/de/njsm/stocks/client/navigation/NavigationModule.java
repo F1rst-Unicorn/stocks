@@ -116,4 +116,7 @@ public interface NavigationModule {
 
     @Binds
     EanNumberListNavigator EanNumberListNavigator(EanNumberListNavigatorImpl impl);
+
+    @Binds
+    SettingsNavigator SettingsNavigator(SettingsNavigatorImpl impl);
 }

@@ -135,6 +135,8 @@ dependencies {
     implementation "com.google.android.material:material:${material_version}"
     implementation "androidx.navigation:navigation-fragment:${navigation_version}"
     implementation "androidx.navigation:navigation-ui:${navigation_version}"
+    //implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.1'
+    implementation("androidx.preference:preference:1.2.0")
     implementation "io.reactivex.rxjava3:rxjava:${rxjava_version}"
     implementation "androidx.lifecycle:lifecycle-reactivestreams:${lifecycle_version}"
     implementation "org.slf4j:slf4j-api:${slf4j_version}"
