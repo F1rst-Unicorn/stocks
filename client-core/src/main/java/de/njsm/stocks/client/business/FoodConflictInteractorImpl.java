@@ -45,7 +45,7 @@ class FoodConflictInteractorImpl implements FoodConflictInteractor {
         Observable<List<ScaledUnitForSelection>> storeUnits = repository.getScaledUnitsForSelection();
         Observable<List<LocationForSelection>> locations = repository.getLocations();
 
-        return Observable.zip(conflictRepository.getFoodEditConflict(errorId),
+        return Observable.combineLatest(conflictRepository.getFoodEditConflict(errorId),
                 locations, storeUnits, FoodEditConflictFormData::create);
     }
 }

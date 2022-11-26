@@ -40,10 +40,10 @@ class FoodItemConflictInteractorImpl implements FoodItemConflictInteractor {
 
     @Override
     public Observable<FoodItemEditConflictFormData> getEditConflict(long errorId) {
-        var locations = repository.getLocations();
-        var units = repository.getScaledUnits();
-
-        return Observable.zip(conflictRepository.getFoodItemEditConflict(errorId),
-                locations, units, FoodItemEditConflictFormData::create);
+        return Observable.combineLatest(
+                conflictRepository.getFoodItemEditConflict(errorId),
+                repository.getLocations(),
+                repository.getScaledUnits(),
+                FoodItemEditConflictFormData::create);
     }
 }

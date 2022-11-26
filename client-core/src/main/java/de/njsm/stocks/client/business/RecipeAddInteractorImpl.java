@@ -56,10 +56,11 @@ class RecipeAddInteractorImpl implements RecipeAddInteractor {
 
     @Override
     public Observable<RecipeAddData> getData() {
-        var food = repository.getFood();
-        var units = repository.getUnits();
-
-        return food.zipWith(units, RecipeAddData::create);
+        return Observable.zip(
+                repository.getFood(),
+                repository.getUnits(),
+                RecipeAddData::create
+        );
     }
 
     @Override

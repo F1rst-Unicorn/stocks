@@ -46,6 +46,6 @@ class ScaledUnitConflictInteractorImpl implements ScaledUnitConflictInteractor {
         Observable<List<UnitForSelection>> units = scaledUnitEditRepository.getUnitsForSelection();
         Observable<ScaledUnitEditConflictData> scaledUnitData = conflictRepository.getScaledUnitEditConflict(errorId);
 
-        return scaledUnitData.zipWith(units, ScaledUnitEditConflictFormData::create);
+        return Observable.combineLatest(scaledUnitData, units, ScaledUnitEditConflictFormData::create);
     }
 }

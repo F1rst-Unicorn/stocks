@@ -44,7 +44,11 @@ class FoodByLocationListInteractorImpl implements FoodByLocationListInteractor {
 
     @Override
     public Observable<List<FoodForListing>> getFoodBy(Id<Location> location) {
-        return repository.getFoodBy(location).zipWith(repository.getFoodAmountsIn(location), foodRegrouper::regroup);
+        return Observable.zip(
+                repository.getFoodBy(location),
+                repository.getFoodAmountsIn(location),
+                foodRegrouper::regroup
+        );
     }
 
     @Override

@@ -44,7 +44,10 @@ class FoodItemListInteractorImpl implements FoodItemListInteractor {
 
     @Override
     public Observable<FoodItemsForListing> get(Id<Food> foodId) {
-        return repository.get(foodId).map(v -> v.stream().map(item -> item.map(localiser)).collect(toList()))
-                .zipWith(repository.getFood(foodId), (items, food) -> FoodItemsForListing.create(items, food.name()));
+        return Observable.combineLatest(
+                repository.get(foodId).map(v -> v.stream().map(item -> item.map(localiser)).collect(toList())),
+                repository.getFood(foodId),
+                (items, food) -> FoodItemsForListing.create(items, food.name())
+        );
     }
 }
