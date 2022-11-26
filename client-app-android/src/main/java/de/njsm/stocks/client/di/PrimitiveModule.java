@@ -60,6 +60,17 @@ public interface PrimitiveModule {
             public InputStream getFileInputStream(File file) throws FileNotFoundException {
                 return a.openFileInput(file.getName());
             }
+
+            @Override
+            public void delete(File file) {
+                a.deleteFile(file.getName());
+            }
+
+            @Override
+            public File[] listCrashLogs() {
+                return a.getFilesDir().listFiles((__, name) ->
+                        name.startsWith("crashlog_") && name.endsWith(".txt"));
+            }
         };
     }
 

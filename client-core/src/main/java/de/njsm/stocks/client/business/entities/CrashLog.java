@@ -19,26 +19,31 @@
  *
  */
 
-package de.njsm.stocks.client.business;
+package de.njsm.stocks.client.business.entities;
 
-import de.njsm.stocks.client.execution.Scheduler;
-import org.junit.jupiter.api.Test;
+import com.google.auto.value.AutoValue;
 
-import static de.njsm.stocks.client.execution.SchedulerImplTest.runJobOnMocked;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
+import java.time.LocalDateTime;
 
-class SynchroniserImplTest {
+@AutoValue
+public abstract class CrashLog {
 
-    @Test
-    void synchronisingSchedulesATask() {
-        Scheduler scheduler = mock(Scheduler.class);
-        SynchroniseInteractor synchroniseInteractor = mock(SynchroniseInteractor.class);
-        Synchroniser uut = new SynchroniserImpl(synchroniseInteractor, scheduler);
+    public abstract String fileName();
 
-        uut.synchronise();
+    public abstract LocalDateTime timeOccurred();
 
-        runJobOnMocked(scheduler);
-        verify(synchroniseInteractor).synchronise();
+    public abstract String exceptionName();
+
+    public abstract String stackTrace();
+
+    public static CrashLog create(String fileName, LocalDateTime timeOccurred, String exceptionName, String stackTrace) {
+        return new AutoValue_CrashLog(fileName, timeOccurred, exceptionName, stackTrace);
+    }
+
+    public String renderedContent() {
+        return String.format("%s\n%s\n%s",
+                exceptionName(),
+                timeOccurred().toString(),
+                stackTrace());
     }
 }

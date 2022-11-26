@@ -19,26 +19,32 @@
  *
  */
 
-package de.njsm.stocks.client.business;
+package de.njsm.stocks.client.fragment.crashlist;
 
-import de.njsm.stocks.client.execution.Scheduler;
-import org.junit.jupiter.api.Test;
+import android.view.View;
+import android.widget.TextView;
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
+import de.njsm.stocks.client.ui.R;
 
-import static de.njsm.stocks.client.execution.SchedulerImplTest.runJobOnMocked;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
+class CrashLogViewHolder extends RecyclerView.ViewHolder {
 
-class SynchroniserImplTest {
+    private final TextView name;
 
-    @Test
-    void synchronisingSchedulesATask() {
-        Scheduler scheduler = mock(Scheduler.class);
-        SynchroniseInteractor synchroniseInteractor = mock(SynchroniseInteractor.class);
-        Synchroniser uut = new SynchroniserImpl(synchroniseInteractor, scheduler);
+    private final TextView date;
 
-        uut.synchronise();
+    CrashLogViewHolder(@NonNull View itemView) {
+        super(itemView);
+        name = itemView.findViewById(R.id.item_crash_log_name);
+        date = itemView.findViewById(R.id.item_crash_log_date);
+        itemView.setTag(this);
+    }
 
-        runJobOnMocked(scheduler);
-        verify(synchroniseInteractor).synchronise();
+    void setName(CharSequence name) {
+        this.name.setText(name);
+    }
+
+    void setDate(CharSequence date) {
+        this.date.setText(date);
     }
 }

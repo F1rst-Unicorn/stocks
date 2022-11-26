@@ -177,4 +177,7 @@ public interface BusinessModule {
 
     @Binds
     SettingsInteractor SettingsInteractor(SettingsInteractorImpl impl);
+
+    @Binds
+    CrashListInteractor CrashListInteractor(CrashListInteractorImpl impl);
 }

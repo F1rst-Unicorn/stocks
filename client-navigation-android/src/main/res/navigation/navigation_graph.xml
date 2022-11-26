@@ -420,7 +420,16 @@
     </fragment>
     <fragment
             android:id="@+id/nav_fragment_settings"
-            android:name="de.njsm.stocks.client.fragment.settings.SettingsFragment">
+            android:name="de.njsm.stocks.client.fragment.settings.SettingsFragment"
+            android:label="@string/title_settings">
+        <action
+            android:id="@+id/action_nav_fragment_settings_to_nav_fragment_crashlogs"
+            app:destination="@id/nav_fragment_crashlogs" />
+    </fragment>
+    <fragment
+            android:id="@+id/nav_fragment_crashlogs"
+            android:name="de.njsm.stocks.client.fragment.crashlist.CrashLogListFragment"
+            android:label="@string/title_crash_logs">
     </fragment>
     <action
             android:id="@+id/action_global_nav_fragment_error_list"

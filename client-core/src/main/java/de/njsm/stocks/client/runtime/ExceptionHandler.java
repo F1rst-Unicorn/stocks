@@ -36,7 +36,7 @@ public class ExceptionHandler implements Thread.UncaughtExceptionHandler {
 
     private static final Logger LOG = LoggerFactory.getLogger(ExceptionHandler.class);
 
-    private static final DateTimeFormatter TECHNICAL_DATE_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS").withZone(ZoneId.of("UTC"));
+    public static final DateTimeFormatter TECHNICAL_DATE_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS").withZone(ZoneId.of("UTC"));
 
     private final Thread.UncaughtExceptionHandler defaultHandler;
 

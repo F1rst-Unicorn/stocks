@@ -279,4 +279,11 @@ public class ViewModelModule {
     ViewModel SettingsViewModel(SettingsInteractor interactor) {
         return new SettingsViewModel(interactor);
     }
+
+    @Provides
+    @IntoMap
+    @ViewModelKey(CrashLogListViewModel.class)
+    ViewModel CrashLogListViewModel(CrashListInteractor interactor) {
+        return new CrashLogListViewModel(interactor);
+    }
 }

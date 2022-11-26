@@ -21,24 +21,14 @@
 
 package de.njsm.stocks.client.business;
 
-import de.njsm.stocks.client.execution.Scheduler;
-import org.junit.jupiter.api.Test;
+import de.njsm.stocks.client.business.entities.CrashLog;
+import io.reactivex.rxjava3.core.Observable;
 
-import static de.njsm.stocks.client.execution.SchedulerImplTest.runJobOnMocked;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
+import java.util.List;
 
-class SynchroniserImplTest {
+public interface CrashListInteractor {
 
-    @Test
-    void synchronisingSchedulesATask() {
-        Scheduler scheduler = mock(Scheduler.class);
-        SynchroniseInteractor synchroniseInteractor = mock(SynchroniseInteractor.class);
-        Synchroniser uut = new SynchroniserImpl(synchroniseInteractor, scheduler);
+    Observable<List<CrashLog>> get();
 
-        uut.synchronise();
-
-        runJobOnMocked(scheduler);
-        verify(synchroniseInteractor).synchronise();
-    }
+    void delete(CrashLog crashLog);
 }

@@ -36,6 +36,7 @@ dependencies {
 
     annotationProcessor "com.google.dagger:dagger-compiler:${dagger_version}"
 
+    testImplementation project(":client-fakes")
     testImplementation "org.junit.jupiter:junit-jupiter:${junit5_version}"
     testImplementation "org.hamcrest:hamcrest:${hamcrest_version}"
     testImplementation "org.mockito:mockito-core:${mockito_version}"

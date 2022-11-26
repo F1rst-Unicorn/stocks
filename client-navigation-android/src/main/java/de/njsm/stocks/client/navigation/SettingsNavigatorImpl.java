@@ -21,6 +21,8 @@
 
 package de.njsm.stocks.client.navigation;
 
+import de.njsm.stocks.client.fragment.settings.SettingsFragmentDirections;
+
 import javax.inject.Inject;
 
 class SettingsNavigatorImpl extends BaseNavigator implements SettingsNavigator {
@@ -32,6 +34,7 @@ class SettingsNavigatorImpl extends BaseNavigator implements SettingsNavigator {
 
     @Override
     public void showCrashLogs() {
-        throw new UnsupportedOperationException("TODO");
+        var direction = SettingsFragmentDirections.actionNavFragmentSettingsToNavFragmentCrashlogs();
+        getNavigationArgConsumer().navigate(direction);
     }
 }

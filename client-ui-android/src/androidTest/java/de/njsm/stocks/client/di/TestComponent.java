@@ -30,6 +30,7 @@ import de.njsm.stocks.client.fragment.BottomToolbarFragmentTest;
 import de.njsm.stocks.client.fragment.FragmentModule;
 import de.njsm.stocks.client.fragment.SwipeDownSupportTest;
 import de.njsm.stocks.client.fragment.allfood.AllFoodFragmentTest;
+import de.njsm.stocks.client.fragment.crashlist.CrashLogListFragmentTest;
 import de.njsm.stocks.client.fragment.eanlist.EanNumberListFragmentTest;
 import de.njsm.stocks.client.fragment.emptyfood.EmptyFoodFragmentTest;
 import de.njsm.stocks.client.fragment.errordetails.ErrorDetailsFragmentTest;
@@ -150,6 +151,8 @@ public interface TestComponent {
     void inject(RecipeAddFragmentTest test);
 
     void inject(SettingsFragmentTest test);
+
+    void inject(CrashLogListFragmentTest test);
 
     @Component.Builder
     interface Builder {

@@ -196,4 +196,7 @@ public interface UimockBusinessModule {
 
     @Binds
     SettingsInteractor InMemorySettingsInteractor(InMemorySettingsInteractorImpl impl);
+
+    @Binds
+    CrashListInteractor InMemoryCrashListInteractor(InMemoryCrashListInteractor impl);
 }

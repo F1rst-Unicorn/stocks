@@ -23,6 +23,7 @@ package de.njsm.stocks.client.fragment;
 import dagger.Module;
 import dagger.android.ContributesAndroidInjector;
 import de.njsm.stocks.client.fragment.allfood.AllFoodFragment;
+import de.njsm.stocks.client.fragment.crashlist.CrashLogListFragment;
 import de.njsm.stocks.client.fragment.eanlist.EanNumberListFragment;
 import de.njsm.stocks.client.fragment.emptyfood.EmptyFoodFragment;
 import de.njsm.stocks.client.fragment.errordetails.ErrorDetailsFragment;
@@ -168,4 +169,7 @@ public abstract class FragmentModule {
 
     @ContributesAndroidInjector
     public abstract SettingsFragment SettingsFragment();
+
+    @ContributesAndroidInjector
+    public abstract CrashLogListFragment CrashLogListFragment();
 }

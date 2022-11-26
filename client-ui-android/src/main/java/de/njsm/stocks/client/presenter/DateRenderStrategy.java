@@ -26,11 +26,13 @@ import de.njsm.stocks.client.business.Localiser;
 
 import javax.inject.Inject;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 public class DateRenderStrategy {
 
     private static final java.time.format.DateTimeFormatter FORMAT = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+    private static final java.time.format.DateTimeFormatter FORMAT_WITH_TIME = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss");
 
     private final Localiser localiser;
 
@@ -41,6 +43,10 @@ public class DateRenderStrategy {
 
     public String render(LocalDate date) {
         return FORMAT.format(date);
+    }
+
+    public String render(LocalDateTime date) {
+        return FORMAT_WITH_TIME.format(date);
     }
 
     public CharSequence renderRelative(LocalDate date) {

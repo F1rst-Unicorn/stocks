@@ -388,4 +388,10 @@ public interface FakeBusinessModule {
     static SettingsInteractor SettingsInteractor() {
         return mock(SettingsInteractor.class);
     }
+
+    @Provides
+    @Singleton
+    static CrashListInteractor CrashListInteractor() {
+        return mock(CrashListInteractor.class);
+    }
 }

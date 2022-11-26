@@ -29,6 +29,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import static de.njsm.stocks.client.execution.SchedulerImplTest.runJobOnMocked;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
@@ -117,9 +118,7 @@ abstract class DeleterImplTest<E extends Entity<E>> {
 
     private void act(Id<E> input) {
         uut.delete(input);
-        ArgumentCaptor<Job> captor = ArgumentCaptor.forClass(Job.class);
-        verify(scheduler).schedule(captor.capture());
-        captor.getValue().runnable().run();
+        runJobOnMocked(scheduler);
     }
 
     private Versionable<E> getNetworkData(int id, int version) {

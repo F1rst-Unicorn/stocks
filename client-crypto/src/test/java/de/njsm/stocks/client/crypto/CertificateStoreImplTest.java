@@ -21,6 +21,7 @@
 
 package de.njsm.stocks.client.crypto;
 
+import de.njsm.stocks.client.business.TestFileInteractor;
 import de.njsm.stocks.client.business.entities.PemFile;
 import org.apache.logging.log4j.core.util.StringBuilderWriter;
 import org.bouncycastle.asn1.x500.X500Name;
@@ -72,7 +73,7 @@ class CertificateStoreImplTest {
     void setup() throws NoSuchAlgorithmException, CertificateException, IOException, OperatorCreationException {
         keyPair = generateKey();
         certificate = selfSignKey(keyPair);
-        uut = new CertificateStoreImpl(new TestFileInteractor());
+        uut = new CertificateStoreImpl(new TestFileInteractor(new File(".")));
         keystore = new File("keystore");
     }
 

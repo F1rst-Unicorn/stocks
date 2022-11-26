@@ -45,8 +45,9 @@ package "server-test" {}
 "common" <-- "server"
 "common" <-- "server-test"
 "client-ui-android" -[#green]-> "client-fakes-android"
-"client-ui-android" <--> "client-fakes-android"
+"client-ui-android" <-- "client-fakes-android"
 "client-fakes" <-[#green]- "client-ui-android"
+"client-fakes" <-[#green]- "client-core"
 
 
 @enduml

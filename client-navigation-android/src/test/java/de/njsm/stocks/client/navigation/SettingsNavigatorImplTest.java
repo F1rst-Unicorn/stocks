@@ -19,26 +19,30 @@
  *
  */
 
-package de.njsm.stocks.client.crypto;
+package de.njsm.stocks.client.navigation;
 
-import de.njsm.stocks.client.runtime.FileInteractor;
+import androidx.navigation.ActionOnlyNavDirections;
+import org.junit.Before;
+import org.junit.Test;
 
-import java.io.*;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
 
-public class TestFileInteractor implements FileInteractor {
+public class SettingsNavigatorImplTest extends NavigationTest {
 
-    @Override
-    public boolean doesFileExist(File file) {
-        return file.exists();
+    private SettingsNavigator uut;
+
+    @Before
+    public void setUp() {
+        uut = new SettingsNavigatorImpl(navigationArgConsumer);
     }
 
-    @Override
-    public OutputStream getFileOutputStream(File file) throws FileNotFoundException {
-        return new BufferedOutputStream(new FileOutputStream(file));
-    }
+    @Test
+    public void showingCrashLogsBinds() {
 
-    @Override
-    public InputStream getFileInputStream(File file) throws FileNotFoundException {
-        return new BufferedInputStream(new FileInputStream(file));
+        uut.showCrashLogs();
+
+        ActionOnlyNavDirections actual = navigationArgConsumer.getLastArgument(ActionOnlyNavDirections.class);
+        assertThat(actual.getActionId(), is(R.id.action_nav_fragment_settings_to_nav_fragment_crashlogs));
     }
 }

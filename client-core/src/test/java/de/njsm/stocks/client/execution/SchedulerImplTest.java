@@ -32,6 +32,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.concurrent.Executor;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.Mockito.*;
@@ -83,5 +84,12 @@ public class SchedulerImplTest {
 
         uut.getNumberOfRunningJobs().test().assertValue(0);
         verify(input.runnable()).run();
+    }
+
+    public static void runJobOnMocked(Scheduler scheduler) {
+        ArgumentCaptor<Job> captor = ArgumentCaptor.forClass(Job.class);
+        verify(scheduler).schedule(captor.capture());
+        assertEquals(1, captor.getAllValues().size(), "this method only supports one captured value");
+        captor.getValue().runnable().run();
     }
 }
