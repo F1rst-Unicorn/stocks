@@ -40,7 +40,7 @@ public class SearchSuggestionsProvider extends ContentProvider {
 
     private static final Logger LOG = LoggerFactory.getLogger(SearchSuggestionsProvider.class);
 
-    private final static String AUTHORITY = "de.njsm.stocks.client.database.contentprovider.SearchSuggestionsProvider";
+    private final static String AUTHORITY = ".client.database.contentprovider.SearchSuggestionsProvider";
 
     private SearchRepositoryImpl repository;
 
@@ -62,8 +62,8 @@ public class SearchSuggestionsProvider extends ContentProvider {
         AndroidInjection.inject(this);
 
         matcher = new UriMatcher(UriMatcher.NO_MATCH);
-        matcher.addURI(AUTHORITY, SearchManager.SUGGEST_URI_PATH_QUERY, 0);
-        matcher.addURI(AUTHORITY, SearchManager.SUGGEST_URI_PATH_QUERY + "/*", 0);
+        matcher.addURI(getContext().getPackageName() + AUTHORITY, SearchManager.SUGGEST_URI_PATH_QUERY, 0);
+        matcher.addURI(getContext().getPackageName() + AUTHORITY, SearchManager.SUGGEST_URI_PATH_QUERY + "/*", 0);
 
         isInitialised = true;
     }
@@ -85,7 +85,7 @@ public class SearchSuggestionsProvider extends ContentProvider {
         if (query == null || query.equals(SearchManager.SUGGEST_URI_PATH_QUERY))
             query = "";
 
-        return repository.search(query);
+        return repository.search(getContext().getPackageName(), query);
     }
 
     @Nullable

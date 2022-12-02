@@ -46,7 +46,7 @@ abstract class SearchDao {
             "f.name as " + SearchManager.SUGGEST_COLUMN_QUERY + ", " +
             "'" + Intent.ACTION_VIEW + "' as " + SearchManager.SUGGEST_COLUMN_INTENT_ACTION + ", " +
             "f.id as " + SearchManager.SUGGEST_COLUMN_INTENT_DATA_ID + ", " +
-            "'" + ContentResolver.SCHEME_ANDROID_RESOURCE + "://de.njsm.stocks/drawable/ic_local_dining_black_24dp' as " + SearchManager.SUGGEST_COLUMN_ICON_1 + ", " +
+            "'" + ContentResolver.SCHEME_ANDROID_RESOURCE + "://' || :applicationId || '/drawable/ic_local_dining_black_24dp' as " + SearchManager.SUGGEST_COLUMN_ICON_1 + ", " +
             "null as " + SearchManager.SUGGEST_COLUMN_ICON_2 + ", ";
     private static final String UNSPECIFIC_SEARCH_COLUMNS =
             "select 0 as " + BaseColumns._ID + ", " +
@@ -54,7 +54,7 @@ abstract class SearchDao {
             "s.term as " + SearchManager.SUGGEST_COLUMN_QUERY + ", " +
             "'" + Intent.ACTION_SEARCH + "' as " + SearchManager.SUGGEST_COLUMN_INTENT_ACTION + ", " +
             "null as " + SearchManager.SUGGEST_COLUMN_ICON_1 + ", " +
-            "'" + ContentResolver.SCHEME_ANDROID_RESOURCE + "://de.njsm.stocks/drawable/ic_menu_recent_history_24dp' as " + SearchManager.SUGGEST_COLUMN_ICON_2 + ", " +
+            "'" + ContentResolver.SCHEME_ANDROID_RESOURCE + "://' || :applicationId || '/drawable/ic_menu_recent_history_24dp' as " + SearchManager.SUGGEST_COLUMN_ICON_2 + ", " +
             "null as " + SearchManager.SUGGEST_COLUMN_INTENT_DATA_ID + ", ";
 
     /**
@@ -135,7 +135,7 @@ abstract class SearchDao {
                 ")" +
         ")) " +
         "order by type, time desc, length(" + SearchManager.SUGGEST_COLUMN_TEXT_1 + ") desc")
-    abstract Cursor search(String query, String contiguousQuery, String subsequenceQuery);
+    abstract Cursor search(String applicationId, String query, String contiguousQuery, String subsequenceQuery);
 
     @Insert(onConflict = REPLACE)
     abstract void store(RecentSearchDbEntity searchSuggestion);

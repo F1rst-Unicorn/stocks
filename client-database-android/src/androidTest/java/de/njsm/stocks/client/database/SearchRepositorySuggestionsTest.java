@@ -256,7 +256,7 @@ public class SearchRepositorySuggestionsTest extends DbTestCase {
     }
 
     private List<Row> search(String query) {
-        Cursor cursor = uut.search(query);
+        Cursor cursor = uut.search("", query);
         return readCursor(cursor);
     }
 

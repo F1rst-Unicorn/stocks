@@ -45,8 +45,8 @@ public class SearchRepositoryImpl implements SearchRepository {
         this.clock = clock;
     }
 
-    public Cursor search(String query) {
-        return searchDao.search(query, buildContiguousQueryString(query), buildSubsequenceQueryString(query));
+    public Cursor search(String applicationId, String query) {
+        return searchDao.search(applicationId, query, buildContiguousQueryString(query), buildSubsequenceQueryString(query));
     }
 
     private String buildContiguousQueryString(String query) {
