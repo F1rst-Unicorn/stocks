@@ -27,7 +27,7 @@ import de.njsm.stocks.client.activity.MainActivity;
 
 import javax.inject.Inject;
 
-public class SetupFormNavigatorImpl implements SetupFormNavigator{
+public class SetupFormNavigatorImpl implements SetupFormNavigator {
 
     private final Context context;
 

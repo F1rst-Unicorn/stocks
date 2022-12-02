@@ -394,4 +394,10 @@ public interface FakeBusinessModule {
     static CrashListInteractor CrashListInteractor() {
         return mock(CrashListInteractor.class);
     }
+
+    @Provides
+    @Singleton
+    static SearchInteractor SearchInteractor() {
+        return mock(SearchInteractor.class);
+    }
 }

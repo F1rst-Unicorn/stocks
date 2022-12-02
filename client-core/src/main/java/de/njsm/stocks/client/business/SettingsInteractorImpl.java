@@ -37,6 +37,8 @@ class SettingsInteractorImpl implements SettingsInteractor {
 
     private final NetworkConnectionUpdater networkConnectionUpdater;
 
+    private final SearchRepository searchRepository;
+
     private final Synchroniser synchroniser;
 
     private final Scheduler scheduler;
@@ -45,11 +47,13 @@ class SettingsInteractorImpl implements SettingsInteractor {
     SettingsInteractorImpl(de.njsm.stocks.client.business.Settings settings,
                            SettingsWriter writer,
                            NetworkConnectionUpdater updater,
+                           SearchRepository searchRepository,
                            Synchroniser synchroniser,
                            Scheduler scheduler) {
         this.settings = settings;
         this.writer = writer;
         this.networkConnectionUpdater = updater;
+        this.searchRepository = searchRepository;
         this.synchroniser = synchroniser;
         this.scheduler = scheduler;
     }
@@ -73,7 +77,7 @@ class SettingsInteractorImpl implements SettingsInteractor {
 
     @Override
     public void clearSearchHistory() {
-        throw new UnsupportedOperationException("TODO");
+        scheduler.schedule(Job.create(Job.Type.SAVE_SETTINGS, searchRepository::deleteSearchHistory));
     }
 
     @Override

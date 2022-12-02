@@ -47,7 +47,7 @@ class FoodByLocationListInteractorImpl implements FoodByLocationListInteractor {
         return Observable.zip(
                 repository.getFoodBy(location),
                 repository.getFoodAmountsIn(location),
-                foodRegrouper::regroup
+                (v, u) -> foodRegrouper.regroup(v, u, FoodForListing::create, FoodForListing::nextEatByDate)
         );
     }
 

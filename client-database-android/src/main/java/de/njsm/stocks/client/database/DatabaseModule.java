@@ -25,8 +25,10 @@ import androidx.room.Room;
 import dagger.Binds;
 import dagger.Module;
 import dagger.Provides;
+import dagger.android.ContributesAndroidInjector;
 import de.njsm.stocks.client.business.*;
 import de.njsm.stocks.client.business.entities.*;
+import de.njsm.stocks.client.database.contentprovider.SearchSuggestionsProvider;
 import de.njsm.stocks.client.database.error.ConflictRepositoryImpl;
 import de.njsm.stocks.client.database.error.ErrorDao;
 import de.njsm.stocks.client.database.error.ErrorRecorderImpl;
@@ -141,6 +143,11 @@ public interface DatabaseModule {
         return database.eanNumberDao();
     }
 
+    @Provides
+    static SearchDao SearchDao(StocksDatabase database) {
+        return database.searchDao();
+    }
+
     @Binds
     ErrorRepository errorRepository(ErrorRepositoryImpl impl);
 
@@ -215,4 +222,10 @@ public interface DatabaseModule {
 
     @Binds
     RecipeAddRepository RecipeAddRepository(RecipeAddRepositoryImpl impl);
+
+    @Binds
+    SearchRepository SearchRepository(SearchRepositoryImpl impl);
+
+    @ContributesAndroidInjector
+    SearchSuggestionsProvider SearchSuggestionsProvider();
 }

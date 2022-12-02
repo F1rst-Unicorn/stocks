@@ -236,4 +236,10 @@ class FakeNavigationModule {
     SettingsNavigator SettingsNavigator() {
         return mock(SettingsNavigator.class);
     }
+
+    @Provides
+    @Singleton
+    SearchedFoodNavigator SearchedFoodNavigator() {
+        return mock(SearchedFoodNavigator.class);
+    }
 }

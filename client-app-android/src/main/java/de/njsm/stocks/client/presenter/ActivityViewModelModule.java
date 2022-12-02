@@ -26,6 +26,7 @@ import dagger.Module;
 import dagger.Provides;
 import dagger.multibindings.IntoMap;
 import de.njsm.stocks.client.business.AccountInformationInteractor;
+import de.njsm.stocks.client.business.SearchInteractor;
 import de.njsm.stocks.client.di.ViewModelKey;
 
 @Module
@@ -34,8 +35,8 @@ public class ActivityViewModelModule {
     @Provides
     @IntoMap
     @ViewModelKey(MainActivityViewModel.class)
-    ViewModel MainActivityViewModel(AccountInformationInteractor interactor) {
-        return new MainActivityViewModel(interactor);
+    ViewModel MainActivityViewModel(AccountInformationInteractor interactor, SearchInteractor searchInteractor) {
+        return new MainActivityViewModel(interactor, searchInteractor);
     }
 
 }

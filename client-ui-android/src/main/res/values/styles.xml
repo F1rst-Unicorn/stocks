@@ -30,6 +30,7 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorOnPrimary">@color/colorOnPrimary</item>
         <item name="colorPrimaryVariant">@color/colorPrimaryVariant</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryVariant</item>
 
         <item name="colorSecondary">@color/colorSecondary</item>
         <item name="colorOnSecondary">@color/colorOnSecondary</item>
@@ -37,6 +38,7 @@
 
         <item name="colorSurface">@color/colorSurface</item>
         <item name="colorOnSurface">@color/colorOnSurface</item>
+        <item name="android:colorBackground">@color/colorSurface</item>
         <item name="colorError">@color/colorError</item>
         <item name="colorFadedIcon">@color/colorFadedIcon</item>
 
@@ -44,11 +46,34 @@
         <item name="android:windowLightStatusBar">false</item>
         <item name="drawerArrowStyle">@style/DrawerArrow</item>
         <item name="actionOverflowButtonStyle">@style/actionButtonOverflow</item>
+        <item name="android:searchViewStyle">@style/TopToolbar</item>
+        <item name="searchViewStyle">@style/TopToolbar</item>
+        <item name="textAppearanceSearchResultTitle">@style/StocksTheme.AutoCompleteTextView</item>
+        <item name="autoCompleteTextViewStyle">@style/StocksTheme.SearchDropdownBackground</item>
     </style>
 
     <style name="actionButtonOverflow" parent="Widget.AppCompat.Light.ActionButton.Overflow">
         <item name="android:tint">@color/colorOnPrimary</item>
     </style>
+
+    <style name="TopToolbar">
+        <item name="android:background">@color/colorPrimary</item>
+        <item name="android:popupBackground">@color/colorOnPrimary</item>
+        <item name="titleTextColor">@color/colorOnPrimary</item>
+        <item name="android:textColorPrimary">@color/colorOnPrimary</item>
+        <item name="android:textColorSecondary">@color/colorOnPrimary</item>
+        <item name="android:textColorHint">#8DD98F</item>
+        <item name="android:tint">@color/colorOnPrimary</item>
+        <item name="tint">@color/colorOnPrimary</item>
+    </style>
+
+    <style name="TopToolbarPopup">
+        <item name="android:background">@color/colorOnPrimary</item>
+        <item name="titleTextColor">@color/colorOnSurface</item>
+        <item name="android:textColorPrimary">@color/colorOnSurface</item>
+        <item name="android:tint">@color/colorOnPrimary</item>
+    </style>
+
     <style name="Toolbar">
         <item name="android:background">?attr/colorPrimary</item>
         <item name="titleTextColor">?attr/colorOnPrimary</item>
@@ -77,6 +102,14 @@
 
     <style name="Subheader" parent="StocksTheme">
         <item name="android:textAppearance">?android:attr/textAppearanceMedium</item>
+    </style>
+
+    <style name="StocksTheme.AutoCompleteTextView" parent="TextAppearance.AppCompat.SearchResult.Title">
+        <item name="android:textColor">@android:color/black</item>
+    </style>
+
+    <style name="StocksTheme.SearchDropdownBackground" parent="Widget.AppCompat.Light.AutoCompleteTextView">
+        <item name="android:popupBackground">#ffffff</item>
     </style>
 
     <!-- Base application theme. -->

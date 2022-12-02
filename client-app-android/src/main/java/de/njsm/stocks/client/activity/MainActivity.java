@@ -21,6 +21,9 @@
 
 package de.njsm.stocks.client.activity;
 
+import android.app.SearchManager;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
@@ -38,10 +41,14 @@ import de.njsm.stocks.R;
 import de.njsm.stocks.client.navigation.NavigationArgConsumerImpl;
 import de.njsm.stocks.client.navigation.NavigationGraphDirections;
 import de.njsm.stocks.client.presenter.MainActivityViewModel;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 
 public class MainActivity extends BaseActivity {
+
+    private static final Logger LOG = LoggerFactory.getLogger(MainActivity.class);
 
     private NavController navController;
 
@@ -72,6 +79,37 @@ public class MainActivity extends BaseActivity {
         NavigationUI.setupWithNavController(toolbar, navController, drawerLayout);
 
         setAccountInformation();
+        handleIntent(getIntent());
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        setIntent(intent);
+        handleIntent(intent);
+    }
+
+    private void handleIntent(Intent intent) {
+        if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
+            String query = intent.getStringExtra(SearchManager.QUERY);
+            viewModel.storeRecentSearch(query);
+            navigationArgConsumer.navigate(NavigationGraphDirections.actionGlobalNavFragmentSearchResults(query));
+        } else if (Intent.ACTION_VIEW.equals(intent.getAction())) {
+            Uri data = intent.getData();
+            if (data == null) {
+                return;
+            }
+
+            int id;
+            try {
+                id = Integer.parseInt(data.getLastPathSegment());
+            } catch (NumberFormatException e) {
+                LOG.error("Received invalid data to view from URI " + data, e);
+                return;
+            }
+            viewModel.storeFoundFood(() -> id);
+            navigationArgConsumer.navigate(NavigationGraphDirections.actionGlobalNavFragmentFood(id));
+        }
     }
 
     private void setAccountInformation() {

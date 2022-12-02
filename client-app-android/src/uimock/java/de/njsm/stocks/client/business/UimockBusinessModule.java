@@ -199,4 +199,7 @@ public interface UimockBusinessModule {
 
     @Binds
     CrashListInteractor InMemoryCrashListInteractor(InMemoryCrashListInteractor impl);
+
+    @Binds
+    SearchInteractor InMemorySearchInteractor(InMemorySearchInteractor impl);
 }

@@ -21,7 +21,10 @@
 
 package de.njsm.stocks.client.business;
 
-import de.njsm.stocks.client.business.entities.*;
+import de.njsm.stocks.client.business.entities.FoodForListing;
+import de.njsm.stocks.client.business.entities.FoodForListingBaseData;
+import de.njsm.stocks.client.business.entities.StoredFoodAmount;
+import de.njsm.stocks.client.business.entities.UnitAmount;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -33,6 +36,7 @@ import java.util.List;
 
 import static java.math.BigDecimal.valueOf;
 import static java.util.Arrays.asList;
+import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -97,8 +101,17 @@ class FoodRegrouperTest {
                 singletonList(expected));
     }
 
+    @Test
+    void foodWithoutAmountYieldsEmptyAmount() {
+        FoodForListingBaseData food = FoodForListingBaseData.create(1, "Banana", false, Instant.EPOCH.plus(1, ChronoUnit.DAYS));
+        FoodForListing expected = FoodForListing.create(food, emptyList(), localiser);
+        testDataProcessing(singletonList(food),
+                emptyList(),
+                singletonList(expected));
+    }
+
     void testDataProcessing(List<FoodForListingBaseData> food, List<StoredFoodAmount> amounts, List<FoodForListing> expected) {
-        List<FoodForListing> actual = uut.regroup(food, amounts);
+        List<FoodForListing> actual = uut.regroup(food, amounts, FoodForListing::create, FoodForListing::nextEatByDate);
         assertEquals(expected, actual);
     }
 }

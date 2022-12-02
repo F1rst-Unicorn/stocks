@@ -21,8 +21,8 @@
 
 package de.njsm.stocks.client.business;
 
-import de.njsm.stocks.client.business.entities.FoodForListing;
-import de.njsm.stocks.client.business.entities.FoodForListingBaseData;
+import de.njsm.stocks.client.business.entities.Food;
+import de.njsm.stocks.client.business.entities.Id;
 import de.njsm.stocks.client.business.entities.StoredFoodAmount;
 import de.njsm.stocks.client.business.entities.UnitAmount;
 
@@ -30,9 +30,11 @@ import javax.inject.Inject;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 
 import static java.math.BigDecimal.ZERO;
 import static java.math.BigDecimal.valueOf;
+import static java.util.Collections.emptyList;
 import static java.util.Comparator.comparing;
 import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.toList;
@@ -46,22 +48,28 @@ class FoodRegrouper {
         this.localiser = localiser;
     }
 
-    List<FoodForListing> regroup(List<FoodForListingBaseData> food, List<StoredFoodAmount> amounts) {
-        Map<Integer, List<FoodForListingBaseData>> foodById = food.stream().collect(groupingBy(FoodForListingBaseData::id));
+    @FunctionalInterface
+    interface ResultFactory<I, O> {
+        O build(I input, List<UnitAmount> amounts, Localiser localiser);
+    }
+
+    <O, I extends Id<Food>, U extends Comparable<? super U>>
+    List<O> regroup(List<I> food, List<StoredFoodAmount> amounts, ResultFactory<I, O> factory, Function<O, U> sorter) {
+        Map<Integer, List<I>> foodById = food.stream().collect(groupingBy(I::id));
         Map<Integer, List<StoredFoodAmount>> amountsByFoodId = amounts.stream().collect(groupingBy(StoredFoodAmount::foodId));
 
         return foodById.values().stream().map(v -> v.get(0))
-                .map(v -> regroupSingleFood(v, amountsByFoodId.get(v.id())))
-                .sorted(comparing(FoodForListing::nextEatByDate))
+                .map(v -> regroupSingleFood(v, amountsByFoodId.getOrDefault(v.id(), emptyList()), factory))
+                .sorted(comparing(sorter))
                 .collect(toList());
     }
 
-    private FoodForListing regroupSingleFood(FoodForListingBaseData food, List<StoredFoodAmount> storedFoodAmounts) {
+    private <O, I extends Id<Food>> O regroupSingleFood(I food, List<StoredFoodAmount> storedFoodAmounts, ResultFactory<I, O> factory) {
         List<UnitAmount> amountsSummedByUnit = storedFoodAmounts.stream().collect(groupingBy(StoredFoodAmount::unitId))
                 .values().stream()
                 .map(FoodRegrouper::addAmountsOfSameUnit)
                 .collect(toList());
-        return FoodForListing.create(food, amountsSummedByUnit, localiser);
+        return factory.build(food, amountsSummedByUnit, localiser);
     }
 
     private static UnitAmount addAmountsOfSameUnit(List<StoredFoodAmount> singleUnitAmounts) {

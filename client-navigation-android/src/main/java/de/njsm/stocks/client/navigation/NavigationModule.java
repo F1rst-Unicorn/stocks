@@ -119,4 +119,7 @@ public interface NavigationModule {
 
     @Binds
     SettingsNavigator SettingsNavigator(SettingsNavigatorImpl impl);
+
+    @Binds
+    SearchedFoodNavigator SearchedFoodNavigator(SearchedFoodNavigatorImpl impl);
 }

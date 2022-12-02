@@ -67,6 +67,8 @@ import java.time.format.DateTimeFormatter;
                 RecipeAddEntity.class,
                 RecipeIngredientAddEntity.class,
                 RecipeProductAddEntity.class,
+                RecentSearchDbEntity.class,
+                SearchedFoodDbEntity.class,
         },
         views = {
                 CurrentLocationDbView.class,
@@ -81,7 +83,7 @@ import java.time.format.DateTimeFormatter;
                 CurrentRecipeIngredientDbView.class,
                 CurrentRecipeProductDbView.class,
         },
-        version = 41)
+        version = 42)
 @androidx.room.TypeConverters(TypeConverters.class)
 @RewriteQueriesToDropUnusedColumns
 public abstract class StocksDatabase extends RoomDatabase {
@@ -132,4 +134,6 @@ public abstract class StocksDatabase extends RoomDatabase {
     abstract RecipeIngredientDao recipeIngredientDao();
 
     abstract RecipeProductDao recipeProductDao();
+
+    abstract SearchDao searchDao();
 }

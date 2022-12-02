@@ -22,8 +22,24 @@
 
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
     <application>
+        <activity
+                android:name=".client.activity.MainActivity"
+                android:launchMode="singleTop"
+                android:exported="true"
+                android:theme="@style/StocksTheme">
+            <intent-filter>
+                <action android:name="android.intent.action.SEARCH" />
+            </intent-filter>
+            <meta-data
+                    android:name="android.app.searchable"
+                    android:resource="@xml/searchable" />
+        </activity>
         <service
                 android:name=".client.background.setup.SetupService"
                 android:exported="false" />
+        <provider
+                android:name="de.njsm.stocks.client.database.contentprovider.SearchSuggestionsProvider"
+                android:authorities="${applicationId}.client.database.contentprovider.SearchSuggestionsProvider"
+                android:exported="false"/>
     </application>
 </manifest>

@@ -37,9 +37,10 @@
 
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/activity_main_toolbar"
-            style="@style/Toolbar"
+            style="@style/TopToolbar"
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize" />
+            android:layout_height="?attr/actionBarSize"
+            app:navigationIconTint="@color/colorOnPrimary"/>
 
         <fragment
             android:id="@+id/activity_main_nav_host_fragment"

@@ -44,7 +44,7 @@ class AllPresentFoodListInteractorImpl implements AllPresentFoodListInteractor {
         return Observable.zip(
                 repository.getFood(),
                 repository.getFoodAmounts(),
-                foodRegrouper::regroup
+                (v, u) -> foodRegrouper.regroup(v, u, FoodForListing::create, FoodForListing::nextEatByDate)
         );
     }
 }

@@ -180,4 +180,7 @@ public interface BusinessModule {
 
     @Binds
     CrashListInteractor CrashListInteractor(CrashListInteractorImpl impl);
+
+    @Binds
+    SearchInteractor SearchInteractor(SearchInteractorImpl impl);
 }

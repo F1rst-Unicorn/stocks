@@ -26,6 +26,9 @@ import androidx.lifecycle.LiveDataReactiveStreams;
 import androidx.lifecycle.ViewModel;
 import de.njsm.stocks.client.business.AccountInformation;
 import de.njsm.stocks.client.business.AccountInformationInteractor;
+import de.njsm.stocks.client.business.SearchInteractor;
+import de.njsm.stocks.client.business.entities.Food;
+import de.njsm.stocks.client.business.entities.Id;
 import io.reactivex.rxjava3.core.BackpressureStrategy;
 
 import javax.inject.Inject;
@@ -34,13 +37,24 @@ public class MainActivityViewModel extends ViewModel {
 
     private final AccountInformationInteractor interactor;
 
+    private final SearchInteractor searchInteractor;
+
     @Inject
-    MainActivityViewModel(AccountInformationInteractor interactor) {
+    MainActivityViewModel(AccountInformationInteractor interactor, SearchInteractor searchInteractor) {
         this.interactor = interactor;
+        this.searchInteractor = searchInteractor;
     }
 
     public LiveData<AccountInformation> get() {
         return LiveDataReactiveStreams.fromPublisher(
                 interactor.get().toFlowable(BackpressureStrategy.LATEST));
+    }
+
+    public void storeRecentSearch(String query) {
+        searchInteractor.storeRecentSearch(query);
+    }
+
+    public void storeFoundFood(Id<Food> food) {
+        searchInteractor.storeFoundFood(food);
     }
 }

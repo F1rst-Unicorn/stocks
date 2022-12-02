@@ -286,4 +286,11 @@ public class ViewModelModule {
     ViewModel CrashLogListViewModel(CrashListInteractor interactor) {
         return new CrashLogListViewModel(interactor);
     }
+
+    @Provides
+    @IntoMap
+    @ViewModelKey(SearchedFoodViewModel.class)
+    ViewModel SearchedFoodViewModel(Synchroniser synchroniser, SearchInteractor interactor, EntityDeleter<Food> deleter) {
+        return new SearchedFoodViewModel(synchroniser, interactor, deleter);
+    }
 }

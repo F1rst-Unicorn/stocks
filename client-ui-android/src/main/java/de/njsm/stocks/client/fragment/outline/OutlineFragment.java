@@ -21,12 +21,17 @@
 
 package de.njsm.stocks.client.fragment.outline;
 
+import android.app.SearchManager;
+import android.content.ComponentName;
+import android.content.Context;
 import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
+import android.view.*;
+import android.widget.EditText;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.SearchView;
+import androidx.core.content.ContextCompat;
+import androidx.core.view.MenuProvider;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import de.njsm.stocks.client.fragment.BottomToolbarFragment;
@@ -36,7 +41,7 @@ import de.njsm.stocks.client.ui.R;
 
 import javax.inject.Inject;
 
-public class OutlineFragment extends BottomToolbarFragment {
+public class OutlineFragment extends BottomToolbarFragment implements MenuProvider {
 
     private OutlineNavigator outlineNavigator;
 
@@ -57,7 +62,27 @@ public class OutlineFragment extends BottomToolbarFragment {
             refreshLayout.setRefreshing(false);
         });
 
+        requireActivity().addMenuProvider(this, getViewLifecycleOwner());
         return root;
+    }
+
+    @Override
+    public void onCreateMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_outline_options, menu);
+
+        SearchManager searchManager = (SearchManager) requireActivity().getSystemService(Context.SEARCH_SERVICE);
+        SearchView searchView = (SearchView) menu.findItem(R.id.menu_outline_options_search).getActionView();
+        searchView.setSearchableInfo(searchManager.getSearchableInfo(new ComponentName(requireContext(), requireActivity().getClass())));
+        searchView.setIconifiedByDefault(true);
+        searchView.setSubmitButtonEnabled(false);
+        EditText editText = searchView.findViewById(androidx.appcompat.R.id.search_src_text);
+        editText.setTextColor(ContextCompat.getColor(requireContext(), R.color.colorOnPrimary));
+        editText.setHintTextColor(ContextCompat.getColor(requireContext(), R.color.hintColorOnPrimary));
+    }
+
+    @Override
+    public boolean onMenuItemSelected(@NonNull MenuItem menuItem) {
+        return false;
     }
 
     @Override

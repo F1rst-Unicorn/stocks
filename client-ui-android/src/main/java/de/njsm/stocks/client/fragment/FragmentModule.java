@@ -48,6 +48,7 @@ import de.njsm.stocks.client.fragment.scaledunitadd.ScaledUnitAddFragment;
 import de.njsm.stocks.client.fragment.scaledunitconflict.ScaledUnitConflictFragment;
 import de.njsm.stocks.client.fragment.scaledunitedit.ScaledUnitEditFragment;
 import de.njsm.stocks.client.fragment.scaledunitlist.ScaledUnitListFragment;
+import de.njsm.stocks.client.fragment.searchedfood.SearchedFoodFragment;
 import de.njsm.stocks.client.fragment.settings.SettingsFragment;
 import de.njsm.stocks.client.fragment.setupform.SetupFormFragment;
 import de.njsm.stocks.client.fragment.setupgreet.SetupGreetingFragment;
@@ -172,4 +173,7 @@ public abstract class FragmentModule {
 
     @ContributesAndroidInjector
     public abstract CrashLogListFragment CrashLogListFragment();
+
+    @ContributesAndroidInjector
+    public abstract SearchedFoodFragment SearchedFoodFragment();
 }

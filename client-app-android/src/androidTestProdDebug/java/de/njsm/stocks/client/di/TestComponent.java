@@ -24,13 +24,15 @@ import dagger.BindsInstance;
 import dagger.Component;
 import dagger.android.AndroidInjectionModule;
 import de.njsm.stocks.client.TestApplication;
+import de.njsm.stocks.client.activity.MainActivityTest;
+import de.njsm.stocks.client.activity.StartupActivityTest;
 import de.njsm.stocks.client.background.setup.SetupServiceTest;
 import de.njsm.stocks.client.business.FakeBusinessModule;
 import de.njsm.stocks.client.execution.FakeExecutionModule;
+import de.njsm.stocks.client.fragment.FragmentModule;
+import de.njsm.stocks.client.navigation.FakeNavigationArgsConsumerModule;
 import de.njsm.stocks.client.presenter.ActivityViewModelModule;
 import de.njsm.stocks.client.presenter.ViewModelModule;
-import de.njsm.stocks.client.fragment.FragmentModule;
-import de.njsm.stocks.client.activity.StartupActivityTest;
 
 import javax.inject.Singleton;
 
@@ -46,6 +48,7 @@ import javax.inject.Singleton;
         ActivityModule.class,
         ServiceModule.class,
         FakePrimitiveModule.class,
+        FakeNavigationArgsConsumerModule.class,
 })
 public interface TestComponent {
 
@@ -54,6 +57,8 @@ public interface TestComponent {
     void inject(StartupActivityTest test);
 
     void inject(SetupServiceTest test);
+
+    void inject(MainActivityTest test);
 
     @Component.Builder
     interface Builder {
