@@ -26,9 +26,11 @@ import androidx.lifecycle.LiveDataReactiveStreams;
 import androidx.lifecycle.ViewModel;
 import de.njsm.stocks.client.business.EmptyFoodInteractor;
 import de.njsm.stocks.client.business.EntityDeleter;
+import de.njsm.stocks.client.business.FoodToBuyInteractor;
 import de.njsm.stocks.client.business.Synchroniser;
 import de.njsm.stocks.client.business.entities.EmptyFood;
 import de.njsm.stocks.client.business.entities.Food;
+import de.njsm.stocks.client.business.entities.FoodToBuy;
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.core.BackpressureStrategy;
 import io.reactivex.rxjava3.core.Observable;
@@ -44,12 +46,15 @@ public class EmptyFoodViewModel extends ViewModel {
 
     private final EntityDeleter<Food> deleter;
 
+    private final FoodToBuyInteractor toBuyInteractor;
+
     private Observable<List<EmptyFood>> data;
 
-    public EmptyFoodViewModel(Synchroniser synchroniser, EmptyFoodInteractor emptyFoodInteractor, EntityDeleter<Food> deleter) {
+    public EmptyFoodViewModel(Synchroniser synchroniser, EmptyFoodInteractor emptyFoodInteractor, EntityDeleter<Food> deleter, FoodToBuyInteractor toBuyInteractor) {
         this.synchroniser = synchroniser;
         this.emptyFoodInteractor = emptyFoodInteractor;
         this.deleter = deleter;
+        this.toBuyInteractor = toBuyInteractor;
     }
 
     public void synchronise() {
@@ -63,6 +68,11 @@ public class EmptyFoodViewModel extends ViewModel {
 
     public void delete(int listItemIndex) {
         performOnCurrentData(list -> deleter.delete(list.get(listItemIndex)));
+    }
+
+    public void putOnShoppingList(int listItemIndex) {
+        performOnCurrentData(list ->
+                toBuyInteractor.manageFoodToBuy(FoodToBuy.putOnShoppingList(list.get(listItemIndex).id())));
     }
 
     public void resolveId(int listItemIndex, Consumer<Integer> callback) {

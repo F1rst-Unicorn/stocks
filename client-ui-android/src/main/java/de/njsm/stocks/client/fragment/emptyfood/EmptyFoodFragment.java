@@ -66,8 +66,10 @@ public class EmptyFoodFragment extends BottomToolbarFragment {
 
         SwipeCallback callback = new SwipeCallback(
                 ContextCompat.getDrawable(requireActivity(), R.drawable.ic_delete_white_24dp),
+                ContextCompat.getDrawable(requireActivity(), R.drawable.ic_add_shopping_cart_white_24),
                 new ColorDrawable(ContextCompat.getColor(requireActivity(), R.color.colorAccent)),
-                this::onItemSwipedRight
+                this::onItemSwipedRight,
+                this::onItemSwipedLeft
         );
 
         templateSwipeList.initialiseListWithSwiper(requireContext(), foodListAdapter, callback);
@@ -79,6 +81,10 @@ public class EmptyFoodFragment extends BottomToolbarFragment {
 
     private void onItemSwipedRight(int listItemIndex) {
         viewModel.delete(listItemIndex);
+    }
+
+    private void onItemSwipedLeft(int listItemIndex) {
+        viewModel.putOnShoppingList(listItemIndex);
     }
 
     private void onItemClicked(View listItem) {

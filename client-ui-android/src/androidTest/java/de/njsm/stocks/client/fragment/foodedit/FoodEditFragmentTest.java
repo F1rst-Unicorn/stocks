@@ -25,6 +25,7 @@ import android.os.Bundle;
 import androidx.fragment.app.testing.FragmentScenario;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.platform.app.InstrumentationRegistry;
+import com.google.android.material.switchmaterial.SwitchMaterial;
 import com.google.android.material.textfield.TextInputEditText;
 import de.njsm.stocks.client.Application;
 import de.njsm.stocks.client.business.FakeFoodEditInteractor;
@@ -96,6 +97,10 @@ public class FoodEditFragmentTest {
                 withClassName(is(TextInputEditText.class.getName()))))
                 .check(matches(withText(dataToEdit.name())));
         onView(allOf(
+                isDescendantOfA(withId(R.id.fragment_food_form_to_buy)),
+                withClassName(is(SwitchMaterial.class.getName()))))
+                .check(matches(isChecked()));
+        onView(allOf(
                 isDescendantOfA(withId(R.id.fragment_food_form_expiration_offset)),
                 withClassName(is(TextInputEditText.class.getName()))))
                 .check(matches(withText(String.valueOf(dataToEdit.expirationOffset().getDays()))));
@@ -135,12 +140,14 @@ public class FoodEditFragmentTest {
     public void editingIsPropagated() {
         int unitPosition = 2;
         ScaledUnitForSelection unit = ScaledUnitsForSelection.generate().get(unitPosition);
-        FoodToEdit expected = FoodToEdit.create(dataToEdit.id(), "Sausage", true, Period.ofDays(0), empty(), unit.id(), "German ones");
+        FoodToEdit expected = FoodToEdit.create(dataToEdit.id(), "Sausage", false, Period.ofDays(0), empty(), unit.id(), "German ones");
         onView(allOf(
                 isDescendantOfA(withId(R.id.fragment_food_form_name)),
                 withClassName(is(TextInputEditText.class.getName()))
         )).perform(replaceText(expected.name()));
-        onView(withId(R.id.fragment_food_form_to_buy))
+        onView(allOf(
+                isDescendantOfA(withId(R.id.fragment_food_form_to_buy)),
+                withClassName(is(SwitchMaterial.class.getName()))))
                 .perform(click());
         onView(allOf(
                 isDescendantOfA(withId(R.id.fragment_food_form_expiration_offset)),

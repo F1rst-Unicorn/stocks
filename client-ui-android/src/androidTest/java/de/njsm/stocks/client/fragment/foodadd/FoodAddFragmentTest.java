@@ -84,6 +84,7 @@ public class FoodAddFragmentTest {
     public void uiIsShown() {
         onView(allOf(isDescendantOfA(withId(R.id.fragment_food_form_name)), withId(R.id.text_field_conflict_text_field))).check(matches(isDisplayed()));
         onView(allOf(isDescendantOfA(withId(R.id.fragment_food_form_to_buy)), withId(R.id.switch_conflict_switch))).check(matches(isDisplayed()));
+        onView(allOf(isDescendantOfA(withId(R.id.fragment_food_form_to_buy)), withId(R.id.switch_conflict_switch))).check(matches(isChecked()));
         onView(allOf(isDescendantOfA(withId(R.id.fragment_food_form_expiration_offset)), withId(R.id.text_field_conflict_text_field))).check(matches(isDisplayed()));
         onView(allOf(isDescendantOfA(withId(R.id.fragment_food_form_location)), withId(R.id.spinner_conflict_spinner))).check(matches(isDisplayed()));
         onView(allOf(isDescendantOfA(withId(R.id.fragment_food_form_store_unit)), withId(R.id.spinner_conflict_spinner))).check(matches(isDisplayed()));

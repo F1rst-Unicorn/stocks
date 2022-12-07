@@ -25,6 +25,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.LiveDataReactiveStreams;
 import de.njsm.stocks.client.business.EntityDeleter;
 import de.njsm.stocks.client.business.FoodByLocationListInteractor;
+import de.njsm.stocks.client.business.FoodToBuyInteractor;
 import de.njsm.stocks.client.business.Synchroniser;
 import de.njsm.stocks.client.business.entities.*;
 import io.reactivex.rxjava3.core.BackpressureStrategy;
@@ -38,8 +39,8 @@ public class FoodByLocationListViewModel extends AbstractFoodListViewModel {
     private final FoodByLocationListInteractor foodByLocationListInteractor;
 
     @Inject
-    FoodByLocationListViewModel(Synchroniser synchroniser, FoodByLocationListInteractor foodByLocationListInteractor, EntityDeleter<Food> deleter) {
-        super(synchroniser, deleter);
+    FoodByLocationListViewModel(Synchroniser synchroniser, FoodByLocationListInteractor foodByLocationListInteractor, EntityDeleter<Food> deleter, FoodToBuyInteractor toBuyInteractor) {
+        super(synchroniser, deleter, toBuyInteractor);
         this.foodByLocationListInteractor = foodByLocationListInteractor;
     }
 

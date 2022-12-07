@@ -202,4 +202,7 @@ public interface UimockBusinessModule {
 
     @Binds
     SearchInteractor InMemorySearchInteractor(InMemorySearchInteractor impl);
+
+    @Binds
+    FoodToBuyInteractor InMemoryFoodToBuyInteractor(InMemoryFoodToBuyInteractor impl);
 }

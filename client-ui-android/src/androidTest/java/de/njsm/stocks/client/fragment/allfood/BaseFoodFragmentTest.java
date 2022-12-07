@@ -23,9 +23,11 @@ package de.njsm.stocks.client.fragment.allfood;
 
 import androidx.annotation.StringRes;
 import de.njsm.stocks.client.business.EntityDeleter;
+import de.njsm.stocks.client.business.FoodToBuyInteractor;
 import de.njsm.stocks.client.business.Localiser;
 import de.njsm.stocks.client.business.entities.Food;
 import de.njsm.stocks.client.business.entities.FoodForListing;
+import de.njsm.stocks.client.business.entities.FoodToBuy;
 import de.njsm.stocks.client.business.entities.Id;
 import de.njsm.stocks.client.navigation.FoodNavigator;
 import de.njsm.stocks.client.presenter.DateRenderStrategy;
@@ -55,6 +57,8 @@ public abstract class BaseFoodFragmentTest {
 
     private EntityDeleter<Food> deleter;
 
+    private FoodToBuyInteractor toBuyInteractor;
+
     private UnitAmountRenderStrategy unitAmountRenderStrategy;
 
     protected DateRenderStrategy dateRenderStrategy;
@@ -69,6 +73,7 @@ public abstract class BaseFoodFragmentTest {
     @After
     public void tearDownBase() {
         reset(deleter);
+        reset(toBuyInteractor);
     }
 
     protected abstract FoodNavigator navigator();
@@ -154,9 +159,28 @@ public abstract class BaseFoodFragmentTest {
         assertThat(captor.getValue().id(), is(data.get(itemIndex).id()));
     }
 
+    @Test
+    public void leftSwipingPutsOnShoppingList() {
+        int itemIndex = 1;
+        List<FoodForListing> data = FoodsForListing.get();
+        setData(data);
+
+        onView(recyclerView(R.id.template_swipe_list_list).atPosition(itemIndex)).perform(swipeLeft());
+
+        ArgumentCaptor<FoodToBuy> captor = ArgumentCaptor.forClass(FoodToBuy.class);
+        verify(toBuyInteractor).manageFoodToBuy(captor.capture());
+        assertThat(captor.getValue().id(), is(data.get(itemIndex).id()));
+        assertThat(captor.getValue().toBuy(), is(true));
+    }
+
     @Inject
     void setDeleter(EntityDeleter<Food> deleter) {
         this.deleter = deleter;
+    }
+
+    @Inject
+    void setToBuyInteractor(FoodToBuyInteractor toBuyInteractor) {
+        this.toBuyInteractor = toBuyInteractor;
     }
 
     @Inject

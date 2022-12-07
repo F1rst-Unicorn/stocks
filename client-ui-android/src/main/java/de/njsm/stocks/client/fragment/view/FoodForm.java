@@ -76,7 +76,6 @@ public class FoodForm {
         nameField.setEditorHint(R.string.hint_name);
 
         toBuyField.setText(dictionary.apply(R.string.hint_to_buy));
-        toBuyField.setChecked(true);
 
         expirationOffsetField.setInputType(EditorInfo.TYPE_CLASS_NUMBER);
         expirationOffsetField.setEditorHint(R.string.hint_expiration_offset);

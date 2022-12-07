@@ -28,9 +28,8 @@ import androidx.test.platform.app.InstrumentationRegistry;
 import de.njsm.stocks.client.Application;
 import de.njsm.stocks.client.business.EntityDeleter;
 import de.njsm.stocks.client.business.FakeEmptyFoodInteractor;
-import de.njsm.stocks.client.business.entities.EmptyFood;
-import de.njsm.stocks.client.business.entities.Food;
-import de.njsm.stocks.client.business.entities.Id;
+import de.njsm.stocks.client.business.FoodToBuyInteractor;
+import de.njsm.stocks.client.business.entities.*;
 import de.njsm.stocks.client.navigation.EmptyFoodNavigator;
 import de.njsm.stocks.client.presenter.UnitAmountRenderStrategy;
 import de.njsm.stocks.client.testdata.FoodsForListing;
@@ -64,6 +63,8 @@ public class EmptyFoodFragmentTest {
 
     private EntityDeleter<Food> deleter;
 
+    private FoodToBuyInteractor toBuyInteractor;
+
     private UnitAmountRenderStrategy unitAmountRenderStrategy;
 
     @Before
@@ -77,6 +78,7 @@ public class EmptyFoodFragmentTest {
     public void tearDown() {
         reset(navigator);
         reset(deleter);
+        reset(toBuyInteractor);
     }
 
     @Test
@@ -155,6 +157,20 @@ public class EmptyFoodFragmentTest {
         assertThat(captor.getValue().id(), is(data.get(itemIndex).id()));
     }
 
+    @Test
+    public void leftSwipingPutsOnShoppingList() {
+        int itemIndex = 1;
+        List<EmptyFood> data = FoodsForListing.getEmpty();
+        emptyFoodInteractor.setData(data);
+
+        onView(recyclerView(R.id.template_swipe_list_list).atPosition(itemIndex)).perform(swipeLeft());
+
+        ArgumentCaptor<FoodToBuy> captor = ArgumentCaptor.forClass(FoodToBuy.class);
+        verify(toBuyInteractor).manageFoodToBuy(captor.capture());
+        assertThat(captor.getValue().id(), is(data.get(itemIndex).id()));
+        assertThat(captor.getValue().toBuy(), is(true));
+    }
+
     @Inject
     void setNavigator(EmptyFoodNavigator navigator) {
         this.navigator = navigator;
@@ -163,6 +179,11 @@ public class EmptyFoodFragmentTest {
     @Inject
     void setEmptyFoodInteractor(FakeEmptyFoodInteractor emptyFoodInteractor) {
         this.emptyFoodInteractor = emptyFoodInteractor;
+    }
+
+    @Inject
+    void setToBuyInteractor(FoodToBuyInteractor toBuyInteractor) {
+        this.toBuyInteractor = toBuyInteractor;
     }
 
     @Inject

@@ -33,6 +33,7 @@ import io.reactivex.rxjava3.core.Observable;
 
 import javax.inject.Singleton;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -398,6 +399,14 @@ public interface FakeBusinessModule {
     @Provides
     @Singleton
     static SearchInteractor SearchInteractor() {
-        return mock(SearchInteractor.class);
+        SearchInteractor result = mock(SearchInteractor.class);
+        when(result.get(any())).thenReturn(Observable.empty());
+        return result;
+    }
+
+    @Provides
+    @Singleton
+    static FoodToBuyInteractor FoodToBuyInteractor() {
+        return mock(FoodToBuyInteractor.class);
     }
 }

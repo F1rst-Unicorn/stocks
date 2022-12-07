@@ -178,8 +178,8 @@ public class ViewModelModule {
     @Provides
     @IntoMap
     @ViewModelKey(EmptyFoodViewModel.class)
-    ViewModel EmptyFoodViewModel(EmptyFoodInteractor emptyFoodInteractor, Synchroniser synchroniser, EntityDeleter<Food> deleter) {
-        return new EmptyFoodViewModel(synchroniser, emptyFoodInteractor, deleter);
+    ViewModel EmptyFoodViewModel(EmptyFoodInteractor emptyFoodInteractor, Synchroniser synchroniser, EntityDeleter<Food> deleter, FoodToBuyInteractor toBuyInteractor) {
+        return new EmptyFoodViewModel(synchroniser, emptyFoodInteractor, deleter, toBuyInteractor);
     }
 
     @Provides
@@ -199,15 +199,15 @@ public class ViewModelModule {
     @Provides
     @IntoMap
     @ViewModelKey(FoodByLocationListViewModel.class)
-    ViewModel FoodByLocationListViewModel(FoodByLocationListInteractor foodByLocationListInteractor, Synchroniser synchroniser, EntityDeleter<Food> deleter) {
-        return new FoodByLocationListViewModel(synchroniser, foodByLocationListInteractor, deleter);
+    ViewModel FoodByLocationListViewModel(FoodByLocationListInteractor foodByLocationListInteractor, Synchroniser synchroniser, EntityDeleter<Food> deleter, FoodToBuyInteractor toBuyInteractor) {
+        return new FoodByLocationListViewModel(synchroniser, foodByLocationListInteractor, deleter, toBuyInteractor);
     }
 
     @Provides
     @IntoMap
     @ViewModelKey(AllFoodListViewModel.class)
-    ViewModel AllFoodListViewModel(Synchroniser synchroniser, AllPresentFoodListInteractor allPresentFoodListInteractor, EntityDeleter<Food> deleter) {
-        return new AllFoodListViewModel(synchroniser, allPresentFoodListInteractor, deleter);
+    ViewModel AllFoodListViewModel(Synchroniser synchroniser, AllPresentFoodListInteractor allPresentFoodListInteractor, EntityDeleter<Food> deleter, FoodToBuyInteractor toBuyInteractor) {
+        return new AllFoodListViewModel(synchroniser, allPresentFoodListInteractor, deleter, toBuyInteractor);
     }
 
     @Provides

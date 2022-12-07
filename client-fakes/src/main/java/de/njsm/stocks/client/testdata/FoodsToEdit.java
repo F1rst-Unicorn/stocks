@@ -39,7 +39,7 @@ public class FoodsToEdit {
         return FoodEditingFormData.create(
                 3,
                 "Banana",
-                false,
+                true,
                 Period.ofDays(4),
                 locations,
                 Optional.of(locations.size() / 2),

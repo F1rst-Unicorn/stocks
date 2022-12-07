@@ -25,6 +25,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.LiveDataReactiveStreams;
 import de.njsm.stocks.client.business.AllPresentFoodListInteractor;
 import de.njsm.stocks.client.business.EntityDeleter;
+import de.njsm.stocks.client.business.FoodToBuyInteractor;
 import de.njsm.stocks.client.business.Synchroniser;
 import de.njsm.stocks.client.business.entities.Food;
 import de.njsm.stocks.client.business.entities.FoodForListing;
@@ -39,8 +40,8 @@ public class AllFoodListViewModel extends AbstractFoodListViewModel {
     private final AllPresentFoodListInteractor allPresentFoodListInteractor;
 
     @Inject
-    AllFoodListViewModel(Synchroniser synchroniser, AllPresentFoodListInteractor allPresentFoodListInteractor, EntityDeleter<Food> deleter) {
-        super(synchroniser, deleter);
+    AllFoodListViewModel(Synchroniser synchroniser, AllPresentFoodListInteractor allPresentFoodListInteractor, EntityDeleter<Food> deleter, FoodToBuyInteractor toBuyInteractor) {
+        super(synchroniser, deleter, toBuyInteractor);
         this.allPresentFoodListInteractor = allPresentFoodListInteractor;
     }
 

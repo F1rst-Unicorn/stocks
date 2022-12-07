@@ -51,6 +51,7 @@ public class FoodAddFragment extends BottomToolbarFragment {
 
         View result = insertContent(inflater, root, R.layout.fragment_food_form);
         form = new FoodForm(result, this::getString);
+        form.setToBuy(true);
 
         foodAddViewModel.getUnits().observe(getViewLifecycleOwner(), form::showUnits);
         foodAddViewModel.getLocations().observe(getViewLifecycleOwner(), form::showLocations);
