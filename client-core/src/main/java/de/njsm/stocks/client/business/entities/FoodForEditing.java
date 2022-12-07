@@ -31,6 +31,8 @@ public abstract class FoodForEditing implements Versionable<Food> {
 
     public abstract String name();
 
+    public abstract boolean toBuy();
+
     public abstract Period expirationOffset();
 
     public abstract Optional<Integer> location();
@@ -39,7 +41,7 @@ public abstract class FoodForEditing implements Versionable<Food> {
 
     public abstract String description();
 
-    public static FoodForEditing create(int id, int version, String name, Period expirationOffset, Optional<Integer> location, int storeUnit, String description) {
-        return new AutoValue_FoodForEditing(id, version, name, expirationOffset, location, storeUnit, description);
+    public static FoodForEditing create(int id, int version, String name, boolean toBuy, Period expirationOffset, Optional<Integer> location, int storeUnit, String description) {
+        return new AutoValue_FoodForEditing(id, version, name, toBuy, expirationOffset, location, storeUnit, description);
     }
 }

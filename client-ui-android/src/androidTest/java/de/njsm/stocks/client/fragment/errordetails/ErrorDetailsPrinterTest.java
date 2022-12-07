@@ -148,7 +148,7 @@ public class ErrorDetailsPrinterTest {
 
     @Test
     public void foodEditErrorShowsName() {
-        FoodEditErrorDetails data = FoodEditErrorDetails.create(1, "Banana", Period.ofDays(3), 4, 5, "yellow");
+        FoodEditErrorDetails data = FoodEditErrorDetails.create(1, "Banana", true, Period.ofDays(3), 4, 5, "yellow");
         assertEquals(data.name(), uut.visit(data, null));
     }
 

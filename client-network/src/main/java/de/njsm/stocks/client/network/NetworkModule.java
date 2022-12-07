@@ -117,6 +117,9 @@ public interface NetworkModule {
     @Binds
     NetworkConnectionUpdater NetworkConnectionUpdater(NetworkConnectionUpdaterImpl impl);
 
+    @Binds
+    FoodToBuyService FoodToBuyService(FoodToBuyServiceImpl impl);
+
     @Provides
     @Singleton
     static ServerApi serverApi(ServerEndpoint serverEndpoint, HostnameInterceptor interceptor) {

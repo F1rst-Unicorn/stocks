@@ -107,6 +107,9 @@ public class ErrorRetryInteractorImplTest {
     private RecipeAddInteractor recipeAddInteractor;
 
     @Mock
+    private FoodToBuyInteractor foodToBuyInteractor;
+
+    @Mock
     private Synchroniser synchroniser;
 
     @Mock
@@ -137,6 +140,7 @@ public class ErrorRetryInteractorImplTest {
                 userDeviceDeleteInteractor,
                 userDeleteInteractor,
                 recipeAddInteractor,
+                foodToBuyInteractor,
                 synchroniser,
                 scheduler,
                 errorRepository);
@@ -347,9 +351,9 @@ public class ErrorRetryInteractorImplTest {
 
     @Test
     void retryingFoodEditingDispatches() {
-        FoodEditErrorDetails errorDetails = FoodEditErrorDetails.create(1, "Banana", Period.ofDays(3), 4, 5, "yellow");
+        FoodEditErrorDetails errorDetails = FoodEditErrorDetails.create(1, "Banana", true, Period.ofDays(3), 4, 5, "yellow");
         ErrorDescription input = ErrorDescription.create(1, StatusCode.DATABASE_UNREACHABLE, "", "test", errorDetails);
-        FoodToEdit expected = FoodToEdit.create(errorDetails.id(), errorDetails.name(), errorDetails.expirationOffset(), errorDetails.location(), errorDetails.storeUnit(), errorDetails.description());
+        FoodToEdit expected = FoodToEdit.create(errorDetails.id(), errorDetails.name(), errorDetails.toBuy(), errorDetails.expirationOffset(), errorDetails.location(), errorDetails.storeUnit(), errorDetails.description());
 
         uut.retryInBackground(input);
 
@@ -460,6 +464,17 @@ public class ErrorRetryInteractorImplTest {
         uut.retryInBackground(input);
 
         verify(recipeAddInteractor).add(recipe);
+        verify(errorRepository).deleteError(input);
+    }
+
+    @Test
+    void retryingFoodBuyingDispatches() {
+        var food = FoodForBuying.create(1, 2, true);
+        ErrorDescription input = ErrorDescription.create(1, StatusCode.DATABASE_UNREACHABLE, "", "test", food);
+
+        uut.retryInBackground(input);
+
+        verify(foodToBuyInteractor).manageFoodToBuy(FoodToBuy.putOnShoppingList(food.id()));
         verify(errorRepository).deleteError(input);
     }
 }

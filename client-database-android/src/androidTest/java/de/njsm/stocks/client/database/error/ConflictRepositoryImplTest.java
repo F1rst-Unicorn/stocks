@@ -369,6 +369,7 @@ public class ConflictRepositoryImplTest extends DbTestCase {
                 original.id(),
                 original.version(),
                 "Banana",
+                true,
                 Period.ofDays(3),
                 of(localLocation.id()),
                 localScaledUnit.id(),
@@ -376,6 +377,7 @@ public class ConflictRepositoryImplTest extends DbTestCase {
         FoodToEdit remoteEdit = FoodToEdit.create(
                 original.id(),
                 "Sausage",
+                true,
                 Period.ofDays(4),
                 of(remoteLocation.id()),
                 remoteScaledUnit.id(),
@@ -446,6 +448,7 @@ public class ConflictRepositoryImplTest extends DbTestCase {
                 original.id(),
                 original.version(),
                 "Banana",
+                true,
                 Period.ofDays(3),
                 of(localLocation.id()),
                 localScaledUnit.id(),
@@ -453,6 +456,7 @@ public class ConflictRepositoryImplTest extends DbTestCase {
         FoodToEdit remoteEdit = FoodToEdit.create(
                 original.id(),
                 "Sausage",
+                false,
                 Period.ofDays(4),
                 of(remoteLocation.id()),
                 remoteScaledUnit.id(),

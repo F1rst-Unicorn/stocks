@@ -39,6 +39,8 @@ public abstract class FoodEditConflictData implements Id<Food> {
 
     public abstract ConflictData<String> name();
 
+    public abstract ConflictData<Boolean> toBuy();
+
     public abstract ConflictData<Period> expirationOffset();
 
     public abstract ConflictData<Optional<LocationForListing>> location();
@@ -54,6 +56,9 @@ public abstract class FoodEditConflictData implements Id<Food> {
             String originalName,
             String remoteName,
             String localName,
+            boolean originalToBuy,
+            boolean remoteToBuy,
+            boolean localToBuy,
             Period originalExpirationOffset,
             Period remoteExpirationOffset,
             Period localExpirationOffset,
@@ -68,6 +73,7 @@ public abstract class FoodEditConflictData implements Id<Food> {
             String localDescription) {
         return new AutoValue_FoodEditConflictData(id, errorId, originalVersion,
                 ConflictData.create(originalName, remoteName, localName),
+                ConflictData.create(originalToBuy, remoteToBuy, localToBuy),
                 ConflictData.create(originalExpirationOffset, remoteExpirationOffset, localExpirationOffset),
                 ConflictData.create(originalLocation, remoteLocation, localLocation),
                 ConflictData.create(originalStoreUnit, remoteStoreUnit, localStoreUnit),

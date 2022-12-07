@@ -66,6 +66,7 @@ public class FoodConflictViewModel extends ViewModel {
                                 FoodEditErrorDetails.create(
                                         editedFood.id(),
                                         editedFood.name(),
+                                        editedFood.toBuy(),
                                         editedFood.expirationOffset(),
                                         editedFood.location(),
                                         editedFood.storeUnit(),

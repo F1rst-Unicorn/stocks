@@ -135,11 +135,13 @@ public class FoodEditFragmentTest {
     public void editingIsPropagated() {
         int unitPosition = 2;
         ScaledUnitForSelection unit = ScaledUnitsForSelection.generate().get(unitPosition);
-        FoodToEdit expected = FoodToEdit.create(dataToEdit.id(), "Sausage", Period.ofDays(0), empty(), unit.id(), "German ones");
+        FoodToEdit expected = FoodToEdit.create(dataToEdit.id(), "Sausage", true, Period.ofDays(0), empty(), unit.id(), "German ones");
         onView(allOf(
                 isDescendantOfA(withId(R.id.fragment_food_form_name)),
                 withClassName(is(TextInputEditText.class.getName()))
         )).perform(replaceText(expected.name()));
+        onView(withId(R.id.fragment_food_form_to_buy))
+                .perform(click());
         onView(allOf(
                 isDescendantOfA(withId(R.id.fragment_food_form_expiration_offset)),
                 withClassName(is(TextInputEditText.class.getName()))
@@ -153,7 +155,7 @@ public class FoodEditFragmentTest {
                 withClassName(is(TextInputEditText.class.getName()))
         )).perform(replaceText(expected.description()));
 
-        scenario.onFragment(v -> v.onOptionsItemSelected(menuItem(v.requireContext(), R.id.menu_check)));
+        scenario.onFragment(v -> v.onMenuItemSelected(menuItem(v.requireContext(), R.id.menu_check)));
 
         assertEquals(Optional.of(expected), interactor.getFormData());
         verify(navigator).getId(any());

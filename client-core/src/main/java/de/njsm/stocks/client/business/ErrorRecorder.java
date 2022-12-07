@@ -66,4 +66,6 @@ public interface ErrorRecorder {
     void recordUserDeleteError(SubsystemException e, Versionable<User> data);
 
     void recordRecipeAddError(SubsystemException e, RecipeAddForm input);
+
+    void recordFoodToBuyError(SubsystemException e, FoodForBuying networkData);
 }

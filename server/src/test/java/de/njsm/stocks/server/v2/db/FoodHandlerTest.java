@@ -63,10 +63,11 @@ public class FoodHandlerTest extends DbTestCase implements CrudOperationsTest<Fo
 
     @Test
     public void editAFood() {
-        FoodForEditing data = FoodForEditing.builder()
+        FoodForFullEditing data = FoodForFullEditing.builder()
                 .id(2)
                 .version(0)
                 .name("Beer")
+                .toBuy(false)
                 .expirationOffset(3)
                 .location(2)
                 .storeUnit(1)
@@ -79,10 +80,11 @@ public class FoodHandlerTest extends DbTestCase implements CrudOperationsTest<Fo
 
     @Test
     public void editFoodStoreUnit() {
-        FoodForEditing data = FoodForEditing.builder()
+        FoodForFullEditing data = FoodForFullEditing.builder()
                 .id(2)
                 .version(0)
                 .name("Beer")
+                .toBuy(false)
                 .expirationOffset(3)
                 .location(2)
                 .storeUnit(2)
@@ -95,10 +97,11 @@ public class FoodHandlerTest extends DbTestCase implements CrudOperationsTest<Fo
 
     @Test
     public void editAFoodDefaultLocation() {
-        FoodForEditing data = FoodForEditing.builder()
+        FoodForFullEditing data = FoodForFullEditing.builder()
                 .id(2)
                 .version(0)
                 .name("Beer")
+                .toBuy(false)
                 .expirationOffset(2)
                 .location(2)
                 .storeUnit(1)
@@ -111,10 +114,11 @@ public class FoodHandlerTest extends DbTestCase implements CrudOperationsTest<Fo
 
     @Test
     public void editAFoodDefaultLocationBySettingNull() {
-        FoodForEditing data = FoodForEditing.builder()
+        FoodForFullEditing data = FoodForFullEditing.builder()
                 .id(3)
                 .version(0)
                 .name("Cheese")
+                .toBuy(false)
                 .expirationOffset(3)
                 .location(0)
                 .storeUnit(1)
@@ -127,10 +131,11 @@ public class FoodHandlerTest extends DbTestCase implements CrudOperationsTest<Fo
 
     @Test
     public void editAFoodExpirationOffset() {
-        FoodForEditing data = FoodForEditing.builder()
+        FoodForFullEditing data = FoodForFullEditing.builder()
                 .id(3)
                 .version(0)
                 .name("Cheese")
+                .toBuy(false)
                 .expirationOffset(2)
                 .location(1)
                 .description("new description")
@@ -144,10 +149,11 @@ public class FoodHandlerTest extends DbTestCase implements CrudOperationsTest<Fo
 
     @Test
     public void editAFoodWithoutExpirationOrDefaultLocationDoesntUpdateThem() {
-        FoodForEditing data = FoodForEditing.builder()
+        FoodForFullEditing data = FoodForFullEditing.builder()
                 .id(3)
                 .version(0)
                 .name("Cheddar")
+                .toBuy(false)
                 .build();
 
         StatusCode result = uut.edit(data);
@@ -157,10 +163,11 @@ public class FoodHandlerTest extends DbTestCase implements CrudOperationsTest<Fo
 
     @Test
     public void editingDescriptionWorks() {
-        FoodForEditing data = FoodForEditing.builder()
+        FoodForFullEditing data = FoodForFullEditing.builder()
                 .id(2)
                 .version(0)
                 .name("Beer")
+                .toBuy(false)
                 .description("new description")
                 .storeUnit(1)
                 .build();
@@ -172,10 +179,11 @@ public class FoodHandlerTest extends DbTestCase implements CrudOperationsTest<Fo
 
     @Test
     public void wrongVersionIsNotRenamed() {
-        FoodForEditing data = FoodForEditing.builder()
+        FoodForFullEditing data = FoodForFullEditing.builder()
                 .id(2)
                 .version(100)
                 .name("Wine")
+                .toBuy(false)
                 .expirationOffset(0)
                 .location(2)
                 .description("new description")
@@ -189,10 +197,11 @@ public class FoodHandlerTest extends DbTestCase implements CrudOperationsTest<Fo
 
     @Test
     public void unknownIsReported() {
-        FoodForEditing data = FoodForEditing.builder()
+        FoodForFullEditing data = FoodForFullEditing.builder()
                 .id(100)
                 .version(0)
                 .name("Wine")
+                .toBuy(false)
                 .expirationOffset(0)
                 .location(2)
                 .description("new description")

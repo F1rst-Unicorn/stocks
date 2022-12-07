@@ -66,7 +66,7 @@ public class ErrorDetailsHeadlineVisitorTest {
                 "",
                 FoodAddErrorDetails.StoreUnit.create(BigDecimal.TEN, "g")), null));
         assertEquals(R.string.error_details_food_delete_error_list, (long) uut.visit(FoodDeleteErrorDetails.create(1, "Banana"), null));
-        assertEquals(R.string.error_details_food_edit_error_list, (long) uut.visit(FoodEditErrorDetails.create(1, "Banana", Period.ofDays(3), 4, 5, "yellow"), null));
+        assertEquals(R.string.error_details_food_edit_error_list, (long) uut.visit(FoodEditErrorDetails.create(1, "Banana", true, Period.ofDays(3), 4, 5, "yellow"), null));
         assertEquals(R.string.error_details_food_item_add_error_list, (long) uut.visit(FoodItemAddErrorDetails.create(LocalDate.ofEpochDay(2), 1, 2, 3, FoodItemAddErrorDetails.Unit.create(BigDecimal.ONE, "g"), "Banana", "Fridge"), null));
         assertEquals(R.string.error_details_food_item_delete_error_list, (long) uut.visit(FoodItemDeleteErrorDetails.create(1, "Banana", FoodItemDeleteErrorDetails.Unit.create(BigDecimal.ONE, "g")), null));
         assertEquals(R.string.error_details_food_item_edit_error_list, (long) uut.visit(FoodItemEditErrorDetails.create(1, "Banana", LocalDate.ofEpochDay(2), 3, 4), null));
@@ -75,5 +75,6 @@ public class ErrorDetailsHeadlineVisitorTest {
         assertEquals(R.string.error_details_user_device_delete_error_list, (long) uut.visit(UserDeviceDeleteErrorDetails.create(1, "Jack", "Mobile"), null));
         assertEquals(R.string.error_details_user_delete_error_list, (long) uut.visit(UserDeleteErrorDetails.create(1, "Jack"), null));
         assertEquals(R.string.error_details_recipe_add_error_list, (long) uut.visit(RecipeAddForm.create("Pizza", "just bake", Duration.ofMinutes(3), emptyList(), emptyList()), null));
+        assertEquals(R.string.error_details_food_to_buy, (long) uut.visit(FoodForBuying.create(1, 2, false), null));
     }
 }

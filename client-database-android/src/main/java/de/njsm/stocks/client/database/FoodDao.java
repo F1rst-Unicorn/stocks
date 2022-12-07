@@ -122,4 +122,9 @@ abstract class FoodDao {
     @Query("select id, name " +
             "from current_food")
     abstract Observable<List<FoodForSelection>> getForSelection();
+
+    @Query("select id, version, to_buy as toBuy " +
+            "from current_food " +
+            "where id = :id")
+    abstract FoodForBuying getCurrentShoppingState(int id);
 }

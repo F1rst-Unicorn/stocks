@@ -66,6 +66,12 @@ class ConflictNavigator implements ErrorDetailsVisitor.Default<ErrorDescription,
     }
 
     @Override
+    public Void foodForBuying(FoodForBuying foodForBuying, ErrorDescription input) {
+        errorListNavigator.resolveFoodEditConflict(input.id());
+        return null;
+    }
+
+    @Override
     public Void defaultImpl(ErrorDetails errorDetails, ErrorDescription input) {
         throw new IllegalStateException("unexpected conflict resolution on " + errorDetails);
     }

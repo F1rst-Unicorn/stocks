@@ -38,6 +38,8 @@ public abstract class FoodEditConflictFormData implements Id<Food> {
 
     public abstract ConflictData<String> name();
 
+    public abstract ConflictData<Boolean> toBuy();
+
     public abstract ConflictData<Period> expirationOffset();
 
     public abstract ConflictData<Optional<LocationForListing>> location();
@@ -54,6 +56,7 @@ public abstract class FoodEditConflictFormData implements Id<Food> {
 
     public boolean hasAnyConflict() {
         return name().needsHandling() ||
+                toBuy().needsHandling() ||
                 expirationOffset().needsHandling() ||
                 location().needsHandling() ||
                 storeUnit().needsHandling() ||
@@ -75,6 +78,7 @@ public abstract class FoodEditConflictFormData implements Id<Food> {
 
         return new AutoValue_FoodEditConflictFormData(food.id(), food.errorId(), food.originalVersion(),
                 food.name(),
+                food.toBuy(),
                 food.expirationOffset(),
                 food.location(),
                 food.storeUnit(),

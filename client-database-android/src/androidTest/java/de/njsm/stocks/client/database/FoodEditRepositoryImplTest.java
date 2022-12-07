@@ -54,6 +54,7 @@ public class FoodEditRepositoryImplTest extends DbTestCase {
         Util.test(actual).assertValue(FoodToEdit.create(
                 food.id(),
                 food.name(),
+                food.toBuy(),
                 food.expirationOffset(),
                 food.location(),
                 food.storeUnit(),
@@ -72,6 +73,7 @@ public class FoodEditRepositoryImplTest extends DbTestCase {
                 food.id(),
                 food.version(),
                 food.name(),
+                food.toBuy(),
                 food.expirationOffset(),
                 Optional.ofNullable(food.location()),
                 food.storeUnit(),

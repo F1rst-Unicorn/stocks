@@ -104,12 +104,10 @@ public class ConflictRepositoryImpl implements ConflictRepository {
     @Override
     public Observable<FoodEditConflictData> getFoodEditConflict(long errorId) {
         return errorDao.observeError(errorId).map(error -> {
-            if (error.action() != ErrorEntity.Action.EDIT_FOOD)
-                throw new IllegalArgumentException("error " + errorId + " does not belong to " + ErrorEntity.Action.EDIT_FOOD + " but to " + error.action());
-
-            FoodEditEntity local = errorDao.getFoodEdit(error.dataId());
+            FoodEditConflictAdapter local = resolveFood(error);
             FoodDbEntity original = errorDao.getCurrentFoodAsKnownAt(local.food().id(), local.food().transactionTime());
             FoodDbEntity remote = errorDao.getCurrentFoodAsKnownAt(local.food().id(), local.executionTime());
+            local.setRemote(remote);
 
             Optional<LocationForListing> originalLocation = ofNullable(original.location()).map(v -> errorDao.getCurrentLocationAsKnownAt(v, local.location().transactionTime()))
                     .map(v -> LocationForListing.create(v.id(), v.name()));
@@ -128,6 +126,7 @@ public class ConflictRepositoryImpl implements ConflictRepository {
 
             return FoodEditConflictData.create(error.id(), local.food().id(), local.version(),
                     original.name(), remote.name(), local.name(),
+                    original.toBuy(), remote.toBuy(), local.toBuy(),
                     original.expirationOffset(), remote.expirationOffset(), local.expirationOffset(),
                     originalLocation, remoteLocation, localLocation,
                     ScaledUnitForListing.create(originalScaledUnit.id(), originalUnit.abbreviation(), originalScaledUnit.scale()),
@@ -135,6 +134,17 @@ public class ConflictRepositoryImpl implements ConflictRepository {
                     ScaledUnitForListing.create(localScaledUnit.id(), localUnit.abbreviation(), localScaledUnit.scale()),
                     original.description(), remote.description(), local.description());
         });
+    }
+
+    private FoodEditConflictAdapter resolveFood(ErrorEntity error) {
+        if (error.action() == ErrorEntity.Action.EDIT_FOOD)
+            return FoodEditConflictAdapter.fromFoodEdit(errorDao.getFoodEdit(error.dataId()));
+        else if (error.action() == ErrorEntity.Action.FOOD_SHOPPING)
+            return FoodEditConflictAdapter.fromFoodToBuy(errorDao.getFoodToBuyEntity(error.dataId()));
+        else
+            throw new IllegalArgumentException("error " + error.dataId() + " does not belong to "
+                    + ErrorEntity.Action.EDIT_FOOD + " or " + ErrorEntity.Action.FOOD_SHOPPING
+                    + " but to " + error.action());
     }
 
     @Override

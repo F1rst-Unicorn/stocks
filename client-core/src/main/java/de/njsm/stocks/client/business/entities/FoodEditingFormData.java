@@ -32,6 +32,8 @@ public abstract class FoodEditingFormData implements Id<Food> {
 
     public abstract String name();
 
+    public abstract boolean toBuy();
+
     public abstract Period expirationOffset();
 
     public abstract List<LocationForSelection> locations();
@@ -42,7 +44,7 @@ public abstract class FoodEditingFormData implements Id<Food> {
 
     public abstract String description();
 
-    public static FoodEditingFormData create(int id, String name, Period expirationOffset, List<LocationForSelection> locations, Optional<Integer> currentLocationListPosition, ListWithSuggestion<ScaledUnitForSelection> storeUnits, String description) {
-        return new AutoValue_FoodEditingFormData(id, name, expirationOffset, locations, currentLocationListPosition, storeUnits, description);
+    public static FoodEditingFormData create(int id, String name, boolean toBuy, Period expirationOffset, List<LocationForSelection> locations, Optional<Integer> currentLocationListPosition, ListWithSuggestion<ScaledUnitForSelection> storeUnits, String description) {
+        return new AutoValue_FoodEditingFormData(id, name, toBuy, expirationOffset, locations, currentLocationListPosition, storeUnits, description);
     }
 }

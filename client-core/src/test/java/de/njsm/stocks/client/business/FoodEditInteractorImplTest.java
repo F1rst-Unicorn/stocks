@@ -127,6 +127,7 @@ class FoodEditInteractorImplTest {
         FoodToEdit edited = FoodToEdit.create(
                 localData.id(),
                 localData.name() + " modified",
+                !localData.toBuy(),
                 localData.expirationOffset().plusDays(1),
                 localData.location().get() + 1,
                 localData.storeUnit() + 1,
@@ -145,7 +146,7 @@ class FoodEditInteractorImplTest {
 
     @Test
     void failingEditingIsRecorded() {
-        FoodToEdit editedFood = FoodToEdit.create(1, "Banana", Period.ofDays(2), 3, 5, "they are yellow");
+        FoodToEdit editedFood = FoodToEdit.create(1, "Banana", true, Period.ofDays(2), 3, 5, "they are yellow");
         FoodForEditing foodForEditing = getInput().withVersion(2);
         FoodForEditing expected = editedFood.withVersion(foodForEditing.version());
         when(repository.getFoodForSending(editedFood)).thenReturn(foodForEditing);
@@ -161,6 +162,6 @@ class FoodEditInteractorImplTest {
     }
 
     private FoodToEdit getInput() {
-        return FoodToEdit.create(1, "Banana", Period.ofDays(2), 3, 4, "they are yellow");
+        return FoodToEdit.create(1, "Banana", true, Period.ofDays(2), 3, 4, "they are yellow");
     }
 }

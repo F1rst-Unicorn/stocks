@@ -132,15 +132,8 @@ public interface ServerApi {
     Call<Response> deleteFood(@Query("id") int id,
                               @Query("version") int version);
 
-    @FormUrlEncoded
-    @PUT("/v2/food/edit")
-    Call<Response> editFood(@Query("id") int id,
-                            @Query("version") int version,
-                            @Query("new") String newName,
-                            @Query("expirationoffset") int expirationOffset,
-                            @Query("location") Integer location,
-                            @Field("description") String description,
-                            @Query("storeunit") int storeUnit);
+    @PUT("/v3/food/edit")
+    Call<Response> editFood(@Body FoodForFullEditing food);
 
     @PUT("/v2/fooditem")
     Call<DataResponse<Integer>> addFoodItem(@Query("eatByDate") String date,
@@ -178,4 +171,9 @@ public interface ServerApi {
 
     @PUT("/v2/recipe")
     Call<DataResponse<Integer>> addRecipe(@Body FullRecipeForInsertion recipe);
+
+    @PUT("/v2/food/buy")
+    Call<Response> editFoodToBuy(@Query("id") int id,
+                                 @Query("version") int version,
+                                 @Query("buy") int toBuy);
 }

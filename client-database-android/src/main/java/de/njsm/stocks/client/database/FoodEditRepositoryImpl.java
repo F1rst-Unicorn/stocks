@@ -52,6 +52,7 @@ class FoodEditRepositoryImpl implements FoodEditRepository {
             FoodToEdit.create(
                     v.id(),
                     v.name(),
+                    v.toBuy(),
                     v.expirationOffset(),
                     v.location(),
                     v.storeUnit(),
@@ -77,6 +78,7 @@ class FoodEditRepositoryImpl implements FoodEditRepository {
                 entity.id(),
                 entity.version(),
                 entity.name(),
+                entity.toBuy(),
                 entity.expirationOffset(),
                 Optional.ofNullable(entity.location()),
                 entity.storeUnit(),

@@ -1537,6 +1537,23 @@ paths:
           $ref: '#/components/responses/PUT-400'
         "500":
           $ref: '#/components/responses/500'
+  "/v3/food/edit":
+    put:
+      description: Edit a food type.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: '#/components/schemas/Food'
+                - $ref: '#/components/schemas/Data'
+      responses:
+        "200":
+          $ref: '#/components/responses/200-write-returning-id'
+        "400":
+          $ref: '#/components/responses/PUT-400'
+        "500":
+          $ref: '#/components/responses/500'
   "/v3/location":
     put:
       description: Add a location.

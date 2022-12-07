@@ -80,7 +80,7 @@ public class FoodHandler extends CrudDatabaseHandler<FoodRecord, Food> {
                 .map(this::notFoundIsOk);
     }
 
-    public StatusCode edit(FoodForEditing item) {
+    public StatusCode edit(FoodForFullEditing item) {
         return runCommand(context -> {
             if (isCurrentlyMissing(item, context))
                 return StatusCode.NOT_FOUND;
@@ -96,8 +96,13 @@ public class FoodHandler extends CrudDatabaseHandler<FoodRecord, Food> {
                     .orElse(FOOD.LOCATION);
 
             Field<?> expirationOffsetField = item.expirationOffset()
+                    .map(Period::ofDays)
                     .map(v -> (Field<Period>) DSL.inline(v))
                     .orElse(FOOD.EXPIRATION_OFFSET);
+
+            Field<?> toBuyField = item.toBuy()
+                    .map(v -> (Field<Boolean>) DSL.inline(v))
+                    .orElse(FOOD.TO_BUY);
 
             Field<?> descriptionField = item.description()
                     .map(v -> (Field<String>) DSL.inline(v))
@@ -112,7 +117,12 @@ public class FoodHandler extends CrudDatabaseHandler<FoodRecord, Food> {
                     .orElseGet(DSL::falseCondition);
 
             Condition expirationOffsetCondition = item.expirationOffset()
+                    .map(Period::ofDays)
                     .map(FOOD.EXPIRATION_OFFSET::ne)
+                    .orElseGet(DSL::falseCondition);
+
+            Condition toBuyCondition = item.toBuy()
+                    .map(FOOD.TO_BUY::ne)
                     .orElseGet(DSL::falseCondition);
 
             Condition descriptionCondition = item.description()
@@ -127,7 +137,7 @@ public class FoodHandler extends CrudDatabaseHandler<FoodRecord, Food> {
                     FOOD.ID,
                     DSL.inline(item.name()),
                     FOOD.VERSION.add(1),
-                    FOOD.TO_BUY,
+                    toBuyField,
                     expirationOffsetField,
                     locationField,
                     descriptionField,
@@ -135,6 +145,7 @@ public class FoodHandler extends CrudDatabaseHandler<FoodRecord, Food> {
                     getIdField().eq(item.id())
                             .and(getVersionField().eq(item.version())
                                     .and(FOOD.NAME.ne(item.name())
+                                            .or(toBuyCondition)
                                             .or(expirationOffsetCondition)
                                             .or(locationCondition)
                                             .or(descriptionCondition)

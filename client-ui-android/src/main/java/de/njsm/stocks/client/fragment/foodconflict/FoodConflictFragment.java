@@ -25,20 +25,19 @@ import android.os.Bundle;
 import android.view.*;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.view.MenuProvider;
 import androidx.lifecycle.ViewModelProvider;
-import de.njsm.stocks.client.business.entities.Food;
-import de.njsm.stocks.client.business.entities.FoodToEdit;
-import de.njsm.stocks.client.business.entities.Id;
-import de.njsm.stocks.client.business.entities.LocationForSelection;
+import de.njsm.stocks.client.business.entities.*;
 import de.njsm.stocks.client.fragment.BottomToolbarFragment;
 import de.njsm.stocks.client.fragment.view.FoodForm;
 import de.njsm.stocks.client.navigation.FoodConflictNavigator;
 import de.njsm.stocks.client.presenter.FoodConflictViewModel;
 import de.njsm.stocks.client.ui.R;
+import org.jetbrains.annotations.NotNull;
 
 import javax.inject.Inject;
 
-public class FoodConflictFragment extends BottomToolbarFragment {
+public class FoodConflictFragment extends BottomToolbarFragment implements MenuProvider {
 
     private FoodConflictNavigator navigator;
 
@@ -53,13 +52,13 @@ public class FoodConflictFragment extends BottomToolbarFragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View root = super.onCreateView(inflater, container, savedInstanceState);
         this.form = new FoodForm(insertContent(inflater, root, R.layout.fragment_food_form), this::getString);
-        form.hideToBuy();
 
         long errorId = navigator.getErrorId(requireArguments());
 
         viewModel.getFoodEditConflict(errorId).observe(getViewLifecycleOwner(), v -> {
             id = v;
             form.setName(v.name());
+            form.setToBuy(v.toBuy().suggestedValue());
             form.setExpirationOffset(v.expirationOffset());
             form.showLocations(v.availableLocations(), v.currentLocationListPosition());
             form.showUnits(v.availableStoreUnits());
@@ -78,6 +77,11 @@ public class FoodConflictFragment extends BottomToolbarFragment {
                 form.showNameConflict(v.name());
             } else {
                 form.hideName();
+            }
+            if (v.toBuy().needsHandling()) {
+                form.showToBuyConflict(v.toBuy());
+            } else {
+                form.hideToBuy();
             }
             if (v.expirationOffset().needsHandling()) {
                 form.showExpirationOffsetConflict(v.expirationOffset());
@@ -99,17 +103,18 @@ public class FoodConflictFragment extends BottomToolbarFragment {
             }
         });
 
-        setHasOptionsMenu(true);
+        requireActivity().addMenuProvider(this, getViewLifecycleOwner());
         return root;
     }
 
+
     @Override
-    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+    public void onCreateMenu(@NonNull @NotNull Menu menu, @NonNull @NotNull MenuInflater inflater) {
         inflater.inflate(R.menu.check, menu);
     }
 
     @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+    public boolean onMenuItemSelected(@NonNull MenuItem menuItem) {
         submit();
         return true;
     }
@@ -124,6 +129,7 @@ public class FoodConflictFragment extends BottomToolbarFragment {
             FoodToEdit editedFood = FoodToEdit.create(
                     id.id(),
                     form.getName(),
+                    form.getToBuy(),
                     form.getExpirationOffset(),
                     form.getLocation().map(LocationForSelection::id).orElse(null),
                     unit.id(),

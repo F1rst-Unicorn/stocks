@@ -226,6 +226,9 @@ public interface DatabaseModule {
     @Binds
     SearchRepository SearchRepository(SearchRepositoryImpl impl);
 
+    @Binds
+    FoodToBuyRepository FoodToBuyRepository(FoodToBuyRepositoryImpl impl);
+
     @ContributesAndroidInjector
     SearchSuggestionsProvider SearchSuggestionsProvider();
 }

@@ -230,6 +230,8 @@
     <string name="text_no_search_result">Kein Essen gefunden</string>
     <string name="text_camera_explanation">Stocks braucht die Erlaubnis für die Benutzung der Kamera um Barcodes von Lebensmitteln einzulesen. Während der Installation kann man so außerdem das Ticket leichter übertragen. Beides ist komfortabel, aber nicht zwingend für das Funktionieren der App nötig.</string>
     <string name="text_qr_explanation">Willkommen bei Stocks! Scanne jetzt den erhaltenen QR Code ein. Solltest du keinen erhalten haben, kannst du dich manuell registrieren.</string>
+    <string name="text_buy">Einzukaufen</string>
+    <string name="text_dont_buy">Nicht Einzukaufen</string>
 
     <string name="desc_profile_picture">Profilbild des Benutzers</string>
     <string name="desc_app_icon">Applikationslogo</string>
@@ -318,6 +320,7 @@
     <string name="error_details_user_device_delete_error_list">Gerät löschen</string>
     <string name="error_details_user_delete_error_list">Benutzer löschen</string>
     <string name="error_details_recipe_add_error_list">Rezept anlegen</string>
+    <string name="error_details_food_to_buy">Auf Einkaufliste setzen</string>
 
     <string name="text_no_errors">Alles in Ordnung.</string>
 </resources>

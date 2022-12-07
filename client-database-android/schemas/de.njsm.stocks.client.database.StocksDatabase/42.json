@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 42,
-    "identityHash": "89f08d2771a214309542940d355651e6",
+    "identityHash": "059435492498ad36c9586d016cf36d3e",
     "entities": [
       {
         "tableName": "updates",
@@ -2530,6 +2530,56 @@
         },
         "indices": [],
         "foreignKeys": []
+      },
+      {
+        "tableName": "food_to_buy",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `version` INTEGER NOT NULL, `to_buy` INTEGER NOT NULL, `execution_time` TEXT, `food_id` INTEGER, `food_transaction_time` TEXT)",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "version",
+            "columnName": "version",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "toBuy",
+            "columnName": "to_buy",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "executionTime",
+            "columnName": "execution_time",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "food.id",
+            "columnName": "food_id",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "food.transactionTime",
+            "columnName": "food_transaction_time",
+            "affinity": "TEXT",
+            "notNull": false
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "id"
+          ],
+          "autoGenerate": true
+        },
+        "indices": [],
+        "foreignKeys": []
       }
     ],
     "views": [
@@ -2580,7 +2630,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '89f08d2771a214309542940d355651e6')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '059435492498ad36c9586d016cf36d3e')"
     ]
   }
 }

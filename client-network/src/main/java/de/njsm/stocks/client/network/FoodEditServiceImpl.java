@@ -23,6 +23,7 @@ package de.njsm.stocks.client.network;
 
 import de.njsm.stocks.client.business.FoodEditService;
 import de.njsm.stocks.client.business.entities.FoodForEditing;
+import de.njsm.stocks.common.api.FoodForFullEditing;
 import de.njsm.stocks.common.api.Response;
 import retrofit2.Call;
 
@@ -42,12 +43,16 @@ class FoodEditServiceImpl extends ServiceBase<FoodForEditing> implements FoodEdi
 
     @Override
     Call<Response> buildCall(FoodForEditing input) {
-        return api.editFood(input.id(),
-                input.version(),
-                input.name(),
-                input.expirationOffset().getDays(),
-                input.location().orElse(0),
-                input.description(),
-                input.storeUnit());
+        int days = input.expirationOffset().getDays();
+        return api.editFood(FoodForFullEditing.builder()
+                .id(input.id())
+                .version(input.version())
+                .name(input.name())
+                .toBuy(input.toBuy())
+                .expirationOffset(days > 0 ? days : null)
+                .location(input.location().orElse(0))
+                .description(input.description())
+                .storeUnit(input.storeUnit())
+                .build());
     }
 }

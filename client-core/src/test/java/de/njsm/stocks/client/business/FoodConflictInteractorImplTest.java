@@ -65,6 +65,7 @@ class FoodConflictInteractorImplTest {
         long input = 42;
         FoodEditConflictData food = FoodEditConflictData.create(1, 2, 3,
                 "original name", "remote name", "local name",
+                false, false, true,
                 Period.ofDays(4), Period.ofDays(5), Period.ofDays(6),
                 of(LocationForListing.create(7, "original location")),
                 of(LocationForListing.create(8, "remote location")),

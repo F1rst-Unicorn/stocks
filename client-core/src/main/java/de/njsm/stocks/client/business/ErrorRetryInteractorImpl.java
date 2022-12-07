@@ -68,6 +68,8 @@ class ErrorRetryInteractorImpl implements ErrorRetryInteractor, ErrorDetailsVisi
 
     private final RecipeAddInteractor recipeAddInteractor;
 
+    private final FoodToBuyInteractor foodToBuyInteractor;
+
     private final Synchroniser synchroniser;
 
     private final Scheduler scheduler;
@@ -97,6 +99,7 @@ class ErrorRetryInteractorImpl implements ErrorRetryInteractor, ErrorDetailsVisi
                              EntityDeleter<UserDevice> userDeviceDeleteInteractor,
                              EntityDeleter<User> userDeleteInteractor,
                              RecipeAddInteractor recipeAddInteractor,
+                             FoodToBuyInteractor foodToBuyInteractor,
                              Synchroniser synchroniser,
                              Scheduler scheduler,
                              ErrorRepository errorRepository) {
@@ -120,6 +123,7 @@ class ErrorRetryInteractorImpl implements ErrorRetryInteractor, ErrorDetailsVisi
         this.userDeviceDeleteInteractor = userDeviceDeleteInteractor;
         this.userDeleteInteractor = userDeleteInteractor;
         this.recipeAddInteractor = recipeAddInteractor;
+        this.foodToBuyInteractor = foodToBuyInteractor;
         this.synchroniser = synchroniser;
         this.scheduler = scheduler;
         this.errorRepository = errorRepository;
@@ -242,6 +246,7 @@ class ErrorRetryInteractorImpl implements ErrorRetryInteractor, ErrorDetailsVisi
     public Void foodEditErrorDetails(FoodEditErrorDetails foodEditErrorDetails, Void input) {
         FoodToEdit data = FoodToEdit.create(foodEditErrorDetails.id(),
                 foodEditErrorDetails.name(),
+                foodEditErrorDetails.toBuy(),
                 foodEditErrorDetails.expirationOffset(),
                 foodEditErrorDetails.location(),
                 foodEditErrorDetails.storeUnit(),
@@ -302,6 +307,12 @@ class ErrorRetryInteractorImpl implements ErrorRetryInteractor, ErrorDetailsVisi
     @Override
     public Void recipeAddErrorDetails(RecipeAddForm recipeAddForm, Void input) {
         recipeAddInteractor.add(recipeAddForm);
+        return null;
+    }
+
+    @Override
+    public Void foodForBuying(FoodForBuying foodForBuying, Void input) {
+        foodToBuyInteractor.manageFoodToBuy(FoodToBuy.create(foodForBuying.id(), foodForBuying.toBuy()));
         return null;
     }
 
@@ -410,6 +421,11 @@ class ErrorRetryInteractorImpl implements ErrorRetryInteractor, ErrorDetailsVisi
         @Override
         public Job.Type recipeAddErrorDetails(RecipeAddForm recipeAddForm, Void input) {
             return Job.Type.ADD_RECIPE;
+        }
+
+        @Override
+        public Job.Type foodForBuying(FoodForBuying foodForBuying, Void input) {
+            return Job.Type.UPDATE_SHOPPING_LIST;
         }
     }
 }

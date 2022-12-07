@@ -32,6 +32,8 @@ public abstract class FoodEditErrorDetails implements Id<Food>, ErrorDetails {
 
     public abstract String name();
 
+    public abstract boolean toBuy();
+
     public abstract Period expirationOffset();
 
     public abstract Optional<Integer> location();
@@ -40,12 +42,12 @@ public abstract class FoodEditErrorDetails implements Id<Food>, ErrorDetails {
 
     public abstract String description();
 
-    public static FoodEditErrorDetails create(int id, String name, Period expirationOffset, @Nullable Integer location, int storeUnit, String description) {
-        return new AutoValue_FoodEditErrorDetails(id, name, expirationOffset, Optional.ofNullable(location), storeUnit, description);
+    public static FoodEditErrorDetails create(int id, String name, boolean toBuy, Period expirationOffset, @Nullable Integer location, int storeUnit, String description) {
+        return new AutoValue_FoodEditErrorDetails(id, name, toBuy, expirationOffset, Optional.ofNullable(location), storeUnit, description);
     }
 
-    public static FoodEditErrorDetails create(int id, String name, Period expirationOffset, Optional<Integer> location, int storeUnit, String description) {
-        return new AutoValue_FoodEditErrorDetails(id, name, expirationOffset, location, storeUnit, description);
+    public static FoodEditErrorDetails create(int id, String name, boolean toBuy, Period expirationOffset, Optional<Integer> location, int storeUnit, String description) {
+        return new AutoValue_FoodEditErrorDetails(id, name, toBuy, expirationOffset, location, storeUnit, description);
     }
 
     @Override

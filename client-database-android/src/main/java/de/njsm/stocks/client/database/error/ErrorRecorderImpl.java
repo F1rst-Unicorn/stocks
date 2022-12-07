@@ -193,6 +193,7 @@ public class ErrorRecorderImpl implements ErrorRecorder {
                 foodForEditing.version(),
                 PreservedId.create(foodForEditing.id(), currentTransactionTime),
                 foodForEditing.name(),
+                foodForEditing.toBuy(),
                 foodForEditing.expirationOffset(),
                 NullablePreservedId.create(foodForEditing.location().orElse(null), currentLocationTransactionTime),
                 PreservedId.create(foodForEditing.storeUnit(), currentStoreUnitTransactionTime),
@@ -312,6 +313,15 @@ public class ErrorRecorderImpl implements ErrorRecorder {
                 .forEach(errorDao::insert);
 
         errorDao.insert(ErrorEntity.create(ErrorEntity.Action.ADD_RECIPE, dataId, exceptionData.exceptionType(), exceptionData.exceptionId()));
+    }
+
+    @Override
+    public void recordFoodToBuyError(SubsystemException e, FoodForBuying networkData) {
+        ExceptionData exceptionData = new ExceptionInserter().visit(e, null);
+        Instant currentTransactionTime = errorDao.getTransactionTimeOf(EntityType.FOOD);
+        FoodToBuyEntity food = FoodToBuyEntity.create(PreservedId.create(networkData.id(), currentTransactionTime), networkData.version(), networkData.toBuy(), clock.get());
+        long dataId = errorDao.insert(food);
+        errorDao.insert(ErrorEntity.create(ErrorEntity.Action.FOOD_SHOPPING, dataId, exceptionData.exceptionType(), exceptionData.exceptionId()));
     }
 
     @AutoValue

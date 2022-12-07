@@ -89,6 +89,7 @@ public class FoodConflictFragmentTest implements TestUtility {
         FoodEditConflictFormData data = FoodEditConflictFormData.create(
                 FoodEditConflictData.create(1, 2, 3,
                         "original name", "remote name", "local name",
+                        true, false, false,
                         Period.ofDays(4), Period.ofDays(5), Period.ofDays(6),
                         of(LocationForListing.create(7, "original location")),
                         of(LocationForListing.create(8, "remote location")),
@@ -114,6 +115,7 @@ public class FoodConflictFragmentTest implements TestUtility {
         FoodEditConflictFormData data = FoodEditConflictFormData.create(
                 FoodEditConflictData.create(1, 2, 3,
                         "original name", "remote name", "local name",
+                        true, false, false,
                         Period.ofDays(4), Period.ofDays(5), Period.ofDays(6),
                         of(LocationForListing.create(7, "original location")),
                         of(LocationForListing.create(8, "remote location")),
@@ -128,13 +130,14 @@ public class FoodConflictFragmentTest implements TestUtility {
         conflictInteractor.setData(data);
         waitForUiToAppear(data);
 
-        scenario.onFragment(v -> v.onOptionsItemSelected(menuItem(v.requireContext(), R.id.menu_check)));
+        scenario.onFragment(v -> v.onMenuItemSelected(menuItem(v.requireContext(), R.id.menu_check)));
 
         ArgumentCaptor<ErrorDescription> captor = ArgumentCaptor.forClass(ErrorDescription.class);
         verify(errorRetryInteractor, timeout(1000)).retry(captor.capture());
         FoodEditErrorDetails actual = (FoodEditErrorDetails) captor.getValue().errorDetails();
         assertEquals(data.id(), actual.id());
         assertEquals(data.name().suggestedValue(), actual.name());
+        assertEquals(data.toBuy().suggestedValue(), actual.toBuy());
         assertEquals(data.expirationOffset().suggestedValue(), actual.expirationOffset());
         assertEquals(data.location().suggestedValue().map(LocationForListing::id), actual.location());
         assertEquals(data.storeUnit().suggestedValue().id(), actual.storeUnit());
@@ -147,6 +150,7 @@ public class FoodConflictFragmentTest implements TestUtility {
         FoodEditConflictFormData data = FoodEditConflictFormData.create(
                 FoodEditConflictData.create(1, 2, 3,
                         "original name", "remote name", "local name",
+                        false, false, false,
                         Period.ofDays(4), Period.ofDays(4), Period.ofDays(4),
                         of(LocationForListing.create(7, "original location")),
                         of(LocationForListing.create(7, "original location")),
@@ -172,6 +176,7 @@ public class FoodConflictFragmentTest implements TestUtility {
         FoodEditConflictFormData data = FoodEditConflictFormData.create(
                 FoodEditConflictData.create(1, 2, 3,
                         "original name", "original name", "original name",
+                        false, false, false,
                         Period.ofDays(4), Period.ofDays(4), Period.ofDays(4),
                         of(LocationForListing.create(7, "original location")),
                         of(LocationForListing.create(7, "original location")),

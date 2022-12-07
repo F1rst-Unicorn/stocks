@@ -183,4 +183,7 @@ public interface BusinessModule {
 
     @Binds
     SearchInteractor SearchInteractor(SearchInteractorImpl impl);
+
+    @Binds
+    FoodToBuyInteractor FoodToBuyInteractor(FoodToBuyInteractorImpl impl);
 }

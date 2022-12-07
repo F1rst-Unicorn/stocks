@@ -383,7 +383,7 @@ public class ErrorRecorderImplTest extends DbTestCase {
     @Test
     public void recordingErrorEditingFoodWorks() {
         test(
-                FoodForEditing.create(1, 2, "Banana", Period.ofDays(3), Optional.of(4), 5, "yellow"),
+                FoodForEditing.create(1, 2, "Banana", true, Period.ofDays(3), Optional.of(4), 5, "yellow"),
                 uut::recordFoodEditError,
                 ErrorEntity.Action.EDIT_FOOD,
                 stocksDatabase.errorDao()::getFoodEdits,
@@ -399,6 +399,7 @@ public class ErrorRecorderImplTest extends DbTestCase {
                     assertEquals(form.storeUnit(), foodEditEntity.storeUnit().id());
                     assertEquals(stocksDatabase.errorDao().getTransactionTimeOf(EntityType.SCALED_UNIT), foodEditEntity.storeUnit().transactionTime());
                     assertEquals(form.description(), foodEditEntity.description());
+                    assertEquals(getNow(), foodEditEntity.executionTime());
                 }
         );
     }
@@ -449,6 +450,7 @@ public class ErrorRecorderImplTest extends DbTestCase {
                     assertEquals(stocksDatabase.errorDao().getTransactionTimeOf(EntityType.LOCATION), actual.storedIn().transactionTime());
                     assertEquals(expected.unit(), actual.unit().id());
                     assertEquals(stocksDatabase.errorDao().getTransactionTimeOf(EntityType.SCALED_UNIT), actual.unit().transactionTime());
+                    assertEquals(getNow(), actual.executionTime());
                 }
         );
     }
@@ -505,6 +507,22 @@ public class ErrorRecorderImplTest extends DbTestCase {
                     assertEquals(expected.id(), actual.user().id());
                     assertEquals(expected.version(), actual.version());
                     assertEquals(stocksDatabase.errorDao().getTransactionTimeOf(EntityType.USER), actual.user().transactionTime());
+                }
+        );
+    }
+
+    @Test
+    public void recordingErrorPuttingFoodToBuyWorks() {
+        test(FoodForBuying.create(1, 2, true),
+                uut::recordFoodToBuyError,
+                ErrorEntity.Action.FOOD_SHOPPING,
+                stocksDatabase.errorDao()::getFoodToBuy,
+                (expected, actual) -> {
+                    assertEquals(expected.id(), actual.food().id());
+                    assertEquals(stocksDatabase.errorDao().getTransactionTimeOf(EntityType.FOOD), actual.food().transactionTime());
+                    assertEquals(expected.version(), actual.version());
+                    assertEquals(expected.toBuy(), actual.toBuy());
+                    assertEquals(getNow(), actual.executionTime());
                 }
         );
     }

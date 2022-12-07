@@ -48,6 +48,10 @@ public abstract class FoodEditEntity implements IdFields, VersionFields {
     @AutoValue.CopyAnnotations
     public abstract String name();
 
+    @ColumnInfo(name = "to_buy")
+    @AutoValue.CopyAnnotations
+    public abstract boolean toBuy();
+
     @ColumnInfo(name = "expiration_offset")
     @NonNull
     @AutoValue.CopyAnnotations
@@ -72,12 +76,12 @@ public abstract class FoodEditEntity implements IdFields, VersionFields {
     @AutoValue.CopyAnnotations
     public abstract Instant executionTime();
 
-    public static FoodEditEntity create(int id, int version, PreservedId food, String name, Period expirationOffset, NullablePreservedId location, PreservedId storeUnit, String description, Instant executionTime) {
-        return new AutoValue_FoodEditEntity(id, version, food, name, expirationOffset, location, storeUnit, description, executionTime);
+    public static FoodEditEntity create(int id, int version, PreservedId food, String name, boolean toBuy, Period expirationOffset, NullablePreservedId location, PreservedId storeUnit, String description, Instant executionTime) {
+        return new AutoValue_FoodEditEntity(id, version, food, name, toBuy, expirationOffset, location, storeUnit, description, executionTime);
     }
 
     @Ignore
-    public static FoodEditEntity create(int version, PreservedId food, String name, Period expirationOffset, NullablePreservedId location, PreservedId storeUnit, String description, Instant executionTime) {
-        return new AutoValue_FoodEditEntity(0, version, food, name, expirationOffset, location, storeUnit, description, executionTime);
+    public static FoodEditEntity create(int version, PreservedId food, String name, boolean toBuy, Period expirationOffset, NullablePreservedId location, PreservedId storeUnit, String description, Instant executionTime) {
+        return new AutoValue_FoodEditEntity(0, version, food, name, toBuy, expirationOffset, location, storeUnit, description, executionTime);
     }
 }

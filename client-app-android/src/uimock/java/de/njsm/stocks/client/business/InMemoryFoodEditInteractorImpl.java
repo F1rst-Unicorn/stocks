@@ -49,6 +49,7 @@ class InMemoryFoodEditInteractorImpl implements FoodEditInteractor {
             return FoodEditingFormData.create(
                     id.id(),
                     item.name(),
+                    true,
                     Period.ofDays(3),
                     LocationsForSelection.generate(),
                     Optional.of(LocationsForSelection.generate().size() / 2),

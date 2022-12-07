@@ -43,8 +43,8 @@ public class FoodEditErrorRepositoryImplTest extends AbstractErrorRepositoryImpl
         ScaledUnitDbEntity scaledUnit = standardEntities.scaledUnitDbEntityBuilder()
                 .unit(unit.id())
                 .build();
-        FoodForEditing form = FoodForEditing.create(randomnessProvider.getId("FoodForEditing"), 2, "Banana", Period.ofDays(3), Optional.of(location.id()), scaledUnit.id(), "yellow");
-        FoodEditErrorDetails errorDetails = FoodEditErrorDetails.create(form.id(), form.name(), form.expirationOffset(), form.location(), form.storeUnit(), form.description());
+        FoodForEditing form = FoodForEditing.create(randomnessProvider.getId("FoodForEditing"), 2, "Banana", true, Period.ofDays(3), Optional.of(location.id()), scaledUnit.id(), "yellow");
+        FoodEditErrorDetails errorDetails = FoodEditErrorDetails.create(form.id(), form.name(), form.toBuy(), form.expirationOffset(), form.location(), form.storeUnit(), form.description());
         stocksDatabase.synchronisationDao().writeUnits(singletonList(unit));
         stocksDatabase.synchronisationDao().writeScaledUnits(singletonList(scaledUnit));
         stocksDatabase.synchronisationDao().writeLocations(singletonList(location));

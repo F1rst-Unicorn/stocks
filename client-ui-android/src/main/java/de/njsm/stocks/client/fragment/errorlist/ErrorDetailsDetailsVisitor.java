@@ -148,4 +148,10 @@ public class ErrorDetailsDetailsVisitor implements ErrorDetailsVisitor<Void, Str
     public String recipeAddErrorDetails(RecipeAddForm recipeAddForm, Void input) {
         return recipeAddForm.name();
     }
+
+    @Override
+    public String foodForBuying(FoodForBuying foodForBuying, Void input) {
+        // not really used
+        return String.valueOf(foodForBuying.id());
+    }
 }

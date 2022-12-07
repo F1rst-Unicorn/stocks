@@ -25,6 +25,7 @@ import android.os.Bundle;
 import android.view.*;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.view.MenuProvider;
 import androidx.lifecycle.ViewModelProvider;
 import de.njsm.stocks.client.business.entities.*;
 import de.njsm.stocks.client.fragment.BottomToolbarFragment;
@@ -32,10 +33,11 @@ import de.njsm.stocks.client.fragment.view.FoodForm;
 import de.njsm.stocks.client.navigation.FoodEditNavigator;
 import de.njsm.stocks.client.presenter.FoodEditViewModel;
 import de.njsm.stocks.client.ui.R;
+import org.jetbrains.annotations.NotNull;
 
 import javax.inject.Inject;
 
-public class FoodEditFragment extends BottomToolbarFragment {
+public class FoodEditFragment extends BottomToolbarFragment implements MenuProvider {
 
     private FoodEditViewModel foodEditViewModel;
 
@@ -55,14 +57,14 @@ public class FoodEditFragment extends BottomToolbarFragment {
 
         id = navigator.getId(requireArguments());
         foodEditViewModel.getFormData(id).observe(getViewLifecycleOwner(), this::fillForm);
-        form.hideToBuy();
 
-        setHasOptionsMenu(true);
+        requireActivity().addMenuProvider(this, getViewLifecycleOwner());
         return root;
     }
 
     private void fillForm(FoodEditingFormData foodEditingFormData) {
         form.setName(foodEditingFormData.name());
+        form.setToBuy(foodEditingFormData.toBuy());
         form.setExpirationOffset(foodEditingFormData.expirationOffset());
         form.showLocations(foodEditingFormData.locations(), foodEditingFormData.currentLocationListPosition());
         form.showUnits(foodEditingFormData.storeUnits());
@@ -70,12 +72,12 @@ public class FoodEditFragment extends BottomToolbarFragment {
     }
 
     @Override
-    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+    public void onCreateMenu(@NonNull @NotNull Menu menu, @NonNull @NotNull MenuInflater inflater) {
         inflater.inflate(R.menu.check, menu);
     }
 
     @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+    public boolean onMenuItemSelected(@NonNull MenuItem menuItem) {
         if (!form.maySubmit()) {
             form.showErrors();
             return true;
@@ -85,6 +87,7 @@ public class FoodEditFragment extends BottomToolbarFragment {
             FoodToEdit data = FoodToEdit.create(
                     id.id(),
                     form.getName(),
+                    form.getToBuy(),
                     form.getExpirationOffset(),
                     form.getLocation().map(LocationForSelection::id).orElse(null),
                     storeUnit.id(),

@@ -108,6 +108,10 @@ public class FoodForm {
         setName(name.suggestedValue());
     }
 
+    public void setToBuy(boolean toBuy) {
+        toBuyField.setChecked(toBuy);
+    }
+
     public void setExpirationOffset(Period expirationOffset) {
         expirationOffsetField.setEditorContent(String.valueOf(expirationOffset.getDays()));
     }
@@ -231,5 +235,12 @@ public class FoodForm {
 
     public void hideDescription() {
         descriptionField.setVisibility(View.GONE);
+    }
+
+    public void showToBuyConflict(ConflictData<Boolean> toBuy) {
+        toBuyField.showConflictInfo(toBuy, v -> v ?
+                dictionary.apply(R.string.text_buy) :
+                dictionary.apply(R.string.text_dont_buy));
+        toBuyField.setChecked(toBuy.suggestedValue());
     }
 }

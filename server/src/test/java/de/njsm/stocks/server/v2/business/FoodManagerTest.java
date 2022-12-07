@@ -106,12 +106,22 @@ public class FoodManagerTest {
                 .description("new description")
                 .storeUnit(1)
                 .build();
-        Mockito.when(backend.edit(data)).thenReturn(StatusCode.SUCCESS);
+        FoodForFullEditing expected = FoodForFullEditing.builder()
+                .id(1)
+                .version(2)
+                .name("Sausage")
+                .toBuy(null)
+                .expirationOffset(0)
+                .location(1)
+                .description("new description")
+                .storeUnit(1)
+                .build();
+        Mockito.when(backend.edit(expected)).thenReturn(StatusCode.SUCCESS);
 
         StatusCode result = uut.rename(data);
 
         assertEquals(StatusCode.SUCCESS, result);
-        Mockito.verify(backend).edit(data);
+        Mockito.verify(backend).edit(expected);
         Mockito.verify(backend).commit();
     }
 
