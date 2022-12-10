@@ -19,7 +19,7 @@
  *
  */
 
-package de.njsm.stocks.client.fragment.searchedfood;
+package de.njsm.stocks.client.fragment.shoppinglist;
 
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -30,22 +30,23 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.lifecycle.ViewModelProvider;
-import de.njsm.stocks.client.business.entities.SearchedFoodForListing;
+import de.njsm.stocks.client.business.entities.FoodWithAmountForListing;
 import de.njsm.stocks.client.fragment.BottomToolbarFragment;
 import de.njsm.stocks.client.fragment.listswipe.SwipeCallback;
+import de.njsm.stocks.client.fragment.searchedfood.FoodAmountViewHolder;
 import de.njsm.stocks.client.fragment.view.TemplateSwipeList;
-import de.njsm.stocks.client.navigation.SearchedFoodNavigator;
-import de.njsm.stocks.client.presenter.SearchedFoodViewModel;
+import de.njsm.stocks.client.navigation.ShoppingListNavigator;
+import de.njsm.stocks.client.presenter.ShoppingListViewModel;
 import de.njsm.stocks.client.ui.R;
 
 import javax.inject.Inject;
 import java.util.List;
 
-public class SearchedFoodFragment extends BottomToolbarFragment {
+public class ShoppingListFragment extends BottomToolbarFragment {
 
-    private SearchedFoodNavigator navigator;
+    private ShoppingListNavigator navigator;
 
-    private SearchedFoodViewModel viewModel;
+    private ShoppingListViewModel viewModel;
 
     private TemplateSwipeList templateSwipeList;
 
@@ -60,17 +61,13 @@ public class SearchedFoodFragment extends BottomToolbarFragment {
         templateSwipeList = new TemplateSwipeList(swipeList);
         templateSwipeList.setLoading();
 
-        String query = navigator.getQuery(requireArguments());
-        requireActivity().setTitle(query);
         foodListAdapter = new FoodAmountAdapter(this::onItemClicked, this::onItemLongClicked);
-        viewModel.getFood(query).observe(getViewLifecycleOwner(), this::onListDataReceived);
+        viewModel.getFood().observe(getViewLifecycleOwner(), this::onListDataReceived);
 
         SwipeCallback callback = new SwipeCallback(
-                ContextCompat.getDrawable(requireActivity(), R.drawable.ic_delete_white_24dp),
-                ContextCompat.getDrawable(requireActivity(), R.drawable.ic_add_shopping_cart_white_24),
+                ContextCompat.getDrawable(requireActivity(), R.drawable.ic_remove_shopping_cart_white_24),
                 new ColorDrawable(ContextCompat.getColor(requireActivity(), R.color.colorAccent)),
-                this::onItemSwipedRight,
-                this::onItemSwipedLeft
+                this::onItemSwipedRight
         );
 
         templateSwipeList.initialiseListWithSwiper(requireContext(), foodListAdapter, callback);
@@ -81,11 +78,7 @@ public class SearchedFoodFragment extends BottomToolbarFragment {
     }
 
     private void onItemSwipedRight(int listItemIndex) {
-        viewModel.delete(listItemIndex);
-    }
-
-    private void onItemSwipedLeft(Integer listItemIndex) {
-        viewModel.addToShoppingList(listItemIndex);
+        viewModel.removeFromShoppingList(listItemIndex);
     }
 
     private void onItemClicked(View listItem) {
@@ -99,9 +92,9 @@ public class SearchedFoodFragment extends BottomToolbarFragment {
         return true;
     }
 
-    private void onListDataReceived(List<SearchedFoodForListing> data) {
+    private void onListDataReceived(List<FoodWithAmountForListing> data) {
         if (data.isEmpty()) {
-            templateSwipeList.setEmpty(R.string.hint_no_food);
+            templateSwipeList.setEmpty(R.string.hint_no_food_to_buy);
         } else {
             templateSwipeList.setList();
         }
@@ -117,11 +110,11 @@ public class SearchedFoodFragment extends BottomToolbarFragment {
     protected void setViewModelFactory(ViewModelProvider.Factory viewModelFactory) {
         super.setViewModelFactory(viewModelFactory);
         ViewModelProvider viewModelProvider = new ViewModelProvider(this, viewModelFactory);
-        viewModel = viewModelProvider.get(SearchedFoodViewModel.class);
+        viewModel = viewModelProvider.get(ShoppingListViewModel.class);
     }
 
     @Inject
-    void setNavigator(SearchedFoodNavigator navigator) {
+    void setNavigator(ShoppingListNavigator navigator) {
         this.navigator = navigator;
     }
 }

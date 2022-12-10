@@ -44,18 +44,18 @@ public class FoodAmountViewHolder extends RecyclerView.ViewHolder {
         view.setTag(this);
     }
 
-    void setName(String name) {
+    public void setName(String name) {
         this.name.setText(name);
     }
 
-    void setToBuy(boolean toBuy) {
+    public void setToBuy(boolean toBuy) {
         if (toBuy)
             this.toBuy.setVisibility(View.VISIBLE);
         else
             this.toBuy.setVisibility(View.GONE);
     }
 
-    void setAmount(String amount) {
+    public void setAmount(String amount) {
         this.amount.setText(amount);
     }
 }

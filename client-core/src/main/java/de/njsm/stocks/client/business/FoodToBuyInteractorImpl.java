@@ -23,14 +23,21 @@ package de.njsm.stocks.client.business;
 
 import de.njsm.stocks.client.business.entities.*;
 import de.njsm.stocks.client.execution.Scheduler;
+import io.reactivex.rxjava3.core.Observable;
 
 import javax.inject.Inject;
+import java.util.List;
+import java.util.stream.Stream;
+
+import static java.util.stream.Collectors.toList;
 
 class FoodToBuyInteractorImpl implements FoodToBuyInteractor {
 
     private final FoodToBuyRepository repository;
 
     private final FoodToBuyService service;
+
+    private final FoodRegrouper foodRegrouper;
 
     private final ErrorRecorder recorder;
 
@@ -39,9 +46,10 @@ class FoodToBuyInteractorImpl implements FoodToBuyInteractor {
     private final Scheduler scheduler;
 
     @Inject
-    FoodToBuyInteractorImpl(FoodToBuyRepository repository, FoodToBuyService service, ErrorRecorder recorder, Synchroniser synchroniser, Scheduler scheduler) {
+    FoodToBuyInteractorImpl(FoodToBuyRepository repository, FoodToBuyService service, FoodRegrouper foodRegrouper, ErrorRecorder recorder, Synchroniser synchroniser, Scheduler scheduler) {
         this.repository = repository;
         this.service = service;
+        this.foodRegrouper = foodRegrouper;
         this.recorder = recorder;
         this.synchroniser = synchroniser;
         this.scheduler = scheduler;
@@ -55,6 +63,22 @@ class FoodToBuyInteractorImpl implements FoodToBuyInteractor {
     @Override
     public void manageFoodToBuy(FoodToToggleBuy food) {
         scheduler.schedule(Job.create(Job.Type.UPDATE_SHOPPING_LIST, () -> runInBackground(food, food)));
+    }
+
+    @Override
+    public Observable<List<FoodWithAmountForListing>> getFoodToBuy() {
+        Observable<List<StoredFoodAmount>> presentAmounts = repository.getFoodAmountsToBuy();
+        Observable<List<StoredFoodAmount>> absentAmounts = repository.getFoodDefaultUnitOfFoodWithoutItems();
+        Observable<List<StoredFoodAmount>> allAmounts = Observable.combineLatest(presentAmounts, absentAmounts,
+                (u, v) -> Stream.concat(u.stream(), v.stream())
+                        .collect(toList()));
+
+        return Observable.zip(
+                repository.getFoodToBuy(),
+                allAmounts,
+                (v, u) -> foodRegrouper.regroup(v, u, FoodWithAmountForListing::create, FoodWithAmountForListing::name)
+        );
+
     }
 
     private void runInBackground(Id<Food> food, ShoppingFlagModifying shoppingFlagModifying) {

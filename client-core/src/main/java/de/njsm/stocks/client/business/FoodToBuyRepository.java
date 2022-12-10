@@ -21,11 +21,18 @@
 
 package de.njsm.stocks.client.business;
 
-import de.njsm.stocks.client.business.entities.Food;
-import de.njsm.stocks.client.business.entities.FoodForBuying;
-import de.njsm.stocks.client.business.entities.Id;
+import de.njsm.stocks.client.business.entities.*;
+import io.reactivex.rxjava3.core.Observable;
+
+import java.util.List;
 
 public interface FoodToBuyRepository {
 
     FoodForBuying getCurrentFood(Id<Food> food);
+
+    Observable<List<FoodWithAmountForListingBaseData>> getFoodToBuy();
+
+    Observable<List<StoredFoodAmount>> getFoodAmountsToBuy();
+
+    Observable<List<StoredFoodAmount>> getFoodDefaultUnitOfFoodWithoutItems();
 }

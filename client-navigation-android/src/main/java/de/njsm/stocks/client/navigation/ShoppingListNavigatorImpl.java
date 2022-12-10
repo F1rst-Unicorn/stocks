@@ -19,34 +19,31 @@
  *
  */
 
-package de.njsm.stocks.client.business;
+package de.njsm.stocks.client.navigation;
 
-import de.njsm.stocks.client.business.entities.FoodToBuy;
-import de.njsm.stocks.client.business.entities.FoodToToggleBuy;
-import de.njsm.stocks.client.business.entities.FoodWithAmountForListing;
-import io.reactivex.rxjava3.core.Observable;
+import de.njsm.stocks.client.business.entities.Food;
+import de.njsm.stocks.client.business.entities.Id;
+import de.njsm.stocks.client.fragment.shoppinglist.ShoppingListFragmentDirections;
 
 import javax.inject.Inject;
-import java.util.List;
 
-class InMemoryFoodToBuyInteractor implements FoodToBuyInteractor {
+class ShoppingListNavigatorImpl extends BaseNavigator implements ShoppingListNavigator {
 
     @Inject
-    InMemoryFoodToBuyInteractor() {
+    ShoppingListNavigatorImpl(NavigationArgConsumer navigationArgConsumer) {
+        super(navigationArgConsumer);
     }
 
     @Override
-    public void manageFoodToBuy(FoodToBuy food) {
+    public void showFood(Id<Food> food) {
+        var direction = ShoppingListFragmentDirections.actionNavFragmentShoppingListToNavFragmentFoodItemTabs(food.id());
+        getNavigationArgConsumer().navigate(direction);
 
     }
 
     @Override
-    public void manageFoodToBuy(FoodToToggleBuy food) {
-
-    }
-
-    @Override
-    public Observable<List<FoodWithAmountForListing>> getFoodToBuy() {
-        return Observable.empty();
+    public void editFood(Id<Food> food) {
+        var direction = ShoppingListFragmentDirections.actionNavFragmentShoppingListToNavFragmentEditFood(food.id());
+        getNavigationArgConsumer().navigate(direction);
     }
 }

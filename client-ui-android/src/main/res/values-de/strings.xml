@@ -139,6 +139,7 @@
     <string name="hint_no_units">Keine Maßeinheiten.\nErstelle eine mit dem + Knopf.</string>
     <string name="hint_no_scaled_units">Keine Mengen.\nErstelle eine mit dem + Knopf.</string>
     <string name="hint_no_food">Keine Lebensmittel.\nErstelle eines mit dem + Knopf.</string>
+    <string name="hint_no_food_to_buy">Nichts einzukaufen</string>
     <string name="hint_no_food_in_location">Keine Lebensmittel an diesem Ort.</string>
     <string name="hint_no_food_items">Keine Lebensmittel vorhanden.</string>
 

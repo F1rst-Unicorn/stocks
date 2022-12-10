@@ -148,6 +148,7 @@ public class SearchRepositoryImplTest extends DbTestCase {
                 )
         ));
     }
+
     @Test
     public void gettingFoodAmountsOfAbsentFoodBySearchQueryWorks() {
         var unit = standardEntities.unitDbEntity();

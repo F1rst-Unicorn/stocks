@@ -22,11 +22,11 @@
 package de.njsm.stocks.client.database;
 
 import de.njsm.stocks.client.business.FoodToBuyRepository;
-import de.njsm.stocks.client.business.entities.Food;
-import de.njsm.stocks.client.business.entities.FoodForBuying;
-import de.njsm.stocks.client.business.entities.Id;
+import de.njsm.stocks.client.business.entities.*;
+import io.reactivex.rxjava3.core.Observable;
 
 import javax.inject.Inject;
+import java.util.List;
 
 class FoodToBuyRepositoryImpl implements FoodToBuyRepository {
 
@@ -40,5 +40,20 @@ class FoodToBuyRepositoryImpl implements FoodToBuyRepository {
     @Override
     public FoodForBuying getCurrentFood(Id<Food> food) {
         return foodDao.getCurrentShoppingState(food.id());
+    }
+
+    @Override
+    public Observable<List<FoodWithAmountForListingBaseData>> getFoodToBuy() {
+        return foodDao.getCurrentFoodToBuy();
+    }
+
+    @Override
+    public Observable<List<StoredFoodAmount>> getFoodAmountsToBuy() {
+        return foodDao.getFoodAmountsToBuy();
+    }
+
+    @Override
+    public Observable<List<StoredFoodAmount>> getFoodDefaultUnitOfFoodWithoutItems() {
+        return foodDao.getFoodAmountsOfAbsentFoodToBuy();
     }
 }

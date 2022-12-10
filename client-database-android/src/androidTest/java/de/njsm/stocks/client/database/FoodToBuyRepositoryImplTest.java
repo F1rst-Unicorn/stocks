@@ -23,9 +23,14 @@ package de.njsm.stocks.client.database;
 
 import de.njsm.stocks.client.business.FoodToBuyRepository;
 import de.njsm.stocks.client.business.entities.FoodForBuying;
+import de.njsm.stocks.client.business.entities.FoodWithAmountForListingBaseData;
+import de.njsm.stocks.client.business.entities.StoredFoodAmount;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.List;
+
+import static de.njsm.stocks.client.database.util.Util.testList;
 import static java.util.Collections.singletonList;
 import static org.junit.Assert.assertEquals;
 
@@ -51,6 +56,82 @@ public class FoodToBuyRepositoryImplTest extends DbTestCase {
                 food.id(),
                 food.version(),
                 food.toBuy()
+        ));
+    }
+
+    @Test
+    public void gettingFoodToBuyWorks() {
+        var foodToBuy = standardEntities.foodDbEntityBuilder()
+                .toBuy(true)
+                .build();
+        stocksDatabase.synchronisationDao().synchroniseFood(singletonList(foodToBuy));
+
+        var actual = uut.getFoodToBuy();
+
+        testList(actual).assertValue(singletonList(FoodWithAmountForListingBaseData.create(
+                foodToBuy.id(),
+                foodToBuy.name()
+        )));
+    }
+
+    @Test
+    public void gettingFoodAmountsOfFoodToBuyWorks() {
+        var unit = standardEntities.unitDbEntity();
+        stocksDatabase.synchronisationDao().writeUnits(List.of(unit));
+        var scaledUnit = standardEntities.scaledUnitDbEntityBuilder()
+                .unit(unit.id())
+                .build();
+        stocksDatabase.synchronisationDao().writeScaledUnits(List.of(scaledUnit));
+        var foodToBuy = standardEntities.foodDbEntityBuilder()
+                .toBuy(true)
+                .storeUnit(scaledUnit.id())
+                .build();
+        stocksDatabase.synchronisationDao().synchroniseFood(singletonList(foodToBuy));
+        var foundFoodItem = standardEntities.foodItemDbEntityBuilder()
+                .ofType(foodToBuy.id())
+                .unit(scaledUnit.id())
+                .build();
+        stocksDatabase.synchronisationDao().writeFoodItems(List.of(foundFoodItem));
+
+        var actual = uut.getFoodAmountsToBuy();
+
+        testList(actual).assertValue(List.of(
+                StoredFoodAmount.create(
+                        foodToBuy.id(),
+                        scaledUnit.id(),
+                        unit.id(),
+                        scaledUnit.scale(),
+                        unit.abbreviation(),
+                        1
+                )
+        ));
+    }
+
+    @Test
+    public void gettingFoodUnitsOfAbsentFoodToBuyWorks() {
+        var unit = standardEntities.unitDbEntity();
+        stocksDatabase.synchronisationDao().writeUnits(List.of(unit));
+        var scaledUnit = standardEntities.scaledUnitDbEntityBuilder()
+                .unit(unit.id())
+                .build();
+        stocksDatabase.synchronisationDao().writeScaledUnits(List.of(scaledUnit));
+        var foodToBuy = standardEntities.foodDbEntityBuilder()
+                .toBuy(true)
+                .storeUnit(scaledUnit.id())
+                .build();
+        stocksDatabase.synchronisationDao().synchroniseFood(singletonList(foodToBuy));
+
+        var actual = uut.getFoodDefaultUnitOfFoodWithoutItems();
+
+        testList(actual).assertValue(List.of(
+                StoredFoodAmount.create(
+                        foodToBuy.id(),
+                        scaledUnit.id(),
+                        unit.id(),
+                        scaledUnit.scale(),
+                        unit.abbreviation(),
+                        0
+                )
         ));
     }
 }

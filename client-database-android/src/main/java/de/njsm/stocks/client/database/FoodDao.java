@@ -127,4 +127,32 @@ abstract class FoodDao {
             "from current_food " +
             "where id = :id")
     abstract FoodForBuying getCurrentShoppingState(int id);
+
+    @Query("select id, name " +
+            "from current_food " +
+            "where to_buy " +
+            "order by name, id")
+    abstract Observable<List<FoodWithAmountForListingBaseData>> getCurrentFoodToBuy();
+
+    @Query("select i.of_type as foodId, s.id as scaledUnitId, u.id as unitId, " +
+            "count(1) as numberOfFoodItemsWithSameScaledUnit, s.scale as scale, u.abbreviation as abbreviation " +
+            "from current_food_item i " +
+            "join current_food f on i.of_type = f.id " +
+            "join current_scaled_unit s on i.unit = s.id " +
+            "join current_unit u on s.unit = u.id " +
+            "where f.to_buy " +
+            "group by i.of_type, s.id, u.id, s.scale, u.abbreviation")
+    abstract Observable<List<StoredFoodAmount>> getFoodAmountsToBuy();
+
+    @Query("select f.id as foodId, s.id as scaledUnitId, u.id as unitId, " +
+            "0 as numberOfFoodItemsWithSameScaledUnit, s.scale as scale, u.abbreviation as abbreviation " +
+            "from current_food f " +
+            "join current_scaled_unit s on f.store_unit = s.id " +
+            "join current_unit u on s.unit = u.id " +
+            "where f.to_buy " +
+            "and f.id not in (" +
+                "select of_type " +
+                "from current_food_item" +
+            ")")
+    abstract Observable<List<StoredFoodAmount>> getFoodAmountsOfAbsentFoodToBuy();
 }

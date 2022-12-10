@@ -290,7 +290,14 @@ public class ViewModelModule {
     @Provides
     @IntoMap
     @ViewModelKey(SearchedFoodViewModel.class)
-    ViewModel SearchedFoodViewModel(Synchroniser synchroniser, SearchInteractor interactor, EntityDeleter<Food> deleter) {
-        return new SearchedFoodViewModel(synchroniser, interactor, deleter);
+    ViewModel SearchedFoodViewModel(Synchroniser synchroniser, SearchInteractor interactor, EntityDeleter<Food> deleter, FoodToBuyInteractor toBuyInteractor) {
+        return new SearchedFoodViewModel(synchroniser, interactor, deleter, toBuyInteractor);
+    }
+
+    @Provides
+    @IntoMap
+    @ViewModelKey(ShoppingListViewModel.class)
+    ViewModel ShoppingListViewModel(Synchroniser synchroniser, FoodToBuyInteractor interactor) {
+        return new ShoppingListViewModel(synchroniser, interactor);
     }
 }

@@ -19,34 +19,14 @@
  *
  */
 
-package de.njsm.stocks.client.business;
+package de.njsm.stocks.client.navigation;
 
-import de.njsm.stocks.client.business.entities.FoodToBuy;
-import de.njsm.stocks.client.business.entities.FoodToToggleBuy;
-import de.njsm.stocks.client.business.entities.FoodWithAmountForListing;
-import io.reactivex.rxjava3.core.Observable;
+import de.njsm.stocks.client.business.entities.Food;
+import de.njsm.stocks.client.business.entities.Id;
 
-import javax.inject.Inject;
-import java.util.List;
+public interface ShoppingListNavigator extends Navigator {
 
-class InMemoryFoodToBuyInteractor implements FoodToBuyInteractor {
+    void showFood(Id<Food> integer);
 
-    @Inject
-    InMemoryFoodToBuyInteractor() {
-    }
-
-    @Override
-    public void manageFoodToBuy(FoodToBuy food) {
-
-    }
-
-    @Override
-    public void manageFoodToBuy(FoodToToggleBuy food) {
-
-    }
-
-    @Override
-    public Observable<List<FoodWithAmountForListing>> getFoodToBuy() {
-        return Observable.empty();
-    }
+    void editFood(Id<Food> integer);
 }

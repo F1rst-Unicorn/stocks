@@ -23,10 +23,16 @@ package de.njsm.stocks.client.business;
 
 import de.njsm.stocks.client.business.entities.FoodToBuy;
 import de.njsm.stocks.client.business.entities.FoodToToggleBuy;
+import de.njsm.stocks.client.business.entities.FoodWithAmountForListing;
+import io.reactivex.rxjava3.core.Observable;
+
+import java.util.List;
 
 public interface FoodToBuyInteractor {
 
     void manageFoodToBuy(FoodToBuy food);
 
     void manageFoodToBuy(FoodToToggleBuy food);
+
+    Observable<List<FoodWithAmountForListing>> getFoodToBuy();
 }

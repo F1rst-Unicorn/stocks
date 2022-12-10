@@ -19,34 +19,16 @@
  *
  */
 
-package de.njsm.stocks.client.business;
+package de.njsm.stocks.client.business.entities;
 
-import de.njsm.stocks.client.business.entities.FoodToBuy;
-import de.njsm.stocks.client.business.entities.FoodToToggleBuy;
-import de.njsm.stocks.client.business.entities.FoodWithAmountForListing;
-import io.reactivex.rxjava3.core.Observable;
+import com.google.auto.value.AutoValue;
 
-import javax.inject.Inject;
-import java.util.List;
+@AutoValue
+public abstract class FoodWithAmountForListingBaseData implements Id<Food> {
 
-class InMemoryFoodToBuyInteractor implements FoodToBuyInteractor {
+    public abstract String name();
 
-    @Inject
-    InMemoryFoodToBuyInteractor() {
-    }
-
-    @Override
-    public void manageFoodToBuy(FoodToBuy food) {
-
-    }
-
-    @Override
-    public void manageFoodToBuy(FoodToToggleBuy food) {
-
-    }
-
-    @Override
-    public Observable<List<FoodWithAmountForListing>> getFoodToBuy() {
-        return Observable.empty();
+    public static FoodWithAmountForListingBaseData create(int id, String name) {
+        return new AutoValue_FoodWithAmountForListingBaseData(id, name);
     }
 }

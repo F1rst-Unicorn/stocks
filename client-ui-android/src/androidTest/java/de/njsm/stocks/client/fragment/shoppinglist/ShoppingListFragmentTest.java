@@ -19,28 +19,23 @@
  *
  */
 
-package de.njsm.stocks.client.fragment.searchedfood;
+package de.njsm.stocks.client.fragment.shoppinglist;
 
 import android.os.Bundle;
 import androidx.fragment.app.testing.FragmentScenario;
-import androidx.test.espresso.matcher.ViewMatchers;
 import androidx.test.platform.app.InstrumentationRegistry;
 import de.njsm.stocks.client.Application;
-import de.njsm.stocks.client.business.EntityDeleter;
 import de.njsm.stocks.client.business.FoodToBuyInteractor;
-import de.njsm.stocks.client.business.SearchInteractor;
-import de.njsm.stocks.client.business.entities.Food;
 import de.njsm.stocks.client.business.entities.FoodToBuy;
-import de.njsm.stocks.client.business.entities.SearchedFoodForListing;
+import de.njsm.stocks.client.business.entities.FoodWithAmountForListing;
 import de.njsm.stocks.client.business.entities.UnitAmount;
-import de.njsm.stocks.client.navigation.SearchedFoodNavigator;
+import de.njsm.stocks.client.navigation.ShoppingListNavigator;
 import de.njsm.stocks.client.presenter.UnitAmountRenderStrategy;
 import de.njsm.stocks.client.ui.R;
 import io.reactivex.rxjava3.core.Observable;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.ArgumentCaptor;
 
 import javax.inject.Inject;
 import java.math.BigDecimal;
@@ -52,40 +47,29 @@ import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.*;
 import static de.njsm.stocks.client.Matchers.equalBy;
 import static de.njsm.stocks.client.Matchers.recyclerView;
-import static org.hamcrest.Matchers.is;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
-public class SearchedFoodFragmentTest {
+public class ShoppingListFragmentTest {
 
-    private FragmentScenario<SearchedFoodFragment> scenario;
+    private FragmentScenario<ShoppingListFragment> scenario;
 
-    private SearchedFoodNavigator navigator;
-
-    private SearchInteractor interactor;
+    private ShoppingListNavigator navigator;
 
     private FoodToBuyInteractor toBuyInteractor;
-
-    private EntityDeleter<Food> deleter;
 
     private UnitAmountRenderStrategy renderStrategy;
 
     @Before
     public void setUp() {
         ((Application) InstrumentationRegistry.getInstrumentation().getTargetContext().getApplicationContext()).getDaggerRoot().inject(this);
-
-        String query = "query";
-        when(interactor.get(query)).thenReturn(Observable.just(getInput()));
-        when(navigator.getQuery(any())).thenReturn(query);
-
-        scenario = FragmentScenario.launchInContainer(SearchedFoodFragment.class, new Bundle(), R.style.StocksTheme);
+        when(toBuyInteractor.getFoodToBuy()).thenReturn(Observable.just(getInput()));
+        scenario = FragmentScenario.launchInContainer(ShoppingListFragment.class, new Bundle(), R.style.StocksTheme);
         renderStrategy = new UnitAmountRenderStrategy();
     }
 
     @After
     public void tearDown() {
         reset(navigator);
-        reset(interactor);
         reset(toBuyInteractor);
     }
 
@@ -96,7 +80,7 @@ public class SearchedFoodFragmentTest {
             onView(recyclerView(R.id.template_swipe_list_list).atPositionOnView(i, R.id.item_food_amount_name))
                     .check(matches(withText(item.name())));
             onView(recyclerView(R.id.template_swipe_list_list).atPositionOnView(i, R.id.item_food_amount_shopping_flag))
-                    .check(matches(withEffectiveVisibility(item.toBuy() ? ViewMatchers.Visibility.VISIBLE : ViewMatchers.Visibility.GONE)));
+                    .check(matches(withEffectiveVisibility(Visibility.GONE)));
             onView(recyclerView(R.id.template_swipe_list_list).atPositionOnView(i, R.id.item_food_amount_amout))
                     .check(matches(withText(renderStrategy.render(item.storedAmounts()))));
             i++;
@@ -108,7 +92,7 @@ public class SearchedFoodFragmentTest {
         onView(recyclerView(R.id.template_swipe_list_list).atPosition(1))
                 .perform(longClick());
 
-        verify(navigator).editFood(getInput().get(1).id());
+        verify(navigator).editFood(equalBy(getInput().get(1)));
     }
 
     @Test
@@ -116,51 +100,31 @@ public class SearchedFoodFragmentTest {
         onView(recyclerView(R.id.template_swipe_list_list).atPosition(1))
                 .perform(click());
 
-        verify(navigator).showFood(getInput().get(1).id());
+        verify(navigator).showFood(equalBy(getInput().get(1)));
     }
 
     @Test
-    public void rightSwipingDeletesFood() {
+    public void rightSwipingRemovesFromShoppingList() {
         onView(recyclerView(R.id.template_swipe_list_list).atPosition(1))
                 .perform(swipeRight());
 
-        verify(deleter).delete(equalBy(getInput().get(1)::id));
+        verify(toBuyInteractor).manageFoodToBuy(FoodToBuy.removeFromShoppingList(getInput().get(1).id()));
     }
 
-    @Test
-    public void leftSwipingPutsOnShoppingList() {
-        onView(recyclerView(R.id.template_swipe_list_list).atPosition(1)).perform(swipeLeft());
-
-        ArgumentCaptor<FoodToBuy> captor = ArgumentCaptor.forClass(FoodToBuy.class);
-        verify(toBuyInteractor).manageFoodToBuy(captor.capture());
-        assertThat(captor.getValue().id(), is(getInput().get(1).id()));
-        assertThat(captor.getValue().toBuy(), is(true));
-    }
-
-    private List<SearchedFoodForListing> getInput() {
+    private List<FoodWithAmountForListing> getInput() {
         return List.of(
-                SearchedFoodForListing.create(1, "Beer", false, List.of(
+                FoodWithAmountForListing.create(1, "Beer", List.of(
                         UnitAmount.of(BigDecimal.ONE, "l")
                 )),
-                SearchedFoodForListing.create(1, "Water", true, List.of(
+                FoodWithAmountForListing.create(1, "Water", List.of(
                         UnitAmount.of(BigDecimal.ZERO, "l")
                 ))
         );
     }
 
     @Inject
-    void setNavigator(SearchedFoodNavigator navigator) {
+    void setNavigator(ShoppingListNavigator navigator) {
         this.navigator = navigator;
-    }
-
-    @Inject
-    void setInteractor(SearchInteractor interactor) {
-        this.interactor = interactor;
-    }
-
-    @Inject
-    void setDeleter(EntityDeleter<Food> deleter) {
-        this.deleter = deleter;
     }
 
     @Inject

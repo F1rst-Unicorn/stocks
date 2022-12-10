@@ -52,6 +52,7 @@ import de.njsm.stocks.client.fragment.searchedfood.SearchedFoodFragment;
 import de.njsm.stocks.client.fragment.settings.SettingsFragment;
 import de.njsm.stocks.client.fragment.setupform.SetupFormFragment;
 import de.njsm.stocks.client.fragment.setupgreet.SetupGreetingFragment;
+import de.njsm.stocks.client.fragment.shoppinglist.ShoppingListFragment;
 import de.njsm.stocks.client.fragment.unitadd.UnitAddFragment;
 import de.njsm.stocks.client.fragment.unitconflict.UnitConflictFragment;
 import de.njsm.stocks.client.fragment.unitedit.UnitEditFragment;
@@ -176,4 +177,7 @@ public abstract class FragmentModule {
 
     @ContributesAndroidInjector
     public abstract SearchedFoodFragment SearchedFoodFragment();
+
+    @ContributesAndroidInjector
+    public abstract ShoppingListFragment ShoppingListFragment();
 }

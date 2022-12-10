@@ -137,6 +137,8 @@ public class MainActivity extends BaseActivity {
             navigationArgConsumer.navigate(NavigationGraphDirections.actionGlobalNavFragmentRecipes());
         } else if (id == R.id.activity_main_drawer_settings) {
             navigationArgConsumer.navigate(NavigationGraphDirections.actionGlobalNavFragmentSettings());
+        } else if (id == R.id.activity_main_drawer_shopping_list) {
+            navigationArgConsumer.navigate(NavigationGraphDirections.actionGlobalNavFragmentShoppingList());
         }
 
         drawerLayout.closeDrawer(GravityCompat.START);

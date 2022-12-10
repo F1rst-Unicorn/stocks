@@ -140,6 +140,7 @@
     <string name="hint_no_units">No Units of Measure.\nCreate one using the + button.</string>
     <string name="hint_no_scaled_units">No Unit Amounts.\nCreate one using the + button.</string>
     <string name="hint_no_food">No Food.\nCreate one using the + button.</string>
+    <string name="hint_no_food_to_buy">Nothing to buy</string>
     <string name="hint_no_food_in_location">No food in this location.</string>
     <string name="hint_no_food_items">No food present.</string>
 
