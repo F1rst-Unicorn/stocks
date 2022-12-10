@@ -57,7 +57,7 @@ class FoodItemListInteractorImplTest {
         Id<Food> input = IdImpl.create(42);
         BehaviorSubject<List<FoodItemForListingData>> subject = BehaviorSubject.createDefault(emptyList());
         when(repository.get(input)).thenReturn(subject);
-        when(repository.getFood(input)).thenReturn(just(FoodForSelection.create(1, "Banana")));
+        when(repository.getFood(input)).thenReturn(just(FoodForItemListing.create(1, "Banana", false)));
         var observable = uut.get(input);
         observable.subscribe(v -> counter.getAndIncrement());
 

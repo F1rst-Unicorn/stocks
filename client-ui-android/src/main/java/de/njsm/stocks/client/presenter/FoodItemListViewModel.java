@@ -26,10 +26,8 @@ import androidx.lifecycle.LiveDataReactiveStreams;
 import androidx.lifecycle.ViewModel;
 import de.njsm.stocks.client.business.EntityDeleter;
 import de.njsm.stocks.client.business.FoodItemListInteractor;
-import de.njsm.stocks.client.business.entities.Food;
-import de.njsm.stocks.client.business.entities.FoodItem;
-import de.njsm.stocks.client.business.entities.FoodItemsForListing;
-import de.njsm.stocks.client.business.entities.Id;
+import de.njsm.stocks.client.business.FoodToBuyInteractor;
+import de.njsm.stocks.client.business.entities.*;
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.core.BackpressureStrategy;
 import io.reactivex.rxjava3.core.Observable;
@@ -43,12 +41,15 @@ public class FoodItemListViewModel extends ViewModel {
 
     private final EntityDeleter<FoodItem> deleter;
 
+    private final FoodToBuyInteractor toBuyInteractor;
+
     private Observable<FoodItemsForListing> data;
 
     @Inject
-    FoodItemListViewModel(FoodItemListInteractor interactor, EntityDeleter<FoodItem> deleter) {
+    FoodItemListViewModel(FoodItemListInteractor interactor, EntityDeleter<FoodItem> deleter, FoodToBuyInteractor toBuyInteractor) {
         this.interactor = interactor;
         this.deleter = deleter;
+        this.toBuyInteractor = toBuyInteractor;
     }
 
     public void delete(int listItemIndex) {
@@ -80,5 +81,9 @@ public class FoodItemListViewModel extends ViewModel {
         if (data == null)
             data = interactor.get(id);
         return data;
+    }
+
+    public void toggleShoppingFlag(Id<Food> foodId) {
+        toBuyInteractor.manageFoodToBuy(FoodToToggleBuy.create(foodId.id()));
     }
 }

@@ -36,6 +36,6 @@ class InMemoryFoodItemListInteractorImpl implements FoodItemListInteractor {
 
     @Override
     public Observable<de.njsm.stocks.client.business.entities.FoodItemsForListing> get(Id<Food> food) {
-        return Observable.just(de.njsm.stocks.client.business.entities.FoodItemsForListing.create(FoodItemsForListing.get(), "Banana"));
+        return Observable.just(de.njsm.stocks.client.business.entities.FoodItemsForListing.create(FoodItemsForListing.get(), "Banana", false));
     }
 }

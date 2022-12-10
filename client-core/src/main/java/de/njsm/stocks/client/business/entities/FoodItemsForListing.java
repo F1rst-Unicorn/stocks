@@ -32,7 +32,9 @@ public abstract class FoodItemsForListing {
 
     public abstract String foodName();
 
-    public static FoodItemsForListing create(List<FoodItemForListing> foodItems, String foodName) {
-        return new AutoValue_FoodItemsForListing(foodItems, foodName);
+    public abstract boolean toBuy();
+
+    public static FoodItemsForListing create(List<FoodItemForListing> foodItems, String foodName, boolean toBuy) {
+        return new AutoValue_FoodItemsForListing(foodItems, foodName, toBuy);
     }
 }

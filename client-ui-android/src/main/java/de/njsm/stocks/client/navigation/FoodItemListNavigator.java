@@ -31,5 +31,7 @@ public interface FoodItemListNavigator {
 
     void add(Id<Food> id);
 
-    void edit(int id);
+    void edit(Id<Food> id);
+
+    void showEanNumbers(Id<Food> foodId);
 }

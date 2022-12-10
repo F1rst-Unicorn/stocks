@@ -54,7 +54,7 @@ public class FoodItemListNavigatorImplTest extends NavigationTest {
     public void editingContentBindsCorrectly() {
         int expected = 42;
 
-        uut.edit(expected);
+        uut.edit(() -> expected);
 
         FoodItemTabsFragmentDirections.ActionNavFragmentFoodItemTabsToNavFragmentFoodItemEdit actual = navigationArgConsumer.getLastArgument(FoodItemTabsFragmentDirections.ActionNavFragmentFoodItemTabsToNavFragmentFoodItemEdit.class);
         assertEquals(actual.getId(), expected);
@@ -67,6 +67,17 @@ public class FoodItemListNavigatorImplTest extends NavigationTest {
         uut.add(() -> expected);
 
         FoodItemTabsFragmentDirections.ActionNavFragmentFoodItemTabsToNavFragmentFoodItemAdd actual = navigationArgConsumer.getLastArgument(FoodItemTabsFragmentDirections.ActionNavFragmentFoodItemTabsToNavFragmentFoodItemAdd.class);
+        assertEquals(actual.getFoodId(), expected);
+    }
+
+
+    @Test
+    public void showingEanNumbersBindsCorrectly() {
+        int expected = 42;
+
+        uut.showEanNumbers(() -> expected);
+
+        var actual = navigationArgConsumer.getLastArgument(FoodItemTabsFragmentDirections.ActionNavFragmentFoodItemTabsToNavFragmentEanNumbers.class);
         assertEquals(actual.getFoodId(), expected);
     }
 }

@@ -22,52 +22,26 @@
 package de.njsm.stocks.client.fragment.fooditemtabs;
 
 import android.os.Bundle;
-import android.view.*;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import com.google.android.material.tabs.TabLayout;
-import de.njsm.stocks.client.business.entities.Food;
-import de.njsm.stocks.client.business.entities.Id;
 import de.njsm.stocks.client.fragment.fooditemlist.FoodItemListFragment;
 import de.njsm.stocks.client.fragment.unittabs.TabsFragment;
-import de.njsm.stocks.client.navigation.FoodItemTabsNavigator;
 import de.njsm.stocks.client.ui.R;
 
-import javax.inject.Inject;
 import java.util.List;
 import java.util.function.Supplier;
 
 public class FoodItemTabsFragment extends TabsFragment {
 
-    private FoodItemTabsNavigator navigator;
-
     @NonNull
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable @org.jetbrains.annotations.Nullable ViewGroup container, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
-        View result = super.onCreateView(inflater, container, savedInstanceState);
-        setHasOptionsMenu(true);
-        return result;
-    }
-
-    @Override
-    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
-        inflater.inflate(R.menu.menu_food_items, menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if (item.getItemId() == R.id.menu_food_items_edit) {
-            Id<Food> foodId = navigator.get(requireArguments());
-            navigator.editFood(foodId);
-            return true;
-        } else if (item.getItemId() == R.id.menu_food_items_ean_codes) {
-            Id<Food> foodId = navigator.get(requireArguments());
-            navigator.showEanNumbers(foodId);
-            return true;
-        } else {
-            return super.onOptionsItemSelected(item);
-        }
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        return super.onCreateView(inflater, container, savedInstanceState);
     }
 
     @Override
@@ -90,15 +64,10 @@ public class FoodItemTabsFragment extends TabsFragment {
                     return result;
                 },
                 () -> {
-                    Fragment result = new FoodItemListFragment();
+                    Fragment result = new Fragment();
                     result.setArguments(requireArguments());
                     return result;
                 }
         );
-    }
-
-    @Inject
-    void setNavigator(FoodItemTabsNavigator navigator) {
-        this.navigator = navigator;
     }
 }

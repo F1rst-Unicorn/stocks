@@ -215,12 +215,6 @@ class FakeNavigationModule {
 
     @Provides
     @Singleton
-    FoodItemTabsNavigator FoodItemTabsNavigator() {
-        return mock(FoodItemTabsNavigator.class);
-    }
-
-    @Provides
-    @Singleton
     RecipeListNavigator RecipeListNavigator() {
         return mock(RecipeListNavigator.class);
     }

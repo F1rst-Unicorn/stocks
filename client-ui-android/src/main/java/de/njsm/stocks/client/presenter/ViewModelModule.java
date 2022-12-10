@@ -213,8 +213,8 @@ public class ViewModelModule {
     @Provides
     @IntoMap
     @ViewModelKey(FoodItemListViewModel.class)
-    ViewModel FoodItemListViewModel(FoodItemListInteractor interactor, EntityDeleter<FoodItem> deleter) {
-        return new FoodItemListViewModel(interactor, deleter);
+    ViewModel FoodItemListViewModel(FoodItemListInteractor interactor, EntityDeleter<FoodItem> deleter, FoodToBuyInteractor toBuyInteractor) {
+        return new FoodItemListViewModel(interactor, deleter, toBuyInteractor);
     }
 
     @Provides

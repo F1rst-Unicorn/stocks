@@ -29,5 +29,5 @@ import java.util.List;
 public interface FoodItemListRepository {
     Observable<List<FoodItemForListingData>> get(Id<Food> food);
 
-    Observable<FoodForSelection> getFood(Id<Food> food);
+    Observable<FoodForItemListing> getFood(Id<Food> food);
 }

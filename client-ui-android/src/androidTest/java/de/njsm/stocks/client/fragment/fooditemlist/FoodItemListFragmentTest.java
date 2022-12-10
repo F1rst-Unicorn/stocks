@@ -26,14 +26,8 @@ import androidx.fragment.app.testing.FragmentScenario;
 import androidx.test.platform.app.InstrumentationRegistry;
 import de.njsm.stocks.client.Application;
 import de.njsm.stocks.client.Matchers;
-import de.njsm.stocks.client.business.EntityDeleter;
-import de.njsm.stocks.client.business.FakeFoodItemListInteractor;
-import de.njsm.stocks.client.business.Localiser;
-import de.njsm.stocks.client.business.Synchroniser;
-import de.njsm.stocks.client.business.entities.Food;
-import de.njsm.stocks.client.business.entities.FoodItem;
-import de.njsm.stocks.client.business.entities.FoodItemForListing;
-import de.njsm.stocks.client.business.entities.Id;
+import de.njsm.stocks.client.business.*;
+import de.njsm.stocks.client.business.entities.*;
 import de.njsm.stocks.client.navigation.FoodItemListNavigator;
 import de.njsm.stocks.client.presenter.DateRenderStrategy;
 import de.njsm.stocks.client.presenter.UnitAmountRenderStrategy;
@@ -42,6 +36,7 @@ import de.njsm.stocks.client.ui.R;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.ArgumentCaptor;
 
 import javax.inject.Inject;
 import java.util.List;
@@ -52,11 +47,12 @@ import static androidx.test.espresso.action.ViewActions.swipeRight;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.contrib.RecyclerViewActions.actionOnItemAtPosition;
 import static androidx.test.espresso.matcher.ViewMatchers.*;
+import static de.njsm.stocks.client.Matchers.equalBy;
 import static de.njsm.stocks.client.Matchers.recyclerView;
+import static de.njsm.stocks.client.fragment.Util.menuItem;
 import static java.util.Collections.emptyList;
 import static org.hamcrest.Matchers.allOf;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -67,6 +63,8 @@ public class FoodItemListFragmentTest {
     private FakeFoodItemListInteractor foodItemListInteractor;
 
     private FoodItemListNavigator foodItemListNavigator;
+
+    private FoodToBuyInteractor toBuyInteractor;
 
     private Synchroniser synchroniser;
 
@@ -95,6 +93,7 @@ public class FoodItemListFragmentTest {
         reset(foodItemDeleter);
         reset(synchroniser);
         reset(foodItemListNavigator);
+        reset(toBuyInteractor);
     }
 
     @Test
@@ -142,7 +141,19 @@ public class FoodItemListFragmentTest {
         onView(withId(R.id.template_swipe_list_list))
                 .perform(actionOnItemAtPosition(itemIndex, click()));
 
-        verify(foodItemListNavigator).edit(item.id());
+        verify(foodItemListNavigator).edit(equalBy(item::id));
+    }
+
+    @Test
+    public void clickingToBuyNavigates() {
+        List<FoodItemForListing> data = FoodItemsForListing.get();
+        foodItemListInteractor.setData(data);
+
+        scenario.onFragment(v -> v.onMenuItemSelected(menuItem(v.requireContext(), R.id.menu_food_items_shopping_list)));
+
+        ArgumentCaptor<FoodToToggleBuy> captor = ArgumentCaptor.forClass(FoodToToggleBuy.class);
+        verify(toBuyInteractor).manageFoodToBuy(captor.capture());
+        assertEquals(food.id(), captor.getValue().id());
     }
 
     @Test
@@ -189,5 +200,10 @@ public class FoodItemListFragmentTest {
     @Inject
     void setLocaliser(Localiser localiser) {
         this.localiser = localiser;
+    }
+
+    @Inject
+    void setToBuyInteractor(FoodToBuyInteractor toBuyInteractor) {
+        this.toBuyInteractor = toBuyInteractor;
     }
 }

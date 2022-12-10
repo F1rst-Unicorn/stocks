@@ -30,13 +30,11 @@ import de.njsm.stocks.client.fragment.fooditemtabs.FoodItemTabsFragmentDirection
 
 import javax.inject.Inject;
 
-class FoodItemListNavigatorImpl implements FoodItemListNavigator {
-
-    private final NavigationArgConsumer navigationArgConsumer;
+class FoodItemListNavigatorImpl extends BaseNavigator implements FoodItemListNavigator {
 
     @Inject
     FoodItemListNavigatorImpl(NavigationArgConsumer navigationArgConsumer) {
-        this.navigationArgConsumer = navigationArgConsumer;
+        super(navigationArgConsumer);
     }
 
     @Override
@@ -47,12 +45,19 @@ class FoodItemListNavigatorImpl implements FoodItemListNavigator {
     @Override
     public void add(Id<Food> id) {
         NavDirections direction = FoodItemTabsFragmentDirections.actionNavFragmentFoodItemTabsToNavFragmentFoodItemAdd(id.id());
-        navigationArgConsumer.navigate(direction);
+        getNavigationArgConsumer().navigate(direction);
     }
 
     @Override
-    public void edit(int id) {
-        NavDirections direction = FoodItemTabsFragmentDirections.actionNavFragmentFoodItemTabsToNavFragmentFoodItemEdit(id);
-        navigationArgConsumer.navigate(direction);
+    public void edit(Id<Food> id) {
+        NavDirections direction = FoodItemTabsFragmentDirections.actionNavFragmentFoodItemTabsToNavFragmentFoodItemEdit(id.id());
+        getNavigationArgConsumer().navigate(direction);
+    }
+
+
+    @Override
+    public void showEanNumbers(Id<Food> foodId) {
+        var direction = FoodItemTabsFragmentDirections.actionNavFragmentFoodItemTabsToNavFragmentEanNumbers(foodId.id());
+        getNavigationArgConsumer().navigate(direction);
     }
 }

@@ -19,17 +19,19 @@
  *
  */
 
-package de.njsm.stocks.client.navigation;
+package de.njsm.stocks.client.business.entities;
 
-import android.os.Bundle;
-import de.njsm.stocks.client.business.entities.Food;
-import de.njsm.stocks.client.business.entities.Id;
 
-public interface FoodItemTabsNavigator {
+import com.google.auto.value.AutoValue;
 
-    Id<Food> get(Bundle requireArguments);
+@AutoValue
+public abstract class FoodForItemListing implements Id<Food> {
 
-    void editFood(Id<Food> foodId);
+    public abstract String name();
 
-    void showEanNumbers(Id<Food> foodId);
+    public abstract boolean toBuy();
+
+    public static FoodForItemListing create(int id, String name, boolean toBuy) {
+        return new AutoValue_FoodForItemListing(id, name, toBuy);
+    }
 }

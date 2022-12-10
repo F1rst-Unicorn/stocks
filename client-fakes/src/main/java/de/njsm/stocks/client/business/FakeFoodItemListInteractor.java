@@ -41,7 +41,7 @@ public class FakeFoodItemListInteractor implements FoodItemListInteractor {
     }
 
     public void setData(List<FoodItemForListing> data) {
-        this.data.onNext(FoodItemsForListing.create(data, "Banana"));
+        this.data.onNext(FoodItemsForListing.create(data, "Banana", false));
     }
 
     @Override
