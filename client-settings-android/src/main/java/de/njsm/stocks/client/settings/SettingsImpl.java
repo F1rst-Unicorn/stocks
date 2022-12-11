@@ -47,6 +47,7 @@ class SettingsImpl implements Settings, SettingsWriter, SetupStatusChecker {
     @Inject
     SettingsImpl(SharedPreferences sharedPreferences) {
         this.sharedPreferences = sharedPreferences;
+        maybeMigrateLegacyApp();
     }
 
     @Override
@@ -146,5 +147,43 @@ class SettingsImpl implements Settings, SettingsWriter, SetupStatusChecker {
     @Override
     public boolean isSetup() {
         return !getServerName().isEmpty();
+    }
+
+    private static final String LEGACY_SERVER_NAME_CONFIG = "stocks.serverName";
+    private static final String LEGACY_CA_PORT_CONFIG = "stocks.caPort";
+    private static final String LEGACY_SENTRY_PORT_CONFIG = "stocks.sentryPort";
+    private static final String LEGACY_SERVER_PORT_CONFIG = "stocks.serverPort";
+    private static final String LEGACY_USERNAME_CONFIG = "stocks.username";
+    private static final String LEGACY_DEVICE_NAME_CONFIG = "stocks.deviceName";
+    private static final String LEGACY_UID_CONFIG = "stocks.uid";
+    private static final String LEGACY_DID_CONFIG = "stocks.did";
+    private static final String LEGACY_FPR_CONFIG = "stocks.fpr";
+    private static final String LEGACY_TICKET_CONFIG = "stocks.ticket";
+
+    private void maybeMigrateLegacyApp() {
+        if (sharedPreferences.contains("stocks.serverName")) {
+            sharedPreferences.edit()
+                    .putString(SERVER_NAME_KEY, sharedPreferences.getString(LEGACY_SERVER_NAME_CONFIG, ""))
+                    .putInt(CA_PORT_KEY, sharedPreferences.getInt(LEGACY_CA_PORT_CONFIG, 0))
+                    .putInt(REGISTRATION_PORT_KEY, sharedPreferences.getInt(LEGACY_SENTRY_PORT_CONFIG, 0))
+                    .putInt(SERVER_PORT_KEY, sharedPreferences.getInt(LEGACY_SERVER_PORT_CONFIG, 0))
+                    .putInt(USER_ID_KEY, sharedPreferences.getInt(LEGACY_UID_CONFIG, 0))
+                    .putString(USER_NAME_KEY, sharedPreferences.getString(LEGACY_USERNAME_CONFIG, ""))
+                    .putInt(USER_DEVICE_ID_KEY, sharedPreferences.getInt(LEGACY_DID_CONFIG, 0))
+                    .putString(USER_DEVICE_NAME_KEY, sharedPreferences.getString(LEGACY_DEVICE_NAME_CONFIG, ""))
+                    .putString(FINGERPRINT_KEY, sharedPreferences.getString(LEGACY_FPR_CONFIG, ""))
+                    .putString(TICKET_KEY, sharedPreferences.getString(LEGACY_TICKET_CONFIG, ""))
+                    .remove(LEGACY_SERVER_NAME_CONFIG)
+                    .remove(LEGACY_CA_PORT_CONFIG)
+                    .remove(LEGACY_SENTRY_PORT_CONFIG)
+                    .remove(LEGACY_SERVER_PORT_CONFIG)
+                    .remove(LEGACY_USERNAME_CONFIG)
+                    .remove(LEGACY_DEVICE_NAME_CONFIG)
+                    .remove(LEGACY_UID_CONFIG)
+                    .remove(LEGACY_DID_CONFIG)
+                    .remove(LEGACY_FPR_CONFIG)
+                    .remove(LEGACY_TICKET_CONFIG)
+                    .commit();
+        }
     }
 }
