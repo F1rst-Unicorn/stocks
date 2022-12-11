@@ -30,10 +30,10 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Stream;
 
-public class Legacy40To43 extends Migration {
+public class Legacy40To44 extends Migration {
 
-    public Legacy40To43() {
-        super(40, 43);
+    public Legacy40To44() {
+        super(40, 44);
     }
 
     @Override
