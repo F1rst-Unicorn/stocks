@@ -21,7 +21,11 @@
 
 package de.njsm.stocks.client.database.migration;
 
+import android.database.Cursor;
 import androidx.sqlite.db.SupportSQLiteDatabase;
+
+import java.util.ArrayList;
+import java.util.List;
 
 class DdlPrimitives {
 
@@ -73,6 +77,69 @@ class DdlPrimitives {
 
     void renameTable(String from, String to) {
         database.execSQL("alter table " + from + " rename to " + to);
+    }
+
+    void copyTable(String oldName, String newName, String primaryKey, List<String> columnDdl, List<String>  columns) {
+        copyTable(oldName, newName, primaryKey, columnDdl.toArray(new String[]{}), columns.toArray(new String[]{}));
+    }
+
+    /**
+     * https://sqlite.org/lang_altertable.html
+     */
+    void copyTable(String oldName, String newName, String primaryKey, String[] columnDdl, String[] columns) {
+        database.execSQL("PRAGMA foreign_keys=OFF");
+        database.execSQL("begin transaction");
+        List<SavedObject> objects = saveObjects(oldName);
+        var temporaryName = "temporary_migration_table";
+        dropObjects(objects);
+        createTable(temporaryName, primaryKey, columnDdl);
+        copyTableContent(oldName, temporaryName, columns);
+        dropTable(oldName);
+        renameTable(temporaryName, newName);
+        restoreObjects(objects);
+        database.execSQL("commit");
+        database.execSQL("PRAGMA foreign_keys=ON");
+    }
+
+    private void dropObjects(List<SavedObject> objects) {
+        for (SavedObject object : objects) {
+            if (object.type.equals("view")) {
+                dropView(object.name);
+            } else {
+                throw new IllegalArgumentException("cannot migrate " + object.type);
+            }
+        }
+    }
+
+    private void restoreObjects(List<SavedObject> objects) {
+        for (SavedObject object : objects) {
+            database.execSQL(object.sql);
+        }
+    }
+
+    private List<SavedObject> saveObjects(String oldName) {
+        List<SavedObject> result = new ArrayList<>();
+        try (Cursor cursor = database.query("select type, sql, name " +
+                "from sqlite_schema " +
+                "where sql like '%" + oldName + "%' " +
+                "and type in ('view')")) {
+            while(cursor.moveToNext()) {
+                result.add(new SavedObject(cursor.getString(0), cursor.getString(1), cursor.getString(2)));
+            }
+        }
+        return result;
+    }
+
+    private static class SavedObject {
+        private final String type;
+        private final String sql;
+        private final String name;
+
+        private SavedObject(String type, String sql, String name) {
+            this.type = type;
+            this.sql = sql;
+            this.name = name;
+        }
     }
 
     void renameColumn(String table, String from, String to) {

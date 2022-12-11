@@ -33,7 +33,7 @@ import de.njsm.stocks.client.database.VersionFields;
 @Entity(tableName = "food_item_to_delete")
 public abstract class FoodItemDeleteEntity implements IdFields, VersionFields {
 
-    @Embedded(prefix = "food_")
+    @Embedded(prefix = "food_item_")
     @AutoValue.CopyAnnotations
     public abstract PreservedId foodItem();
 
