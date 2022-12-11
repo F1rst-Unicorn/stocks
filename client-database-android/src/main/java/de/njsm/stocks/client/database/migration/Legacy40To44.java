@@ -84,6 +84,12 @@ public class Legacy40To44 extends Migration {
                 "unit_transaction_time TEXT",
                 "eat_by TEXT not null"
         );
+        ddlPrimitives.createTable("recipe_to_add", "id",
+                "id INTEGER not null",
+                "name TEXT not null",
+                "duration TEXT not null",
+                "instructions TEXT not null"
+        );
         ddlPrimitives.createTable("food_to_add", "id",
                 "id INTEGER not null",
                 "name TEXT not null",
@@ -136,54 +142,14 @@ public class Legacy40To44 extends Migration {
                 "recipe_to_add INTEGER not null"
         );
 
-        ddlPrimitives.createTable("unit_to_delete", "id",
-                "id INTEGER not null",
-                "version INTEGER not null",
-                "unit_id INTEGER",
-                "unit_transaction_time TEXT"
-        );
-        ddlPrimitives.createTable("user_device_to_delete", "id",
-                "id INTEGER not null",
-                "version INTEGER not null",
-                "user_device_id INTEGER",
-                "user_device_transaction_time TEXT"
-        );
-        ddlPrimitives.createTable("user_to_delete", "id",
-                "id INTEGER not null",
-                "version INTEGER not null",
-                "user_id INTEGER",
-                "user_transaction_time TEXT"
-        );
-        ddlPrimitives.createTable("location_to_delete", "id",
-                "id INTEGER not null",
-                "version INTEGER not null",
-                "location_id INTEGER",
-                "location_transaction_time TEXT"
-        );
-        ddlPrimitives.createTable("food_to_delete", "id",
-                "id INTEGER not null",
-                "version INTEGER not null",
-                "food_id INTEGER",
-                "food_transaction_time TEXT"
-        );
-        ddlPrimitives.createTable("food_item_to_delete", "id",
-                "id INTEGER not null",
-                "version INTEGER not null",
-                "food_item_id INTEGER",
-                "food_item_transaction_time TEXT"
-        );
-        ddlPrimitives.createTable("ean_number_to_delete", "id",
-                "id INTEGER not null",
-                "version INTEGER not null",
-                "ean_number_id INTEGER",
-                "ean_number_transaction_time TEXT"
-        );
-        ddlPrimitives.createTable("scaled_unit_to_delete", "id",
-                "id INTEGER not null",
-                "version INTEGER not null",
-                "scaled_unit_id INTEGER",
-                "scaled_unit_transaction_time TEXT"
-        );
+        handleEntityToDeleteTable(ddlPrimitives, "unit");
+        handleEntityToDeleteTable(ddlPrimitives, "user");
+        handleEntityToDeleteTable(ddlPrimitives, "user_device");
+        handleEntityToDeleteTable(ddlPrimitives, "location");
+        handleEntityToDeleteTable(ddlPrimitives, "food");
+        handleEntityToDeleteTable(ddlPrimitives, "food_item");
+        handleEntityToDeleteTable(ddlPrimitives, "ean_number");
+        handleEntityToDeleteTable(ddlPrimitives, "scaled_unit");
 
         ddlPrimitives.createTable("food_to_edit", "id",
                 "id INTEGER not null",
@@ -250,6 +216,15 @@ public class Legacy40To44 extends Migration {
         );
     }
 
+    private static void handleEntityToDeleteTable(DdlPrimitives ddlPrimitives, String entity) {
+        ddlPrimitives.createTable(entity + "_to_delete", "id",
+                "id INTEGER not null",
+                "version INTEGER not null",
+                entity + "_id INTEGER",
+                entity + "_transaction_time TEXT"
+        );
+    }
+
     private static void handleExceptionRecordingTables(DdlPrimitives ddlPrimitives) {
         ddlPrimitives.createTable("subsystem_error", "id",
                 "message TEXT not null",
@@ -268,6 +243,14 @@ public class Legacy40To44 extends Migration {
                 "exception_id INTEGER not null");
     }
 
+    // copied to prevent accidental breaking when refactoring
+    private static final String DATABASE_INFINITY_STRING = "9999-12-31 23:59:59.999999";
+    private static final String NOW = "(select max(x) from (select datetime('now') as x union select max(last_update) as x from updates)) ";
+    private static final String NOW_AS_BEST_KNOWN =
+            "where valid_time_start <= " + NOW +
+                    "and " + NOW + " < valid_time_end " +
+                    "and transaction_time_end = '" + DATABASE_INFINITY_STRING + "'";
+
     private static void handleEanNumber(DdlPrimitives ddlPrimitives) {
         copyEntityTable(ddlPrimitives, "eannumber", "ean_number",
                 List.of(
@@ -277,6 +260,7 @@ public class Legacy40To44 extends Migration {
                         "number",
                         "identifies"
                 ));
+        ddlPrimitives.createView("current_ean_number", "select * from ean_number " + NOW_AS_BEST_KNOWN);
     }
 
     private static void handleUserDevice(DdlPrimitives ddlPrimitives) {
@@ -288,6 +272,7 @@ public class Legacy40To44 extends Migration {
                         "name",
                         "belongs_to"
                 ));
+        ddlPrimitives.createView("current_user_device", "select * from user_device " + NOW_AS_BEST_KNOWN);
     }
 
     private static void handleUser(DdlPrimitives ddlPrimitives) {
@@ -297,6 +282,7 @@ public class Legacy40To44 extends Migration {
                 ), List.of(
                         "name"
                 ));
+        ddlPrimitives.createView("current_user", "select * from user " + NOW_AS_BEST_KNOWN);
     }
 
     private static void handleUnit(DdlPrimitives ddlPrimitives) {
@@ -308,6 +294,7 @@ public class Legacy40To44 extends Migration {
                         "name",
                         "abbreviation"
                 ));
+        ddlPrimitives.createView("current_unit", "select * from unit " + NOW_AS_BEST_KNOWN);
     }
 
     private static void handleLocation(DdlPrimitives ddlPrimitives) {
@@ -319,6 +306,7 @@ public class Legacy40To44 extends Migration {
                         "name",
                         "description"
                 ));
+        ddlPrimitives.createView("current_location", "select * from location " + NOW_AS_BEST_KNOWN);
     }
 
     private static void handleScaledUnit(DdlPrimitives ddlPrimitives) {
@@ -330,6 +318,7 @@ public class Legacy40To44 extends Migration {
                         "scale",
                         "unit"
                 ));
+        ddlPrimitives.createView("current_scaled_unit", "select * from scaled_unit " + NOW_AS_BEST_KNOWN);
     }
 
     private static void handleRecipeProduct(DdlPrimitives ddlPrimitives) {
@@ -345,6 +334,7 @@ public class Legacy40To44 extends Migration {
                         "unit",
                         "amount"
                 ));
+        ddlPrimitives.createView("current_recipe_product", "select * from recipe_product " + NOW_AS_BEST_KNOWN);
     }
 
     private static void handleRecipeIngredient(DdlPrimitives ddlPrimitives) {
@@ -360,6 +350,7 @@ public class Legacy40To44 extends Migration {
                         "unit",
                         "amount"
                 ));
+        ddlPrimitives.createView("current_recipe_ingredient", "select * from recipe_ingredient " + NOW_AS_BEST_KNOWN);
     }
 
     private static void handleRecipe(DdlPrimitives ddlPrimitives) {
@@ -373,6 +364,7 @@ public class Legacy40To44 extends Migration {
                         "duration",
                         "instructions"
                 ));
+        ddlPrimitives.createView("current_recipe", "select * from recipe " + NOW_AS_BEST_KNOWN);
     }
 
     private static void handleFoodItem(DdlPrimitives ddlPrimitives) {
@@ -392,6 +384,7 @@ public class Legacy40To44 extends Migration {
                         "unit",
                         "eat_by"
                 ));
+        ddlPrimitives.createView("current_food_item", "select * from food_item " + NOW_AS_BEST_KNOWN);
     }
 
     private static void handleFood(DdlPrimitives ddlPrimitives) {
@@ -411,6 +404,7 @@ public class Legacy40To44 extends Migration {
                         "store_unit",
                         "description"
                 ));
+        ddlPrimitives.createView("current_food", "select * from food " + NOW_AS_BEST_KNOWN);
     }
 
     private static void copyEntityTable(DdlPrimitives ddlPrimitives, String oldName, String newName, List<String> columnsDdl, List<String> columns) {
@@ -424,10 +418,10 @@ public class Legacy40To44 extends Migration {
                 "initiates INTEGER not null",
 
         }), columnsDdl.stream()).toArray(String[]::new);
-        List<String> allCustomColumsDuplicate = new ArrayList<>();
+        List<String> allCustomColumnsDuplicate = new ArrayList<>();
         columns.forEach(v -> {
-            allCustomColumsDuplicate.add(v);
-            allCustomColumsDuplicate.add(v);
+            allCustomColumnsDuplicate.add(v);
+            allCustomColumnsDuplicate.add(v);
         });
         String[] allColumns = Stream.concat(Arrays.stream(new String[] {
                 "_id", "id",
@@ -438,14 +432,14 @@ public class Legacy40To44 extends Migration {
                 "transaction_time_end", "transaction_time_end",
                 "initiates", "initiates",
 
-        }), allCustomColumsDuplicate.stream()).toArray(String[]::new);
+        }), allCustomColumnsDuplicate.stream()).toArray(String[]::new);
 
         ddlPrimitives.dropView("current_" + oldName);
         ddlPrimitives.copyTable(oldName, newName, "id, version, transaction_time_start", allColumnDdls, allColumns);
-        ddlPrimitives.createIndex(newName, newName + "_current", "1 = 1", "id", "valid_time_start", "valid_time_end");
-        ddlPrimitives.createIndex(newName, newName + "_pkey", "1 = 1", "id");
-        ddlPrimitives.createIndex(newName, newName + "_transaction_time_start", "1 = 1", "transaction_time_start");
-        ddlPrimitives.createIndex(newName, newName + "_transaction_time_end", "1 = 1", "transaction_time_end");
+        ddlPrimitives.createIndex(newName, newName + "_current", "id", "valid_time_start", "valid_time_end");
+        ddlPrimitives.createIndex(newName, newName + "_pkey", "id");
+        ddlPrimitives.createIndex(newName, newName + "_transaction_time_start", "transaction_time_start");
+        ddlPrimitives.createIndex(newName, newName + "_transaction_time_end", "transaction_time_end");
     }
 
     private static void handleSearchTables(DdlPrimitives ddlPrimitives) {
@@ -453,9 +447,12 @@ public class Legacy40To44 extends Migration {
                 "last_queried TEXT not null",
                 "food INTEGER not null"
         );
-        ddlPrimitives.createTable("recent_search", "term",
+        ddlPrimitives.copyTable("search_suggestion", "recent_search", "term", List.of(
                 "last_queried TEXT not null",
                 "term TEXT not null"
-        );
+        ), List.of(
+                "last_queried", "last_queried",
+                "term", "term"
+        ));
     }
 }

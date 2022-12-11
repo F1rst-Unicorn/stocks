@@ -84,7 +84,7 @@ class DdlPrimitives {
     }
 
     /**
-     * https://sqlite.org/lang_altertable.html
+     * <a href="https://sqlite.org/lang_altertable.html">Based on instructions at Sqlite</a>
      */
     void copyTable(String oldName, String newName, String primaryKey, String[] columnDdl, String[] columns) {
         database.execSQL("PRAGMA foreign_keys=OFF");
@@ -130,6 +130,10 @@ class DdlPrimitives {
         return result;
     }
 
+    public void createView(String name, String ddl) {
+        database.execSQL("CREATE VIEW `" + name + "` AS " + ddl);
+    }
+
     private static class SavedObject {
         private final String type;
         private final String sql;
@@ -142,16 +146,8 @@ class DdlPrimitives {
         }
     }
 
-    void renameColumn(String table, String from, String to) {
-        database.execSQL("alter table " + table + " rename column " + from + " to " + to);
-    }
-
-    void dropIndex(String name) {
-        database.execSQL("drop index " + name);
-    }
-
-    void createIndex(String table, String name, String where, String... columns) {
+    void createIndex(String table, String name, String... columns) {
         database.execSQL("create index " + name + " on " + table
-                + "(" + String.join(", ", columns) + ") where " + where);
+                + "(" + String.join(", ", columns) + ")");
     }
 }
