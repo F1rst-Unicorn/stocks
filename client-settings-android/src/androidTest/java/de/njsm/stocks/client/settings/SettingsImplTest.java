@@ -89,7 +89,7 @@ public class SettingsImplTest {
         assertTrue(uut.isSetup());
     }
 
-    private RegistrationForm getRegistrationForm() {
+    static RegistrationForm getRegistrationForm() {
         return RegistrationForm.builder()
                 .serverName("test.example")
                 .caPort(1409)

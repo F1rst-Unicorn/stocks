@@ -149,16 +149,16 @@ class SettingsImpl implements Settings, SettingsWriter, SetupStatusChecker {
         return !getServerName().isEmpty();
     }
 
-    private static final String LEGACY_SERVER_NAME_CONFIG = "stocks.serverName";
-    private static final String LEGACY_CA_PORT_CONFIG = "stocks.caPort";
-    private static final String LEGACY_SENTRY_PORT_CONFIG = "stocks.sentryPort";
-    private static final String LEGACY_SERVER_PORT_CONFIG = "stocks.serverPort";
-    private static final String LEGACY_USERNAME_CONFIG = "stocks.username";
-    private static final String LEGACY_DEVICE_NAME_CONFIG = "stocks.deviceName";
-    private static final String LEGACY_UID_CONFIG = "stocks.uid";
-    private static final String LEGACY_DID_CONFIG = "stocks.did";
-    private static final String LEGACY_FPR_CONFIG = "stocks.fpr";
-    private static final String LEGACY_TICKET_CONFIG = "stocks.ticket";
+    static final String LEGACY_SERVER_NAME_CONFIG = "stocks.serverName";
+    static final String LEGACY_CA_PORT_CONFIG = "stocks.caPort";
+    static final String LEGACY_SENTRY_PORT_CONFIG = "stocks.sentryPort";
+    static final String LEGACY_SERVER_PORT_CONFIG = "stocks.serverPort";
+    static final String LEGACY_USERNAME_CONFIG = "stocks.username";
+    static final String LEGACY_DEVICE_NAME_CONFIG = "stocks.deviceName";
+    static final String LEGACY_UID_CONFIG = "stocks.uid";
+    static final String LEGACY_DID_CONFIG = "stocks.did";
+    static final String LEGACY_FPR_CONFIG = "stocks.fpr";
+    static final String LEGACY_TICKET_CONFIG = "stocks.ticket";
 
     private void maybeMigrateLegacyApp() {
         if (sharedPreferences.contains("stocks.serverName")) {
