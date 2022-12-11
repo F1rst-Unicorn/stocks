@@ -21,8 +21,10 @@
 
 package de.njsm.stocks.client.database.migration;
 
+import androidx.room.Room;
 import androidx.room.testing.MigrationTestHelper;
 import androidx.test.platform.app.InstrumentationRegistry;
+import de.njsm.stocks.client.business.entities.EntityType;
 import de.njsm.stocks.client.database.StocksDatabase;
 import io.requery.android.database.sqlite.RequerySQLiteOpenHelperFactory;
 import org.junit.Before;
@@ -30,6 +32,9 @@ import org.junit.Rule;
 import org.junit.Test;
 
 import java.io.IOException;
+import java.time.Instant;
+
+import static org.junit.Assert.assertEquals;
 
 public class Legacy40To44Test {
 
@@ -47,8 +52,37 @@ public class Legacy40To44Test {
 
     @Test
     public void migratingFromLegacyToRewriteWorks() throws IOException {
-        try (var db = helper.createDatabase(TEST_DB, 40)) {}
-        try (var db = helper.runMigrationsAndValidate(TEST_DB, 44, true, new Legacy40To44())) {}
-    }
+        try (var db = helper.createDatabase(TEST_DB, 40)) {
+            db.execSQL("insert into updates (_id, name, last_update) values (1, 'scaled_unit', '1970-01-01 00:00:00.000000')");
+            db.execSQL("insert into updates (_id, name, last_update) values (2, 'Location', '1970-01-01 00:00:00.000000')");
+            db.execSQL("insert into updates (_id, name, last_update) values (3, 'Food', '1970-01-01 00:00:00.000000')");
+            db.execSQL("insert into updates (_id, name, last_update) values (4, 'EAN_number', '1970-01-01 00:00:00.000000')");
+            db.execSQL("insert into updates (_id, name, last_update) values (5, 'User_device', '1970-01-01 00:00:00.000000')");
+            db.execSQL("insert into updates (_id, name, last_update) values (6, 'recipe_product', '1970-01-01 00:00:00.000000')");
+            db.execSQL("insert into updates (_id, name, last_update) values (7, 'recipe_ingredient', '1970-01-01 00:00:00.000000')");
+            db.execSQL("insert into updates (_id, name, last_update) values (8, 'unit', '1970-01-01 00:00:00.000000')");
+            db.execSQL("insert into updates (_id, name, last_update) values (9, 'User', '1970-01-01 00:00:00.000000')");
+            db.execSQL("insert into updates (_id, name, last_update) values (10, 'Food_item', '1970-01-01 00:00:00.000000')");
+            db.execSQL("insert into updates (_id, name, last_update) values (11, 'recipe', '1970-01-01 00:00:00.000000')");
+        }
+        try (var db = helper.runMigrationsAndValidate(TEST_DB, 44, true, new Legacy40To44())) {
+            StocksDatabase orm = Room.databaseBuilder(InstrumentationRegistry.getInstrumentation().getTargetContext(),
+                            StocksDatabase.class,
+                            TEST_DB)
+                    .openHelperFactory(new RequerySQLiteOpenHelperFactory())
+                    .build();
 
+            assertEquals(Instant.EPOCH, orm.errorDao().getTransactionTimeOf(EntityType.SCALED_UNIT));
+            assertEquals(Instant.EPOCH, orm.errorDao().getTransactionTimeOf(EntityType.LOCATION));
+            assertEquals(Instant.EPOCH, orm.errorDao().getTransactionTimeOf(EntityType.FOOD));
+            assertEquals(Instant.EPOCH, orm.errorDao().getTransactionTimeOf(EntityType.EAN_NUMBER));
+            assertEquals(Instant.EPOCH, orm.errorDao().getTransactionTimeOf(EntityType.USER_DEVICE));
+            assertEquals(Instant.EPOCH, orm.errorDao().getTransactionTimeOf(EntityType.RECIPE_PRODUCT));
+            assertEquals(Instant.EPOCH, orm.errorDao().getTransactionTimeOf(EntityType.RECIPE_INGREDIENT));
+            assertEquals(Instant.EPOCH, orm.errorDao().getTransactionTimeOf(EntityType.UNIT));
+            assertEquals(Instant.EPOCH, orm.errorDao().getTransactionTimeOf(EntityType.USER));
+            assertEquals(Instant.EPOCH, orm.errorDao().getTransactionTimeOf(EntityType.FOOD_ITEM));
+            assertEquals(Instant.EPOCH, orm.errorDao().getTransactionTimeOf(EntityType.RECIPE));
+        }
+    }
 }

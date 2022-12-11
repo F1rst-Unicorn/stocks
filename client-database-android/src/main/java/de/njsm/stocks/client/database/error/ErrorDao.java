@@ -331,7 +331,7 @@ public abstract class ErrorDao {
     @Query("select last_update " +
             "from updates " +
             "where name = :entityType")
-    abstract Instant getTransactionTimeOf(EntityType entityType);
+    public abstract Instant getTransactionTimeOf(EntityType entityType);
 
     @Insert
     abstract long insert(FoodAddEntity entity);

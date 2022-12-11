@@ -41,11 +41,11 @@ public class Legacy40To44 extends Migration {
         var ddlPrimitives = new DdlPrimitives(database);
         handleFailedOperationRecordingTables(ddlPrimitives);
         handleExceptionRecordingTables(ddlPrimitives);
-        handleMainEntityTables(ddlPrimitives);
+        handleMainEntityTables(ddlPrimitives, database);
         handleSearchTables(ddlPrimitives);
     }
 
-    private static void handleMainEntityTables(DdlPrimitives ddlPrimitives) {
+    private static void handleMainEntityTables(DdlPrimitives ddlPrimitives, SupportSQLiteDatabase database) {
         ddlPrimitives.dropView("current_scaled_amount");
         ddlPrimitives.dropView("current_scaled_unit_conversion");
         ddlPrimitives.dropView("current_scaled_ingredient_amount_and_stock");
@@ -71,6 +71,17 @@ public class Legacy40To44 extends Migration {
                         "name", "name",
                         "last_update", "last_update"
         ));
+        database.execSQL("update updates set name = 'SCALED_UNIT' where name = 'scaled_unit'");
+        database.execSQL("update updates set name = 'LOCATION' where name = 'Location'");
+        database.execSQL("update updates set name = 'FOOD' where name = 'Food'");
+        database.execSQL("update updates set name = 'EAN_NUMBER' where name = 'EAN_number'");
+        database.execSQL("update updates set name = 'USER_DEVICE' where name = 'User_device'");
+        database.execSQL("update updates set name = 'RECIPE_PRODUCT' where name = 'recipe_product'");
+        database.execSQL("update updates set name = 'RECIPE_INGREDIENT' where name = 'recipe_ingredient'");
+        database.execSQL("update updates set name = 'UNIT' where name = 'unit'");
+        database.execSQL("update updates set name = 'USER' where name = 'User'");
+        database.execSQL("update updates set name = 'FOOD_ITEM' where name = 'Food_item'");
+        database.execSQL("update updates set name = 'RECIPE' where name = 'recipe'");
     }
 
     private static void handleFailedOperationRecordingTables(DdlPrimitives ddlPrimitives) {
