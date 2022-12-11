@@ -33,6 +33,7 @@ import de.njsm.stocks.client.database.error.ConflictRepositoryImpl;
 import de.njsm.stocks.client.database.error.ErrorDao;
 import de.njsm.stocks.client.database.error.ErrorRecorderImpl;
 import de.njsm.stocks.client.database.error.ErrorRepositoryImpl;
+import de.njsm.stocks.client.database.migration.Legacy40To43;
 import de.njsm.stocks.client.execution.Scheduler;
 import io.requery.android.database.sqlite.RequerySQLiteOpenHelperFactory;
 import org.slf4j.Logger;
@@ -53,7 +54,6 @@ public interface DatabaseModule {
         return Room.databaseBuilder(context, StocksDatabase.class, "stocks.db")
                 .setQueryExecutor(executor)
                 .setTransactionExecutor(executor)
-                .fallbackToDestructiveMigration()
                 .openHelperFactory(new RequerySQLiteOpenHelperFactory())
                 .setQueryCallback((sqlQuery, bindArgs) -> {
                     if (!LOG.isTraceEnabled())
@@ -64,6 +64,7 @@ public interface DatabaseModule {
                     else
                         LOG.trace(sqlQuery + "; args " + bindArgs);
                 }, executor)
+                .addMigrations(new Legacy40To43())
                 .build();
     }
 

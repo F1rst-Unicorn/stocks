@@ -46,7 +46,7 @@ public abstract class FoodItemEditEntity implements IdFields, VersionFields {
     @AutoValue.CopyAnnotations
     public abstract Instant eatBy();
 
-    @Embedded(prefix = "stored_in")
+    @Embedded(prefix = "stored_in_")
     @AutoValue.CopyAnnotations
     public abstract PreservedId storedIn();
 
