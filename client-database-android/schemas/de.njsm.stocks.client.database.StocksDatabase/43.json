@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 43,
-    "identityHash": "5b975ed4327c8ef7b3233f9c0f1bce87",
+    "identityHash": "59e4d62361744498c98be18f79fd3a8b",
     "entities": [
       {
         "tableName": "updates",
@@ -2011,7 +2011,7 @@
       },
       {
         "tableName": "food_item_to_add",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `eat_by` TEXT NOT NULL, `of_typeid` INTEGER, `of_typetransaction_time` TEXT, `stored_inid` INTEGER, `stored_intransaction_time` TEXT, `unit_id` INTEGER, `unit_transaction_time` TEXT)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `eat_by` TEXT NOT NULL, `of_type_id` INTEGER, `of_type_transaction_time` TEXT, `stored_in_id` INTEGER, `stored_in_transaction_time` TEXT, `unit_id` INTEGER, `unit_transaction_time` TEXT)",
         "fields": [
           {
             "fieldPath": "id",
@@ -2027,25 +2027,25 @@
           },
           {
             "fieldPath": "ofType.id",
-            "columnName": "of_typeid",
+            "columnName": "of_type_id",
             "affinity": "INTEGER",
             "notNull": false
           },
           {
             "fieldPath": "ofType.transactionTime",
-            "columnName": "of_typetransaction_time",
+            "columnName": "of_type_transaction_time",
             "affinity": "TEXT",
             "notNull": false
           },
           {
             "fieldPath": "storedIn.id",
-            "columnName": "stored_inid",
+            "columnName": "stored_in_id",
             "affinity": "INTEGER",
             "notNull": false
           },
           {
             "fieldPath": "storedIn.transactionTime",
-            "columnName": "stored_intransaction_time",
+            "columnName": "stored_in_transaction_time",
             "affinity": "TEXT",
             "notNull": false
           },
@@ -2636,7 +2636,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '5b975ed4327c8ef7b3233f9c0f1bce87')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '59e4d62361744498c98be18f79fd3a8b')"
     ]
   }
 }

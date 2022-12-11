@@ -41,11 +41,11 @@ public abstract class FoodItemAddEntity implements IdFields {
     @AutoValue.CopyAnnotations
     public abstract Instant eatBy();
 
-    @Embedded(prefix = "of_type")
+    @Embedded(prefix = "of_type_")
     @AutoValue.CopyAnnotations
     public abstract PreservedId ofType();
 
-    @Embedded(prefix = "stored_in")
+    @Embedded(prefix = "stored_in_")
     @AutoValue.CopyAnnotations
     public abstract PreservedId storedIn();
 
