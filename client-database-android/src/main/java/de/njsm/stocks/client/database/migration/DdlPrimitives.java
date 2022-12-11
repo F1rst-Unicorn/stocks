@@ -67,6 +67,10 @@ class DdlPrimitives {
         database.execSQL("drop table " + name);
     }
 
+    void dropView(String name) {
+        database.execSQL("drop view " + name);
+    }
+
     void renameTable(String from, String to) {
         database.execSQL("alter table " + from + " rename to " + to);
     }

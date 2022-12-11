@@ -21,6 +21,7 @@
 
 package de.njsm.stocks.client.database.error;
 
+import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.Ignore;
 import com.google.auto.value.AutoValue;
@@ -41,10 +42,16 @@ public abstract class ErrorEntity implements IdFields {
 
     abstract Action action();
 
+    @ColumnInfo(name = "data_id")
+    @AutoValue.CopyAnnotations
     abstract long dataId();
 
+    @ColumnInfo(name = "exception_type")
+    @AutoValue.CopyAnnotations
     abstract ExceptionType exceptionType();
 
+    @ColumnInfo(name = "exception_id")
+    @AutoValue.CopyAnnotations
     abstract long exceptionId();
 
     enum Action {

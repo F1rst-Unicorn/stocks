@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 43,
-    "identityHash": "97e2171d3f7db2e05cacdb6aa286ee4c",
+    "identityHash": "5b975ed4327c8ef7b3233f9c0f1bce87",
     "entities": [
       {
         "tableName": "updates",
@@ -249,7 +249,7 @@
       },
       {
         "tableName": "error",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `action` TEXT, `dataId` INTEGER NOT NULL, `exceptionType` TEXT, `exceptionId` INTEGER NOT NULL)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `action` TEXT, `data_id` INTEGER NOT NULL, `exception_type` TEXT, `exception_id` INTEGER NOT NULL)",
         "fields": [
           {
             "fieldPath": "id",
@@ -265,19 +265,19 @@
           },
           {
             "fieldPath": "dataId",
-            "columnName": "dataId",
+            "columnName": "data_id",
             "affinity": "INTEGER",
             "notNull": true
           },
           {
             "fieldPath": "exceptionType",
-            "columnName": "exceptionType",
+            "columnName": "exception_type",
             "affinity": "TEXT",
             "notNull": false
           },
           {
             "fieldPath": "exceptionId",
-            "columnName": "exceptionId",
+            "columnName": "exception_id",
             "affinity": "INTEGER",
             "notNull": true
           }
@@ -2636,7 +2636,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '97e2171d3f7db2e05cacdb6aa286ee4c')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '5b975ed4327c8ef7b3233f9c0f1bce87')"
     ]
   }
 }
