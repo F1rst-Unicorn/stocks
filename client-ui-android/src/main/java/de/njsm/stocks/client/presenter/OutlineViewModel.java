@@ -21,21 +21,47 @@
 
 package de.njsm.stocks.client.presenter;
 
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModel;
+import androidx.lifecycle.ViewModelKt;
+import androidx.paging.Pager;
+import androidx.paging.PagingConfig;
+import androidx.paging.PagingData;
+import androidx.paging.PagingLiveData;
+import de.njsm.stocks.client.business.EventInteractor;
+import de.njsm.stocks.client.business.Localiser;
 import de.njsm.stocks.client.business.Synchroniser;
+import de.njsm.stocks.client.business.entities.event.ActivityEvent;
+import de.njsm.stocks.client.databind.event.EventPagingSource;
+import kotlinx.coroutines.CoroutineScope;
 
 import javax.inject.Inject;
+import java.time.LocalDate;
 
 public class OutlineViewModel extends ViewModel {
 
     private final Synchroniser synchroniser;
 
+    private final Localiser localiser;
+
+    private final EventInteractor interactor;
+
     @Inject
-    OutlineViewModel(Synchroniser synchroniser) {
+    OutlineViewModel(Synchroniser synchroniser, Localiser localiser, EventInteractor interactor) {
         this.synchroniser = synchroniser;
+        this.localiser = localiser;
+        this.interactor = interactor;
     }
 
     public void synchronise() {
         synchroniser.synchronise();
+    }
+
+    public LiveData<PagingData<ActivityEvent>> getActivityFeed() {
+        CoroutineScope viewModelScope = ViewModelKt.getViewModelScope(this);
+        Pager<LocalDate, ActivityEvent> pager = new Pager<>(
+                new PagingConfig(20),
+                () -> new EventPagingSource(interactor, localiser));
+        return PagingLiveData.cachedIn(PagingLiveData.getLiveData(pager), viewModelScope);
     }
 }

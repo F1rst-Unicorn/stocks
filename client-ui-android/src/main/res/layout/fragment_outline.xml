@@ -113,7 +113,7 @@
                     style="@style/StocksTheme.TextLarge"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:padding="@dimen/activity_horizontal_margin"
+                    android:padding="@dimen/fragment_padding"
                     android:text="@string/title_recent_activity"
                     android:textAlignment="center" />
 

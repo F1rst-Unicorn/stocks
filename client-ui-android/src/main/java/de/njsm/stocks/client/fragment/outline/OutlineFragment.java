@@ -33,7 +33,11 @@ import androidx.appcompat.widget.SearchView;
 import androidx.core.content.ContextCompat;
 import androidx.core.view.MenuProvider;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+import de.njsm.stocks.client.business.Localiser;
+import de.njsm.stocks.client.databind.event.EventAdapter;
 import de.njsm.stocks.client.fragment.BottomToolbarFragment;
 import de.njsm.stocks.client.navigation.OutlineNavigator;
 import de.njsm.stocks.client.presenter.OutlineViewModel;
@@ -46,6 +50,8 @@ public class OutlineFragment extends BottomToolbarFragment implements MenuProvid
     private OutlineNavigator outlineNavigator;
 
     private OutlineViewModel outlineViewModel;
+
+    private Localiser localiser;
 
     @NonNull
     @Override
@@ -60,6 +66,15 @@ public class OutlineFragment extends BottomToolbarFragment implements MenuProvid
         refreshLayout.setOnRefreshListener(() -> {
             outlineViewModel.synchronise();
             refreshLayout.setRefreshing(false);
+        });
+
+        RecyclerView activityFeed = content.findViewById(R.id.fragment_outline_list);
+        activityFeed.setLayoutManager(new LinearLayoutManager(requireContext()));
+        EventAdapter adapter = new EventAdapter(this::onActivityFeedItemClicked, localiser);
+        activityFeed.setAdapter(adapter);
+        outlineViewModel.getActivityFeed().observe(getViewLifecycleOwner(), v -> {
+            activityFeed.scrollToPosition(0);
+            adapter.submitData(getLifecycle(), v);
         });
 
         requireActivity().addMenuProvider(this, getViewLifecycleOwner());
@@ -78,6 +93,10 @@ public class OutlineFragment extends BottomToolbarFragment implements MenuProvid
         EditText editText = searchView.findViewById(androidx.appcompat.R.id.search_src_text);
         editText.setTextColor(ContextCompat.getColor(requireContext(), R.color.colorOnPrimary));
         editText.setHintTextColor(ContextCompat.getColor(requireContext(), R.color.hintColorOnPrimary));
+    }
+
+    private void onActivityFeedItemClicked(View view) {
+
     }
 
     @Override
@@ -114,5 +133,10 @@ public class OutlineFragment extends BottomToolbarFragment implements MenuProvid
         super.setViewModelFactory(viewModelFactory);
         ViewModelProvider viewModelProvider = new ViewModelProvider(this, viewModelFactory);
         outlineViewModel = viewModelProvider.get(OutlineViewModel.class);
+    }
+
+    @Inject
+    void setLocaliser(Localiser localiser) {
+        this.localiser = localiser;
     }
 }

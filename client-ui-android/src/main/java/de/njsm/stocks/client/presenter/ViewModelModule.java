@@ -164,8 +164,8 @@ public class ViewModelModule {
     @Provides
     @IntoMap
     @ViewModelKey(OutlineViewModel.class)
-    ViewModel OutlineViewModel(Synchroniser synchroniser) {
-        return new OutlineViewModel(synchroniser);
+    ViewModel OutlineViewModel(Synchroniser synchroniser, Localiser localiser, EventInteractor interactor) {
+        return new OutlineViewModel(synchroniser, localiser, interactor);
     }
 
     @Provides

@@ -205,4 +205,7 @@ public interface UimockBusinessModule {
 
     @Binds
     FoodToBuyInteractor InMemoryFoodToBuyInteractor(InMemoryFoodToBuyInteractor impl);
+
+    @Binds
+    EventInteractor InMemoryEventInteractorImpl(InMemoryEventInteractorImpl impl);
 }
