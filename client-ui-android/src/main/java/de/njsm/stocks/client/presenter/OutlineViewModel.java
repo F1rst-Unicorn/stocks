@@ -28,7 +28,7 @@ import androidx.paging.Pager;
 import androidx.paging.PagingConfig;
 import androidx.paging.PagingData;
 import androidx.paging.PagingLiveData;
-import de.njsm.stocks.client.business.EventInteractor;
+import de.njsm.stocks.client.business.event.EventInteractor;
 import de.njsm.stocks.client.business.Localiser;
 import de.njsm.stocks.client.business.Synchroniser;
 import de.njsm.stocks.client.business.entities.event.ActivityEvent;

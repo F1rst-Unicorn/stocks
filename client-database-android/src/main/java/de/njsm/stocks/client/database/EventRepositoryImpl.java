@@ -19,40 +19,42 @@
  *
  */
 
-package de.njsm.stocks.client.business;
+package de.njsm.stocks.client.database;
 
-import de.njsm.stocks.client.business.entities.event.ActivityEvent;
-import de.njsm.stocks.client.business.entities.event.NullEvent;
+import de.njsm.stocks.client.business.event.EventRepository;
+import de.njsm.stocks.client.business.event.LocationEventFeedItem;
 import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.core.Single;
+import io.reactivex.rxjava3.schedulers.Schedulers;
 
 import javax.inject.Inject;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.util.Collections;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 
-class InMemoryEventInteractorImpl implements EventInteractor {
+class EventRepositoryImpl implements EventRepository {
+
+    private final EventDao eventDao;
 
     @Inject
-    InMemoryEventInteractorImpl() {
+    EventRepositoryImpl(EventDao eventDao) {
+        this.eventDao = eventDao;
     }
 
     @Override
-    public Single<List<ActivityEvent>> getEventsOf(LocalDate day) {
-        if (day.isAfter(LocalDate.now()))
-            return Single.just(Collections.emptyList());
-
-        return Single.just(List.of(
-                NullEvent.create(day.atTime(LocalTime.of(1, 0, 0))),
-                NullEvent.create(day.atTime(LocalTime.of(2, 0, 0))),
-                NullEvent.create(day.atTime(LocalTime.of(3, 0, 0)))
-        ));
+    public Single<List<LocationEventFeedItem>> getLocationFeed(Instant day) {
+        return eventDao.getLocationEvents(day, day.plus(1, ChronoUnit.DAYS))
+                .subscribeOn(Schedulers.io());
     }
 
     @Override
-    public Observable<LocalDateTime> getNewEventNotifier() {
-        return Observable.just(LocalDateTime.now());
+    public Observable<Instant> getNewEventNotifier() {
+        return eventDao.getLatestUpdateTimestamp();
+    }
+
+    @Override
+    public Single<Instant> getOldestEventTime() {
+        return eventDao.getOldestEventTime()
+                .subscribeOn(Schedulers.io());
     }
 }

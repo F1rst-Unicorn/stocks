@@ -19,13 +19,21 @@
  *
  */
 
-package de.njsm.stocks.client.business.entities.event;
+package de.njsm.stocks.client.business.event;
 
+import de.njsm.stocks.client.business.entities.event.ActivityEvent;
+import io.reactivex.rxjava3.core.Observable;
+import io.reactivex.rxjava3.core.Single;
+
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
-public abstract class ActivityEvent {
+public interface EventInteractor {
 
-    public abstract LocalDateTime timeOccurred();
+    Single<List<ActivityEvent>> getEventsOf(LocalDate day);
 
-    public abstract String userName();
+    Observable<LocalDateTime> getNewEventNotifier();
+
+    Single<LocalDate> getOldestEventTime();
 }

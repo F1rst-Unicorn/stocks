@@ -23,7 +23,7 @@ package de.njsm.stocks.client.databind.event;
 
 import androidx.paging.PagingState;
 import androidx.paging.rxjava3.RxPagingSource;
-import de.njsm.stocks.client.business.EventInteractor;
+import de.njsm.stocks.client.business.event.EventInteractor;
 import de.njsm.stocks.client.business.Localiser;
 import de.njsm.stocks.client.business.entities.event.ActivityEvent;
 import io.reactivex.rxjava3.core.Single;
@@ -38,6 +38,8 @@ public class EventPagingSource extends RxPagingSource<LocalDate, ActivityEvent> 
 
     private final Localiser localiser;
 
+    private LocalDate oldestDate = LocalDate.of(2016, 4, 11);
+
     public EventPagingSource(EventInteractor interactor, Localiser localiser) {
         this.interactor = interactor;
         this.localiser = localiser;
@@ -46,10 +48,14 @@ public class EventPagingSource extends RxPagingSource<LocalDate, ActivityEvent> 
                 .distinctUntilChanged()
                 .skip(1)
                 .subscribe(v -> this.invalidate());
+        var oldestDateDisposable = interactor.getOldestEventTime()
+                .subscribe(v -> this.oldestDate = v);
         this.registerInvalidatedCallback(() -> {
+            oldestDateDisposable.dispose();
             disposable.dispose();
             return null;
         });
+
     }
 
     @NotNull
@@ -57,15 +63,30 @@ public class EventPagingSource extends RxPagingSource<LocalDate, ActivityEvent> 
     public Single<LoadResult<LocalDate, ActivityEvent>> loadSingle(@NotNull LoadParams<LocalDate> loadParams) {
         LocalDate day = resolveKey(loadParams);
 
-        LocalDate next;
-        if (day.isAfter(localiser.today())) {
-            next = null;
-        } else {
-            next = day.plusDays(1);
-        }
+        LocalDate next = getNext(day);
+        LocalDate previous = getPrevious(day);
 
         return interactor.getEventsOf(day)
-                .map(v -> new LoadResult.Page<>(v, next, day.minusDays(1)));
+                .map(v -> new LoadResult.Page<>(v, next, previous));
+    }
+
+    @Nullable
+    private LocalDate getNext(LocalDate day) {
+        if (day.isAfter(localiser.today().plusDays(2))) {
+            return null;
+        } else {
+            return day.plusDays(1);
+        }
+    }
+
+    @Nullable
+    private LocalDate getPrevious(LocalDate day) {
+        LocalDate previous = day.minusDays(1);
+        if (previous.isBefore(oldestDate)) {
+            return null;
+        } else {
+            return previous;
+        }
     }
 
     private LocalDate resolveKey(@NotNull LoadParams<LocalDate> loadParams) {

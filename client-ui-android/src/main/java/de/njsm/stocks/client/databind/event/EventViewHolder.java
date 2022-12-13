@@ -31,13 +31,20 @@ public class EventViewHolder extends RecyclerView.ViewHolder {
 
     private final TextView time;
 
+    private final TextView text;
+
     public EventViewHolder(@NonNull View itemView) {
         super(itemView);
         time = itemView.findViewById(R.id.item_event_date);
+        text = itemView.findViewById(R.id.item_event_text);
     }
 
     public void setTime(String time) {
         this.time.setText(time);
+    }
+
+    public void setText(String text) {
+        this.text.setText(text);
     }
 
     public void setLoading() {

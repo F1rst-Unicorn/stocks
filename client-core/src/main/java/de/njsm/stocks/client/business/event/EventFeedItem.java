@@ -19,20 +19,18 @@
  *
  */
 
-package de.njsm.stocks.client.business;
+package de.njsm.stocks.client.business.event;
 
-import de.njsm.stocks.client.business.entities.event.ActivityEvent;
-import io.reactivex.rxjava3.core.Observable;
-import io.reactivex.rxjava3.core.Single;
+import java.time.Instant;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.List;
+public abstract class EventFeedItem {
 
-public interface EventInteractor {
+    public abstract Instant validTimeEnd();
 
+    /**
+     * aka the time the feed item occurred
+     */
+    public abstract Instant transactionTimeStart();
 
-    Single<List<ActivityEvent>> getEventsOf(LocalDate day);
-
-    Observable<LocalDateTime> getNewEventNotifier();
+    public abstract String userName();
 }

@@ -21,11 +21,20 @@
 
 package de.njsm.stocks.client.business.entities.event;
 
-import java.time.LocalDateTime;
+import com.google.auto.value.AutoValue;
+import de.njsm.stocks.client.business.Localiser;
+import de.njsm.stocks.client.business.event.LocationEventFeedItem;
 
-public abstract class ActivityEvent {
+@AutoValue
+public abstract class LocationDeletedEvent extends ActivityEvent {
 
-    public abstract LocalDateTime timeOccurred();
+    public abstract String name();
 
-    public abstract String userName();
+    public static LocationDeletedEvent create(LocationEventFeedItem feedItem, Localiser localiser) {
+        return new AutoValue_LocationDeletedEvent(
+                localiser.toLocalDateTime(feedItem.transactionTimeStart()),
+                feedItem.userName(),
+                feedItem.name()
+        );
+    }
 }

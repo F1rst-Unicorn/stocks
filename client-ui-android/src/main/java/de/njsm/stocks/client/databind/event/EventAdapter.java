@@ -64,6 +64,7 @@ public class EventAdapter extends PagingDataAdapter<ActivityEvent, EventViewHold
             holder.setLoading();
         } else {
             holder.setTime(dateRenderStrategy.render(item.timeOccurred()));
+            holder.setText(item.toString());
         }
     }
 }

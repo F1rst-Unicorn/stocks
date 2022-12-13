@@ -25,6 +25,8 @@ import dagger.Binds;
 import dagger.Module;
 import dagger.Provides;
 import de.njsm.stocks.client.business.entities.*;
+import de.njsm.stocks.client.business.event.EventInteractor;
+import de.njsm.stocks.client.business.event.EventInteractorImpl;
 import de.njsm.stocks.client.execution.ExecutionModule;
 
 import javax.inject.Singleton;
@@ -186,4 +188,7 @@ public interface BusinessModule {
 
     @Binds
     FoodToBuyInteractor FoodToBuyInteractor(FoodToBuyInteractorImpl impl);
+
+    @Binds
+    EventInteractor EventInteractor(EventInteractorImpl impl);
 }

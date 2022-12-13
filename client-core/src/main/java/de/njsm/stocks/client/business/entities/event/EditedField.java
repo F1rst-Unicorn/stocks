@@ -21,11 +21,16 @@
 
 package de.njsm.stocks.client.business.entities.event;
 
-import java.time.LocalDateTime;
+import com.google.auto.value.AutoValue;
 
-public abstract class ActivityEvent {
+@AutoValue
+public abstract class EditedField<T> {
 
-    public abstract LocalDateTime timeOccurred();
+    public abstract T former();
 
-    public abstract String userName();
+    public abstract T current();
+
+    public static <T> EditedField<T> create(T former, T current) {
+        return new AutoValue_EditedField<>(former, current);
+    }
 }

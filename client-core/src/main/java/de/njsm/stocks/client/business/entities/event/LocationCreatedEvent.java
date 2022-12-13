@@ -22,13 +22,18 @@
 package de.njsm.stocks.client.business.entities.event;
 
 import com.google.auto.value.AutoValue;
-
-import java.time.LocalDateTime;
+import de.njsm.stocks.client.business.Localiser;
+import de.njsm.stocks.client.business.event.LocationEventFeedItem;
 
 @AutoValue
-public abstract class NullEvent extends ActivityEvent {
+public abstract class LocationCreatedEvent extends ActivityEvent {
 
-    public static NullEvent create(LocalDateTime timeOccurred) {
-        return new AutoValue_NullEvent(timeOccurred);
+    public abstract String name();
+
+    public static LocationCreatedEvent create(LocationEventFeedItem feedItem, Localiser localiser) {
+        return new AutoValue_LocationCreatedEvent(
+                localiser.toLocalDateTime(feedItem.transactionTimeStart()),
+                feedItem.userName(),
+                feedItem.name());
     }
 }

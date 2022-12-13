@@ -19,13 +19,20 @@
  *
  */
 
-package de.njsm.stocks.client.business.entities.event;
+package de.njsm.stocks.client.business.event;
 
-import java.time.LocalDateTime;
+import com.google.auto.value.AutoValue;
 
-public abstract class ActivityEvent {
+import java.time.Instant;
 
-    public abstract LocalDateTime timeOccurred();
+@AutoValue
+public abstract class LocationEventFeedItem extends EventFeedItem {
 
-    public abstract String userName();
+    public abstract String name();
+
+    public abstract String description();
+
+    public static LocationEventFeedItem create(Instant validTimeEnd, Instant transactionTimeStart, String userName, String name, String description) {
+        return new AutoValue_LocationEventFeedItem(validTimeEnd, transactionTimeStart, userName, name, description);
+    }
 }

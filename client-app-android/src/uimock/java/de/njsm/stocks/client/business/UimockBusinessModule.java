@@ -24,6 +24,8 @@ import dagger.Binds;
 import dagger.Module;
 import dagger.Provides;
 import de.njsm.stocks.client.business.entities.*;
+import de.njsm.stocks.client.business.event.EventInteractor;
+import de.njsm.stocks.client.business.event.InMemoryEventInteractorImpl;
 import de.njsm.stocks.client.execution.SchedulerStatusReporter;
 import io.reactivex.rxjava3.core.Observable;
 

@@ -28,6 +28,7 @@ import dagger.Provides;
 import dagger.android.ContributesAndroidInjector;
 import de.njsm.stocks.client.business.*;
 import de.njsm.stocks.client.business.entities.*;
+import de.njsm.stocks.client.business.event.EventRepository;
 import de.njsm.stocks.client.database.contentprovider.SearchSuggestionsProvider;
 import de.njsm.stocks.client.database.error.ConflictRepositoryImpl;
 import de.njsm.stocks.client.database.error.ErrorDao;
@@ -149,6 +150,11 @@ public interface DatabaseModule {
         return database.searchDao();
     }
 
+    @Provides
+    static EventDao EventDao(StocksDatabase database) {
+        return database.eventDao();
+    }
+
     @Binds
     ErrorRepository errorRepository(ErrorRepositoryImpl impl);
 
@@ -229,6 +235,9 @@ public interface DatabaseModule {
 
     @Binds
     FoodToBuyRepository FoodToBuyRepository(FoodToBuyRepositoryImpl impl);
+
+    @Binds
+    EventRepository EventRepository(EventRepositoryImpl impl);
 
     @ContributesAndroidInjector
     SearchSuggestionsProvider SearchSuggestionsProvider();

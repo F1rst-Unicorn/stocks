@@ -27,6 +27,7 @@ import dagger.Provides;
 import dagger.multibindings.IntoMap;
 import de.njsm.stocks.client.business.*;
 import de.njsm.stocks.client.business.entities.*;
+import de.njsm.stocks.client.business.event.EventInteractor;
 import de.njsm.stocks.client.di.ViewModelFactory;
 import de.njsm.stocks.client.di.ViewModelKey;
 import de.njsm.stocks.client.execution.SchedulerStatusReporter;
