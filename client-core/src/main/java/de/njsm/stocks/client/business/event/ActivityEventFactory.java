@@ -23,13 +23,11 @@ package de.njsm.stocks.client.business.event;
 
 import de.njsm.stocks.client.business.Constants;
 import de.njsm.stocks.client.business.Localiser;
-import de.njsm.stocks.client.business.entities.event.ActivityEvent;
-import de.njsm.stocks.client.business.entities.event.LocationCreatedEvent;
-import de.njsm.stocks.client.business.entities.event.LocationDeletedEvent;
-import de.njsm.stocks.client.business.entities.event.LocationEditedEvent;
+import de.njsm.stocks.client.business.entities.event.*;
 
 import javax.inject.Inject;
 import java.util.List;
+import java.util.function.BiFunction;
 
 class ActivityEventFactory {
 
@@ -41,15 +39,32 @@ class ActivityEventFactory {
     }
 
     ActivityEvent getLocationEventFrom(List<LocationEventFeedItem> feedItems) {
+        return getEventFrom(feedItems,
+                LocationCreatedEvent::create,
+                LocationDeletedEvent::create,
+                LocationEditedEvent::create);
+    }
+
+    public ActivityEvent getUnitEventFrom(List<UnitEventFeedItem> feedItems) {
+        return getEventFrom(feedItems,
+                UnitCreatedEvent::create,
+                UnitDeletedEvent::create,
+                UnitEditedEvent::create);
+    }
+
+    <T extends EventFeedItem> ActivityEvent getEventFrom(List<T> feedItems,
+                                                         BiFunction<T, Localiser, ? extends ActivityEvent> createdFactory,
+                                                         BiFunction<T, Localiser, ? extends ActivityEvent> deletedFactory,
+                                                         BiFunction<List<T>, Localiser, ? extends ActivityEvent> updatedFactory) {
         if (feedItems.size() == 1) {
-            LocationEventFeedItem item = feedItems.get(0);
+            T item = feedItems.get(0);
             if (item.validTimeEnd().equals(Constants.INFINITY)) {
-                return LocationCreatedEvent.create(item, localiser);
+                return createdFactory.apply(item, localiser);
             } else {
-                return LocationDeletedEvent.create(item, localiser);
+                return deletedFactory.apply(item, localiser);
             }
         } else {
-            return LocationEditedEvent.create(feedItems, localiser);
+            return updatedFactory.apply(feedItems, localiser);
         }
     }
 }

@@ -30,11 +30,11 @@ import javax.inject.Inject;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
+import java.util.function.Function;
 
+import static java.util.Collections.emptyList;
+import static java.util.Comparator.comparing;
 import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.toList;
 
@@ -56,17 +56,19 @@ public class EventInteractorImpl implements EventInteractor {
     @Override
     public Single<List<ActivityEvent>> getEventsOf(LocalDate day) {
         return repository.getLocationFeed(localiser.toInstant(day))
-                .map(feedItems -> {
-                    Map<Instant, List<LocationEventFeedItem>> groupedItems = feedItems.stream()
-                            .collect(groupingBy(LocationEventFeedItem::transactionTimeStart,
-                                    () -> new TreeMap<>(Comparator.<Instant, Instant>comparing(x -> x).reversed())
-                                    , toList()));
+                .map(v -> transformToEvents(v, eventFactory::getLocationEventFrom))
+                .mergeWith(repository.getUnitFeed(localiser.toInstant(day))
+                        .map(v -> transformToEvents(v, eventFactory::getUnitEventFrom))
+                )
 
-                    return groupedItems.values()
-                            .stream()
-                            .map(eventFactory::getLocationEventFrom)
-                            .collect(toList());
-                });
+                .buffer(2) // align with number of merged feeds above
+                .map(lists -> {
+                    List<ActivityEvent> result = new ArrayList<>();
+                    lists.forEach(result::addAll);
+                    result.sort(comparing(ActivityEvent::timeOccurred).reversed());
+                    return result;
+                })
+                .first(emptyList());
     }
 
     @Override
@@ -79,5 +81,17 @@ public class EventInteractorImpl implements EventInteractor {
     public Single<LocalDate> getOldestEventTime() {
         return repository.getOldestEventTime()
                 .map(localiser::toLocalDate);
+    }
+
+    private <T extends EventFeedItem> List<ActivityEvent> transformToEvents(List<T> feedItems, Function<List<T>, ActivityEvent> mapper) {
+        Map<Instant, List<T>> groupedItems = feedItems.stream()
+                .collect(groupingBy(T::transactionTimeStart,
+                        () -> new TreeMap<>(Comparator.<Instant, Instant>comparing(x -> x).reversed())
+                        , toList()));
+
+        return groupedItems.values()
+                .stream()
+                .map(mapper)
+                .collect(toList());
     }
 }

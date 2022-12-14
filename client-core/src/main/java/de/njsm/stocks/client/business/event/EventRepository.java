@@ -29,9 +29,11 @@ import java.util.List;
 
 public interface EventRepository {
 
-    Single<List<LocationEventFeedItem>> getLocationFeed(Instant day);
-
     Observable<Instant> getNewEventNotifier();
 
     Single<Instant> getOldestEventTime();
+
+    Single<List<LocationEventFeedItem>> getLocationFeed(Instant day);
+
+    Single<List<UnitEventFeedItem>> getUnitFeed(Instant day);
 }
