@@ -25,14 +25,18 @@ import dagger.Binds;
 import dagger.Module;
 import dagger.Provides;
 import de.njsm.stocks.client.business.entities.*;
+import de.njsm.stocks.client.business.event.EventInteractor;
 import de.njsm.stocks.client.execution.Scheduler;
 import de.njsm.stocks.client.testdata.LocationsForSelection;
 import de.njsm.stocks.client.testdata.ScaledUnitsForSelection;
 import de.njsm.stocks.client.testdata.UnitsForSelection;
 import io.reactivex.rxjava3.core.Observable;
+import io.reactivex.rxjava3.core.Single;
 
 import javax.inject.Singleton;
+import java.time.LocalDate;
 
+import static java.util.Collections.emptyList;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -408,5 +412,15 @@ public interface FakeBusinessModule {
     @Singleton
     static FoodToBuyInteractor FoodToBuyInteractor() {
         return mock(FoodToBuyInteractor.class);
+    }
+
+    @Provides
+    @Singleton
+    static EventInteractor EventInteractor() {
+        EventInteractor result = mock(EventInteractor.class);
+        when(result.getNewEventNotifier()).thenReturn(Observable.empty());
+        when(result.getOldestEventTime()).thenReturn(Single.just(LocalDate.now()));
+        when(result.getEventsOf(any())).thenReturn(Single.just(emptyList()));
+        return result;
     }
 }

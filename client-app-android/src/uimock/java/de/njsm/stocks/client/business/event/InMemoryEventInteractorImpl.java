@@ -51,33 +51,45 @@ public class InMemoryEventInteractorImpl implements EventInteractor {
 
         return Single.just(List.of(
                 LocationCreatedEvent.create(LocationEventFeedItem.create(
+                        (int) day.toEpochDay(),
                         localiser.toInstant(day),
                         localiser.toInstant(day),
                         "Jane",
                         "Fridge",
                         ""), localiser),
                 LocationEditedEvent.create(List.of(LocationEventFeedItem.create(
-                        localiser.toInstant(day),
-                        localiser.toInstant(day),
-                        "Jane",
-                        "Fridge",
-                        ""), LocationEventFeedItem.create(
-                        localiser.toInstant(day),
-                        localiser.toInstant(day),
-                        "Jane",
-                        "Fridge",
-                        "")), localiser),
+                                (int) day.toEpochDay(),
+                                localiser.toInstant(day),
+                                localiser.toInstant(day),
+                                "Jane",
+                                "Fridge",
+                                ""
+                        ), LocationEventFeedItem.create(
+                                (int) day.toEpochDay(),
+                                localiser.toInstant(day),
+                                localiser.toInstant(day),
+                                "Jane",
+                                "Fridge",
+                                "")
+                ), localiser),
                 LocationDeletedEvent.create(LocationEventFeedItem.create(
+                        (int) day.toEpochDay(),
                         localiser.toInstant(day),
                         localiser.toInstant(day),
                         "Jane",
                         "Fridge",
-                        ""), localiser))
+                        ""
+                ), localiser))
         );
     }
 
     @Override
     public Observable<LocalDateTime> getNewEventNotifier() {
-        return Observable.just(LocalDateTime.now());
+        return Observable.empty();
+    }
+
+    @Override
+    public Single<LocalDate> getOldestEventTime() {
+        return Single.just(LocalDate.now().minusMonths(1));
     }
 }

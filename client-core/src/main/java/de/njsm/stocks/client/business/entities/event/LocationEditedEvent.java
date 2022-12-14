@@ -23,16 +23,25 @@ package de.njsm.stocks.client.business.entities.event;
 
 import com.google.auto.value.AutoValue;
 import de.njsm.stocks.client.business.Localiser;
+import de.njsm.stocks.client.business.entities.Id;
+import de.njsm.stocks.client.business.entities.Location;
 import de.njsm.stocks.client.business.event.LocationEventFeedItem;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @AutoValue
 public abstract class LocationEditedEvent extends ActivityEvent {
 
+    public abstract Id<Location> id();
+
     public abstract EditedField<String> name();
 
     public abstract EditedField<String> description();
+
+    public static LocationEditedEvent create(Id<Location> id, LocalDateTime timeOccurred, String userName, EditedField<String> name, EditedField<String> description) {
+        return new AutoValue_LocationEditedEvent(timeOccurred, userName, id, name, description);
+    }
 
     public static LocationEditedEvent create(List<LocationEventFeedItem> feedItems, Localiser localiser) {
         LocationEventFeedItem former = feedItems.get(0);
@@ -40,6 +49,7 @@ public abstract class LocationEditedEvent extends ActivityEvent {
         return new AutoValue_LocationEditedEvent(
                 localiser.toLocalDateTime(former.transactionTimeStart()),
                 current.userName(),
+                former.id(),
                 EditedField.create(former.name(), current.name()),
                 EditedField.create(former.description(), current.description())
         );

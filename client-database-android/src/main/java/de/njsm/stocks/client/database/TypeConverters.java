@@ -22,6 +22,9 @@
 package de.njsm.stocks.client.database;
 
 import androidx.room.TypeConverter;
+import de.njsm.stocks.client.business.entities.Id;
+import de.njsm.stocks.client.business.entities.IdImpl;
+import de.njsm.stocks.client.business.entities.Location;
 
 import java.math.BigDecimal;
 import java.time.Duration;
@@ -84,5 +87,10 @@ public class TypeConverters {
     @TypeConverter
     public int periodToDb(Period period) {
         return period.getDays();
+    }
+
+    @TypeConverter
+    public Id<Location> locationId(int id) {
+        return IdImpl.create(id);
     }
 }

@@ -25,14 +25,19 @@ import de.njsm.stocks.client.business.event.EventRepository;
 import de.njsm.stocks.client.business.event.LocationEventFeedItem;
 import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.core.Single;
-import io.reactivex.rxjava3.schedulers.Schedulers;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 
+import static java.util.Collections.emptyList;
+
 class EventRepositoryImpl implements EventRepository {
+
+    private static final Logger LOG = LoggerFactory.getLogger(EventRepositoryImpl.class);
 
     private final EventDao eventDao;
 
@@ -44,17 +49,19 @@ class EventRepositoryImpl implements EventRepository {
     @Override
     public Single<List<LocationEventFeedItem>> getLocationFeed(Instant day) {
         return eventDao.getLocationEvents(day, day.plus(1, ChronoUnit.DAYS))
-                .subscribeOn(Schedulers.io());
+                .first(emptyList());
     }
 
     @Override
     public Observable<Instant> getNewEventNotifier() {
-        return eventDao.getLatestUpdateTimestamp();
+        return eventDao.getLatestUpdateTimestamp()
+                .distinctUntilChanged()
+                .skip(1);
     }
 
     @Override
     public Single<Instant> getOldestEventTime() {
         return eventDao.getOldestEventTime()
-                .subscribeOn(Schedulers.io());
+                .first(Instant.MAX);
     }
 }

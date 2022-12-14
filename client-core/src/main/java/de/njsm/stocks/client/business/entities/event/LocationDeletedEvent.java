@@ -23,17 +23,28 @@ package de.njsm.stocks.client.business.entities.event;
 
 import com.google.auto.value.AutoValue;
 import de.njsm.stocks.client.business.Localiser;
+import de.njsm.stocks.client.business.entities.Id;
+import de.njsm.stocks.client.business.entities.Location;
 import de.njsm.stocks.client.business.event.LocationEventFeedItem;
+
+import java.time.LocalDateTime;
 
 @AutoValue
 public abstract class LocationDeletedEvent extends ActivityEvent {
 
+    public abstract Id<Location> id();
+
     public abstract String name();
+
+    public static LocationDeletedEvent create(Id<Location> id, LocalDateTime timeOccurred, String userName, String name) {
+        return new AutoValue_LocationDeletedEvent(timeOccurred, userName, id, name);
+    }
 
     public static LocationDeletedEvent create(LocationEventFeedItem feedItem, Localiser localiser) {
         return new AutoValue_LocationDeletedEvent(
                 localiser.toLocalDateTime(feedItem.transactionTimeStart()),
                 feedItem.userName(),
+                feedItem.id(),
                 feedItem.name()
         );
     }

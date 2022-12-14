@@ -45,8 +45,6 @@ public class EventPagingSource extends RxPagingSource<LocalDate, ActivityEvent> 
         this.localiser = localiser;
 
         var disposable = interactor.getNewEventNotifier()
-                .distinctUntilChanged()
-                .skip(1)
                 .subscribe(v -> this.invalidate());
         var oldestDateDisposable = interactor.getOldestEventTime()
                 .subscribe(v -> this.oldestDate = v);

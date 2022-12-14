@@ -24,8 +24,8 @@ package de.njsm.stocks.client.database;
 import androidx.room.Dao;
 import androidx.room.Query;
 import de.njsm.stocks.client.business.event.LocationEventFeedItem;
+import io.reactivex.rxjava3.core.Flowable;
 import io.reactivex.rxjava3.core.Observable;
-import io.reactivex.rxjava3.core.Single;
 
 import java.time.Instant;
 import java.util.List;
@@ -40,7 +40,9 @@ class EventDao {
             "from updates")
     abstract Observable<Instant> getLatestUpdateTimestamp();
 
-    @Query("select l.valid_time_end as validTimeEnd, " +
+    @Query("select " +
+                "l.id as id, " +
+                "l.valid_time_end as validTimeEnd, " +
                 "l.transaction_time_start as transactionTimeStart, " +
                 "initiator_user.name as userName, " +
                 "l.name as name, " +
@@ -53,7 +55,7 @@ class EventDao {
             "where :lower <= l.transaction_time_start " +
             "and l.transaction_time_start <= :upper " +
             "order by l.transaction_time_start desc, l.valid_time_end")
-    abstract Single<List<LocationEventFeedItem>> getLocationEvents(Instant lower, Instant upper);
+    abstract Flowable<List<LocationEventFeedItem>> getLocationEvents(Instant lower, Instant upper);
 
     @Query("select min(x) from (" +
                 "select * from (" +
@@ -91,5 +93,5 @@ class EventDao {
                     "from user_device" +
                 ")" +
             ")")
-    abstract Single<Instant> getOldestEventTime();
+    abstract Flowable<Instant> getOldestEventTime();
 }
