@@ -21,9 +21,12 @@
 
 package de.njsm.stocks.client.business.event;
 
+import de.njsm.stocks.client.business.entities.Entity;
+import de.njsm.stocks.client.business.entities.Id;
+
 import java.time.Instant;
 
-public abstract class EventFeedItem {
+public abstract class EventFeedItem<E extends Entity<E>> {
 
     public abstract Instant validTimeEnd();
 
@@ -33,4 +36,6 @@ public abstract class EventFeedItem {
     public abstract Instant transactionTimeStart();
 
     public abstract String userName();
+
+    public abstract Id<E> id();
 }

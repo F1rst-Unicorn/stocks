@@ -19,27 +19,26 @@
  *
  */
 
-package de.njsm.stocks.client.business.event;
+package de.njsm.stocks.client.business.entities.event;
 
 import com.google.auto.value.AutoValue;
+import de.njsm.stocks.client.business.Localiser;
 import de.njsm.stocks.client.business.entities.Id;
-import de.njsm.stocks.client.business.entities.IdImpl;
-import de.njsm.stocks.client.business.entities.Location;
-
-import java.time.Instant;
+import de.njsm.stocks.client.business.entities.User;
+import de.njsm.stocks.client.business.event.UserEventFeedItem;
 
 @AutoValue
-public abstract class LocationEventFeedItem extends EventFeedItem<Location> {
+public abstract class UserDeletedEvent extends ActivityEvent {
+
+    public abstract Id<User> id();
 
     public abstract String name();
 
-    public abstract String description();
-
-    public static LocationEventFeedItem create(int id, Instant validTimeEnd, Instant transactionTimeStart, String userName, String name, String description) {
-        return new AutoValue_LocationEventFeedItem(validTimeEnd, transactionTimeStart, userName, IdImpl.create(id), name, description);
-    }
-
-    public static LocationEventFeedItem create(Id<Location> id, Instant validTimeEnd, Instant transactionTimeStart, String userName, String name, String description) {
-        return new AutoValue_LocationEventFeedItem(validTimeEnd, transactionTimeStart, userName, id, name, description);
+    public static UserDeletedEvent create(UserEventFeedItem feedItem, Localiser localiser) {
+        return new AutoValue_UserDeletedEvent(
+                localiser.toLocalDateTime(feedItem.transactionTimeStart()),
+                feedItem.userName(),
+                feedItem.id(),
+                feedItem.name());
     }
 }

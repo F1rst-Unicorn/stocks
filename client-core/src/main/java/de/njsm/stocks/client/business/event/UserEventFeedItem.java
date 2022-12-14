@@ -24,22 +24,20 @@ package de.njsm.stocks.client.business.event;
 import com.google.auto.value.AutoValue;
 import de.njsm.stocks.client.business.entities.Id;
 import de.njsm.stocks.client.business.entities.IdImpl;
-import de.njsm.stocks.client.business.entities.Location;
+import de.njsm.stocks.client.business.entities.User;
 
 import java.time.Instant;
 
 @AutoValue
-public abstract class LocationEventFeedItem extends EventFeedItem<Location> {
+public abstract class UserEventFeedItem extends EventFeedItem<User> {
 
     public abstract String name();
 
-    public abstract String description();
-
-    public static LocationEventFeedItem create(int id, Instant validTimeEnd, Instant transactionTimeStart, String userName, String name, String description) {
-        return new AutoValue_LocationEventFeedItem(validTimeEnd, transactionTimeStart, userName, IdImpl.create(id), name, description);
+    public static UserEventFeedItem create(int id, Instant validTimeEnd, Instant transactionTimeStart, String userName, String name) {
+        return new AutoValue_UserEventFeedItem(validTimeEnd, transactionTimeStart, userName, IdImpl.create(id), name);
     }
 
-    public static LocationEventFeedItem create(Id<Location> id, Instant validTimeEnd, Instant transactionTimeStart, String userName, String name, String description) {
-        return new AutoValue_LocationEventFeedItem(validTimeEnd, transactionTimeStart, userName, id, name, description);
+    public static UserEventFeedItem create(Id<User> id, Instant validTimeEnd, Instant transactionTimeStart, String userName, String name) {
+        return new AutoValue_UserEventFeedItem(validTimeEnd, transactionTimeStart, userName, id, name);
     }
 }

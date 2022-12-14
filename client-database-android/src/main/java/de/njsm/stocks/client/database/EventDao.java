@@ -25,6 +25,7 @@ import androidx.room.Dao;
 import androidx.room.Query;
 import de.njsm.stocks.client.business.event.LocationEventFeedItem;
 import de.njsm.stocks.client.business.event.UnitEventFeedItem;
+import de.njsm.stocks.client.business.event.UserEventFeedItem;
 import io.reactivex.rxjava3.core.Flowable;
 import io.reactivex.rxjava3.core.Observable;
 
@@ -71,6 +72,16 @@ class EventDao {
             "and main_table.transaction_time_start <= :upper " +
             "order by main_table.transaction_time_start desc, main_table.valid_time_end")
     abstract Flowable<List<UnitEventFeedItem>> getUnitEvents(Instant lower, Instant upper);
+
+    @Query("select " +
+            EVENT_COLUMNS +
+            "main_table.name as name " +
+            "from user main_table " +
+            JOIN_INITIATOR +
+            "where :lower <= main_table.transaction_time_start " +
+            "and main_table.transaction_time_start <= :upper " +
+            "order by main_table.transaction_time_start desc, main_table.valid_time_end")
+    abstract Flowable<List<UserEventFeedItem>> getUserEvents(Instant lower, Instant upper);
 
     @Query("select max(last_update) " +
             "from updates")

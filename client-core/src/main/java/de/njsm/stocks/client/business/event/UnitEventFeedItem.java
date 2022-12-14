@@ -29,9 +29,7 @@ import de.njsm.stocks.client.business.entities.Unit;
 import java.time.Instant;
 
 @AutoValue
-public abstract class UnitEventFeedItem extends EventFeedItem {
-
-    public abstract Id<Unit> id();
+public abstract class UnitEventFeedItem extends EventFeedItem<Unit> {
 
     public abstract String name();
 

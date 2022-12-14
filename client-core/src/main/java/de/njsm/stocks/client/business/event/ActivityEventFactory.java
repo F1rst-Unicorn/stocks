@@ -23,6 +23,7 @@ package de.njsm.stocks.client.business.event;
 
 import de.njsm.stocks.client.business.Constants;
 import de.njsm.stocks.client.business.Localiser;
+import de.njsm.stocks.client.business.entities.Entity;
 import de.njsm.stocks.client.business.entities.event.*;
 
 import javax.inject.Inject;
@@ -52,10 +53,18 @@ class ActivityEventFactory {
                 UnitEditedEvent::create);
     }
 
-    <T extends EventFeedItem> ActivityEvent getEventFrom(List<T> feedItems,
-                                                         BiFunction<T, Localiser, ? extends ActivityEvent> createdFactory,
-                                                         BiFunction<T, Localiser, ? extends ActivityEvent> deletedFactory,
-                                                         BiFunction<List<T>, Localiser, ? extends ActivityEvent> updatedFactory) {
+    public ActivityEvent getUserEventFrom(List<UserEventFeedItem> feedItems) {
+        return getEventFrom(feedItems,
+                UserCreatedEvent::create,
+                UserDeletedEvent::create,
+                unsupported("users cannot be edited"));
+    }
+
+    <T extends EventFeedItem<E>, E extends Entity<E>>
+    ActivityEvent getEventFrom(List<T> feedItems,
+                               BiFunction<T, Localiser, ? extends ActivityEvent> createdFactory,
+                               BiFunction<T, Localiser, ? extends ActivityEvent> deletedFactory,
+                               BiFunction<List<T>, Localiser, ? extends ActivityEvent> updatedFactory) {
         if (feedItems.size() == 1) {
             T item = feedItems.get(0);
             if (item.validTimeEnd().equals(Constants.INFINITY)) {
@@ -64,7 +73,17 @@ class ActivityEventFactory {
                 return deletedFactory.apply(item, localiser);
             }
         } else {
+            if (feedItems.size() != 2) {
+                throw new UnsupportedOperationException("only two feed items are expected here. Got " + feedItems);
+            }
+
             return updatedFactory.apply(feedItems, localiser);
         }
+    }
+
+    private static BiFunction<List<UserEventFeedItem>, Localiser, ActivityEvent> unsupported(String description) {
+        return (a, b) -> {
+            throw new UnsupportedOperationException(description);
+        };
     }
 }

@@ -22,10 +22,7 @@
 package de.njsm.stocks.client.database;
 
 import androidx.room.TypeConverter;
-import de.njsm.stocks.client.business.entities.Id;
-import de.njsm.stocks.client.business.entities.IdImpl;
-import de.njsm.stocks.client.business.entities.Location;
-import de.njsm.stocks.client.business.entities.Unit;
+import de.njsm.stocks.client.business.entities.*;
 
 import java.math.BigDecimal;
 import java.time.Duration;
@@ -97,6 +94,11 @@ public class TypeConverters {
 
     @TypeConverter
     public Id<Unit> unitId(int id) {
+        return IdImpl.create(id);
+    }
+
+    @TypeConverter
+    public Id<User> userId(int id) {
         return IdImpl.create(id);
     }
 }

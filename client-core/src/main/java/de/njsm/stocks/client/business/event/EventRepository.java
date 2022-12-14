@@ -36,4 +36,6 @@ public interface EventRepository {
     Single<List<LocationEventFeedItem>> getLocationFeed(Instant day);
 
     Single<List<UnitEventFeedItem>> getUnitFeed(Instant day);
+
+    Single<List<UserEventFeedItem>> getUserFeed(Instant day);
 }

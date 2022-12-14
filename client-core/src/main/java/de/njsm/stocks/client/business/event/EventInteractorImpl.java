@@ -22,6 +22,8 @@
 package de.njsm.stocks.client.business.event;
 
 import de.njsm.stocks.client.business.Localiser;
+import de.njsm.stocks.client.business.entities.Entity;
+import de.njsm.stocks.client.business.entities.Id;
 import de.njsm.stocks.client.business.entities.event.ActivityEvent;
 import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.core.Single;
@@ -58,10 +60,11 @@ public class EventInteractorImpl implements EventInteractor {
         return repository.getLocationFeed(localiser.toInstant(day))
                 .map(v -> transformToEvents(v, eventFactory::getLocationEventFrom))
                 .mergeWith(repository.getUnitFeed(localiser.toInstant(day))
-                        .map(v -> transformToEvents(v, eventFactory::getUnitEventFrom))
-                )
+                        .map(v -> transformToEvents(v, eventFactory::getUnitEventFrom)))
+                .mergeWith(repository.getUserFeed(localiser.toInstant(day))
+                        .map(v -> transformToEvents(v, eventFactory::getUserEventFrom)))
 
-                .buffer(2) // align with number of merged feeds above
+                .buffer(3) // align with number of merged feeds above
                 .map(lists -> {
                     List<ActivityEvent> result = new ArrayList<>();
                     lists.forEach(result::addAll);
@@ -83,15 +86,18 @@ public class EventInteractorImpl implements EventInteractor {
                 .map(localiser::toLocalDate);
     }
 
-    private <T extends EventFeedItem> List<ActivityEvent> transformToEvents(List<T> feedItems, Function<List<T>, ActivityEvent> mapper) {
-        Map<Instant, List<T>> groupedItems = feedItems.stream()
+    private <T extends EventFeedItem<E>, E extends Entity<E>>
+    List<ActivityEvent> transformToEvents(List<T> feedItems, Function<List<T>, ActivityEvent> mapper) {
+        Map<Instant, Map<Id<E>, List<T>>> groupedItems = feedItems.stream()
                 .collect(groupingBy(T::transactionTimeStart,
-                        () -> new TreeMap<>(Comparator.<Instant, Instant>comparing(x -> x).reversed())
-                        , toList()));
+                        () -> new TreeMap<>(Comparator.<Instant, Instant>comparing(x -> x).reversed()),
+                        groupingBy(T::id, toList())));
 
         return groupedItems.values()
                 .stream()
-                .map(mapper)
+                .flatMap(v -> v.values()
+                        .stream()
+                        .map(mapper))
                 .collect(toList());
     }
 }
