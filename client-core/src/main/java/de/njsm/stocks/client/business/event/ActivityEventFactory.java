@@ -60,7 +60,14 @@ class ActivityEventFactory {
                 unsupported("users cannot be edited"));
     }
 
-    <T extends EventFeedItem<E>, E extends Entity<E>>
+    public ActivityEvent getUserDeviceEventFrom(List<UserDeviceEventFeedItem> feedItems) {
+        return getEventFrom(feedItems,
+                UserDeviceCreatedEvent::create,
+                UserDeviceDeletedEvent::create,
+                unsupported("user devices cannot be edited"));
+    }
+
+    private <T extends EventFeedItem<E>, E extends Entity<E>>
     ActivityEvent getEventFrom(List<T> feedItems,
                                BiFunction<T, Localiser, ? extends ActivityEvent> createdFactory,
                                BiFunction<T, Localiser, ? extends ActivityEvent> deletedFactory,
@@ -81,7 +88,8 @@ class ActivityEventFactory {
         }
     }
 
-    private static BiFunction<List<UserEventFeedItem>, Localiser, ActivityEvent> unsupported(String description) {
+    private <T extends EventFeedItem<E>, E extends Entity<E>>
+    BiFunction<List<T>, Localiser, ActivityEvent> unsupported(String description) {
         return (a, b) -> {
             throw new UnsupportedOperationException(description);
         };

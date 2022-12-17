@@ -101,4 +101,29 @@ public class TypeConverters {
     public Id<User> userId(int id) {
         return IdImpl.create(id);
     }
+
+    @TypeConverter
+    public Id<UserDevice> userDeviceId(int id) {
+        return IdImpl.create(id);
+    }
+
+    @TypeConverter
+    public Id<Food> foodId(int id) {
+        return IdImpl.create(id);
+    }
+
+    @TypeConverter
+    public Id<EanNumber> eanNumberId(int id) {
+        return IdImpl.create(id);
+    }
+
+    @TypeConverter
+    public Id<FoodItem> foodItemId(int id) {
+        return IdImpl.create(id);
+    }
+
+    @TypeConverter
+    public Id<ScaledUnit> scaledUnitId(int id) {
+        return IdImpl.create(id);
+    }
 }

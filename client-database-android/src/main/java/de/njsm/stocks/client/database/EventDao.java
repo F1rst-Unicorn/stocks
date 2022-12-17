@@ -25,6 +25,7 @@ import androidx.room.Dao;
 import androidx.room.Query;
 import de.njsm.stocks.client.business.event.LocationEventFeedItem;
 import de.njsm.stocks.client.business.event.UnitEventFeedItem;
+import de.njsm.stocks.client.business.event.UserDeviceEventFeedItem;
 import de.njsm.stocks.client.business.event.UserEventFeedItem;
 import io.reactivex.rxjava3.core.Flowable;
 import io.reactivex.rxjava3.core.Observable;
@@ -82,6 +83,21 @@ class EventDao {
             "and main_table.transaction_time_start <= :upper " +
             "order by main_table.transaction_time_start desc, main_table.valid_time_end")
     abstract Flowable<List<UserEventFeedItem>> getUserEvents(Instant lower, Instant upper);
+
+    @Query("select " +
+            EVENT_COLUMNS +
+            "main_table.name as name, " +
+            "owner.name as ownerName " +
+            "from user_device main_table " +
+            "join user owner on owner.id = main_table.belongs_to " +
+                "and owner.valid_time_start <= main_table.transaction_time_start " +
+                "and main_table.transaction_time_start <= owner.valid_time_end " +
+                "and owner.transaction_time_end = " + DATABASE_INFINITY_STRING_SQL +
+            JOIN_INITIATOR +
+            "where :lower <= main_table.transaction_time_start " +
+            "and main_table.transaction_time_start <= :upper " +
+            "order by main_table.transaction_time_start desc, main_table.valid_time_end")
+    abstract Flowable<List<UserDeviceEventFeedItem>> getUserDeviceEvents(Instant lower, Instant upper);
 
     @Query("select max(last_update) " +
             "from updates")

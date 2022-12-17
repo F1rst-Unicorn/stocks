@@ -26,6 +26,7 @@ import de.njsm.stocks.client.business.entities.event.EditedField;
 import de.njsm.stocks.client.business.entities.event.LocationCreatedEvent;
 import de.njsm.stocks.client.business.entities.event.LocationDeletedEvent;
 import de.njsm.stocks.client.business.entities.event.LocationEditedEvent;
+import io.reactivex.rxjava3.core.Single;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -38,7 +39,9 @@ import java.time.LocalDate;
 
 import static de.njsm.stocks.client.business.Constants.INFINITY;
 import static io.reactivex.rxjava3.core.Single.just;
+import static java.util.Collections.emptyList;
 import static java.util.List.of;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
@@ -56,6 +59,10 @@ public class EventInteractorImplTest {
     void setUp() {
         localiser = new Localiser(null);
         uut = new EventInteractorImpl(repository, new ActivityEventFactory(localiser), localiser);
+
+        when(repository.getUnitFeed(any())).thenReturn(Single.just(emptyList()));
+        when(repository.getUserFeed(any())).thenReturn(Single.just(emptyList()));
+        when(repository.getUserDeviceFeed(any())).thenReturn(Single.just(emptyList()));
     }
 
     @AfterEach

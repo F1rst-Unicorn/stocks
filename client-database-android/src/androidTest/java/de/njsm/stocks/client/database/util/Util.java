@@ -23,6 +23,7 @@ package de.njsm.stocks.client.database.util;
 
 import io.reactivex.rxjava3.core.Maybe;
 import io.reactivex.rxjava3.core.Observable;
+import io.reactivex.rxjava3.core.Single;
 import io.reactivex.rxjava3.observers.TestObserver;
 
 import java.util.List;
@@ -41,7 +42,17 @@ public class Util {
                 .assertNoErrors();
     }
 
+    public static <T> TestObserver<T> test(Single<T> input) {
+        return input.test()
+                .awaitCount(1)
+                .assertNoErrors();
+    }
+
     public static <T> TestObserver<List<T>> testList(Observable<List<T>> input) {
+        return test(input.filter(v -> !v.isEmpty()));
+    }
+
+    public static <T> TestObserver<List<T>> testList(Single<List<T>> input) {
         return test(input.filter(v -> !v.isEmpty()));
     }
 }

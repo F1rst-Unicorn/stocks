@@ -38,4 +38,6 @@ public interface EventRepository {
     Single<List<UnitEventFeedItem>> getUnitFeed(Instant day);
 
     Single<List<UserEventFeedItem>> getUserFeed(Instant day);
+
+    Single<List<UserDeviceEventFeedItem>> getUserDeviceFeed(Instant day);
 }
