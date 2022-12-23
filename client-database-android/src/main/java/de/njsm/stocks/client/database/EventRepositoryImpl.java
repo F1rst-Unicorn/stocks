@@ -24,8 +24,6 @@ package de.njsm.stocks.client.database;
 import de.njsm.stocks.client.business.event.*;
 import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.core.Single;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import java.time.Instant;
@@ -35,8 +33,6 @@ import java.util.List;
 import static java.util.Collections.emptyList;
 
 class EventRepositoryImpl implements EventRepository {
-
-    private static final Logger LOG = LoggerFactory.getLogger(EventRepositoryImpl.class);
 
     private final EventDao eventDao;
 
@@ -66,6 +62,12 @@ class EventRepositoryImpl implements EventRepository {
     @Override
     public Single<List<UserDeviceEventFeedItem>> getUserDeviceFeed(Instant day) {
         return eventDao.getUserDeviceEvents(day, day.plus(1, ChronoUnit.DAYS))
+                .first(emptyList());
+    }
+
+    @Override
+    public Single<List<ScaledUnitEventFeedItem>> getScaledUnitFeed(Instant day) {
+        return eventDao.getScaledUnitEvents(day, day.plus(1, ChronoUnit.DAYS))
                 .first(emptyList());
     }
 

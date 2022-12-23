@@ -67,6 +67,13 @@ class ActivityEventFactory {
                 unsupported("user devices cannot be edited"));
     }
 
+    public ActivityEvent getScaledUnitEventFrom(List<ScaledUnitEventFeedItem> feedItems) {
+        return getEventFrom(feedItems,
+                ScaledUnitCreatedEvent::create,
+                ScaledUnitDeletedEvent::create,
+                ScaledUnitEditedEvent::create);
+    }
+
     private <T extends EventFeedItem<E>, E extends Entity<E>>
     ActivityEvent getEventFrom(List<T> feedItems,
                                BiFunction<T, Localiser, ? extends ActivityEvent> createdFactory,

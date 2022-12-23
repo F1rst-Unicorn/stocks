@@ -21,18 +21,18 @@
 
 package de.njsm.stocks.client.database;
 
-import de.njsm.stocks.client.business.event.EventRepository;
-import de.njsm.stocks.client.business.event.LocationEventFeedItem;
-import de.njsm.stocks.client.business.event.UserDeviceEventFeedItem;
+import de.njsm.stocks.client.business.event.*;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 import static de.njsm.stocks.client.business.Constants.INFINITY;
 import static de.njsm.stocks.client.database.BitemporalOperations.currentDelete;
+import static de.njsm.stocks.client.database.BitemporalOperations.sequencedDeleteOfEntireTime;
 import static de.njsm.stocks.client.database.util.Util.testList;
 
 public class EventRepositoryEventLoadingTest extends DbTestCase {
@@ -61,23 +61,94 @@ public class EventRepositoryEventLoadingTest extends DbTestCase {
                 .build();
         stocksDatabase.synchronisationDao().writeLocations(List.of(location));
         Instant updateTime = Instant.EPOCH.plusSeconds(1);
-        stocksDatabase.synchronisationDao().writeLocations(BitemporalOperations.<LocationDbEntity, LocationDbEntity.Builder>
-                currentUpdate(location, b -> b.name("newName"), updateTime));
+        List<LocationDbEntity> updated = BitemporalOperations.<LocationDbEntity, LocationDbEntity.Builder>
+                currentUpdate(location, b -> b.name("newName"), updateTime);
+        stocksDatabase.synchronisationDao().writeLocations(updated);
         Instant deleteTime = Instant.EPOCH.plusSeconds(2);
-        stocksDatabase.synchronisationDao().writeLocations(currentDelete(location, deleteTime));
+        stocksDatabase.synchronisationDao().writeLocations(currentDelete(updated.get(2), deleteTime));
 
         var actual = uut.getLocationFeed(Instant.EPOCH);
 
         testList(actual).assertValue(List.of(
-                        LocationEventFeedItem.create(location.id(), deleteTime, deleteTime, initiatorOwner.name(), location.name(), location.description()),
+                        LocationEventFeedItem.create(location.id(), deleteTime, deleteTime, initiatorOwner.name(), updated.get(2).name(), location.description()),
                         LocationEventFeedItem.create(location.id(), updateTime, updateTime, initiatorOwner.name(), location.name(), location.description()),
-                        LocationEventFeedItem.create(location.id(), INFINITY, updateTime, initiatorOwner.name(), "newName", location.description()),
+                        LocationEventFeedItem.create(location.id(), INFINITY, updateTime, initiatorOwner.name(), updated.get(2).name(), location.description()),
                         LocationEventFeedItem.create(location.id(), INFINITY, Instant.EPOCH, initiatorOwner.name(), location.name(), location.description()))
                 );
     }
 
     @Test
-    public void gettingAddedDeviceEventWorks() {
+    public void gettingLocationEventWithDeletedInitiatorWorks() {
+        var location = standardEntities.locationDbEntityBuilder()
+                .initiates(initiator.id())
+                .build();
+        stocksDatabase.synchronisationDao().writeLocations(List.of(location));
+        stocksDatabase.synchronisationDao().writeUserDevices(currentDelete(initiator, Instant.EPOCH.plusSeconds(3)));
+
+        var actual = uut.getLocationFeed(Instant.EPOCH);
+
+        testList(actual).assertValue(List.of(
+                        LocationEventFeedItem.create(location.id(), INFINITY, Instant.EPOCH, initiatorOwner.name(), location.name(), location.description()))
+                );
+    }
+
+    @Test
+    public void gettingLocationEventWithSequencedDeletedInitiatorWorks() {
+        var location = standardEntities.locationDbEntityBuilder()
+                .initiates(initiator.id())
+                .build();
+        stocksDatabase.synchronisationDao().writeLocations(List.of(location));
+        stocksDatabase.synchronisationDao().writeUserDevices(sequencedDeleteOfEntireTime(initiator, Instant.EPOCH.plusSeconds(3)));
+
+        var actual = uut.getLocationFeed(Instant.EPOCH);
+
+        testList(actual).assertValue(List.of(
+                        LocationEventFeedItem.create(location.id(), INFINITY, Instant.EPOCH, initiatorOwner.name(), location.name(), location.description()))
+                );
+    }
+
+    @Test
+    public void gettingUnitEventsWorks() {
+        var unit = standardEntities.unitDbEntityBuilder()
+                .initiates(initiator.id())
+                .build();
+        stocksDatabase.synchronisationDao().writeUnits(List.of(unit));
+        Instant updateTime = Instant.EPOCH.plusSeconds(1);
+        List<UnitDbEntity> updated = BitemporalOperations.<UnitDbEntity, UnitDbEntity.Builder>
+                currentUpdate(unit, b -> b.name("newName"), updateTime);
+        stocksDatabase.synchronisationDao().writeUnits(updated);
+        Instant deleteTime = Instant.EPOCH.plusSeconds(2);
+        stocksDatabase.synchronisationDao().writeUnits(currentDelete(updated.get(2), deleteTime));
+
+        var actual = uut.getUnitFeed(Instant.EPOCH);
+
+        testList(actual).assertValue(List.of(
+                        UnitEventFeedItem.create(unit.id(), deleteTime, deleteTime, initiatorOwner.name(), updated.get(2).name(), unit.abbreviation()),
+                        UnitEventFeedItem.create(unit.id(), updateTime, updateTime, initiatorOwner.name(), unit.name(), unit.abbreviation()),
+                        UnitEventFeedItem.create(unit.id(), INFINITY, updateTime, initiatorOwner.name(), updated.get(2).name(), unit.abbreviation()),
+                        UnitEventFeedItem.create(unit.id(), INFINITY, Instant.EPOCH, initiatorOwner.name(), unit.name(), unit.abbreviation()))
+                );
+    }
+
+    @Test
+    public void gettingUserEventsWorks() {
+        var user = standardEntities.userDbEntityBuilder()
+                .initiates(initiator.id())
+                .build();
+        stocksDatabase.synchronisationDao().writeUsers(List.of(user));
+        Instant deleteTime = Instant.EPOCH.plusSeconds(2);
+        stocksDatabase.synchronisationDao().writeUsers(currentDelete(user, deleteTime));
+
+        var actual = uut.getUserFeed(Instant.EPOCH);
+
+        testList(actual).assertValue(List.of(
+                        UserEventFeedItem.create(user.id(), deleteTime, deleteTime, initiatorOwner.name(), user.name()),
+                        UserEventFeedItem.create(user.id(), user.validTimeEnd(), user.transactionTimeStart(), initiatorOwner.name(), user.name()))
+                );
+    }
+
+    @Test
+    public void gettingDeviceEventsWorks() {
         Instant inputDay = Instant.EPOCH.plus(1, ChronoUnit.DAYS);
         var newDeviceOwner = standardEntities.userDbEntityBuilder()
                 .name("newDeviceOwner")
@@ -89,10 +160,18 @@ public class EventRepositoryEventLoadingTest extends DbTestCase {
                 .transactionTimeStart(inputDay)
                 .build();
         stocksDatabase.synchronisationDao().writeUserDevices(List.of(newDevice));
+        Instant deleteTime = inputDay.plusSeconds(2);
+        stocksDatabase.synchronisationDao().writeUserDevices(currentDelete(newDevice, deleteTime));
 
         var actual = uut.getUserDeviceFeed(inputDay);
 
         testList(actual).assertValue(List.of(
+                UserDeviceEventFeedItem.create(newDevice.id(),
+                        deleteTime,
+                        deleteTime,
+                        initiatorOwner.name(),
+                        newDevice.name(),
+                        newDeviceOwner.name()),
                 UserDeviceEventFeedItem.create(newDevice.id(),
                         newDevice.validTimeEnd(),
                         newDevice.transactionTimeStart(),
@@ -100,5 +179,32 @@ public class EventRepositoryEventLoadingTest extends DbTestCase {
                         newDevice.name(),
                         newDeviceOwner.name())
         ));
+    }
+
+    @Test
+    public void gettingScaledUnitEventsWorks() {
+        var unit = standardEntities.unitDbEntity();
+        stocksDatabase.synchronisationDao().writeUnits(List.of(unit));
+        var scaledUnit = standardEntities.scaledUnitDbEntityBuilder()
+                .initiates(initiator.id())
+                .unit(unit.id())
+                .build();
+        stocksDatabase.synchronisationDao().writeScaledUnits(List.of(scaledUnit));
+        Instant updateTime = Instant.EPOCH.plusSeconds(1);
+        var updatedScale = scaledUnit.scale().add(BigDecimal.ONE);
+        List<ScaledUnitDbEntity> updated = BitemporalOperations.<ScaledUnitDbEntity, ScaledUnitDbEntity.Builder>
+                currentUpdate(scaledUnit, b -> b.scale(updatedScale), updateTime);
+        stocksDatabase.synchronisationDao().writeScaledUnits(updated);
+        Instant deleteTime = Instant.EPOCH.plusSeconds(2);
+        stocksDatabase.synchronisationDao().writeScaledUnits(currentDelete(updated.get(2), deleteTime));
+
+        var actual = uut.getScaledUnitFeed(Instant.EPOCH);
+
+        testList(actual).assertValue(List.of(
+                ScaledUnitEventFeedItem.create(scaledUnit.id(), deleteTime, deleteTime, initiatorOwner.name(), updatedScale, unit.name(), unit.abbreviation()),
+                ScaledUnitEventFeedItem.create(scaledUnit.id(), updateTime, updateTime, initiatorOwner.name(), scaledUnit.scale(), unit.name(), unit.abbreviation()),
+                ScaledUnitEventFeedItem.create(scaledUnit.id(), INFINITY, updateTime, initiatorOwner.name(), updatedScale, unit.name(), unit.abbreviation()),
+                ScaledUnitEventFeedItem.create(scaledUnit.id(), INFINITY, Instant.EPOCH, initiatorOwner.name(), scaledUnit.scale(), unit.name(), unit.abbreviation()))
+        );
     }
 }

@@ -63,6 +63,7 @@ public class EventInteractorImplTest {
         when(repository.getUnitFeed(any())).thenReturn(Single.just(emptyList()));
         when(repository.getUserFeed(any())).thenReturn(Single.just(emptyList()));
         when(repository.getUserDeviceFeed(any())).thenReturn(Single.just(emptyList()));
+        when(repository.getScaledUnitFeed(any())).thenReturn(Single.just(emptyList()));
     }
 
     @AfterEach

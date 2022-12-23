@@ -23,10 +23,7 @@ package de.njsm.stocks.client.database;
 
 import androidx.room.Dao;
 import androidx.room.Query;
-import de.njsm.stocks.client.business.event.LocationEventFeedItem;
-import de.njsm.stocks.client.business.event.UnitEventFeedItem;
-import de.njsm.stocks.client.business.event.UserDeviceEventFeedItem;
-import de.njsm.stocks.client.business.event.UserEventFeedItem;
+import de.njsm.stocks.client.business.event.*;
 import io.reactivex.rxjava3.core.Flowable;
 import io.reactivex.rxjava3.core.Observable;
 
@@ -36,8 +33,7 @@ import java.util.List;
 import static de.njsm.stocks.client.database.StocksDatabase.DATABASE_INFINITY_STRING_SQL;
 
 @Dao
-abstract
-class EventDao {
+abstract class EventDao {
 
     private static final String EVENT_COLUMNS =
             "main_table.id as id, " +
@@ -51,7 +47,6 @@ class EventDao {
             "join user initiator_user on initiator_user.id = initiator_device.belongs_to " +
             "and initiator_user.valid_time_end = " + DATABASE_INFINITY_STRING_SQL + " ";
 
-
     @Query("select " +
             EVENT_COLUMNS +
             "main_table.name as name, " +
@@ -59,7 +54,7 @@ class EventDao {
             "from location main_table " +
             JOIN_INITIATOR +
             "where :lower <= main_table.transaction_time_start " +
-            "and main_table.transaction_time_start <= :upper " +
+            "and main_table.transaction_time_start < :upper " +
             "order by main_table.transaction_time_start desc, main_table.valid_time_end")
     abstract Flowable<List<LocationEventFeedItem>> getLocationEvents(Instant lower, Instant upper);
 
@@ -70,7 +65,7 @@ class EventDao {
             "from unit main_table " +
             JOIN_INITIATOR +
             "where :lower <= main_table.transaction_time_start " +
-            "and main_table.transaction_time_start <= :upper " +
+            "and main_table.transaction_time_start < :upper " +
             "order by main_table.transaction_time_start desc, main_table.valid_time_end")
     abstract Flowable<List<UnitEventFeedItem>> getUnitEvents(Instant lower, Instant upper);
 
@@ -80,7 +75,7 @@ class EventDao {
             "from user main_table " +
             JOIN_INITIATOR +
             "where :lower <= main_table.transaction_time_start " +
-            "and main_table.transaction_time_start <= :upper " +
+            "and main_table.transaction_time_start < :upper " +
             "order by main_table.transaction_time_start desc, main_table.valid_time_end")
     abstract Flowable<List<UserEventFeedItem>> getUserEvents(Instant lower, Instant upper);
 
@@ -98,6 +93,22 @@ class EventDao {
             "and main_table.transaction_time_start <= :upper " +
             "order by main_table.transaction_time_start desc, main_table.valid_time_end")
     abstract Flowable<List<UserDeviceEventFeedItem>> getUserDeviceEvents(Instant lower, Instant upper);
+
+    @Query("select " +
+            EVENT_COLUMNS +
+            "main_table.scale as scale, " +
+            "unit.name as name, " +
+            "unit.abbreviation as abbreviation " +
+            "from scaled_unit main_table " +
+            "join unit on unit.id = main_table.unit " +
+                "and unit.valid_time_start <= main_table.transaction_time_start " +
+                "and main_table.transaction_time_start < unit.valid_time_end " +
+                "and unit.transaction_time_end = " + DATABASE_INFINITY_STRING_SQL +
+            JOIN_INITIATOR +
+            "where :lower <= main_table.transaction_time_start " +
+            "and main_table.transaction_time_start < :upper " +
+            "order by main_table.transaction_time_start desc, main_table.valid_time_end")
+    abstract Flowable<List<ScaledUnitEventFeedItem>> getScaledUnitEvents(Instant lower, Instant upper);
 
     @Query("select max(last_update) " +
             "from updates")
