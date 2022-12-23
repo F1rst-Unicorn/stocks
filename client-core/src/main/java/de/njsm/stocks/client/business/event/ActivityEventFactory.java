@@ -88,6 +88,13 @@ class ActivityEventFactory {
                 FoodItemEditedEvent::create);
     }
 
+    public ActivityEvent getEanNumberEventFrom(List<EanNumberEventFeedItem> feedItems) {
+        return getEventFrom(feedItems,
+                EanNumberCreatedEvent::create,
+                EanNumberDeletedEvent::create,
+                unsupported("ean numbers cannot be edited"));
+    }
+
     private <T extends EventFeedItem<E>, E extends Entity<E>>
     ActivityEvent getEventFrom(List<T> feedItems,
                                BiFunction<T, Localiser, ? extends ActivityEvent> createdFactory,

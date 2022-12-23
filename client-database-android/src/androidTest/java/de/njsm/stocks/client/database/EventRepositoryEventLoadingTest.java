@@ -280,4 +280,25 @@ public class EventRepositoryEventLoadingTest extends DbTestCase {
                 FoodItemEventFeedItem.create(foodItem.id(), INFINITY, Instant.EPOCH, initiatorOwner.name(), food.name(), foodItem.eatBy(), scaledUnit.scale(), unit.abbreviation(), location.name())
         ));
     }
+
+    @Test
+    public void gettingEanNumberEventsWorks() {
+        var food = standardEntities.foodDbEntity();
+        stocksDatabase.synchronisationDao().writeFood(List.of(food));
+        var eanNumber = standardEntities.eanNumberDbEntityBuilder()
+                .initiates(initiator.id())
+                .identifies(food.id())
+                .build();
+        stocksDatabase.synchronisationDao().writeEanNumbers(List.of(eanNumber));
+
+        Instant deleteTime = Instant.EPOCH.plusSeconds(2);
+        stocksDatabase.synchronisationDao().writeEanNumbers(currentDelete(eanNumber, deleteTime));
+
+        var actual = uut.getEanNumberFeed(Instant.EPOCH);
+
+        testList(actual).assertValue(List.of(
+                EanNumberEventFeedItem.create(eanNumber.id(), deleteTime, deleteTime, initiatorOwner.name(), food.name(), eanNumber.number()),
+                EanNumberEventFeedItem.create(eanNumber.id(), INFINITY, Instant.EPOCH, initiatorOwner.name(), food.name(), eanNumber.number())
+        ));
+    }
 }

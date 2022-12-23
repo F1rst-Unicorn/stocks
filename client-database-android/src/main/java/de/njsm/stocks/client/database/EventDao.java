@@ -168,6 +168,21 @@ abstract class EventDao {
             "order by main_table.transaction_time_start desc, main_table.valid_time_end")
     abstract Flowable<List<FoodItemEventFeedItem>> getFoodItemEvents(Instant lower, Instant upper);
 
+    @Query("select " +
+            EVENT_COLUMNS +
+            "main_table.number as eanNumber, " +
+            "food.name as foodName " +
+            "from ean_number main_table " +
+            "join food on food.id = main_table.identifies " +
+                "and food.valid_time_start <= main_table.transaction_time_start " +
+                "and main_table.transaction_time_start < food.valid_time_end " +
+                "and food.transaction_time_end = " + DATABASE_INFINITY_STRING_SQL +
+            JOIN_INITIATOR +
+            "where :lower <= main_table.transaction_time_start " +
+            "and main_table.transaction_time_start < :upper " +
+            "order by main_table.transaction_time_start desc, main_table.valid_time_end")
+    abstract Observable<List<EanNumberEventFeedItem>> getEanNumberEvents(Instant lower, Instant upper);
+
     @Query("select max(last_update) " +
             "from updates")
     abstract Observable<Instant> getLatestUpdateTimestamp();
