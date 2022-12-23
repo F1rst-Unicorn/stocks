@@ -110,6 +110,34 @@ abstract class EventDao {
             "order by main_table.transaction_time_start desc, main_table.valid_time_end")
     abstract Flowable<List<ScaledUnitEventFeedItem>> getScaledUnitEvents(Instant lower, Instant upper);
 
+    @Query("select " +
+            EVENT_COLUMNS +
+            "main_table.name as name," +
+            "main_table.to_buy as toBuy," +
+            "main_table.expiration_offset as expirationOffset, " +
+            "scaled_unit.scale as unitScale, " +
+            "unit.abbreviation as abbreviation, " +
+            "location.name as locationName, " +
+            "main_table.description as description " +
+            "from food main_table " +
+            "join scaled_unit on scaled_unit.id = main_table.store_unit " +
+                "and scaled_unit.valid_time_start <= main_table.transaction_time_start " +
+                "and main_table.transaction_time_start < scaled_unit.valid_time_end " +
+                "and scaled_unit.transaction_time_end = " + DATABASE_INFINITY_STRING_SQL +
+            "join unit on unit.id = scaled_unit.unit " +
+                "and unit.valid_time_start <= main_table.transaction_time_start " +
+                "and main_table.transaction_time_start < unit.valid_time_end " +
+                "and unit.transaction_time_end = " + DATABASE_INFINITY_STRING_SQL +
+            "left outer join location on location.id = main_table.location " +
+                "and location.valid_time_start <= main_table.transaction_time_start " +
+                "and main_table.transaction_time_start < location.valid_time_end " +
+                "and location.transaction_time_end = " + DATABASE_INFINITY_STRING_SQL +
+            JOIN_INITIATOR +
+            "where :lower <= main_table.transaction_time_start " +
+            "and main_table.transaction_time_start < :upper " +
+            "order by main_table.transaction_time_start desc, main_table.valid_time_end")
+    abstract Flowable<List<FoodEventFeedItem>> getFoodEvents(Instant lower, Instant upper);
+
     @Query("select max(last_update) " +
             "from updates")
     abstract Observable<Instant> getLatestUpdateTimestamp();

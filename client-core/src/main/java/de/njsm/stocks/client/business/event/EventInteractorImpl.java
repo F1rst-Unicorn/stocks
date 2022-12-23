@@ -67,6 +67,8 @@ public class EventInteractorImpl implements EventInteractor {
                         .map(v -> transformToEvents(v, eventFactory::getUserDeviceEventFrom)))
                 .mergeWith(repository.getScaledUnitFeed(localiser.toInstant(day))
                         .map(v -> transformToEvents(v, eventFactory::getScaledUnitEventFrom)))
+                .mergeWith(repository.getFoodFeed(localiser.toInstant(day))
+                        .map(v -> transformToEvents(v, eventFactory::getFoodEventFrom)))
 
                 .buffer(5) // align with number of merged feeds above
                 .map(lists -> {

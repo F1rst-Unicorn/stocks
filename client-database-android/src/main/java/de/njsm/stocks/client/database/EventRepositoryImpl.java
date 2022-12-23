@@ -72,6 +72,12 @@ class EventRepositoryImpl implements EventRepository {
     }
 
     @Override
+    public Single<List<FoodEventFeedItem>> getFoodFeed(Instant day) {
+        return eventDao.getFoodEvents(day, day.plus(1, ChronoUnit.DAYS))
+                .first(emptyList());
+    }
+
+    @Override
     public Observable<Instant> getNewEventNotifier() {
         return eventDao.getLatestUpdateTimestamp()
                 .distinctUntilChanged()

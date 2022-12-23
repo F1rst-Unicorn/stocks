@@ -207,4 +207,39 @@ public class EventRepositoryEventLoadingTest extends DbTestCase {
                 ScaledUnitEventFeedItem.create(scaledUnit.id(), INFINITY, Instant.EPOCH, initiatorOwner.name(), scaledUnit.scale(), unit.name(), unit.abbreviation()))
         );
     }
+
+    @Test
+    public void gettingFoodEventsWorks() {
+        var unit = standardEntities.unitDbEntity();
+        stocksDatabase.synchronisationDao().writeUnits(List.of(unit));
+        var scaledUnit = standardEntities.scaledUnitDbEntityBuilder()
+                .unit(unit.id())
+                .build();
+        stocksDatabase.synchronisationDao().writeScaledUnits(List.of(scaledUnit));
+        var location = standardEntities.locationDbEntity();
+        stocksDatabase.synchronisationDao().writeLocations(List.of(location));
+        var food = standardEntities.foodDbEntityBuilder()
+                .initiates(initiator.id())
+                .storeUnit(scaledUnit.id())
+                .location(null)
+                .build();
+        stocksDatabase.synchronisationDao().writeFood(List.of(food));
+
+        Instant updateTime = Instant.EPOCH.plusSeconds(1);
+        List<FoodDbEntity> updated = BitemporalOperations.<FoodDbEntity, FoodDbEntity.Builder>
+                currentUpdate(food, b -> b.name("newName").location(location.id()), updateTime);
+        FoodDbEntity updatedFood = updated.get(2);
+        stocksDatabase.synchronisationDao().writeFood(updated);
+        Instant deleteTime = Instant.EPOCH.plusSeconds(2);
+        stocksDatabase.synchronisationDao().writeFood(currentDelete(updatedFood, deleteTime));
+
+        var actual = uut.getFoodFeed(Instant.EPOCH);
+
+        testList(actual).assertValue(List.of(
+                FoodEventFeedItem.create(food.id(), deleteTime, deleteTime, initiatorOwner.name(), updatedFood.name(), food.toBuy(), food.expirationOffset(), scaledUnit.scale(), unit.abbreviation(), location.name(), food.description()),
+                FoodEventFeedItem.create(food.id(), updateTime, updateTime, initiatorOwner.name(), food.name(), food.toBuy(), food.expirationOffset(), scaledUnit.scale(), unit.abbreviation(), null, food.description()),
+                FoodEventFeedItem.create(food.id(), INFINITY, updateTime, initiatorOwner.name(), updatedFood.name(), food.toBuy(), food.expirationOffset(), scaledUnit.scale(), unit.abbreviation(), location.name(), food.description()),
+                FoodEventFeedItem.create(food.id(), INFINITY, Instant.EPOCH, initiatorOwner.name(), food.name(), food.toBuy(), food.expirationOffset(), scaledUnit.scale(), unit.abbreviation(), null, food.description()))
+        );
+    }
 }

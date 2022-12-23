@@ -74,6 +74,13 @@ class ActivityEventFactory {
                 ScaledUnitEditedEvent::create);
     }
 
+    public ActivityEvent getFoodEventFrom(List<FoodEventFeedItem> feedItems) {
+        return getEventFrom(feedItems,
+                FoodCreatedEvent::create,
+                FoodDeletedEvent::create,
+                FoodEditedEvent::create);
+    }
+
     private <T extends EventFeedItem<E>, E extends Entity<E>>
     ActivityEvent getEventFrom(List<T> feedItems,
                                BiFunction<T, Localiser, ? extends ActivityEvent> createdFactory,

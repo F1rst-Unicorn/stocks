@@ -22,21 +22,29 @@
 package de.njsm.stocks.client.business.entities.event;
 
 import com.google.auto.value.AutoValue;
+import de.njsm.stocks.client.business.Localiser;
+import de.njsm.stocks.client.business.entities.Food;
+import de.njsm.stocks.client.business.entities.Id;
+import de.njsm.stocks.client.business.event.FoodEventFeedItem;
 
-import java.util.Optional;
+import java.time.LocalDateTime;
 
 @AutoValue
-public abstract class EditedField<T> {
+public abstract class FoodDeletedEvent extends ActivityEvent {
 
-    public abstract T former();
+    public abstract Id<Food> id();
 
-    public abstract T current();
+    public abstract String name();
 
-    public static <T> EditedField<T> create(T former, T current) {
-        return new AutoValue_EditedField<>(former, current);
+    public static FoodDeletedEvent create(Id<Food> id, LocalDateTime timeOccurred, String name, String userName) {
+        return new AutoValue_FoodDeletedEvent(timeOccurred, userName, id, name);
     }
 
-    public static <T> EditedField<Optional<T>> createNullable(T former, T current) {
-        return new AutoValue_EditedField<>(Optional.ofNullable(former), Optional.ofNullable(current));
+    public static FoodDeletedEvent create(FoodEventFeedItem feedItem, Localiser localiser) {
+        return new AutoValue_FoodDeletedEvent(
+                localiser.toLocalDateTime(feedItem.transactionTimeStart()),
+                feedItem.userName(),
+                feedItem.id(),
+                feedItem.name());
     }
 }
