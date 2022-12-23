@@ -242,4 +242,42 @@ public class EventRepositoryEventLoadingTest extends DbTestCase {
                 FoodEventFeedItem.create(food.id(), INFINITY, Instant.EPOCH, initiatorOwner.name(), food.name(), food.toBuy(), food.expirationOffset(), scaledUnit.scale(), unit.abbreviation(), null, food.description()))
         );
     }
+
+    @Test
+    public void gettingFoodItemEventsWorks() {
+        var unit = standardEntities.unitDbEntity();
+        stocksDatabase.synchronisationDao().writeUnits(List.of(unit));
+        var scaledUnit = standardEntities.scaledUnitDbEntityBuilder()
+                .unit(unit.id())
+                .build();
+        stocksDatabase.synchronisationDao().writeScaledUnits(List.of(scaledUnit));
+        var location = standardEntities.locationDbEntity();
+        stocksDatabase.synchronisationDao().writeLocations(List.of(location));
+        var food = standardEntities.foodDbEntity();
+        stocksDatabase.synchronisationDao().writeFood(List.of(food));
+        var foodItem = standardEntities.foodItemDbEntityBuilder()
+                .initiates(initiator.id())
+                .storedIn(location.id())
+                .ofType(food.id())
+                .unit(scaledUnit.id())
+                .build();
+        stocksDatabase.synchronisationDao().writeFoodItems(List.of(foodItem));
+
+        Instant updateTime = Instant.EPOCH.plusSeconds(1);
+        List<FoodItemDbEntity> updated = BitemporalOperations.<FoodItemDbEntity, FoodItemDbEntity.Builder>
+                currentUpdate(foodItem, b -> b.eatBy(foodItem.eatBy().plus(1, ChronoUnit.DAYS)), updateTime);
+        FoodItemDbEntity updatedFoodItem = updated.get(2);
+        stocksDatabase.synchronisationDao().writeFoodItems(updated);
+        Instant deleteTime = Instant.EPOCH.plusSeconds(2);
+        stocksDatabase.synchronisationDao().writeFoodItems(currentDelete(updatedFoodItem, deleteTime));
+
+        var actual = uut.getFoodItemFeed(Instant.EPOCH);
+
+        testList(actual).assertValue(List.of(
+                FoodItemEventFeedItem.create(foodItem.id(), deleteTime, deleteTime, initiatorOwner.name(), food.name(), updatedFoodItem.eatBy(), scaledUnit.scale(), unit.abbreviation(), location.name()),
+                FoodItemEventFeedItem.create(foodItem.id(), updateTime, updateTime, initiatorOwner.name(), food.name(), foodItem.eatBy(), scaledUnit.scale(), unit.abbreviation(), location.name()),
+                FoodItemEventFeedItem.create(foodItem.id(), INFINITY, updateTime, initiatorOwner.name(), food.name(), updatedFoodItem.eatBy(), scaledUnit.scale(), unit.abbreviation(), location.name()),
+                FoodItemEventFeedItem.create(foodItem.id(), INFINITY, Instant.EPOCH, initiatorOwner.name(), food.name(), foodItem.eatBy(), scaledUnit.scale(), unit.abbreviation(), location.name())
+        ));
+    }
 }

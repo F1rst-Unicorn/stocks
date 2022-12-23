@@ -44,4 +44,6 @@ public interface EventRepository {
     Single<List<ScaledUnitEventFeedItem>> getScaledUnitFeed(Instant day);
 
     Single<List<FoodEventFeedItem>> getFoodFeed(Instant day);
+
+    Single<List<FoodItemEventFeedItem>> getFoodItemFeed(Instant day);
 }

@@ -138,6 +138,36 @@ abstract class EventDao {
             "order by main_table.transaction_time_start desc, main_table.valid_time_end")
     abstract Flowable<List<FoodEventFeedItem>> getFoodEvents(Instant lower, Instant upper);
 
+    @Query("select " +
+            EVENT_COLUMNS +
+            "food.name as foodName, " +
+            "main_table.eat_by as eatBy, " +
+            "scaled_unit.scale as unitScale, " +
+            "unit.abbreviation as abbreviation, " +
+            "location.name as locationName " +
+            "from food_item main_table " +
+            "join food on food.id = main_table.of_type " +
+                "and food.valid_time_start <= main_table.transaction_time_start " +
+                "and main_table.transaction_time_start < food.valid_time_end " +
+                "and food.transaction_time_end = " + DATABASE_INFINITY_STRING_SQL +
+            "join scaled_unit on scaled_unit.id = main_table.unit " +
+                "and scaled_unit.valid_time_start <= main_table.transaction_time_start " +
+                "and main_table.transaction_time_start < scaled_unit.valid_time_end " +
+                "and scaled_unit.transaction_time_end = " + DATABASE_INFINITY_STRING_SQL +
+            "join unit on unit.id = scaled_unit.unit " +
+                "and unit.valid_time_start <= main_table.transaction_time_start " +
+                "and main_table.transaction_time_start < unit.valid_time_end " +
+                "and unit.transaction_time_end = " + DATABASE_INFINITY_STRING_SQL +
+            "join location on location.id = main_table.stored_in " +
+                "and location.valid_time_start <= main_table.transaction_time_start " +
+                "and main_table.transaction_time_start < location.valid_time_end " +
+                "and location.transaction_time_end = " + DATABASE_INFINITY_STRING_SQL +
+            JOIN_INITIATOR +
+            "where :lower <= main_table.transaction_time_start " +
+            "and main_table.transaction_time_start < :upper " +
+            "order by main_table.transaction_time_start desc, main_table.valid_time_end")
+    abstract Flowable<List<FoodItemEventFeedItem>> getFoodItemEvents(Instant lower, Instant upper);
+
     @Query("select max(last_update) " +
             "from updates")
     abstract Observable<Instant> getLatestUpdateTimestamp();
