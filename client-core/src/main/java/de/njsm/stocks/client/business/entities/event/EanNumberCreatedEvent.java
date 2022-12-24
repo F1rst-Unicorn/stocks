@@ -44,4 +44,9 @@ public abstract class EanNumberCreatedEvent extends ActivityEvent {
                 feedItem.foodName(),
                 feedItem.eanNumber());
     }
+
+    @Override
+    public <I, O> O accept(Visitor<I, O> visitor, I input) {
+        return visitor.eanNumberCreated(this, input);
+    }
 }

@@ -44,4 +44,9 @@ public abstract class UserDeviceCreatedEvent extends ActivityEvent {
                 feedItem.name(),
                 feedItem.ownerName());
     }
+
+    @Override
+    public <I, O> O accept(Visitor<I, O> visitor, I input) {
+        return visitor.userDeviceCreated(this, input);
+    }
 }

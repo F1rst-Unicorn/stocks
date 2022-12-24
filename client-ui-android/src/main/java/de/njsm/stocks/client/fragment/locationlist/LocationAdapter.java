@@ -61,7 +61,7 @@ public class LocationAdapter extends RecyclerView.Adapter<TextWithPrefixIconView
                 .inflate(R.layout.item_text_with_prefix_icon, parent, false);
         v.setOnClickListener(onClickListener);
         v.setOnLongClickListener(onLongClickListener);
-        return new TextWithPrefixIconViewHolder(v, R.drawable.ic_account_balance_wallet_black_24dp);
+        return new TextWithPrefixIconViewHolder(v, R.drawable.baseline_kitchen_black_24);
     }
 
     @Override

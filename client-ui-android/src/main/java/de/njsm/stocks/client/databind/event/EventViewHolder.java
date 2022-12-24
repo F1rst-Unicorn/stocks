@@ -22,8 +22,11 @@
 package de.njsm.stocks.client.databind.event;
 
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
+import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
+import androidx.appcompat.content.res.AppCompatResources;
 import androidx.recyclerview.widget.RecyclerView;
 import de.njsm.stocks.client.ui.R;
 
@@ -33,10 +36,16 @@ public class EventViewHolder extends RecyclerView.ViewHolder {
 
     private final TextView text;
 
+    private final ImageView dataIcon;
+
+    private final ImageView actionIcon;
+
     public EventViewHolder(@NonNull View itemView) {
         super(itemView);
         time = itemView.findViewById(R.id.item_event_date);
         text = itemView.findViewById(R.id.item_event_text);
+        dataIcon = itemView.findViewById(R.id.item_event_entity_icon);
+        actionIcon = itemView.findViewById(R.id.item_event_event_icon);
     }
 
     public void setTime(String time) {
@@ -48,6 +57,21 @@ public class EventViewHolder extends RecyclerView.ViewHolder {
     }
 
     public void setLoading() {
-        this.time.setText("...");
+        text.setText("...");
+        time.setText("");
+        dataIcon.setImageDrawable(null);
+        actionIcon.setImageDrawable(null);
+    }
+
+    public void setDataIcon(@DrawableRes int icon) {
+        dataIcon.setImageDrawable(AppCompatResources.getDrawable(
+                itemView.getContext(),
+                icon));
+    }
+
+    public void setActionIcon(@DrawableRes int icon) {
+        actionIcon.setImageDrawable(AppCompatResources.getDrawable(
+                itemView.getContext(),
+                icon));
     }
 }

@@ -57,4 +57,9 @@ public abstract class ScaledUnitEditedEvent extends ActivityEvent {
                 EditedField.create(former.name(), current.name()),
                 EditedField.create(former.abbreviation(), current.abbreviation()));
     }
+
+    @Override
+    public <I, O> O accept(Visitor<I, O> visitor, I input) {
+        return visitor.scaledUnitEdited(this, input);
+    }
 }

@@ -27,7 +27,6 @@ import de.njsm.stocks.client.business.entities.Id;
 import de.njsm.stocks.client.business.entities.Unit;
 import de.njsm.stocks.client.business.event.UnitEventFeedItem;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @AutoValue
@@ -49,5 +48,10 @@ public abstract class UnitEditedEvent extends ActivityEvent {
                 EditedField.create(former.name(), current.name()),
                 EditedField.create(former.abbreviation(), current.abbreviation())
         );
+    }
+
+    @Override
+    public <I, O> O accept(Visitor<I, O> visitor, I input) {
+        return visitor.unitEdited(this, input);
     }
 }

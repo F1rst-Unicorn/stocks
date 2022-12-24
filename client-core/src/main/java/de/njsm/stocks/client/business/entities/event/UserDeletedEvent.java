@@ -41,4 +41,9 @@ public abstract class UserDeletedEvent extends ActivityEvent {
                 feedItem.id(),
                 feedItem.name());
     }
+
+    @Override
+    public <I, O> O accept(Visitor<I, O> visitor, I input) {
+        return visitor.userDeleted(this, input);
+    }
 }

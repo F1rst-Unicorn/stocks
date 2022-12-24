@@ -39,4 +39,12 @@ public abstract class EditedField<T> {
     public static <T> EditedField<Optional<T>> createNullable(T former, T current) {
         return new AutoValue_EditedField<>(Optional.ofNullable(former), Optional.ofNullable(current));
     }
+
+    public boolean unchanged() {
+        return !changed();
+    }
+
+    public boolean changed() {
+        return !former().equals(current());
+    }
 }

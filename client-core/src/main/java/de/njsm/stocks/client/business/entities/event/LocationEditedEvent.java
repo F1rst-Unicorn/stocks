@@ -54,4 +54,9 @@ public abstract class LocationEditedEvent extends ActivityEvent {
                 EditedField.create(former.description(), current.description())
         );
     }
+
+    @Override
+    public <I, O> O accept(Visitor<I, O> visitor, I input) {
+        return visitor.locationEdited(this, input);
+    }
 }

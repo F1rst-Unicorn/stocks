@@ -44,4 +44,9 @@ public abstract class UnitDeletedEvent extends ActivityEvent {
                 feedItem.name(),
                 feedItem.abbreviation());
     }
+
+    @Override
+    public <I, O> O accept(Visitor<I, O> visitor, I input) {
+        return visitor.unitDeleted(this, input);
+    }
 }

@@ -25,9 +25,8 @@ import com.google.auto.value.AutoValue;
 import de.njsm.stocks.client.business.Localiser;
 import de.njsm.stocks.client.business.entities.FoodItem;
 import de.njsm.stocks.client.business.entities.Id;
+import de.njsm.stocks.client.business.entities.UnitAmount;
 import de.njsm.stocks.client.business.event.FoodItemEventFeedItem;
-
-import java.math.BigDecimal;
 
 @AutoValue
 public abstract class FoodItemDeletedEvent extends ActivityEvent {
@@ -36,9 +35,7 @@ public abstract class FoodItemDeletedEvent extends ActivityEvent {
 
     public abstract String foodName();
 
-    public abstract BigDecimal unitScale();
-
-    public abstract String abbreviation();
+    public abstract UnitAmount unit();
 
     public static FoodItemDeletedEvent create(FoodItemEventFeedItem feedItem, Localiser localiser) {
         return new AutoValue_FoodItemDeletedEvent(
@@ -46,7 +43,11 @@ public abstract class FoodItemDeletedEvent extends ActivityEvent {
                 feedItem.userName(),
                 feedItem.id(),
                 feedItem.foodName(),
-                feedItem.unitScale(),
-                feedItem.abbreviation());
+                UnitAmount.of(feedItem.unitScale(), feedItem.abbreviation()));
+    }
+
+    @Override
+    public <I, O> O accept(Visitor<I, O> visitor, I input) {
+        return visitor.foodItemDeleted(this, input);
     }
 }

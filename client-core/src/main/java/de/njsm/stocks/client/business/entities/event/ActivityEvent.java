@@ -28,4 +28,6 @@ public abstract class ActivityEvent {
     public abstract LocalDateTime timeOccurred();
 
     public abstract String userName();
+
+    public abstract <I, O> O accept(Visitor<I, O> visitor, I input);
 }

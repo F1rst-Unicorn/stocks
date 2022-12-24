@@ -255,7 +255,7 @@
     <string name="event_location_description_changed">has changed the description%1$s</string>
     <string name="event_eannumber_created">%1$s has added a barcode (%2$s) for %3$s.</string>
     <string name="event_eannumber_deleted">%1$s has deleted a barcode (%2$s) for %3$s.</string>
-    <string name="event_food_created">%1$s has entered %2$s.</string>
+    <string name="event_food_created">%1$s has entered %2$s</string>
     <string name="event_food_deleted">%1$s has deleted %2$s.</string>
     <string name="event_food_renamed">has renamed %1$s to %2$s</string>
     <string name="event_food_to_buy_set">has added %1$s to the shopping list</string>

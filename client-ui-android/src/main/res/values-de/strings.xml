@@ -254,7 +254,7 @@
     <string name="event_location_description_changed">hat die Beschreibung%1$s geändert</string>
     <string name="event_eannumber_created">%1$s hat einen Strichcode (%2$s) für %3$s hinzugefügt.</string>
     <string name="event_eannumber_deleted">%1$s hat einen Strichcode (%2$s) für %3$s gelöscht.</string>
-    <string name="event_food_created">%1$s hat %2$s erfasst.</string>
+    <string name="event_food_created">%1$s hat %2$s erfasst</string>
     <string name="event_food_deleted">%1$s hat %2$s gelöscht.</string>
     <string name="event_food_renamed">hat %1$s zu %2$s umbenannt</string>
     <string name="event_food_to_buy_set">hat %1$s auf die Einkaufsliste gesetzt</string>

@@ -48,4 +48,9 @@ public abstract class LocationDeletedEvent extends ActivityEvent {
                 feedItem.name()
         );
     }
+
+    @Override
+    public <I, O> O accept(Visitor<I, O> visitor, I input) {
+        return visitor.locationDeleted(this, input);
+    }
 }

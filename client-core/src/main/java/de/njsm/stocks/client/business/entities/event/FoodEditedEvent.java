@@ -25,9 +25,9 @@ import com.google.auto.value.AutoValue;
 import de.njsm.stocks.client.business.Localiser;
 import de.njsm.stocks.client.business.entities.Food;
 import de.njsm.stocks.client.business.entities.Id;
+import de.njsm.stocks.client.business.entities.UnitAmount;
 import de.njsm.stocks.client.business.event.FoodEventFeedItem;
 
-import java.math.BigDecimal;
 import java.time.Period;
 import java.util.List;
 import java.util.Optional;
@@ -43,9 +43,7 @@ public abstract class FoodEditedEvent extends ActivityEvent {
 
     public abstract EditedField<Period> expirationOffset();
 
-    public abstract EditedField<BigDecimal> unitScale();
-
-    public abstract EditedField<String> abbreviation();
+    public abstract EditedField<UnitAmount> unit();
 
     public abstract EditedField<Optional<String>> locationName();
 
@@ -61,9 +59,15 @@ public abstract class FoodEditedEvent extends ActivityEvent {
                 EditedField.create(former.name(), current.name()),
                 EditedField.create(former.toBuy(), current.toBuy()),
                 EditedField.create(former.expirationOffset(), current.expirationOffset()),
-                EditedField.create(former.unitScale(), current.unitScale()),
-                EditedField.create(former.abbreviation(), current.abbreviation()),
+                EditedField.create(
+                        UnitAmount.of(former.unitScale(), former.abbreviation()),
+                        UnitAmount.of(current.unitScale(), current.abbreviation())),
                 EditedField.createNullable(former.locationName(), current.locationName()),
                 EditedField.create(former.description(), current.description()));
+    }
+
+    @Override
+    public <I, O> O accept(Visitor<I, O> visitor, I input) {
+        return visitor.foodEditedEvent(this, input);
     }
 }

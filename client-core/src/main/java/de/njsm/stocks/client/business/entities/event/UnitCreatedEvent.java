@@ -27,8 +27,6 @@ import de.njsm.stocks.client.business.entities.Id;
 import de.njsm.stocks.client.business.entities.Unit;
 import de.njsm.stocks.client.business.event.UnitEventFeedItem;
 
-import java.time.LocalDateTime;
-
 @AutoValue
 public abstract class UnitCreatedEvent extends ActivityEvent {
 
@@ -45,5 +43,10 @@ public abstract class UnitCreatedEvent extends ActivityEvent {
                 feedItem.id(),
                 feedItem.name(),
                 feedItem.abbreviation());
+    }
+
+    @Override
+    public <I, O> O accept(Visitor<I, O> visitor, I input) {
+        return visitor.unitCreated(this, input);
     }
 }

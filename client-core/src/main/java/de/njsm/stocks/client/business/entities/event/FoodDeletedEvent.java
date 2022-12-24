@@ -47,4 +47,9 @@ public abstract class FoodDeletedEvent extends ActivityEvent {
                 feedItem.id(),
                 feedItem.name());
     }
+
+    @Override
+    public <I, O> O accept(Visitor<I, O> visitor, I input) {
+        return visitor.foodDeletedEvent(this, input);
+    }
 }

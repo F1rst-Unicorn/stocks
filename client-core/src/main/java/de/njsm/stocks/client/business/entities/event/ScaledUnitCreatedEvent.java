@@ -24,9 +24,7 @@ package de.njsm.stocks.client.business.entities.event;
 import com.google.auto.value.AutoValue;
 import de.njsm.stocks.client.business.Localiser;
 import de.njsm.stocks.client.business.entities.Id;
-import de.njsm.stocks.client.business.entities.Location;
 import de.njsm.stocks.client.business.entities.ScaledUnit;
-import de.njsm.stocks.client.business.event.LocationEventFeedItem;
 import de.njsm.stocks.client.business.event.ScaledUnitEventFeedItem;
 
 import java.math.BigDecimal;
@@ -55,5 +53,10 @@ public abstract class ScaledUnitCreatedEvent extends ActivityEvent {
                 feedItem.scale(),
                 feedItem.name(),
                 feedItem.abbreviation());
+    }
+
+    @Override
+    public <I, O> O accept(Visitor<I, O> visitor, I input) {
+        return visitor.scaledUnitCreated(this, input);
     }
 }

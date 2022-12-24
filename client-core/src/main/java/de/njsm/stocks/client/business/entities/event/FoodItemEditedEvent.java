@@ -25,9 +25,9 @@ import com.google.auto.value.AutoValue;
 import de.njsm.stocks.client.business.Localiser;
 import de.njsm.stocks.client.business.entities.FoodItem;
 import de.njsm.stocks.client.business.entities.Id;
+import de.njsm.stocks.client.business.entities.UnitAmount;
 import de.njsm.stocks.client.business.event.FoodItemEventFeedItem;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -40,9 +40,7 @@ public abstract class FoodItemEditedEvent extends ActivityEvent {
 
     public abstract EditedField<LocalDateTime> eatBy();
 
-    public abstract EditedField<BigDecimal> unitScale();
-
-    public abstract EditedField<String> abbreviation();
+    public abstract EditedField<UnitAmount> unit();
 
     public abstract EditedField<String> locationName();
 
@@ -58,9 +56,15 @@ public abstract class FoodItemEditedEvent extends ActivityEvent {
                         localiser.toLocalDateTime(former.eatBy()),
                         localiser.toLocalDateTime(current.eatBy())
                 ),
-                EditedField.create(former.unitScale(), current.unitScale()),
-                EditedField.create(former.abbreviation(), current.abbreviation()),
+                EditedField.create(
+                        UnitAmount.of(former.unitScale(), former.abbreviation()),
+                        UnitAmount.of(current.unitScale(), current.abbreviation())),
                 EditedField.create(former.locationName(), current.locationName())
         );
+    }
+
+    @Override
+    public <I, O> O accept(Visitor<I, O> visitor, I input) {
+        return visitor.foodItemEdited(this, input);
     }
 }

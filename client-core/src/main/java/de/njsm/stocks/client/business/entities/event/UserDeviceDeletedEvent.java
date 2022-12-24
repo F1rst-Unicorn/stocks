@@ -44,4 +44,9 @@ public abstract class UserDeviceDeletedEvent extends ActivityEvent {
                 feedItem.name(),
                 feedItem.ownerName());
     }
+
+    @Override
+    public <I, O> O accept(Visitor<I, O> visitor, I input) {
+        return visitor.userDeviceDeleted(this, input);
+    }
 }

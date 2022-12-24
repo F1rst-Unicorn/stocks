@@ -70,7 +70,10 @@ public class OutlineFragment extends BottomToolbarFragment implements MenuProvid
 
         RecyclerView activityFeed = content.findViewById(R.id.fragment_outline_list);
         activityFeed.setLayoutManager(new LinearLayoutManager(requireContext()));
-        EventAdapter adapter = new EventAdapter(this::onActivityFeedItemClicked, localiser);
+        EventAdapter adapter = new EventAdapter(
+                this::onActivityFeedItemClicked,
+                localiser,
+                this::getString);
         activityFeed.setAdapter(adapter);
         outlineViewModel.getActivityFeed().observe(getViewLifecycleOwner(), v -> {
             activityFeed.scrollToPosition(0);

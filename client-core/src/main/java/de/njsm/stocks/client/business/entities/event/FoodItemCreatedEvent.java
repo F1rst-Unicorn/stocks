@@ -25,9 +25,9 @@ import com.google.auto.value.AutoValue;
 import de.njsm.stocks.client.business.Localiser;
 import de.njsm.stocks.client.business.entities.FoodItem;
 import de.njsm.stocks.client.business.entities.Id;
+import de.njsm.stocks.client.business.entities.UnitAmount;
 import de.njsm.stocks.client.business.event.FoodItemEventFeedItem;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @AutoValue
@@ -39,9 +39,7 @@ public abstract class FoodItemCreatedEvent extends ActivityEvent {
 
     public abstract LocalDateTime eatBy();
 
-    public abstract BigDecimal unitScale();
-
-    public abstract String abbreviation();
+    public abstract UnitAmount unit();
 
     public abstract String locationName();
 
@@ -52,8 +50,12 @@ public abstract class FoodItemCreatedEvent extends ActivityEvent {
                 feedItem.id(),
                 feedItem.foodName(),
                 localiser.toLocalDateTime(feedItem.eatBy()),
-                feedItem.unitScale(),
-                feedItem.abbreviation(),
+                UnitAmount.of(feedItem.unitScale(), feedItem.abbreviation()),
                 feedItem.locationName());
+    }
+
+    @Override
+    public <I, O> O accept(Visitor<I, O> visitor, I input) {
+        return visitor.foodItemCreated(this, input);
     }
 }

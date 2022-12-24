@@ -32,6 +32,8 @@ import de.njsm.stocks.client.presenter.DateRenderStrategy;
 import de.njsm.stocks.client.ui.R;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.function.Function;
+
 import static de.njsm.stocks.client.fragment.util.ItemDiffer.byId;
 
 public class EventAdapter extends PagingDataAdapter<ActivityEvent, EventViewHolder> {
@@ -40,10 +42,21 @@ public class EventAdapter extends PagingDataAdapter<ActivityEvent, EventViewHold
 
     private final DateRenderStrategy dateRenderStrategy;
 
-    public EventAdapter(View.OnClickListener onClickListener, Localiser localiser) {
+    private final EventDescriptionRenderer descriptionRenderer;
+
+    private final DataIconSelector dataIconSelector;
+
+    private final ActionIconSelector actionIconSelector;
+
+    public EventAdapter(View.OnClickListener onClickListener,
+                        Localiser localiser,
+                        Function<Integer, String> dictionary) {
         super(byId(ActivityEvent::timeOccurred));
         this.onClickListener = onClickListener;
         dateRenderStrategy = new DateRenderStrategy(localiser);
+        descriptionRenderer = new EventDescriptionRenderer(dictionary, dateRenderStrategy);
+        dataIconSelector = new DataIconSelector();
+        actionIconSelector = new ActionIconSelector();
     }
 
     @NonNull
@@ -54,7 +67,6 @@ public class EventAdapter extends PagingDataAdapter<ActivityEvent, EventViewHold
                 .inflate(R.layout.item_event, parent, false);
         v.setOnClickListener(onClickListener);
         return new EventViewHolder(v);
-
     }
 
     @Override
@@ -64,7 +76,9 @@ public class EventAdapter extends PagingDataAdapter<ActivityEvent, EventViewHold
             holder.setLoading();
         } else {
             holder.setTime(dateRenderStrategy.render(item.timeOccurred()));
-            holder.setText(item.toString());
+            holder.setText(descriptionRenderer.visit(item));
+            holder.setDataIcon(dataIconSelector.visit(item));
+            holder.setActionIcon(actionIconSelector.visit(item));
         }
     }
 }
