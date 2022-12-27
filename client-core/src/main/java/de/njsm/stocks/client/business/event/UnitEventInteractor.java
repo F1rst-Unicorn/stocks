@@ -19,10 +19,7 @@
  *
  */
 
-package de.njsm.stocks.client.navigation;
+package de.njsm.stocks.client.business.event;
 
-public interface ScaledUnitListNavigator extends Navigator {
-    void addScaledUnit();
-
-    void editScaledUnit(int id);
+public interface UnitEventInteractor extends EventInteractor {
 }

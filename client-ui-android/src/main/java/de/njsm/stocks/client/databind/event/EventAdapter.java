@@ -42,7 +42,7 @@ public class EventAdapter extends PagingDataAdapter<ActivityEvent, EventViewHold
 
     private final DateRenderStrategy dateRenderStrategy;
 
-    private final EventDescriptionRenderer descriptionRenderer;
+    private final DescriptionRenderer descriptionRenderer;
 
     private final DataIconSelector dataIconSelector;
 
@@ -54,7 +54,7 @@ public class EventAdapter extends PagingDataAdapter<ActivityEvent, EventViewHold
         super(byId(ActivityEvent::timeOccurred));
         this.onClickListener = onClickListener;
         dateRenderStrategy = new DateRenderStrategy(localiser);
-        descriptionRenderer = new EventDescriptionRenderer(dictionary, dateRenderStrategy);
+        descriptionRenderer = new DescriptionRenderer(dictionary, dateRenderStrategy);
         dataIconSelector = new DataIconSelector();
         actionIconSelector = new ActionIconSelector();
     }

@@ -31,33 +31,21 @@ import java.util.List;
 
 import static java.util.Collections.emptyList;
 
-public class EventInteractorImpl extends BaseEventInteractorImpl {
+public class UnitEventInteractorImpl extends BaseEventInteractorImpl implements UnitEventInteractor {
 
     @Inject
-    public EventInteractorImpl(EventRepository repository, ActivityEventFactory eventFactory, Localiser localiser) {
+    public UnitEventInteractorImpl(EventRepository repository, ActivityEventFactory eventFactory, Localiser localiser) {
         super(repository, eventFactory, localiser);
     }
 
     @Override
     public Single<List<ActivityEvent>> getEventsOf(LocalDate day) {
-        return repository.getLocationFeed(localiser.toInstant(day))
-                .map(v -> transformToEvents(v, eventFactory::getLocationEventFrom))
-                .mergeWith(repository.getUnitFeed(localiser.toInstant(day))
-                        .map(v -> transformToEvents(v, eventFactory::getUnitEventFrom)))
-                .mergeWith(repository.getUserFeed(localiser.toInstant(day))
-                        .map(v -> transformToEvents(v, eventFactory::getUserEventFrom)))
-                .mergeWith(repository.getUserDeviceFeed(localiser.toInstant(day))
-                        .map(v -> transformToEvents(v, eventFactory::getUserDeviceEventFrom)))
+        return repository.getUnitFeed(localiser.toInstant(day))
+                       .map(v -> transformToEvents(v, eventFactory::getUnitEventFrom))
                 .mergeWith(repository.getScaledUnitFeed(localiser.toInstant(day))
                         .map(v -> transformToEvents(v, eventFactory::getScaledUnitEventFrom)))
-                .mergeWith(repository.getFoodFeed(localiser.toInstant(day))
-                        .map(v -> transformToEvents(v, eventFactory::getFoodEventFrom)))
-                .mergeWith(repository.getFoodItemFeed(localiser.toInstant(day))
-                        .map(v -> transformToEvents(v, eventFactory::getFoodItemEventFrom)))
-                .mergeWith(repository.getEanNumberFeed(localiser.toInstant(day))
-                        .map(v -> transformToEvents(v, eventFactory::getEanNumberEventFrom)))
 
-                .buffer(8) // align with number of merged feeds above
+                .buffer(2) // align with number of merged feeds above
                 .map(this::sortEvents)
                 .first(emptyList());
     }

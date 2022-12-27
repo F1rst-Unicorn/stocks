@@ -28,6 +28,7 @@ import dagger.multibindings.IntoMap;
 import de.njsm.stocks.client.business.*;
 import de.njsm.stocks.client.business.entities.*;
 import de.njsm.stocks.client.business.event.EventInteractor;
+import de.njsm.stocks.client.business.event.UnitEventInteractor;
 import de.njsm.stocks.client.di.ViewModelFactory;
 import de.njsm.stocks.client.di.ViewModelKey;
 import de.njsm.stocks.client.execution.SchedulerStatusReporter;
@@ -300,5 +301,12 @@ public class ViewModelModule {
     @ViewModelKey(ShoppingListViewModel.class)
     ViewModel ShoppingListViewModel(Synchroniser synchroniser, FoodToBuyInteractor interactor) {
         return new ShoppingListViewModel(synchroniser, interactor);
+    }
+
+    @Provides
+    @IntoMap
+    @ViewModelKey(UnitHistoryViewModel.class)
+    ViewModel UnitHistoryViewModel(Localiser localiser, UnitEventInteractor interactor) {
+        return new UnitHistoryViewModel(localiser, interactor);
     }
 }

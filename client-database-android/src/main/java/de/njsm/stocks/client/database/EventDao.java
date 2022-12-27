@@ -144,6 +144,8 @@ abstract class EventDao {
             "main_table.eat_by as eatBy, " +
             "scaled_unit.scale as unitScale, " +
             "unit.abbreviation as abbreviation, " +
+            "user.name as buyer, " +
+            "user_device.name as registerer, " +
             "location.name as locationName " +
             "from food_item main_table " +
             "join food on food.id = main_table.of_type " +
@@ -162,6 +164,14 @@ abstract class EventDao {
                 "and location.valid_time_start <= main_table.transaction_time_start " +
                 "and main_table.transaction_time_start < location.valid_time_end " +
                 "and location.transaction_time_end = " + DATABASE_INFINITY_STRING_SQL +
+            "join user on user.id = main_table.buys " +
+                "and user.valid_time_start <= main_table.transaction_time_start " +
+                "and main_table.transaction_time_start < user.valid_time_end " +
+                "and user.transaction_time_end = " + DATABASE_INFINITY_STRING_SQL +
+            "join user_device on user_device.id = main_table.registers " +
+                "and user_device.valid_time_start <= main_table.transaction_time_start " +
+                "and main_table.transaction_time_start < user_device.valid_time_end " +
+                "and user_device.transaction_time_end = " + DATABASE_INFINITY_STRING_SQL +
             JOIN_INITIATOR +
             "where :lower <= main_table.transaction_time_start " +
             "and main_table.transaction_time_start < :upper " +

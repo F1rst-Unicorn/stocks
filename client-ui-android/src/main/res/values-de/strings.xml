@@ -248,6 +248,7 @@
     <string name="event_enumeration_undefined_object">es</string>
     <string name="event_enumeration_undefined_object_genitive">von %1$s</string>
 
+    <string name="event_unknown_change">hat %1$s auf unbekannte Weise verändert.</string>
     <string name="event_location_created">%1$s hat %2$s erfasst.</string>
     <string name="event_location_deleted">%1$s hat %2$s gelöscht.</string>
     <string name="event_location_renamed">hat %1$s zu %2$s umbenannt</string>
@@ -274,8 +275,8 @@
     <string name="event_food_item_changed_location">hat %1$s von %2$s nach %3$s verlegt</string>
     <string name="event_food_item_changed_eat_by">hat das Mindesthaltbarkeitsdatum%1$s von %2$s zu %3$s geändert</string>
     <string name="event_food_item_changed_scaled_unit">hat die Maßeinheit%1$s von %2$s zu %3$s geändert</string>
-    <string name="event_food_item_changed_registers">hat das registrierende Gerät%1$s geändert</string>
-    <string name="event_food_item_changed_buys">hat den ursprünglichen Käufer%s</string>
+    <string name="event_food_item_changed_registers">hat das registrierende Gerät%1$s von %2$s zu %3$s geändert</string>
+    <string name="event_food_item_changed_buys">hat den ursprünglichen Käufer%1$s von %2$s zu %3$s geändert</string>
     <string name="event_unit_created">%1$s hat %2$s (%3$s) erstellt.</string>
     <string name="event_unit_deleted">%1$s hat %2$s (%3$s) gelöscht.</string>
     <string name="event_unit_renamed">hat %1$s zu %2$s umbenannt</string>
@@ -286,7 +287,6 @@
     <string name="event_scaled_unit_unit_changed">hat die Einheit%1$s von %2$s auf %3$s gesetzt</string>
 
     <string name="content_description_plus">Plus-Symbol</string>
-
 
     <string name="statuscode_success_error_list">Erfolgreich</string>
     <string name="statuscode_general_error_error_list">Unbekannter Fehler</string>

@@ -40,11 +40,11 @@ public class UnitAmountRenderStrategy {
 
     public String render(UnitAmount scaledUnit) {
         if (scaledUnit.decimalPrefix().getSymbol().isEmpty())
-            return toLocaleString(scaledUnit.prefixedAmount())
+            return render(scaledUnit.prefixedAmount())
                     + spaceForFullWordAbbreviation(scaledUnit.abbreviation())
                     + scaledUnit.abbreviation();
         else
-            return toLocaleString(scaledUnit.prefixedAmount())
+            return render(scaledUnit.prefixedAmount())
                     + spaceForFullWordAbbreviation(scaledUnit.abbreviation())
                     + scaledUnit.decimalPrefix().getSymbol()
                     + spaceForFullWordAbbreviation(scaledUnit.abbreviation())
@@ -61,15 +61,15 @@ public class UnitAmountRenderStrategy {
                 .collect(Collectors.joining(", "));
     }
 
+    public String render(BigDecimal number) {
+        StringBuffer buffer = new StringBuffer();
+        return NumberFormat.getInstance().format(number, buffer, new FieldPosition(0)).toString();
+    }
+
     private String spaceForFullWordAbbreviation(String abbreviation) {
         if (Character.isUpperCase(abbreviation.charAt(0)))
             return " ";
         else
             return "";
-    }
-
-    private String toLocaleString(BigDecimal number) {
-        StringBuffer buffer = new StringBuffer();
-        return NumberFormat.getInstance().format(number, buffer, new FieldPosition(0)).toString();
     }
 }

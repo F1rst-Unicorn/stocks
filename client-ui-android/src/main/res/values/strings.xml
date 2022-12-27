@@ -249,6 +249,7 @@
     <string name="event_enumeration_undefined_object">it</string>
     <string name="event_enumeration_undefined_object_genitive">of %1$s</string>
 
+    <string name="event_unknown_change">has changed %1$s in an unknown way.</string>
     <string name="event_location_created">%1$s has entered %2$s.</string>
     <string name="event_location_deleted">%1$s has deleted %2$s.</string>
     <string name="event_location_renamed">has renamed %1$s to %2$s</string>
@@ -275,8 +276,8 @@
     <string name="event_food_item_changed_location">has moved %1$s from %2$s to %3$s</string>
     <string name="event_food_item_changed_eat_by">has changed the expiration date%1$s from %2$s to %3$s</string>
     <string name="event_food_item_changed_scaled_unit">has changed the unit%1$s from %2$s to %3$s</string>
-    <string name="event_food_item_changed_registers">has changed the registering device%1$s</string>
-    <string name="event_food_item_changed_buys">has changed the original buyer%1$s</string>
+    <string name="event_food_item_changed_registers">has changed the registering device%1$s from %2$s to %3$s</string>
+    <string name="event_food_item_changed_buys">has changed the original buyer%1$s from %2$s to %3$s</string>
     <string name="event_unit_created">%1$s has created %2$s (%3$s).</string>
     <string name="event_unit_deleted">%1$s has deleted %2$s (%3$s).</string>
     <string name="event_unit_renamed">has renamed %1$s to %2$s</string>

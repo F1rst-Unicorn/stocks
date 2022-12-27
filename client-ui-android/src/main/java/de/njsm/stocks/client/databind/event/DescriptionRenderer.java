@@ -26,10 +26,13 @@ import de.njsm.stocks.client.business.entities.event.*;
 import de.njsm.stocks.client.presenter.DateRenderStrategy;
 import de.njsm.stocks.client.presenter.UnitAmountRenderStrategy;
 import de.njsm.stocks.client.ui.R;
+import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Function;
 
-public class EventDescriptionRenderer implements Visitor<Void, String> {
+public class DescriptionRenderer implements Visitor<Void, String> {
 
     private final Function<Integer, String> dictionary;
 
@@ -37,7 +40,7 @@ public class EventDescriptionRenderer implements Visitor<Void, String> {
 
     private final UnitAmountRenderStrategy unitAmountRenderStrategy;
 
-    public EventDescriptionRenderer(Function<Integer, String> dictionary, DateRenderStrategy dateRenderStrategy) {
+    public DescriptionRenderer(Function<Integer, String> dictionary, DateRenderStrategy dateRenderStrategy) {
         this.dictionary = dictionary;
         this.dateRenderStrategy = dateRenderStrategy;
         unitAmountRenderStrategy = new UnitAmountRenderStrategy();
@@ -94,8 +97,12 @@ public class EventDescriptionRenderer implements Visitor<Void, String> {
     }
 
     @Override
-    public String locationEdited(LocationEditedEvent locationEditedEvent, Void input) {
-        return locationEditedEvent.toString();
+    public String locationEdited(LocationEditedEvent event, Void input) {
+        var object = formObject(event.name().former());
+        return describe(event, List.of(
+                LocationNameDiffer.of(event, dictionary, object),
+                LocationDescriptionDiffer.of(event, dictionary, object)
+        ), object);
     }
 
     @Override
@@ -112,10 +119,10 @@ public class EventDescriptionRenderer implements Visitor<Void, String> {
                     + " "
                     + String.format(shoppingListSubTemplate,
                             dictionary.apply(R.string.event_enumeration_undefined_object))
-                    + ".";
+                    + dictionary.apply(R.string.event_end_of_sentence);
 
         } else {
-            return mainSentence + ".";
+            return mainSentence + dictionary.apply(R.string.event_end_of_sentence);
         }
     }
 
@@ -128,8 +135,16 @@ public class EventDescriptionRenderer implements Visitor<Void, String> {
     }
 
     @Override
-    public String foodEditedEvent(FoodEditedEvent foodEditedEvent, Void input) {
-        return foodEditedEvent.toString();
+    public String foodEditedEvent(FoodEditedEvent event, Void input) {
+        var object = formObject(event.name().former());
+        return describe(event, List.of(
+                FoodNameDiffer.of(event, dictionary, object),
+                FoodToBuyDiffer.of(event, dictionary, object),
+                FoodExpirationOffsetDiffer.of(event, dictionary, object),
+                FoodUnitDiffer.of(event, dictionary, object, unitAmountRenderStrategy),
+                FoodLocationDiffer.of(event, dictionary, object),
+                FoodDescriptionDiffer.of(event, dictionary, object)
+        ), object);
     }
 
     @Override
@@ -149,8 +164,15 @@ public class EventDescriptionRenderer implements Visitor<Void, String> {
     }
 
     @Override
-    public String foodItemEdited(FoodItemEditedEvent foodItemEditedEvent, Void input) {
-        return foodItemEditedEvent.toString();
+    public String foodItemEdited(FoodItemEditedEvent event, Void input) {
+        var object = formObject(event.foodName());
+        return describe(event, List.of(
+                FoodItemEatByDiffer.of(event, dictionary, object, dateRenderStrategy),
+                FoodItemLocationDiffer.of(event, dictionary, object),
+                FoodItemUnitDiffer.of(event, dictionary, object, unitAmountRenderStrategy),
+                FoodItemBuyerDiffer.of(event, dictionary, object),
+                FoodItemRegistererDiffer.of(event, dictionary, object)
+        ), object);
     }
 
     @Override
@@ -174,8 +196,12 @@ public class EventDescriptionRenderer implements Visitor<Void, String> {
     }
 
     @Override
-    public String scaledUnitEdited(ScaledUnitEditedEvent scaledUnitEditedEvent, Void input) {
-        return scaledUnitEditedEvent.toString();
+    public String scaledUnitEdited(ScaledUnitEditedEvent event, Void input) {
+        var object = formObject(unitAmountRenderStrategy.render(UnitAmount.of(event.scale().former(), event.abbreviation().former())));
+        return describe(event, List.of(
+                ScaledUnitScaleDiffer.of(event, dictionary, object, unitAmountRenderStrategy),
+                ScaledUnitUnitDiffer.of(event, dictionary, object)
+        ), object);
     }
 
     @Override
@@ -197,8 +223,12 @@ public class EventDescriptionRenderer implements Visitor<Void, String> {
     }
 
     @Override
-    public String unitEdited(UnitEditedEvent unitEditedEvent, Void input) {
-        return unitEditedEvent.toString();
+    public String unitEdited(UnitEditedEvent event, Void input) {
+        var object = formObject(event.name().former());
+        return describe(event, List.of(
+                UnitNameDiffer.of(event, dictionary, object),
+                UnitAbbreviationDiffer.of(event, dictionary, object)
+        ), object);
     }
 
     @Override
@@ -217,5 +247,62 @@ public class EventDescriptionRenderer implements Visitor<Void, String> {
                 eanNumberDeletedEvent.userName(),
                 eanNumberDeletedEvent.eanNumber(),
                 eanNumberDeletedEvent.foodName());
+    }
+
+    public <T extends ActivityEvent> String describe(T event, List<PartialDiffGenerator<?>> differs, SentenceObject object) {
+        ArrayList<String> partialSentences = generatePartialSentences(differs);
+
+        StringBuilder result = new StringBuilder();
+        result.append(event.userName());
+        result.append(" ");
+
+        if (partialSentences.isEmpty()) {
+            return unknownChange(object, result);
+        } else {
+            return assemblePartialSentences(partialSentences, result);
+        }
+    }
+
+    @NotNull
+    private ArrayList<String> generatePartialSentences(List<PartialDiffGenerator<?>> differs) {
+        ArrayList<String> partialSentences = new ArrayList<>();
+        for (PartialDiffGenerator<?> differ : differs) {
+            differ.generate(partialSentences::add);
+        }
+        return partialSentences;
+    }
+
+    @NotNull
+    private String unknownChange(SentenceObject object, StringBuilder result) {
+        String template = dictionary.apply(R.string.event_unknown_change);
+        result.append(String.format(template, object.get()));
+        return result.toString();
+    }
+
+    @NotNull
+    private String assemblePartialSentences(ArrayList<String> partialSentences, StringBuilder result) {
+        String enumerationSeparator = dictionary.apply(R.string.event_enumeration_item_divider);
+        for (int i = 0; i < partialSentences.size() - 1; i++) {
+            result.append(partialSentences.get(i));
+            result.append(enumerationSeparator);
+            result.append(" ");
+        }
+
+        if (partialSentences.size() > 1) {
+            result.deleteCharAt(result.length() - 2);
+            result.append(dictionary.apply(R.string.event_enumeration_item_divider_last));
+            result.append(" ");
+        }
+
+        result.append(partialSentences.get(partialSentences.size() - 1));
+        result.append(dictionary.apply(R.string.event_end_of_sentence));
+
+        return result.toString();
+    }
+
+    private SentenceObject formObject(String explicitObject) {
+        return new SentenceObject(explicitObject,
+                dictionary.apply(R.string.event_enumeration_undefined_object),
+                String.format(dictionary.apply(R.string.event_enumeration_undefined_object_genitive), explicitObject));
     }
 }

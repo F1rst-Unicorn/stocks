@@ -39,6 +39,15 @@ public class UnitListNavigatorTest extends NavigationTest {
     }
 
     @Test
+    public void showingHistoryWorks() {
+
+        uut.showUnitHistory();
+
+        ActionOnlyNavDirections actual = navigationArgConsumer.getLastArgument(ActionOnlyNavDirections.class);
+        assertThat(actual.getActionId(), is(R.id.action_nav_fragment_unit_tabs_to_nav_fragment_unit_history));
+    }
+
+    @Test
     public void editingUnitContentBindsCorrectly() {
         int expectedId = 42;
 

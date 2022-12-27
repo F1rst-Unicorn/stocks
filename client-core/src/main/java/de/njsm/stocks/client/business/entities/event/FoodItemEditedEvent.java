@@ -44,6 +44,10 @@ public abstract class FoodItemEditedEvent extends ActivityEvent {
 
     public abstract EditedField<String> locationName();
 
+    public abstract EditedField<String> buyerName();
+
+    public abstract EditedField<String> registererName();
+
     public static FoodItemEditedEvent create(List<FoodItemEventFeedItem> feedItems, Localiser localiser) {
         var former = feedItems.get(0);
         var current = feedItems.get(1);
@@ -59,7 +63,9 @@ public abstract class FoodItemEditedEvent extends ActivityEvent {
                 EditedField.create(
                         UnitAmount.of(former.unitScale(), former.abbreviation()),
                         UnitAmount.of(current.unitScale(), current.abbreviation())),
-                EditedField.create(former.locationName(), current.locationName())
+                EditedField.create(former.locationName(), current.locationName()),
+                EditedField.create(former.buyer(), current.buyer()),
+                EditedField.create(former.registerer(), current.registerer())
         );
     }
 

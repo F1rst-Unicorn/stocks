@@ -21,6 +21,7 @@
 package de.njsm.stocks.client.fragment;
 
 import android.content.Context;
+import android.view.View;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import dagger.android.support.AndroidSupportInjection;
@@ -32,4 +33,6 @@ public class InjectableFragment extends Fragment {
         AndroidSupportInjection.inject(this);
         super.onAttach(context);
     }
+
+    public void doNothing(View __) {}
 }

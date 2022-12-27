@@ -26,6 +26,8 @@ import dagger.Provides;
 import de.njsm.stocks.client.business.entities.*;
 import de.njsm.stocks.client.business.event.EventInteractor;
 import de.njsm.stocks.client.business.event.InMemoryEventInteractorImpl;
+import de.njsm.stocks.client.business.event.InMemoryUnitEventInteractorImpl;
+import de.njsm.stocks.client.business.event.UnitEventInteractor;
 import de.njsm.stocks.client.execution.SchedulerStatusReporter;
 import io.reactivex.rxjava3.core.Observable;
 
@@ -210,4 +212,7 @@ public interface UimockBusinessModule {
 
     @Binds
     EventInteractor InMemoryEventInteractorImpl(InMemoryEventInteractorImpl impl);
+
+    @Binds
+    UnitEventInteractor InMemoryUnitEventInteractorImpl(InMemoryUnitEventInteractorImpl impl);
 }

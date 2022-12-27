@@ -42,11 +42,15 @@ public abstract class FoodItemEventFeedItem extends EventFeedItem<FoodItem> {
 
     public abstract String locationName();
 
-    public static FoodItemEventFeedItem create(int id, Instant validTimeEnd, Instant transactionTimeStart, String userName, String foodName, Instant eatBy, BigDecimal unitScale, String abbreviation, String locationName) {
-        return new AutoValue_FoodItemEventFeedItem(validTimeEnd, transactionTimeStart, userName, IdImpl.create(id), foodName, eatBy, unitScale, abbreviation, locationName);
+    public abstract String buyer();
+
+    public abstract String registerer();
+
+    public static FoodItemEventFeedItem create(int id, Instant validTimeEnd, Instant transactionTimeStart, String userName, String foodName, Instant eatBy, BigDecimal unitScale, String abbreviation, String locationName, String buyer, String registerer) {
+        return new AutoValue_FoodItemEventFeedItem(validTimeEnd, transactionTimeStart, userName, IdImpl.create(id), foodName, eatBy, unitScale, abbreviation, locationName, buyer, registerer);
     }
 
-    public static FoodItemEventFeedItem create(Id<FoodItem> id, Instant validTimeEnd, Instant transactionTimeStart, String userName, String foodName, Instant eatBy, BigDecimal unitScale, String abbreviation, String locationName) {
-        return new AutoValue_FoodItemEventFeedItem(validTimeEnd, transactionTimeStart, userName, id, foodName, eatBy, unitScale, abbreviation, locationName);
+    public static FoodItemEventFeedItem create(Id<FoodItem> id, Instant validTimeEnd, Instant transactionTimeStart, String userName, String foodName, Instant eatBy, BigDecimal unitScale, String abbreviation, String locationName, String buyer, String registerer) {
+        return new AutoValue_FoodItemEventFeedItem(validTimeEnd, transactionTimeStart, userName, id, foodName, eatBy, unitScale, abbreviation, locationName, buyer, registerer);
     }
 }

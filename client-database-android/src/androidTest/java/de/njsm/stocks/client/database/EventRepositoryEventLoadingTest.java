@@ -260,6 +260,8 @@ public class EventRepositoryEventLoadingTest extends DbTestCase {
                 .storedIn(location.id())
                 .ofType(food.id())
                 .unit(scaledUnit.id())
+                .buys(initiatorOwner.id())
+                .registers(initiator.id())
                 .build();
         stocksDatabase.synchronisationDao().writeFoodItems(List.of(foodItem));
 
@@ -274,10 +276,10 @@ public class EventRepositoryEventLoadingTest extends DbTestCase {
         var actual = uut.getFoodItemFeed(Instant.EPOCH);
 
         testList(actual).assertValue(List.of(
-                FoodItemEventFeedItem.create(foodItem.id(), deleteTime, deleteTime, initiatorOwner.name(), food.name(), updatedFoodItem.eatBy(), scaledUnit.scale(), unit.abbreviation(), location.name()),
-                FoodItemEventFeedItem.create(foodItem.id(), updateTime, updateTime, initiatorOwner.name(), food.name(), foodItem.eatBy(), scaledUnit.scale(), unit.abbreviation(), location.name()),
-                FoodItemEventFeedItem.create(foodItem.id(), INFINITY, updateTime, initiatorOwner.name(), food.name(), updatedFoodItem.eatBy(), scaledUnit.scale(), unit.abbreviation(), location.name()),
-                FoodItemEventFeedItem.create(foodItem.id(), INFINITY, Instant.EPOCH, initiatorOwner.name(), food.name(), foodItem.eatBy(), scaledUnit.scale(), unit.abbreviation(), location.name())
+                FoodItemEventFeedItem.create(foodItem.id(), deleteTime, deleteTime, initiatorOwner.name(), food.name(), updatedFoodItem.eatBy(), scaledUnit.scale(), unit.abbreviation(), location.name(), initiatorOwner.name(), initiator.name()),
+                FoodItemEventFeedItem.create(foodItem.id(), updateTime, updateTime, initiatorOwner.name(), food.name(), foodItem.eatBy(), scaledUnit.scale(), unit.abbreviation(), location.name(), initiatorOwner.name(), initiator.name()),
+                FoodItemEventFeedItem.create(foodItem.id(), INFINITY, updateTime, initiatorOwner.name(), food.name(), updatedFoodItem.eatBy(), scaledUnit.scale(), unit.abbreviation(), location.name(), initiatorOwner.name(), initiator.name()),
+                FoodItemEventFeedItem.create(foodItem.id(), INFINITY, Instant.EPOCH, initiatorOwner.name(), food.name(), foodItem.eatBy(), scaledUnit.scale(), unit.abbreviation(), location.name(), initiatorOwner.name(), initiator.name())
         ));
     }
 

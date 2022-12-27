@@ -155,6 +155,10 @@
                 app:destination="@id/nav_fragment_unit_edit">
         </action>
         <action
+                android:id="@+id/action_nav_fragment_unit_tabs_to_nav_fragment_unit_history"
+                app:destination="@id/nav_fragment_unit_history">
+        </action>
+        <action
                 android:id="@+id/action_nav_fragment_unit_tabs_to_nav_fragment_scaled_unit_add"
                 app:destination="@id/nav_fragment_scaled_unit_add" />
         <action
@@ -471,6 +475,10 @@
                     app:argType="integer"/>
         </action>
     </fragment>
+    <fragment
+            android:id="@+id/nav_fragment_unit_history"
+            android:name="de.njsm.stocks.client.fragment.unithistory.UnitHistoryFragment"
+            android:label="@string/title_recent_activity" />
     <action
             android:id="@+id/action_global_nav_fragment_error_list"
             app:destination="@id/nav_fragment_error_list" />

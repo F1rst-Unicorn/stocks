@@ -22,6 +22,9 @@
 package de.njsm.stocks.client.navigation;
 
 public interface UnitListNavigator {
+
+    void showUnitHistory();
+
     void addUnit();
 
     void editUnit(int id);
