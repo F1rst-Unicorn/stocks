@@ -120,7 +120,8 @@ abstract class FoodDao {
     abstract Observable<List<FoodItemForListingData>> get(int id);
 
     @Query("select id, name " +
-            "from current_food")
+            "from current_food " +
+            "order by name")
     abstract Observable<List<FoodForSelection>> getForSelection();
 
     @Query("select id, version, to_buy as toBuy " +
