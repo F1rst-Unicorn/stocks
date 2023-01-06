@@ -94,7 +94,8 @@ abstract class EventDao {
     @Query("select " +
             EVENT_COLUMNS +
             "main_table.name as name, " +
-            "owner.name as ownerName " +
+            "owner.name as ownerName," +
+            "owner.id as ownerId " +
             "from user_device main_table " +
             "join user owner on owner.id = main_table.belongs_to " +
                 "and owner.valid_time_start <= main_table.transaction_time_start " +
@@ -182,6 +183,7 @@ abstract class EventDao {
     @Query("select " +
             EVENT_COLUMNS +
             "food.name as foodName, " +
+            "food.id as ofType, " +
             "main_table.eat_by as eatBy, " +
             "scaled_unit.scale as unitScale, " +
             "unit.abbreviation as abbreviation, " +
@@ -222,6 +224,7 @@ abstract class EventDao {
     @Query("select " +
             EVENT_COLUMNS +
             "food.name as foodName, " +
+            "food.id as ofType, " +
             "main_table.eat_by as eatBy, " +
             "scaled_unit.scale as unitScale, " +
             "unit.abbreviation as abbreviation, " +
@@ -263,6 +266,7 @@ abstract class EventDao {
     @Query("select " +
             EVENT_COLUMNS +
             "food.name as foodName, " +
+            "food.id as ofType, " +
             "main_table.eat_by as eatBy, " +
             "scaled_unit.scale as unitScale, " +
             "unit.abbreviation as abbreviation, " +
@@ -308,7 +312,8 @@ abstract class EventDao {
     @Query("select " +
             EVENT_COLUMNS +
             "main_table.number as eanNumber, " +
-            "food.name as foodName " +
+            "food.name as foodName," +
+            "main_table.identifies as identifies " +
             "from ean_number main_table " +
             "join food on food.id = main_table.identifies " +
                 "and food.valid_time_start <= main_table.transaction_time_start " +
@@ -323,7 +328,8 @@ abstract class EventDao {
     @Query("select " +
             EVENT_COLUMNS +
             "main_table.number as eanNumber, " +
-            "food.name as foodName " +
+            "food.name as foodName, " +
+            "main_table.identifies as identifies " +
             "from ean_number main_table " +
             "join food on food.id = main_table.identifies " +
                 "and food.valid_time_start <= main_table.transaction_time_start " +

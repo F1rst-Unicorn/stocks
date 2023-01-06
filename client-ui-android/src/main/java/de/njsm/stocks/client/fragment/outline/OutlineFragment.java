@@ -37,6 +37,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import de.njsm.stocks.client.business.Localiser;
+import de.njsm.stocks.client.business.entities.event.ActivityEvent;
 import de.njsm.stocks.client.databind.event.EventAdapter;
 import de.njsm.stocks.client.fragment.BottomToolbarFragment;
 import de.njsm.stocks.client.navigation.OutlineNavigator;
@@ -99,7 +100,8 @@ public class OutlineFragment extends BottomToolbarFragment implements MenuProvid
     }
 
     private void onActivityFeedItemClicked(View view) {
-
+        ActivityEvent data = (ActivityEvent) view.getTag();
+        outlineNavigator.showEventDetails(data);
     }
 
     @Override

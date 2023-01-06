@@ -75,6 +75,7 @@ public class EventAdapter extends PagingDataAdapter<ActivityEvent, EventViewHold
         if (item == null) {
             holder.setLoading();
         } else {
+            holder.setTag(item);
             holder.setTime(dateRenderStrategy.render(item.timeOccurred()));
             holder.setText(descriptionRenderer.visit(item));
             holder.setDataIcon(dataIconSelector.visit(item));

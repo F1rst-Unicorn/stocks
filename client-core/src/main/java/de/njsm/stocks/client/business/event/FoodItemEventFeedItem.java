@@ -22,6 +22,7 @@
 package de.njsm.stocks.client.business.event;
 
 import com.google.auto.value.AutoValue;
+import de.njsm.stocks.client.business.entities.Food;
 import de.njsm.stocks.client.business.entities.FoodItem;
 import de.njsm.stocks.client.business.entities.Id;
 import de.njsm.stocks.client.business.entities.IdImpl;
@@ -33,6 +34,8 @@ import java.time.Instant;
 public abstract class FoodItemEventFeedItem extends EventFeedItem<FoodItem> {
 
     public abstract String foodName();
+
+    public abstract Id<Food> ofType();
 
     public abstract Instant eatBy();
 
@@ -46,11 +49,11 @@ public abstract class FoodItemEventFeedItem extends EventFeedItem<FoodItem> {
 
     public abstract String registerer();
 
-    public static FoodItemEventFeedItem create(int id, Instant validTimeEnd, Instant transactionTimeStart, String userName, String foodName, Instant eatBy, BigDecimal unitScale, String abbreviation, String locationName, String buyer, String registerer) {
-        return new AutoValue_FoodItemEventFeedItem(validTimeEnd, transactionTimeStart, userName, IdImpl.create(id), foodName, eatBy, unitScale, abbreviation, locationName, buyer, registerer);
+    public static FoodItemEventFeedItem create(int id, Instant validTimeEnd, Instant transactionTimeStart, String userName, String foodName, Instant eatBy, BigDecimal unitScale, String abbreviation, String locationName, String buyer, String registerer, int ofType) {
+        return new AutoValue_FoodItemEventFeedItem(validTimeEnd, transactionTimeStart, userName, IdImpl.create(id), foodName, IdImpl.create(ofType), eatBy, unitScale, abbreviation, locationName, buyer, registerer);
     }
 
-    public static FoodItemEventFeedItem create(Id<FoodItem> id, Instant validTimeEnd, Instant transactionTimeStart, String userName, String foodName, Instant eatBy, BigDecimal unitScale, String abbreviation, String locationName, String buyer, String registerer) {
-        return new AutoValue_FoodItemEventFeedItem(validTimeEnd, transactionTimeStart, userName, id, foodName, eatBy, unitScale, abbreviation, locationName, buyer, registerer);
+    public static FoodItemEventFeedItem create(Id<FoodItem> id, Instant validTimeEnd, Instant transactionTimeStart, String userName, String foodName, Instant eatBy, BigDecimal unitScale, String abbreviation, String locationName, String buyer, String registerer, Id<Food> ofType) {
+        return new AutoValue_FoodItemEventFeedItem(validTimeEnd, transactionTimeStart, userName, id, foodName, ofType, eatBy, unitScale, abbreviation, locationName, buyer, registerer);
     }
 }

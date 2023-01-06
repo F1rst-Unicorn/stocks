@@ -171,13 +171,15 @@ public class EventRepositoryEventLoadingTest extends DbTestCase {
                         deleteTime,
                         initiatorOwner.name(),
                         newDevice.name(),
-                        newDeviceOwner.name()),
+                        newDeviceOwner.name(),
+                        newDeviceOwner.id()),
                 UserDeviceEventFeedItem.create(newDevice.id(),
                         newDevice.validTimeEnd(),
                         newDevice.transactionTimeStart(),
                         initiatorOwner.name(),
                         newDevice.name(),
-                        newDeviceOwner.name())
+                        newDeviceOwner.name(),
+                        newDeviceOwner.id())
         ));
     }
 
@@ -276,10 +278,10 @@ public class EventRepositoryEventLoadingTest extends DbTestCase {
         var actual = uut.getFoodItemFeed(Instant.EPOCH);
 
         testList(actual).assertValue(List.of(
-                FoodItemEventFeedItem.create(foodItem.id(), deleteTime, deleteTime, initiatorOwner.name(), food.name(), updatedFoodItem.eatBy(), scaledUnit.scale(), unit.abbreviation(), location.name(), initiatorOwner.name(), initiator.name()),
-                FoodItemEventFeedItem.create(foodItem.id(), updateTime, updateTime, initiatorOwner.name(), food.name(), foodItem.eatBy(), scaledUnit.scale(), unit.abbreviation(), location.name(), initiatorOwner.name(), initiator.name()),
-                FoodItemEventFeedItem.create(foodItem.id(), INFINITY, updateTime, initiatorOwner.name(), food.name(), updatedFoodItem.eatBy(), scaledUnit.scale(), unit.abbreviation(), location.name(), initiatorOwner.name(), initiator.name()),
-                FoodItemEventFeedItem.create(foodItem.id(), INFINITY, Instant.EPOCH, initiatorOwner.name(), food.name(), foodItem.eatBy(), scaledUnit.scale(), unit.abbreviation(), location.name(), initiatorOwner.name(), initiator.name())
+                FoodItemEventFeedItem.create(foodItem.id(), deleteTime, deleteTime, initiatorOwner.name(), food.name(), updatedFoodItem.eatBy(), scaledUnit.scale(), unit.abbreviation(), location.name(), initiatorOwner.name(), initiator.name(), food.id()),
+                FoodItemEventFeedItem.create(foodItem.id(), updateTime, updateTime, initiatorOwner.name(), food.name(), foodItem.eatBy(), scaledUnit.scale(), unit.abbreviation(), location.name(), initiatorOwner.name(), initiator.name(), food.id()),
+                FoodItemEventFeedItem.create(foodItem.id(), INFINITY, updateTime, initiatorOwner.name(), food.name(), updatedFoodItem.eatBy(), scaledUnit.scale(), unit.abbreviation(), location.name(), initiatorOwner.name(), initiator.name(), food.id()),
+                FoodItemEventFeedItem.create(foodItem.id(), INFINITY, Instant.EPOCH, initiatorOwner.name(), food.name(), foodItem.eatBy(), scaledUnit.scale(), unit.abbreviation(), location.name(), initiatorOwner.name(), initiator.name(), food.id())
         ));
     }
 
@@ -299,8 +301,8 @@ public class EventRepositoryEventLoadingTest extends DbTestCase {
         var actual = uut.getEanNumberFeed(Instant.EPOCH);
 
         testList(actual).assertValue(List.of(
-                EanNumberEventFeedItem.create(eanNumber.id(), deleteTime, deleteTime, initiatorOwner.name(), food.name(), eanNumber.number()),
-                EanNumberEventFeedItem.create(eanNumber.id(), INFINITY, Instant.EPOCH, initiatorOwner.name(), food.name(), eanNumber.number())
+                EanNumberEventFeedItem.create(eanNumber.id(), deleteTime, deleteTime, initiatorOwner.name(), food.name(), eanNumber.number(), food.id()),
+                EanNumberEventFeedItem.create(eanNumber.id(), INFINITY, Instant.EPOCH, initiatorOwner.name(), food.name(), eanNumber.number(), food.id())
         ));
     }
 }

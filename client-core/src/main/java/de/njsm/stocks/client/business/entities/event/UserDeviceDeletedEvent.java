@@ -24,6 +24,7 @@ package de.njsm.stocks.client.business.entities.event;
 import com.google.auto.value.AutoValue;
 import de.njsm.stocks.client.business.Localiser;
 import de.njsm.stocks.client.business.entities.Id;
+import de.njsm.stocks.client.business.entities.User;
 import de.njsm.stocks.client.business.entities.UserDevice;
 import de.njsm.stocks.client.business.event.UserDeviceEventFeedItem;
 
@@ -36,13 +37,16 @@ public abstract class UserDeviceDeletedEvent extends ActivityEvent {
 
     public abstract String ownerName();
 
+    public abstract Id<User> ownerId();
+
     public static UserDeviceDeletedEvent create(UserDeviceEventFeedItem feedItem, Localiser localiser) {
         return new AutoValue_UserDeviceDeletedEvent(
                 localiser.toLocalDateTime(feedItem.transactionTimeStart()),
                 feedItem.userName(),
                 feedItem.id(),
                 feedItem.name(),
-                feedItem.ownerName());
+                feedItem.ownerName(),
+                feedItem.ownerId());
     }
 
     @Override

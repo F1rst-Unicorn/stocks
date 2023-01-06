@@ -23,6 +23,7 @@ package de.njsm.stocks.client.business.entities.event;
 
 import com.google.auto.value.AutoValue;
 import de.njsm.stocks.client.business.Localiser;
+import de.njsm.stocks.client.business.entities.Food;
 import de.njsm.stocks.client.business.entities.FoodItem;
 import de.njsm.stocks.client.business.entities.Id;
 import de.njsm.stocks.client.business.entities.UnitAmount;
@@ -37,6 +38,8 @@ public abstract class FoodItemEditedEvent extends ActivityEvent {
     public abstract Id<FoodItem> id();
 
     public abstract String foodName();
+
+    public abstract Id<Food> ofType();
 
     public abstract EditedField<LocalDateTime> eatBy();
 
@@ -56,6 +59,7 @@ public abstract class FoodItemEditedEvent extends ActivityEvent {
                 current.userName(),
                 former.id(),
                 former.foodName(),
+                former.ofType(),
                 EditedField.create(
                         localiser.toLocalDateTime(former.eatBy()),
                         localiser.toLocalDateTime(current.eatBy())

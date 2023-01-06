@@ -28,6 +28,7 @@ import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
 import androidx.appcompat.content.res.AppCompatResources;
 import androidx.recyclerview.widget.RecyclerView;
+import de.njsm.stocks.client.business.entities.event.ActivityEvent;
 import de.njsm.stocks.client.ui.R;
 
 public class EventViewHolder extends RecyclerView.ViewHolder {
@@ -73,5 +74,9 @@ public class EventViewHolder extends RecyclerView.ViewHolder {
         actionIcon.setImageDrawable(AppCompatResources.getDrawable(
                 itemView.getContext(),
                 icon));
+    }
+
+    public void setTag(ActivityEvent item) {
+        itemView.setTag(item);
     }
 }

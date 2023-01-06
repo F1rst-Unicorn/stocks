@@ -24,6 +24,7 @@ package de.njsm.stocks.client.business.entities.event;
 import com.google.auto.value.AutoValue;
 import de.njsm.stocks.client.business.Localiser;
 import de.njsm.stocks.client.business.entities.EanNumber;
+import de.njsm.stocks.client.business.entities.Food;
 import de.njsm.stocks.client.business.entities.Id;
 import de.njsm.stocks.client.business.event.EanNumberEventFeedItem;
 
@@ -36,13 +37,16 @@ public abstract class EanNumberDeletedEvent extends ActivityEvent {
 
     public abstract String eanNumber();
 
+    public abstract Id<Food> identifies();
+
     public static EanNumberDeletedEvent create(EanNumberEventFeedItem feedItem, Localiser localiser) {
         return new AutoValue_EanNumberDeletedEvent(
                 localiser.toLocalDateTime(feedItem.transactionTimeStart()),
                 feedItem.userName(),
                 feedItem.id(),
                 feedItem.foodName(),
-                feedItem.eanNumber());
+                feedItem.eanNumber(),
+                feedItem.identifies());
     }
 
     @Override

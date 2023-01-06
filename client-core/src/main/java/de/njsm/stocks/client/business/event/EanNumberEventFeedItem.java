@@ -23,6 +23,7 @@ package de.njsm.stocks.client.business.event;
 
 import com.google.auto.value.AutoValue;
 import de.njsm.stocks.client.business.entities.EanNumber;
+import de.njsm.stocks.client.business.entities.Food;
 import de.njsm.stocks.client.business.entities.Id;
 import de.njsm.stocks.client.business.entities.IdImpl;
 
@@ -35,11 +36,13 @@ public abstract class EanNumberEventFeedItem extends EventFeedItem<EanNumber> {
 
     public abstract String eanNumber();
 
-    public static EanNumberEventFeedItem create(int id, Instant validTimeEnd, Instant transactionTimeStart, String userName, String foodName, String eanNumber) {
-        return new AutoValue_EanNumberEventFeedItem(validTimeEnd, transactionTimeStart, userName, IdImpl.create(id), foodName, eanNumber);
+    public abstract Id<Food> identifies();
+
+    public static EanNumberEventFeedItem create(int id, Instant validTimeEnd, Instant transactionTimeStart, String userName, String foodName, String eanNumber, int identifies) {
+        return new AutoValue_EanNumberEventFeedItem(validTimeEnd, transactionTimeStart, userName, IdImpl.create(id), foodName, eanNumber, IdImpl.create(identifies));
     }
 
-    public static EanNumberEventFeedItem create(Id<EanNumber> id, Instant validTimeEnd, Instant transactionTimeStart, String userName, String foodName, String eanNumber) {
-        return new AutoValue_EanNumberEventFeedItem(validTimeEnd, transactionTimeStart, userName, id, foodName, eanNumber);
+    public static EanNumberEventFeedItem create(Id<EanNumber> id, Instant validTimeEnd, Instant transactionTimeStart, String userName, String foodName, String eanNumber, Id<Food> identifies) {
+        return new AutoValue_EanNumberEventFeedItem(validTimeEnd, transactionTimeStart, userName, id, foodName, eanNumber, identifies);
     }
 }

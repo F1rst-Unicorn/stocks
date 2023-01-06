@@ -24,6 +24,7 @@ package de.njsm.stocks.client.business.event;
 import com.google.auto.value.AutoValue;
 import de.njsm.stocks.client.business.entities.Id;
 import de.njsm.stocks.client.business.entities.IdImpl;
+import de.njsm.stocks.client.business.entities.User;
 import de.njsm.stocks.client.business.entities.UserDevice;
 
 import java.time.Instant;
@@ -35,11 +36,13 @@ public abstract class UserDeviceEventFeedItem extends EventFeedItem<UserDevice> 
 
     public abstract String ownerName();
 
-    public static UserDeviceEventFeedItem create(int id, Instant validTimeEnd, Instant transactionTimeStart, String userName, String name, String ownerName) {
-        return new AutoValue_UserDeviceEventFeedItem(validTimeEnd, transactionTimeStart, userName, IdImpl.create(id), name, ownerName);
+    public abstract Id<User> ownerId();
+
+    public static UserDeviceEventFeedItem create(int id, Instant validTimeEnd, Instant transactionTimeStart, String userName, String name, String ownerName, int ownerId) {
+        return new AutoValue_UserDeviceEventFeedItem(validTimeEnd, transactionTimeStart, userName, IdImpl.create(id), name, ownerName, IdImpl.create(ownerId));
     }
 
-    public static UserDeviceEventFeedItem create(Id<UserDevice> id, Instant validTimeEnd, Instant transactionTimeStart, String userName, String name, String ownerName) {
-        return new AutoValue_UserDeviceEventFeedItem(validTimeEnd, transactionTimeStart, userName, id, name, ownerName);
+    public static UserDeviceEventFeedItem create(Id<UserDevice> id, Instant validTimeEnd, Instant transactionTimeStart, String userName, String name, String ownerName, Id<User> ownerId) {
+        return new AutoValue_UserDeviceEventFeedItem(validTimeEnd, transactionTimeStart, userName, id, name, ownerName, ownerId);
     }
 }

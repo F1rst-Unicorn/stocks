@@ -21,11 +21,18 @@
 
 package de.njsm.stocks.client.navigation;
 
-public interface OutlineNavigator {
+import de.njsm.stocks.client.business.entities.event.ActivityEvent;
+import de.njsm.stocks.client.business.entities.event.Visitor;
+
+public interface OutlineNavigator extends Visitor<Void, Void> {
 
     void addFood();
 
     void showAllFood();
 
     void showEmptyFood();
+
+    default void showEventDetails(ActivityEvent event) {
+        visit(event, null);
+    }
 }
