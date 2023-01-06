@@ -61,6 +61,18 @@ abstract class EventDao {
     @Query("select " +
             EVENT_COLUMNS +
             "main_table.name as name, " +
+            "main_table.description as description " +
+            "from location main_table " +
+            JOIN_INITIATOR +
+            "where :lower <= main_table.transaction_time_start " +
+            "and main_table.transaction_time_start < :upper " +
+            "and main_table.id = :locationId " +
+            "order by main_table.transaction_time_start desc, main_table.valid_time_end")
+    abstract Flowable<List<LocationEventFeedItem>> getLocationEventsOf(int locationId, Instant lower, Instant upper);
+
+    @Query("select " +
+            EVENT_COLUMNS +
+            "main_table.name as name, " +
             "main_table.abbreviation as abbreviation " +
             "from unit main_table " +
             JOIN_INITIATOR +
@@ -140,6 +152,35 @@ abstract class EventDao {
 
     @Query("select " +
             EVENT_COLUMNS +
+            "main_table.name as name," +
+            "main_table.to_buy as toBuy," +
+            "main_table.expiration_offset as expirationOffset, " +
+            "scaled_unit.scale as unitScale, " +
+            "unit.abbreviation as abbreviation, " +
+            "location.name as locationName, " +
+            "main_table.description as description " +
+            "from food main_table " +
+            "join scaled_unit on scaled_unit.id = main_table.store_unit " +
+                "and scaled_unit.valid_time_start <= main_table.transaction_time_start " +
+                "and main_table.transaction_time_start < scaled_unit.valid_time_end " +
+                "and scaled_unit.transaction_time_end = " + DATABASE_INFINITY_STRING_SQL +
+            "join unit on unit.id = scaled_unit.unit " +
+                "and unit.valid_time_start <= main_table.transaction_time_start " +
+                "and main_table.transaction_time_start < unit.valid_time_end " +
+                "and unit.transaction_time_end = " + DATABASE_INFINITY_STRING_SQL +
+            "left outer join location on location.id = main_table.location " +
+                "and location.valid_time_start <= main_table.transaction_time_start " +
+                "and main_table.transaction_time_start < location.valid_time_end " +
+                "and location.transaction_time_end = " + DATABASE_INFINITY_STRING_SQL +
+            JOIN_INITIATOR +
+            "where :lower <= main_table.transaction_time_start " +
+            "and main_table.transaction_time_start < :upper " +
+            "and main_table.id = :foodId " +
+            "order by main_table.transaction_time_start desc, main_table.valid_time_end")
+    abstract Flowable<List<FoodEventFeedItem>> getFoodEventsOf(int foodId, Instant lower, Instant upper);
+
+    @Query("select " +
+            EVENT_COLUMNS +
             "food.name as foodName, " +
             "main_table.eat_by as eatBy, " +
             "scaled_unit.scale as unitScale, " +
@@ -180,6 +221,92 @@ abstract class EventDao {
 
     @Query("select " +
             EVENT_COLUMNS +
+            "food.name as foodName, " +
+            "main_table.eat_by as eatBy, " +
+            "scaled_unit.scale as unitScale, " +
+            "unit.abbreviation as abbreviation, " +
+            "user.name as buyer, " +
+            "user_device.name as registerer, " +
+            "location.name as locationName " +
+            "from food_item main_table " +
+            "join food on food.id = main_table.of_type " +
+                "and food.valid_time_start <= main_table.transaction_time_start " +
+                "and main_table.transaction_time_start < food.valid_time_end " +
+                "and food.transaction_time_end = " + DATABASE_INFINITY_STRING_SQL +
+            "join scaled_unit on scaled_unit.id = main_table.unit " +
+                "and scaled_unit.valid_time_start <= main_table.transaction_time_start " +
+                "and main_table.transaction_time_start < scaled_unit.valid_time_end " +
+                "and scaled_unit.transaction_time_end = " + DATABASE_INFINITY_STRING_SQL +
+            "join unit on unit.id = scaled_unit.unit " +
+                "and unit.valid_time_start <= main_table.transaction_time_start " +
+                "and main_table.transaction_time_start < unit.valid_time_end " +
+                "and unit.transaction_time_end = " + DATABASE_INFINITY_STRING_SQL +
+            "join location on location.id = main_table.stored_in " +
+                "and location.valid_time_start <= main_table.transaction_time_start " +
+                "and main_table.transaction_time_start < location.valid_time_end " +
+                "and location.transaction_time_end = " + DATABASE_INFINITY_STRING_SQL +
+            "join user on user.id = main_table.buys " +
+                "and user.valid_time_start <= main_table.transaction_time_start " +
+                "and main_table.transaction_time_start < user.valid_time_end " +
+                "and user.transaction_time_end = " + DATABASE_INFINITY_STRING_SQL +
+            "join user_device on user_device.id = main_table.registers " +
+                "and user_device.valid_time_start <= main_table.transaction_time_start " +
+                "and main_table.transaction_time_start < user_device.valid_time_end " +
+                "and user_device.transaction_time_end = " + DATABASE_INFINITY_STRING_SQL +
+            JOIN_INITIATOR +
+            "where :lower <= main_table.transaction_time_start " +
+            "and main_table.transaction_time_start < :upper " +
+            "and main_table.of_type = :foodId " +
+            "order by main_table.transaction_time_start desc, main_table.valid_time_end")
+    abstract Flowable<List<FoodItemEventFeedItem>> getFoodItemEventsOf(int foodId, Instant lower, Instant upper);
+
+    @Query("select " +
+            EVENT_COLUMNS +
+            "food.name as foodName, " +
+            "main_table.eat_by as eatBy, " +
+            "scaled_unit.scale as unitScale, " +
+            "unit.abbreviation as abbreviation, " +
+            "user.name as buyer, " +
+            "user_device.name as registerer, " +
+            "location.name as locationName " +
+            "from food_item main_table " +
+            "join food on food.id = main_table.of_type " +
+                "and food.valid_time_start <= main_table.transaction_time_start " +
+                "and main_table.transaction_time_start < food.valid_time_end " +
+                "and food.transaction_time_end = " + DATABASE_INFINITY_STRING_SQL +
+            "join scaled_unit on scaled_unit.id = main_table.unit " +
+                "and scaled_unit.valid_time_start <= main_table.transaction_time_start " +
+                "and main_table.transaction_time_start < scaled_unit.valid_time_end " +
+                "and scaled_unit.transaction_time_end = " + DATABASE_INFINITY_STRING_SQL +
+            "join unit on unit.id = scaled_unit.unit " +
+                "and unit.valid_time_start <= main_table.transaction_time_start " +
+                "and main_table.transaction_time_start < unit.valid_time_end " +
+                "and unit.transaction_time_end = " + DATABASE_INFINITY_STRING_SQL +
+            "join location on location.id = main_table.stored_in " +
+                "and location.valid_time_start <= main_table.transaction_time_start " +
+                "and main_table.transaction_time_start < location.valid_time_end " +
+                "and location.transaction_time_end = " + DATABASE_INFINITY_STRING_SQL +
+            "join user on user.id = main_table.buys " +
+                "and user.valid_time_start <= main_table.transaction_time_start " +
+                "and main_table.transaction_time_start < user.valid_time_end " +
+                "and user.transaction_time_end = " + DATABASE_INFINITY_STRING_SQL +
+            "join user_device on user_device.id = main_table.registers " +
+                "and user_device.valid_time_start <= main_table.transaction_time_start " +
+                "and main_table.transaction_time_start < user_device.valid_time_end " +
+                "and user_device.transaction_time_end = " + DATABASE_INFINITY_STRING_SQL +
+            JOIN_INITIATOR +
+            "where :lower <= main_table.transaction_time_start " +
+            "and main_table.transaction_time_start < :upper " +
+            "and :locationId in (" +
+                "select stored_in " +
+                "from food_item " +
+                "where transaction_time_start = main_table.transaction_time_start" +
+            ")" +
+            "order by main_table.transaction_time_start desc, main_table.valid_time_end")
+    abstract Flowable<List<FoodItemEventFeedItem>> getFoodItemEventsInvolving(int locationId, Instant lower, Instant upper);
+
+    @Query("select " +
+            EVENT_COLUMNS +
             "main_table.number as eanNumber, " +
             "food.name as foodName " +
             "from ean_number main_table " +
@@ -192,6 +319,22 @@ abstract class EventDao {
             "and main_table.transaction_time_start < :upper " +
             "order by main_table.transaction_time_start desc, main_table.valid_time_end")
     abstract Observable<List<EanNumberEventFeedItem>> getEanNumberEvents(Instant lower, Instant upper);
+
+    @Query("select " +
+            EVENT_COLUMNS +
+            "main_table.number as eanNumber, " +
+            "food.name as foodName " +
+            "from ean_number main_table " +
+            "join food on food.id = main_table.identifies " +
+                "and food.valid_time_start <= main_table.transaction_time_start " +
+                "and main_table.transaction_time_start < food.valid_time_end " +
+                "and food.transaction_time_end = " + DATABASE_INFINITY_STRING_SQL +
+            JOIN_INITIATOR +
+            "where :lower <= main_table.transaction_time_start " +
+            "and main_table.transaction_time_start < :upper " +
+            "and main_table.identifies = :foodId " +
+            "order by main_table.transaction_time_start desc, main_table.valid_time_end")
+    abstract Observable<List<EanNumberEventFeedItem>> getEanNumberEventsOf(int foodId, Instant lower, Instant upper);
 
     @Query("select max(last_update) " +
             "from updates")

@@ -30,7 +30,7 @@ import javax.inject.Inject;
 import java.util.List;
 import java.util.function.BiFunction;
 
-class ActivityEventFactory {
+public class ActivityEventFactory {
 
     private final Localiser localiser;
 

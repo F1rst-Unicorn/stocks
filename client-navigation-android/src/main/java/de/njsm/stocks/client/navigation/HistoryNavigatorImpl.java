@@ -22,12 +22,35 @@
 package de.njsm.stocks.client.navigation;
 
 import android.os.Bundle;
+import de.njsm.stocks.client.business.entities.Food;
 import de.njsm.stocks.client.business.entities.Id;
+import de.njsm.stocks.client.business.entities.IdImpl;
 import de.njsm.stocks.client.business.entities.Location;
+import de.njsm.stocks.client.fragment.history.HistoryFragmentArgs;
 
-public interface FoodByLocationNavigator extends FoodNavigator {
+import javax.inject.Inject;
+import java.util.Optional;
 
-    Id<Location> getId(Bundle arguments);
+class HistoryNavigatorImpl extends BaseNavigator implements HistoryNavigator {
 
-    void showHistory(Id<Location> location);
+    @Inject
+    HistoryNavigatorImpl(NavigationArgConsumer navigationArgConsumer) {
+        super(navigationArgConsumer);
+    }
+
+    @Override
+    public Optional<Id<Food>> getFood(Bundle arguments) {
+        var args = HistoryFragmentArgs.fromBundle(arguments);
+        return Optional.of(args.getFoodId())
+                .filter(v -> v != -1)
+                .map(IdImpl::create);
+    }
+
+    @Override
+    public Optional<Id<Location>> getLocation(Bundle arguments) {
+        var args = HistoryFragmentArgs.fromBundle(arguments);
+        return Optional.of(args.getLocationId())
+                .filter(v -> v != -1)
+                .map(IdImpl::create);
+    }
 }

@@ -122,4 +122,7 @@ public interface NavigationModule {
 
     @Binds
     ShoppingListNavigator ShoppingListNavigator(ShoppingListNavigatorImpl impl);
+
+    @Binds
+    HistoryNavigator HistoryNavigator(HistoryNavigatorImpl impl);
 }

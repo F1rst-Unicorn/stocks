@@ -27,12 +27,17 @@ import de.njsm.stocks.client.presenter.DateRenderStrategy;
 import de.njsm.stocks.client.presenter.UnitAmountRenderStrategy;
 import de.njsm.stocks.client.ui.R;
 import org.jetbrains.annotations.NotNull;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.MissingFormatArgumentException;
 import java.util.function.Function;
 
 public class DescriptionRenderer implements Visitor<Void, String> {
+
+    private static final Logger LOG = LoggerFactory.getLogger(DescriptionRenderer.class);
 
     private final Function<Integer, String> dictionary;
 
@@ -47,7 +52,12 @@ public class DescriptionRenderer implements Visitor<Void, String> {
     }
 
     String visit(ActivityEvent event) {
-        return visit(event, null);
+        try {
+            return visit(event, null);
+        } catch (MissingFormatArgumentException e) {
+            LOG.error("failed to render description", e);
+            return e.getClass().getSimpleName();
+        }
     }
 
     @Override
@@ -153,14 +163,18 @@ public class DescriptionRenderer implements Visitor<Void, String> {
         return String.format(template,
                 foodItemCreatedEvent.userName(),
                 unitAmountRenderStrategy.render(foodItemCreatedEvent.unit()),
+                foodItemCreatedEvent.foodName(),
                 foodItemCreatedEvent.locationName(),
                 dateRenderStrategy.render(foodItemCreatedEvent.eatBy().toLocalDate()));
     }
 
     @Override
     public String foodItemDeleted(FoodItemDeletedEvent foodItemDeletedEvent, Void input) {
-        String template = dictionary.apply(R.string.event_food_item_added);
-        return String.format(template, foodItemDeletedEvent.userName(), foodItemDeletedEvent.foodName());
+        String template = dictionary.apply(R.string.event_food_item_deleted);
+        return String.format(template,
+                foodItemDeletedEvent.userName(),
+                unitAmountRenderStrategy.render(foodItemDeletedEvent.unit()),
+                foodItemDeletedEvent.foodName());
     }
 
     @Override

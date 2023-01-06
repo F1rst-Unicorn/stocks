@@ -26,6 +26,7 @@ import dagger.Module;
 import dagger.Provides;
 import de.njsm.stocks.client.business.entities.*;
 import de.njsm.stocks.client.business.event.EventInteractor;
+import de.njsm.stocks.client.business.event.EventInteractorFactory;
 import de.njsm.stocks.client.business.event.UnitEventInteractor;
 import de.njsm.stocks.client.execution.Scheduler;
 import de.njsm.stocks.client.testdata.LocationsForSelection;
@@ -432,6 +433,15 @@ public interface FakeBusinessModule {
         when(result.getNewEventNotifier()).thenReturn(Observable.empty());
         when(result.getOldestEventTime()).thenReturn(Single.just(LocalDate.now()));
         when(result.getEventsOf(any())).thenReturn(Single.just(emptyList()));
+        return result;
+    }
+
+    @Provides
+    @Singleton
+    static EventInteractorFactory EventInteractorFactory() {
+        var result = mock(EventInteractorFactory.class);
+        when(result.forFood(any())).thenReturn(EventInteractor());
+        when(result.forLocation(any())).thenReturn(EventInteractor());
         return result;
     }
 }

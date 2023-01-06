@@ -21,6 +21,8 @@
 
 package de.njsm.stocks.client.navigation;
 
+import de.njsm.stocks.client.business.entities.Id;
+import de.njsm.stocks.client.business.entities.Location;
 import de.njsm.stocks.client.fragment.locationlist.LocationListFragmentDirections;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

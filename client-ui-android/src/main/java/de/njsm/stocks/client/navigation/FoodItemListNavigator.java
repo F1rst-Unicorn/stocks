@@ -34,4 +34,6 @@ public interface FoodItemListNavigator {
     void edit(Id<Food> id);
 
     void showEanNumbers(Id<Food> foodId);
+
+    void showHistory(Id<Food> food);
 }

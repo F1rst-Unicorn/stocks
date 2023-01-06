@@ -19,7 +19,7 @@
  *
  */
 
-package de.njsm.stocks.client.fragment.unithistory;
+package de.njsm.stocks.client.fragment.history;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -27,20 +27,26 @@ import android.view.View;
 import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.paging.PagingData;
 import androidx.recyclerview.widget.RecyclerView;
 import de.njsm.stocks.client.business.Localiser;
+import de.njsm.stocks.client.business.entities.event.ActivityEvent;
 import de.njsm.stocks.client.databind.event.EventAdapter;
 import de.njsm.stocks.client.fragment.InjectableFragment;
 import de.njsm.stocks.client.fragment.view.TemplateSwipeList;
-import de.njsm.stocks.client.presenter.UnitHistoryViewModel;
+import de.njsm.stocks.client.navigation.HistoryNavigator;
+import de.njsm.stocks.client.presenter.HistoryViewModel;
 import de.njsm.stocks.client.ui.R;
 
 import javax.inject.Inject;
 
-public class UnitHistoryFragment extends InjectableFragment {
+public class HistoryFragment extends InjectableFragment {
 
-    private UnitHistoryViewModel unitHistoryViewModel;
+    private HistoryViewModel historyViewModel;
+
+    private HistoryNavigator navigator;
 
     private Localiser localiser;
 
@@ -56,7 +62,7 @@ public class UnitHistoryFragment extends InjectableFragment {
                 this::getString);
         templateSwipeList.initialiseList(requireContext(), adapter);
         RecyclerView activityFeed = root.findViewById(R.id.template_swipe_list_list);
-        unitHistoryViewModel.getActivityFeed().observe(getViewLifecycleOwner(), v -> {
+        getActivityFeed().observe(getViewLifecycleOwner(), v -> {
             activityFeed.scrollToPosition(0);
             adapter.submitData(getLifecycle(), v);
             templateSwipeList.setList();
@@ -65,14 +71,30 @@ public class UnitHistoryFragment extends InjectableFragment {
         return root;
     }
 
+    private LiveData<PagingData<ActivityEvent>> getActivityFeed() {
+        var food = navigator.getFood(requireArguments());
+        if (food.isPresent())
+            return historyViewModel.getActivityFeedForFood(food.get());
+        var location = navigator.getLocation(requireArguments());
+        if (location.isPresent())
+            return historyViewModel.getActivityFeedForLocation(location.get());
+
+        return historyViewModel.getActivityFeed();
+    }
+
     @Inject
     protected void setViewModelFactory(ViewModelProvider.Factory viewModelFactory) {
         ViewModelProvider viewModelProvider = new ViewModelProvider(this, viewModelFactory);
-        unitHistoryViewModel = viewModelProvider.get(UnitHistoryViewModel.class);
+        historyViewModel = viewModelProvider.get(HistoryViewModel.class);
     }
 
     @Inject
     void setLocaliser(Localiser localiser) {
         this.localiser = localiser;
+    }
+
+    @Inject
+    void setNavigator(HistoryNavigator navigator) {
+        this.navigator = navigator;
     }
 }

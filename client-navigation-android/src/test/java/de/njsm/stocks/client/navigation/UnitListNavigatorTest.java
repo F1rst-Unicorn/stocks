@@ -43,8 +43,8 @@ public class UnitListNavigatorTest extends NavigationTest {
 
         uut.showUnitHistory();
 
-        ActionOnlyNavDirections actual = navigationArgConsumer.getLastArgument(ActionOnlyNavDirections.class);
-        assertThat(actual.getActionId(), is(R.id.action_nav_fragment_unit_tabs_to_nav_fragment_unit_history));
+        UnitTabsFragmentDirections.ActionNavFragmentUnitTabsToNavFragmentHistory actual = navigationArgConsumer.getLastArgument(UnitTabsFragmentDirections.ActionNavFragmentUnitTabsToNavFragmentHistory.class);
+        assertThat(actual.getActionId(), is(R.id.action_nav_fragment_unit_tabs_to_nav_fragment_history));
     }
 
     @Test

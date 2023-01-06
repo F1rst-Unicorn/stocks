@@ -19,15 +19,14 @@
  *
  */
 
-package de.njsm.stocks.client.navigation;
+package de.njsm.stocks.client.business.event;
 
-import android.os.Bundle;
+import de.njsm.stocks.client.business.entities.Food;
 import de.njsm.stocks.client.business.entities.Id;
 import de.njsm.stocks.client.business.entities.Location;
 
-public interface FoodByLocationNavigator extends FoodNavigator {
+public interface EventInteractorFactory {
+    EventInteractor forLocation(Id<Location> location);
 
-    Id<Location> getId(Bundle arguments);
-
-    void showHistory(Id<Location> location);
+    EventInteractor forFood(Id<Food> food);
 }

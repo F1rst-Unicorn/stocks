@@ -21,6 +21,9 @@
 
 package de.njsm.stocks.client.business.event;
 
+import de.njsm.stocks.client.business.entities.Food;
+import de.njsm.stocks.client.business.entities.Id;
+import de.njsm.stocks.client.business.entities.Location;
 import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.core.Single;
 
@@ -48,4 +51,14 @@ public interface EventRepository {
     Single<List<FoodItemEventFeedItem>> getFoodItemFeed(Instant day);
 
     Single<List<EanNumberEventFeedItem>> getEanNumberFeed(Instant day);
+
+    Single<List<LocationEventFeedItem>> getLocationEventsOf(Id<Location> location, Instant day);
+
+    Single<List<FoodItemEventFeedItem>> getFoodItemEventsInvolving(Id<Location> location, Instant day);
+
+    Single<List<EanNumberEventFeedItem>> getEanNumberEventsOf(Id<Food> food, Instant day);
+
+    Single<List<FoodEventFeedItem>> getFoodEventsOf(Id<Food> food, Instant day);
+
+    Single<List<FoodItemEventFeedItem>> getFoodItemEventsOf(Id<Food> food, Instant day);
 }

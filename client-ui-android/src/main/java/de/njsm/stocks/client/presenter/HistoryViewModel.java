@@ -29,31 +29,52 @@ import androidx.paging.PagingConfig;
 import androidx.paging.PagingData;
 import androidx.paging.PagingLiveData;
 import de.njsm.stocks.client.business.Localiser;
+import de.njsm.stocks.client.business.entities.Food;
+import de.njsm.stocks.client.business.entities.Id;
+import de.njsm.stocks.client.business.entities.Location;
 import de.njsm.stocks.client.business.entities.event.ActivityEvent;
 import de.njsm.stocks.client.business.event.EventInteractor;
+import de.njsm.stocks.client.business.event.EventInteractorFactory;
 import de.njsm.stocks.client.databind.event.EventPagingSource;
 import kotlinx.coroutines.CoroutineScope;
 
 import javax.inject.Inject;
 import java.time.LocalDate;
 
-public class UnitHistoryViewModel extends ViewModel {
+public class HistoryViewModel extends ViewModel {
 
     private final Localiser localiser;
 
     private final EventInteractor interactor;
 
+    private final EventInteractorFactory factory;
+
     @Inject
-    UnitHistoryViewModel(Localiser localiser, EventInteractor interactor) {
+    HistoryViewModel(Localiser localiser, EventInteractor interactor, EventInteractorFactory factory) {
         this.localiser = localiser;
         this.interactor = interactor;
+        this.factory = factory;
     }
 
     public LiveData<PagingData<ActivityEvent>> getActivityFeed() {
+        return getPagingDataLiveData(interactor);
+    }
+
+    private LiveData<PagingData<ActivityEvent>> getPagingDataLiveData(EventInteractor interactor) {
         CoroutineScope viewModelScope = ViewModelKt.getViewModelScope(this);
         Pager<LocalDate, ActivityEvent> pager = new Pager<>(
                 new PagingConfig(20),
                 () -> new EventPagingSource(interactor, localiser));
         return PagingLiveData.cachedIn(PagingLiveData.getLiveData(pager), viewModelScope);
+    }
+
+    public LiveData<PagingData<ActivityEvent>> getActivityFeedForLocation(Id<Location> location) {
+        var interactor = factory.forLocation(location);
+        return getPagingDataLiveData(interactor);
+    }
+
+    public LiveData<PagingData<ActivityEvent>> getActivityFeedForFood(Id<Food> food) {
+        var interactor = factory.forFood(food);
+        return getPagingDataLiveData(interactor);
     }
 }

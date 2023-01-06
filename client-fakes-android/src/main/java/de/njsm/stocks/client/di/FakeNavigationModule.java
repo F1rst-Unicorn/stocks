@@ -242,4 +242,10 @@ class FakeNavigationModule {
     ShoppingListNavigator ShoppingListNavigator() {
         return mock(ShoppingListNavigator.class);
     }
+
+    @Provides
+    @Singleton
+    HistoryNavigator HistoryNavigator() {
+        return mock(HistoryNavigator.class);
+    }
 }

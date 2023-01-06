@@ -265,13 +265,13 @@
     <string name="event_food_location_changed">hat den Standardort%1$s von %2$s auf %3$s gesetzt</string>
     <string name="event_food_expiration_offset_set">hat die Haltbarkeit%1$s auf %2$d Tage gesetzt</string>
     <string name="event_food_description_changed">hat die Beschreibung%1$s geändert</string>
-    <string name="event_food_store_unit_changed">hat die Standardeinheit%1$s von %2$s%3$s zu %4$s%5$s geändert</string>
+    <string name="event_food_store_unit_changed">hat die Standardeinheit%1$s von %2$s zu %3$s geändert</string>
     <string name="event_user_created">%1$s hat %2$s eingeladen.</string>
     <string name="event_user_deleted">%1$s hat %2$s entfernt.</string>
     <string name="event_user_device_created">%1$s hat %2$s von %3$s registriert.</string>
     <string name="event_user_device_deleted">%1$s hat %2$s von %3$s entfernt.</string>
     <string name="event_food_item_added">%1$s hat %2$s %3$s gekauft und hat es nach %4$s gelegt. Verbraucht es bis %5$s.</string>
-    <string name="event_food_item_deleted">%1$s hat ein %2$s konsumiert.</string>
+    <string name="event_food_item_deleted">%1$s hat %2$s %3$s konsumiert.</string>
     <string name="event_food_item_changed_location">hat %1$s von %2$s nach %3$s verlegt</string>
     <string name="event_food_item_changed_eat_by">hat das Mindesthaltbarkeitsdatum%1$s von %2$s zu %3$s geändert</string>
     <string name="event_food_item_changed_scaled_unit">hat die Maßeinheit%1$s von %2$s zu %3$s geändert</string>

@@ -37,6 +37,7 @@ import de.njsm.stocks.client.fragment.fooditemconflict.FoodItemConflictFragment;
 import de.njsm.stocks.client.fragment.fooditemedit.FoodItemEditFragment;
 import de.njsm.stocks.client.fragment.fooditemlist.FoodItemListFragment;
 import de.njsm.stocks.client.fragment.fooditemtabs.FoodItemTabsFragment;
+import de.njsm.stocks.client.fragment.history.HistoryFragment;
 import de.njsm.stocks.client.fragment.locationadd.LocationAddFragment;
 import de.njsm.stocks.client.fragment.locationconflict.LocationConflictFragment;
 import de.njsm.stocks.client.fragment.locationedit.LocationEditFragment;
@@ -56,7 +57,6 @@ import de.njsm.stocks.client.fragment.shoppinglist.ShoppingListFragment;
 import de.njsm.stocks.client.fragment.unitadd.UnitAddFragment;
 import de.njsm.stocks.client.fragment.unitconflict.UnitConflictFragment;
 import de.njsm.stocks.client.fragment.unitedit.UnitEditFragment;
-import de.njsm.stocks.client.fragment.unithistory.UnitHistoryFragment;
 import de.njsm.stocks.client.fragment.unitlist.UnitListFragment;
 import de.njsm.stocks.client.fragment.unittabs.UnitTabsFragment;
 import de.njsm.stocks.client.fragment.userdevicelist.UserDeviceListFragment;
@@ -183,5 +183,5 @@ public abstract class FragmentModule {
     public abstract ShoppingListFragment ShoppingListFragment();
 
     @ContributesAndroidInjector
-    public abstract UnitHistoryFragment UnitHistoryFragment();
+    public abstract HistoryFragment UnitHistoryFragment();
 }

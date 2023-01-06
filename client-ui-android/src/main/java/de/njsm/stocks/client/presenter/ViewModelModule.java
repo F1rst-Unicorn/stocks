@@ -28,6 +28,7 @@ import dagger.multibindings.IntoMap;
 import de.njsm.stocks.client.business.*;
 import de.njsm.stocks.client.business.entities.*;
 import de.njsm.stocks.client.business.event.EventInteractor;
+import de.njsm.stocks.client.business.event.EventInteractorFactory;
 import de.njsm.stocks.client.business.event.UnitEventInteractor;
 import de.njsm.stocks.client.di.ViewModelFactory;
 import de.njsm.stocks.client.di.ViewModelKey;
@@ -305,8 +306,8 @@ public class ViewModelModule {
 
     @Provides
     @IntoMap
-    @ViewModelKey(UnitHistoryViewModel.class)
-    ViewModel UnitHistoryViewModel(Localiser localiser, UnitEventInteractor interactor) {
-        return new UnitHistoryViewModel(localiser, interactor);
+    @ViewModelKey(HistoryViewModel.class)
+    ViewModel HistoryViewModel(Localiser localiser, UnitEventInteractor interactor, EventInteractorFactory factory) {
+        return new HistoryViewModel(localiser, interactor, factory);
     }
 }

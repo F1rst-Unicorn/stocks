@@ -21,6 +21,9 @@
 
 package de.njsm.stocks.client.database;
 
+import de.njsm.stocks.client.business.entities.Food;
+import de.njsm.stocks.client.business.entities.Id;
+import de.njsm.stocks.client.business.entities.Location;
 import de.njsm.stocks.client.business.event.*;
 import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.core.Single;
@@ -86,6 +89,36 @@ class EventRepositoryImpl implements EventRepository {
     @Override
     public Single<List<EanNumberEventFeedItem>> getEanNumberFeed(Instant day) {
         return eventDao.getEanNumberEvents(day, day.plus(1, ChronoUnit.DAYS))
+                .first(emptyList());
+    }
+
+    @Override
+    public Single<List<LocationEventFeedItem>> getLocationEventsOf(Id<Location> location, Instant day) {
+        return eventDao.getLocationEventsOf(location.id(), day, day.plus(1, ChronoUnit.DAYS))
+                .first(emptyList());
+    }
+
+    @Override
+    public Single<List<FoodItemEventFeedItem>> getFoodItemEventsInvolving(Id<Location> location, Instant day) {
+        return eventDao.getFoodItemEventsInvolving(location.id(), day, day.plus(1, ChronoUnit.DAYS))
+                .first(emptyList());
+    }
+
+    @Override
+    public Single<List<EanNumberEventFeedItem>> getEanNumberEventsOf(Id<Food> food, Instant day) {
+        return eventDao.getEanNumberEventsOf(food.id(), day, day.plus(1, ChronoUnit.DAYS))
+                .first(emptyList());
+    }
+
+    @Override
+    public Single<List<FoodEventFeedItem>> getFoodEventsOf(Id<Food> food, Instant day) {
+        return eventDao.getFoodEventsOf(food.id(), day, day.plus(1, ChronoUnit.DAYS))
+                .first(emptyList());
+    }
+
+    @Override
+    public Single<List<FoodItemEventFeedItem>> getFoodItemEventsOf(Id<Food> food, Instant day) {
+        return eventDao.getFoodItemEventsOf(food.id(), day, day.plus(1, ChronoUnit.DAYS))
                 .first(emptyList());
     }
 

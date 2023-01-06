@@ -118,6 +118,10 @@ public class FoodItemListFragment extends InjectableFragment implements MenuProv
             Id<Food> foodId = navigator.getFoodId(requireArguments());
             viewModel.toggleShoppingFlag(foodId);
             return true;
+        } else if (item.getItemId() == R.id.menu_food_items_history) {
+            Id<Food> foodId = navigator.getFoodId(requireArguments());
+            navigator.showHistory(foodId);
+            return true;
         }
         return false;
     }

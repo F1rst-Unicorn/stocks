@@ -23,12 +23,11 @@ package de.njsm.stocks.client.fragment.foodinlocation;
 
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
+import android.view.*;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
+import androidx.core.view.MenuProvider;
 import androidx.lifecycle.ViewModelProvider;
 import de.njsm.stocks.client.business.Localiser;
 import de.njsm.stocks.client.business.entities.FoodForListing;
@@ -48,7 +47,7 @@ import de.njsm.stocks.client.ui.R;
 import javax.inject.Inject;
 import java.util.List;
 
-public class FoodInLocationFragment extends BottomToolbarFragment {
+public class FoodInLocationFragment extends BottomToolbarFragment implements MenuProvider {
 
     private FoodByLocationNavigator navigator;
 
@@ -62,6 +61,8 @@ public class FoodInLocationFragment extends BottomToolbarFragment {
 
     private ExpirationIconProvider expirationIconProvider;
 
+    private Id<Location> location;
+
     @Override
     @NonNull
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -71,7 +72,7 @@ public class FoodInLocationFragment extends BottomToolbarFragment {
         templateSwipeList = new TemplateSwipeList(swipeList);
         templateSwipeList.setLoading();
 
-        Id<Location> location = navigator.getId(requireArguments());
+        location = navigator.getId(requireArguments());
         foodListAdapter = new FoodAdapter(this::onItemClicked, this::onItemLongClicked, expirationIconProvider, localiser);
         viewModel.getFood(location).observe(getViewLifecycleOwner(), this::onListDataReceived);
         viewModel.getLocation(location).observe(getViewLifecycleOwner(), this::setTitle);
@@ -87,6 +88,8 @@ public class FoodInLocationFragment extends BottomToolbarFragment {
         templateSwipeList.initialiseListWithSwiper(requireContext(), foodListAdapter, callback);
         templateSwipeList.bindFloatingActionButton(this::onAddItem);
         templateSwipeList.bindSwipeDown(this::onSwipeDown);
+
+        requireActivity().addMenuProvider(this, getViewLifecycleOwner());
 
         return root;
     }
@@ -117,6 +120,21 @@ public class FoodInLocationFragment extends BottomToolbarFragment {
             templateSwipeList.setList();
         }
         foodListAdapter.setData(data);
+    }
+
+    @Override
+    public void onCreateMenu(@NonNull Menu menu, @NonNull MenuInflater menuInflater) {
+        menuInflater.inflate(R.menu.history, menu);
+    }
+
+    @Override
+    public boolean onMenuItemSelected(@NonNull MenuItem menuItem) {
+        if (menuItem.getItemId() == R.id.menu_history) {
+            navigator.showHistory(location);
+            return true;
+        }
+
+        return false;
     }
 
     private void setTitle(LocationName title) {

@@ -19,15 +19,31 @@
  *
  */
 
-package de.njsm.stocks.client.navigation;
+package de.njsm.stocks.client.business.event;
 
-import android.os.Bundle;
+import de.njsm.stocks.client.business.Localiser;
+import de.njsm.stocks.client.business.entities.Food;
 import de.njsm.stocks.client.business.entities.Id;
 import de.njsm.stocks.client.business.entities.Location;
 
-public interface FoodByLocationNavigator extends FoodNavigator {
+import javax.inject.Inject;
 
-    Id<Location> getId(Bundle arguments);
+public class InMemoryEventInteractorFactoryImpl implements EventInteractorFactory {
 
-    void showHistory(Id<Location> location);
+    private final Localiser localiser;
+
+    @Inject
+    InMemoryEventInteractorFactoryImpl(Localiser localiser) {
+        this.localiser = localiser;
+    }
+
+    @Override
+    public EventInteractor forLocation(Id<Location> location) {
+        return new InMemoryEventInteractorImpl(localiser);
+    }
+
+    @Override
+    public EventInteractor forFood(Id<Food> food) {
+        return new InMemoryEventInteractorImpl(localiser);
+    }
 }

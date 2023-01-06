@@ -40,7 +40,7 @@ class UnitListNavigatorImpl extends BaseNavigator implements UnitListNavigator {
     public void showUnitHistory() {
         LOG.debug("showing unit history");
         getNavigationArgConsumer().navigate(
-                UnitTabsFragmentDirections.actionNavFragmentUnitTabsToNavFragmentUnitHistory()
+                UnitTabsFragmentDirections.actionNavFragmentUnitTabsToNavFragmentHistory()
         );
     }
 
