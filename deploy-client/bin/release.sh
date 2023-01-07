@@ -38,7 +38,7 @@ JAVA_VERSION=$(echo "$SQL_VERSION" | sed 's/\./_/g')
 JAVA_ARGUMENTS=$(echo "$SQL_VERSION" | sed 's/\./, /g')
 VERSION=$(echo "$1" | sed -r 's/(.*)-.*/\1/g')
 
-VERSION_FILE="$STOCKS_ROOT/client/src/main/java/de/njsm/stocks/client/init/upgrade/Version.java"
+VERSION_FILE="$STOCKS_ROOT/client/src/main/java/de/njsm/stocks/clientold/init/upgrade/Version.java"
 
 if git tag | grep "client-$VERSION" >/dev/null ; then
         echo This version has already been built

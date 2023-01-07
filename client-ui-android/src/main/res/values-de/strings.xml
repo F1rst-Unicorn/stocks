@@ -1,0 +1,327 @@
+<resources>
+<!--
+    stocks is client-server program to manage a household's food stock
+    Copyright (C) 2019  The stocks developers
+
+    This file is part of the stocks program suite.
+
+    stocks is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    stocks is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program. If not, see https://www.gnu.org/licenses/.
+-->
+
+    <string name="app_name">Stocks</string>
+    <string name="app_name_ui">Stocks UI</string>
+    <string name="app_name_demo">Stocks Demo</string>
+
+    <string name="title_delete_location">Ort entfernen</string>
+    <string name="title_add_item">%1$s hinzufügen</string>
+    <string name="title_edit_item">%1$s bearbeiten</string>
+    <string name="title_consume">Konsumieren</string>
+    <string name="title_delete_food">Essen entfernen?</string>
+    <string name="title_new_sync">Vollständig neu synchronisieren</string>
+    <string name="title_crash_logs">Absturzberichte</string>
+    <string name="title_settings">Einstellungen</string>
+    <string name="title_remove">Entfernen</string>
+    <string name="title_barcode">Barcodes</string>
+    <string name="title_barcode_fragment">Barcodes für %1$s</string>
+    <string name="title_delete_barcode">Barcode entfernen</string>
+    <string name="title_qr_code_content_desc">QR Code</string>
+    <string name="title_error">Fehler</string>
+    <string name="title_errors">Fehler</string>
+    <string name="title_principals">Benutzerangaben</string>
+    <string name="title_qr_code_scan">Stocks Registrierung</string>
+    <string name="title_camera_permission">Erlaubnis für Kamera</string>
+    <string name="title_new_barcode">Neuer Barcode für&#8230;</string>
+    <string name="title_shopping_list">Einkaufsliste</string>
+    <string name="title_add_to_cart">Auf Einkaufsliste schreiben</string>
+    <string name="title_remove_from_cart">Von Einkaufsliste löschen</string>
+    <string name="title_hostname">Hostname</string>
+    <string name="title_caport">CA Port</string>
+    <string name="title_registration_port">Registrierungsport</string>
+    <string name="title_server_port">Hauptport</string>
+    <string name="title_connection">Verbindung</string>
+    <string name="title_troubleshooting">Fehlerbehebung</string>
+    <string name="title_expiration_offset">Standardhaltbarkeit</string>
+    <string name="title_clear_search_history">Gespeicherte Suchen löschen</string>
+    <string name="title_location">Standardort</string>
+    <string name="title_recent_activity">Aktuelle Änderungen</string>
+    <string name="title_show_history">Zeige Änderungen</string>
+    <string name="title_food_activity">Änderungen an %1$s</string>
+    <string name="title_charts">Statistiken</string>
+    <string name="title_food_count_chart">Anzahl über Zeit</string>
+    <string name="title_food_histogram">Wie lange vor Ablauf wurden wieviel Stück gegessen?</string>
+    <string name="title_description">Beschreibung ändern</string>
+    <string name="title_units">Maßeinheiten</string>
+    <string name="title_unit_activity">Aktivität bei Maßeinheiten</string>
+    <string name="title_default_unit">Standardeinheit</string>
+    <string name="title_unit">Maßeinheit</string>
+    <string name="title_recipes">Rezepte</string>
+    <string name="title_ingredients">Zutaten</string>
+    <string name="title_add_recipe">Rezept hinzufügen</string>
+    <string name="title_edit_recipe">Rezept bearbeiten</string>
+    <string name="title_products">Produkte</string>
+    <string name="title_duration">Zubereitungsdauer</string>
+    <string name="title_checkout">Rezept zubereiten</string>
+    <string name="title_add_location">Ort hinzufügen</string>
+    <string name="title_edit_location">Ort bearbeiten</string>
+    <string name="title_conflict">Konflikt lösen</string>
+    <string name="title_add_food">Lebensmittel hinzufügen</string>
+    <string name="title_edit_food">Lebensmittel bearbeiten</string>
+    <string name="title_all_food">Was bald abläuft</string>
+
+    <string name="action_users">Benutzer</string>
+    <string name="action_locations">Orte</string>
+    <string name="action_settings">Einstellungen</string>
+    <string name="action_refresh">Aktualisieren</string>
+    <string name="action_search">Suchen</string>
+    <string name="action_save">Speichern</string>
+    <string name="action_save_and_continue">Speichern und Fortfahren</string>
+    <string name="action_add_more">Speichern und weiter</string>
+    <string name="action_missing_food">Fehlende Lebensmittel</string>
+    <string name="action_eat_next">Was bald abläuft</string>
+    <string name="action_scan">Barcode scannen</string>
+    <string name="action_undo">RÜCKGÄNGIG</string>
+    <string name="action_continue">Weiter</string>
+    <string name="action_back">Zurück</string>
+    <string name="action_shopping_list">Einkaufsliste</string>
+    <string name="action_events">Aktivität</string>
+    <string name="action_units">Maßeinheiten</string>
+    <string name="action_today">HEUTE</string>
+    <string name="action_predict">RATEN</string>
+    <string name="action_recipes">Rezepte</string>
+    <string name="action_sort">Sortieren</string>
+    <string name="action_scan_qr">QR CODE SCANNEN</string>
+    <string name="action_manual">MANUELL</string>
+    <string name="action_checkout">Zubereiten</string>
+    <string name="action_delete">Löschen</string>
+    <string name="action_retry">Erneut senden</string>
+    <string name="action_add">Hinzufügen</string>
+
+    <string name="hint_servername">Server Hostname</string>
+    <string name="hint_expert">Expertenoptionen</string>
+    <string name="hint_caport">CA Port (10910)</string>
+    <string name="hint_ticket_port">Ticketport (10911)</string>
+    <string name="hint_server_port">Serverport (10912)</string>
+    <string name="hint_username">Benutzername</string>
+    <string name="hint_device_name">Gerätename</string>
+    <string name="hint_user_id">Benutzer ID</string>
+    <string name="hint_device_id">Geräte ID</string>
+    <string name="hint_fingerprint">Fingerprint</string>
+    <string name="hint_ticket">Ticket</string>
+    <string name="hint_location">Ort</string>
+    <string name="hint_food">Lebensmittel</string>
+    <string name="hint_new_name">Neuer Name</string>
+    <string name="search_hint">Suche Essen</string>
+    <string name="hint_original">Ursprünglich</string>
+    <string name="hint_remote">Andere Änderung</string>
+    <string name="hint_local">Deine Änderung</string>
+    <string name="hint_name">Name</string>
+    <string name="hint_to_buy">Auf Einkaufsliste setzen</string>
+    <string name="hint_abbreviation">Abkürzung</string>
+    <string name="hint_scale">Skalierung</string>
+    <string name="hint_unit">Maßeinheit</string>
+    <string name="hint_expiration_offset">Standardhaltbarkeit (Tage)</string>
+    <string name="hint_description">Beschreibung</string>
+    <string name="hint_duration">Dauer (min)</string>
+    <string name="hint_instructions">Anweisungen</string>
+    <string name="hint_amount">Menge</string>
+    <string name="hint_no_locations">Keine Orte.\nErstelle einen mit dem + Knopf.</string>
+    <string name="hint_no_units">Keine Maßeinheiten.\nErstelle eine mit dem + Knopf.</string>
+    <string name="hint_no_scaled_units">Keine Mengen.\nErstelle eine mit dem + Knopf.</string>
+    <string name="hint_no_food">Keine Lebensmittel.\nErstelle eines mit dem + Knopf.</string>
+    <string name="hint_no_food_to_buy">Nichts einzukaufen</string>
+    <string name="hint_no_food_in_location">Keine Lebensmittel an diesem Ort.</string>
+    <string name="hint_no_food_items">Keine Lebensmittel vorhanden.</string>
+
+    <string name="dialog_success">Erfolgreich</string>
+    <string name="dialog_finished">Registrierung abgeschlossen</string>
+    <string name="dialog_registering">Registriere</string>
+    <string name="dialog_fetching_certificate">Hole Serverzertifikat</string>
+    <string name="dialog_verifying_certificate">Prüfe Serverzertifikat</string>
+    <string name="dialog_generating_key">Erzeuge Schlüssel</string>
+    <string name="dialog_registering_key">Registriere Schlüssel</string>
+    <string name="dialog_storing_settings">Speichere Einstellungen</string>
+    <string name="dialog_generating_key_failed">Schlüsselerzeugung fehlgeschlagen!</string>
+    <string name="dialog_fetching_certificate_failed">Holen des Serverzertifikats fehlgeschlagen!</string>
+    <string name="dialog_verifying_certificate_failed">Serverzertifikat passt nicht zu Fingerprint!</string>
+    <string name="dialog_registering_key_failed">Server verweigert Registrierung!</string>
+    <string name="dialog_storing_settings_failed">Speichern der Einstellungen fehlgeschlagen!</string>
+    <string name="dialog_error">Ein unvorhergesehener Fehler ist aufgetreten.</string>
+    <string name="dialog_wrong_fpr">Falscher fingerprint</string>
+    <string name="dialog_ticket_reject">Server weist Ticket ab</string>
+    <string name="dialog_invalid_answer">Ungültige Antwort vom Server!</string>
+    <string name="dialog_cert_unreadable">Zertifikat ist unlesbar</string>
+    <string name="dialog_retry">WIEDERHOLEN</string>
+    <string name="dialog_abort">ABBRECHEN</string>
+    <string name="dialog_ok">OK</string>
+    <string name="dialog_remove">LÖSCHEN</string>
+    <string name="dialog_store_settings">Speichere Einstellungen</string>
+    <string name="dialog_new_device">Neues Gerät erstellen</string>
+    <string name="dialog_new_user">Neuen Nutzer erstellen</string>
+    <string name="dialog_new_location">Neuen Ort erstellen</string>
+    <string name="dialog_new_food">Neues Lebensmittel erstellen</string>
+    <string name="dialog_delete_format">%1$s entfernen?</string>
+    <string name="dialog_eat_format">%1$s essen?</string>
+    <string name="dialog_added">erfolgreich hinzugefügt</string>
+    <string name="dialog_undo">Rückgängig</string>
+    <string name="dialog_delete_food">%1$s als Essenskategorie entfernen?</string>
+    <string name="dialog_new_sync">Vollständig Daten vom Server holen</string>
+    <string name="dialog_new_sync_done">Transfer erfolgreich</string>
+    <string name="dialog_move_item">An einen anderen Ort verschieben</string>
+    <string name="dialog_remove_crash_log">Diesen Absturzbericht entfernen?</string>
+    <string name="dialog_no_barcode_result">Unbekannter Barcode</string>
+    <string name="dialog_server_trouble">Server hat Probleme. Benachrichtige deinen Admin.</string>
+    <string name="dialog_done">Aufgabe erfolgreich</string>
+    <string name="dialog_invalid_input">Ungültige Eingabe</string>
+    <string name="dialog_not_found">Objekt wurde schon von jemandem entfernt</string>
+    <string name="dialog_user_was_deleted">Benutzer wurde gelöscht</string>
+    <string name="dialog_delete_but_edited">Das Objekt wurde in der Zwischenzeit verändert. Aktualisiere und prüfe, ob du es wirklich entfernen möchtest.</string>
+    <string name="dialog_delete_but_dependants">Das Objekt kann nicht gelöscht werden, da andere Objekte noch damit verknüpft sind. Z.B. ein Ort, der noch Waren enthält.</string>
+    <string name="dialog_delete_but_access_denied">Zugriff verweigert.</string>
+    <string name="dialog_edit_but_edited">Das Objekt wurde in der Zwischenzeit geändert. Aktualisiere und prüfe deine Änderungen erneut.</string>
+    <string name="dialog_create_device">Erstelle neues Gerät</string>
+    <string name="dialog_device_was_deleted">Gerät wurde gelöscht</string>
+    <string name="dialog_location_was_deleted">Ort wurde gelöscht</string>
+    <string name="dialog_rename_location">Ort umbenennen</string>
+    <string name="dialog_food_was_deleted">Lebensmittel wurde gelöscht</string>
+    <string name="dialog_rename_food">Lebensmittel umbenennen</string>
+    <string name="dialog_edit">Bearbeiten</string>
+    <string name="dialog_item_both_changed">Das Lebensmittel wurde von %1$s nach %2$s bewegt und das Haltbarkeitsdatum vom %3$s zum %4$s geändert. Möchtest du es immer noch essen?</string>
+    <string name="dialog_item_date_changed">Das Haltbarkeitsdatum wurde vom %1$s zum %2$s geändert. Möchtest du es immer noch essen?</string>
+    <string name="dialog_item_location_changed">Das Lebensmittel wurde von %1$s nach %2$s bewegt. Möchtest du es immer noch essen?</string>
+    <string name="dialog_ean_was_deleted">Barcode wurde gelöscht</string>
+    <string name="dialog_food_item_was_deleted">Lebensmittel wurde gegessen</string>
+    <string name="dialog_food_was_removed_from_shopping_list">Lebensmittel vom Einkaufszettel entfernt</string>
+    <string name="dialog_default_expiration_offset">Standardablaufdauer setzen</string>
+    <string name="dialog_default_location">Standardort</string>
+    <string name="dialog_conflicting_description">Die Beschreibung wurde von jemand anderem geändert. Führe den originalen Text, die Änderungen der anderen Person und deinen eigenen Text jetzt zusammen.</string>
+    <string name="dialog_new_unit">Neue Einheit erstellen</string>
+    <string name="dialog_recipe_was_deleted">Rezept wurde gelöscht</string>
+    <string name="dialog_recipe_item">%1$s (Vorrat: %2$s)</string>
+
+    <string name="error_may_not_be_empty">Hier Eingabe machen</string>
+    <string name="error_no_id">ID darf nicht leer sein</string>
+    <string name="error_no_location_present">Erstelle zuerst einen Ort</string>
+    <string name="error_wrong_name_format">Name darf nicht enthalten: $ =</string>
+    <string name="error_location_changed">Der Ort wurde von %1$s zu %2$s umbenannt. Möchtest du ihn immer noch löschen?</string>
+    <string name="error_location_foreign_key_violation">%1$s enthält immer noch Lebensmittel. Möchtest du die auch alle löschen?</string>
+    <string name="error_location_changed_twice">Der Ort mit ursprünglichem Namen %1$s wurde von jemand anderem zu %2$s und von dir zu %3$s umbenannt. Möchtest du deinen Namen anwenden?</string>
+    <string name="error_food_changed">Das Lebensmittel wurde von %1$s zu %2$s umbenannt. Möchtest du es immer noch löschen?</string>
+    <string name="error_food_changed_twice">Das Lebensmittel mit ursprünglichem Namen %1$s wurde von jemand anderem zu %2$s und von dir zu %3$s umbenannt. Möchtest du deinen Namen anwenden?</string>
+    <string name="error_duration_invalid" >Dauer ist ungültig</string>
+    <string name="error_amount_invalid" >Menge ist ungültig</string>
+    <string name="error_loading_recipe" >Rezept wurde nicht in der Zwischenzeit geladen</string>
+    <string name="error_add_location_first">Erstelle zuerst einen Ort, an dem du deine Lebensmittel lagerst.</string>
+
+    <string name="text_show_qr_code_friend">Lass Dein neues Gerät diesen Code lesen:</string>
+    <string name="text_amount">Menge:</string>
+    <string name="text_buyer">Käufer</string>
+    <string name="text_eat_by_date">Haltbarkeitsdatum:</string>
+    <string name="text_no_crash_logs">Die App läuft stabil.</string>
+    <string name="text_no_search_result">Kein Essen gefunden</string>
+    <string name="text_camera_explanation">Stocks braucht die Erlaubnis für die Benutzung der Kamera um Barcodes von Lebensmitteln einzulesen. Während der Installation kann man so außerdem das Ticket leichter übertragen. Beides ist komfortabel, aber nicht zwingend für das Funktionieren der App nötig.</string>
+    <string name="text_qr_explanation">Willkommen bei Stocks! Scanne jetzt den erhaltenen QR Code ein. Solltest du keinen erhalten haben, kannst du dich manuell registrieren.</string>
+    <string name="text_buy">Einzukaufen</string>
+    <string name="text_dont_buy">Nicht Einzukaufen</string>
+
+    <string name="desc_profile_picture">Profilbild des Benutzers</string>
+    <string name="desc_app_icon">Applikationslogo</string>
+    <string name="desc_cutlery">Besteck</string>
+    <string name="desc_expiration_state">Ablaufzustand</string>
+    <string name="desc_supermarket">Supermarkt</string>
+    <string name="desc_location">Ortsicon</string>
+
+    <string name="event_end_of_sentence">.</string>
+    <string name="event_enumeration_item_divider">,</string>
+    <string name="event_enumeration_item_divider_last">und</string>
+
+    <string name="event_enumeration_undefined_object">es</string>
+    <string name="event_enumeration_undefined_object_genitive">von %1$s</string>
+
+    <string name="event_unknown_change">hat %1$s auf unbekannte Weise verändert.</string>
+    <string name="event_location_created">%1$s hat %2$s erfasst.</string>
+    <string name="event_location_deleted">%1$s hat %2$s gelöscht.</string>
+    <string name="event_location_renamed">hat %1$s zu %2$s umbenannt</string>
+    <string name="event_location_description_changed">hat die Beschreibung%1$s geändert</string>
+    <string name="event_eannumber_created">%1$s hat einen Strichcode (%2$s) für %3$s hinzugefügt.</string>
+    <string name="event_eannumber_deleted">%1$s hat einen Strichcode (%2$s) für %3$s gelöscht.</string>
+    <string name="event_food_created">%1$s hat %2$s erfasst</string>
+    <string name="event_food_deleted">%1$s hat %2$s gelöscht.</string>
+    <string name="event_food_renamed">hat %1$s zu %2$s umbenannt</string>
+    <string name="event_food_to_buy_set">hat %1$s auf die Einkaufsliste gesetzt</string>
+    <string name="event_food_to_buy_unset">hat %1$s von der Einkaufsliste entfernt</string>
+    <string name="event_food_location_set">hat den Standardort%1$s auf %2$s gesetzt</string>
+    <string name="event_food_location_unset">hat den Standardort (%1$s)%2$s entfernt</string>
+    <string name="event_food_location_changed">hat den Standardort%1$s von %2$s auf %3$s gesetzt</string>
+    <string name="event_food_expiration_offset_set">hat die Haltbarkeit%1$s auf %2$d Tage gesetzt</string>
+    <string name="event_food_description_changed">hat die Beschreibung%1$s geändert</string>
+    <string name="event_food_store_unit_changed">hat die Standardeinheit%1$s von %2$s zu %3$s geändert</string>
+    <string name="event_user_created">%1$s hat %2$s eingeladen.</string>
+    <string name="event_user_deleted">%1$s hat %2$s entfernt.</string>
+    <string name="event_user_device_created">%1$s hat %2$s von %3$s registriert.</string>
+    <string name="event_user_device_deleted">%1$s hat %2$s von %3$s entfernt.</string>
+    <string name="event_food_item_added">%1$s hat %2$s %3$s gekauft und hat es nach %4$s gelegt. Verbraucht es bis %5$s.</string>
+    <string name="event_food_item_deleted">%1$s hat %2$s %3$s konsumiert.</string>
+    <string name="event_food_item_changed_location">hat %1$s von %2$s nach %3$s verlegt</string>
+    <string name="event_food_item_changed_eat_by">hat das Mindesthaltbarkeitsdatum%1$s von %2$s zu %3$s geändert</string>
+    <string name="event_food_item_changed_scaled_unit">hat die Maßeinheit%1$s von %2$s zu %3$s geändert</string>
+    <string name="event_food_item_changed_registers">hat das registrierende Gerät%1$s von %2$s zu %3$s geändert</string>
+    <string name="event_food_item_changed_buys">hat den ursprünglichen Käufer%1$s von %2$s zu %3$s geändert</string>
+    <string name="event_unit_created">%1$s hat %2$s (%3$s) erstellt.</string>
+    <string name="event_unit_deleted">%1$s hat %2$s (%3$s) gelöscht.</string>
+    <string name="event_unit_renamed">hat %1$s zu %2$s umbenannt</string>
+    <string name="event_unit_abbreviation_changed">hat die Abkürzung%1$s von %2$s zu %3$s geändert</string>
+    <string name="event_scaled_unit_created">%1$s hat %2$s erstellt.</string>
+    <string name="event_scaled_unit_deleted">%1$s hat %2$s gelöscht.</string>
+    <string name="event_scaled_unit_scale_changed">hat die Skalierung%1$s von %2$s auf %3$s gesetzt</string>
+    <string name="event_scaled_unit_unit_changed">hat die Einheit%1$s von %2$s auf %3$s gesetzt</string>
+
+    <string name="content_description_plus">Plus-Symbol</string>
+
+    <string name="statuscode_success_error_list">Erfolgreich</string>
+    <string name="statuscode_general_error_error_list">Unbekannter Fehler</string>
+    <string name="statuscode_not_found_error_list">Nicht gefunden</string>
+    <string name="statuscode_invalid_data_version_error_list">Veralteter Datenstand</string>
+    <string name="statuscode_foreign_key_constraint_violation_error_list">Wird noch verwendet</string>
+    <string name="statuscode_database_unreachable_error_list">Datenbankfehler</string>
+    <string name="statuscode_access_denied_error_list">Zugriff verweigert</string>
+    <string name="statuscode_invalid_argument_error_list">Eingabe ungültig</string>
+    <string name="statuscode_ca_unreachable_error_list">CA Fehler</string>
+    <string name="statuscode_serialisation_conflict_error_list">Konflikt mit anderer Änderung</string>
+
+    <string name="error_details_synchronisation_error_list">Synchronisieren</string>
+    <string name="error_details_location_add_error_list">Ort hinzufügen</string>
+    <string name="error_details_location_delete_error_list">Ort löschen</string>
+    <string name="error_details_location_edit_error_list">Ort bearbeiten</string>
+    <string name="error_details_unit_add_error_list">Maßeinheit hinzufügen</string>
+    <string name="error_details_unit_delete_error_list">Maßeinheit löschen</string>
+    <string name="error_details_unit_edit_error_list">Maßeinheit bearbeiten</string>
+    <string name="error_details_scaled_unit_add_error_list">Mengeneinheit hinzufügen</string>
+    <string name="error_details_scaled_unit_edit_error_list">Mengeneinheit bearbeiten</string>
+    <string name="error_details_scaled_unit_delete_error_list">Mengeneinheit löschen</string>
+    <string name="error_details_food_add_error_list">Lebensmittel hinzufügen</string>
+    <string name="error_details_food_delete_error_list">Lebensmittel löschen</string>
+    <string name="error_details_food_edit_error_list">Lebensmittel bearbeiten</string>
+    <string name="error_details_food_item_add_error_list">Lebensmittel hinzufügen</string>
+    <string name="error_details_food_item_delete_error_list">Lebensmittel konsumieren</string>
+    <string name="error_details_food_item_edit_error_list">Lebensmittel bearbeiten</string>
+    <string name="error_details_ean_number_add_error_list">EAN-Code hinzufügen</string>
+    <string name="error_details_ean_number_delete_error_list">EAN-Code löschen</string>
+    <string name="error_details_user_device_format">%1$ss %2$s</string>
+    <string name="error_details_user_device_delete_error_list">Gerät löschen</string>
+    <string name="error_details_user_delete_error_list">Benutzer löschen</string>
+    <string name="error_details_recipe_add_error_list">Rezept anlegen</string>
+    <string name="error_details_food_to_buy">Auf Einkaufliste setzen</string>
+
+    <string name="text_no_errors">Alles in Ordnung.</string>
+</resources>

@@ -19,17 +19,14 @@
 
 package de.njsm.stocks.server.v2.business;
 
-import de.njsm.stocks.common.api.Food;
-import de.njsm.stocks.common.api.StatusCode;
-import de.njsm.stocks.common.api.FoodForDeletion;
-import de.njsm.stocks.common.api.FoodForEditing;
-import de.njsm.stocks.common.api.FoodForSetDescription;
-import de.njsm.stocks.common.api.FoodForSetToBuy;
+import de.njsm.stocks.common.api.*;
 import de.njsm.stocks.server.util.Principals;
 import de.njsm.stocks.server.v2.db.EanNumberHandler;
 import de.njsm.stocks.server.v2.db.FoodHandler;
 import de.njsm.stocks.server.v2.db.FoodItemHandler;
 import de.njsm.stocks.server.v2.db.jooq.tables.records.FoodRecord;
+
+import java.time.Period;
 
 public class FoodManager extends BusinessObject<FoodRecord, Food> implements
         BusinessGettable<FoodRecord, Food>,
@@ -50,7 +47,20 @@ public class FoodManager extends BusinessObject<FoodRecord, Food> implements
     }
 
     public StatusCode rename(FoodForEditing item) {
-        return runOperation(() -> dbHandler.edit(item));
+        return runOperation(() -> dbHandler.edit(FoodForFullEditing.builder()
+                .id(item.id())
+                .version(item.version())
+                .name(item.name())
+                .location(item.location().orElse(null))
+                .storeUnit(item.storeUnit().orElse(null))
+                .toBuy(null)
+                .expirationOffset(item.expirationOffset().map(Period::getDays).orElse(null))
+                .description(item.description().orElse(null))
+                .build()));
+    }
+
+    public StatusCode edit(FoodForFullEditing food) {
+        return runOperation(() -> dbHandler.edit(food));
     }
 
     public StatusCode setToBuyStatus(FoodForSetToBuy food) {

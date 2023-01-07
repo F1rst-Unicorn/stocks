@@ -1,4 +1,5 @@
-/* stocks is client-server program to manage a household's food stock
+/*
+ * stocks is client-server program to manage a household's food stock
  * Copyright (C) 2019  The stocks developers
  *
  * This file is part of the stocks program suite.
@@ -15,6 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  */
 
 package de.njsm.stocks.common.api.serialisers;
@@ -44,6 +46,16 @@ public class InstantSerialiserTest {
     public void instantIsSerialisedWithoutModification() throws Exception {
         String expected = "1970.01.01-00:00:00.000000-+0000";
         Instant input = Instant.ofEpochMilli(0);
+
+        uut.serialize(input, generatorMock, null);
+
+        verify(generatorMock).writeString(expected);
+    }
+
+    @Test
+    void minimalInstantIsMappedToNull() throws Exception {
+        String expected = null;
+        Instant input = Instant.MIN;
 
         uut.serialize(input, generatorMock, null);
 

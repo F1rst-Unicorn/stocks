@@ -205,7 +205,7 @@
                             <createDependencyReducedPom>false</createDependencyReducedPom>
                             <transformers>
                                 <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                                    <mainClass>de.njsm.stocks.client.Main</mainClass>
+                                    <mainClass>de.njsm.stocks.clientold.Main</mainClass>
                                 </transformer>
                                 <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
                                     <resource>META-INF/spring.handlers</resource>
@@ -288,7 +288,7 @@
                             <includes>.*</includes>
                         </database>
                         <target>
-                            <packageName>de.njsm.stocks.client.storage.jooq</packageName>
+                            <packageName>de.njsm.stocks.clientold.storage.jooq</packageName>
                             <directory>${basedir}/target/generated-sources/java</directory>
                         </target>
                     </generator>

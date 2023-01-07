@@ -218,7 +218,7 @@ components:
           minimum: 1
           description: |
             An id referencing the location where this food type is usually
-            stored in.
+            stored in. Set to 0 to have no default location.
         toBuy:
           type: boolean
           description: Is this food type marked to buy.
@@ -844,7 +844,8 @@ paths:
         - name: location
           in: query
           description: |
-            The id referencing the default location for this food to set.
+            The id referencing the default location for this food to set. Set to
+            0 to have no default location.
           required: false
           schema:
             type: integer
@@ -1529,6 +1530,23 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/Food'
+      responses:
+        "200":
+          $ref: '#/components/responses/200-write-returning-id'
+        "400":
+          $ref: '#/components/responses/PUT-400'
+        "500":
+          $ref: '#/components/responses/500'
+  "/v3/food/edit":
+    put:
+      description: Edit a food type.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: '#/components/schemas/Food'
+                - $ref: '#/components/schemas/Data'
       responses:
         "200":
           $ref: '#/components/responses/200-write-returning-id'

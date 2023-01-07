@@ -28,9 +28,9 @@
 
     <util:constant id="stdout" static-field="java.lang.System.out" />
 
-    <bean id="propertiesFileHandler" class="de.njsm.stocks.client.config.PropertiesFileHandlerImpl" />
+    <bean id="propertiesFileHandler" class="de.njsm.stocks.clientold.config.PropertiesFileHandlerImpl" />
 
-    <bean id="timeProvider" class="de.njsm.stocks.client.service.TimeProviderImpl" />
+    <bean id="timeProvider" class="de.njsm.stocks.clientold.service.TimeProviderImpl" />
 
     <bean id="dayDateFactory" class="java.time.format.DateTimeFormatter" factory-method="ofPattern">
         <constructor-arg index="0" type="java.lang.String" value="dd.MM.yyyy" />
@@ -44,62 +44,62 @@
         <constructor-arg index="0" ref="utcTimezone" />
     </bean>
 
-    <bean id="stringBuilder" class="de.njsm.stocks.client.business.data.visitor.ToStringVisitor" >
+    <bean id="stringBuilder" class="de.njsm.stocks.clientold.business.data.visitor.ToStringVisitor" >
         <constructor-arg index="0" ref="dayDateFormat" />
     </bean>
 
-    <bean id="consoleReader" class="de.njsm.stocks.client.frontend.cli.service.InputReader" factory-method="buildReader"/>
+    <bean id="consoleReader" class="de.njsm.stocks.clientold.frontend.cli.service.InputReader" factory-method="buildReader"/>
 
-    <bean id="inputReader" class="de.njsm.stocks.client.frontend.cli.service.InputReader">
+    <bean id="inputReader" class="de.njsm.stocks.clientold.frontend.cli.service.InputReader">
         <constructor-arg index="0" ref="stdout" />
         <constructor-arg index="1" ref="consoleReader"/>
         <constructor-arg index="2" ref="timeProvider" />
         <constructor-arg index="3" ref="dayDateFactory"/>
     </bean>
 
-    <bean id="configGenerator" class="de.njsm.stocks.client.frontend.cli.CliConfigGenerator">
+    <bean id="configGenerator" class="de.njsm.stocks.clientold.frontend.cli.CliConfigGenerator">
         <constructor-arg index="0" ref="inputReader" />
     </bean>
 
-    <bean id="certificateGenerator" class="de.njsm.stocks.client.frontend.cli.CliCertificateGenerator">
+    <bean id="certificateGenerator" class="de.njsm.stocks.clientold.frontend.cli.CliCertificateGenerator">
         <constructor-arg index="0" ref="inputReader" />
     </bean>
 
-    <bean id="networkHandler" class="de.njsm.stocks.client.init.NetworkHandlerImpl" />
+    <bean id="networkHandler" class="de.njsm.stocks.clientold.init.NetworkHandlerImpl" />
 
-    <bean id="keystoreHandler" class="de.njsm.stocks.client.init.KeyStoreHandlerImpl" />
+    <bean id="keystoreHandler" class="de.njsm.stocks.clientold.init.KeyStoreHandlerImpl" />
 
-    <bean id="dbManager" class="de.njsm.stocks.client.storage.DatabaseManager" />
+    <bean id="dbManager" class="de.njsm.stocks.clientold.storage.DatabaseManager" />
 
-    <bean id="qrGenerator" class="de.njsm.stocks.client.frontend.cli.service.QrGenerator" />
+    <bean id="qrGenerator" class="de.njsm.stocks.clientold.frontend.cli.service.QrGenerator" />
 
-    <bean id="ticketHandler" class="de.njsm.stocks.client.init.TicketHandler" >
+    <bean id="ticketHandler" class="de.njsm.stocks.clientold.init.TicketHandler" >
         <constructor-arg index="0" ref="keystoreHandler" />
         <constructor-arg index="1" ref="networkHandler" />
     </bean>
 
-    <bean id="upgradeRegistry" class="de.njsm.stocks.client.init.upgrade.UpgradeRegistry" >
+    <bean id="upgradeRegistry" class="de.njsm.stocks.clientold.init.upgrade.UpgradeRegistry" >
         <constructor-arg index="0">
             <list>
-                <bean class="de.njsm.stocks.client.init.upgrade.PreVersionedUpgradeProcedure" >
+                <bean class="de.njsm.stocks.clientold.init.upgrade.PreVersionedUpgradeProcedure" >
                     <constructor-arg index="0" ref="dbManager" />
                 </bean>
-                <bean class="de.njsm.stocks.client.init.upgrade.EntityVersioningUpgradeProcedure" >
+                <bean class="de.njsm.stocks.clientold.init.upgrade.EntityVersioningUpgradeProcedure" >
                     <constructor-arg index="0" ref="dbManager" />
                 </bean>
-                <bean class="de.njsm.stocks.client.init.upgrade.MicrosecondUpgradeProcedure" >
+                <bean class="de.njsm.stocks.clientold.init.upgrade.MicrosecondUpgradeProcedure" >
                     <constructor-arg index="0" ref="dbManager" />
                 </bean>
             </list>
         </constructor-arg>
     </bean>
 
-    <bean id="upgradeManager" class="de.njsm.stocks.client.init.upgrade.UpgradeManager">
+    <bean id="upgradeManager" class="de.njsm.stocks.clientold.init.upgrade.UpgradeManager">
         <constructor-arg index="0" ref="dbManager" />
         <constructor-arg index="1" ref="upgradeRegistry" />
     </bean>
 
-    <bean id="initManager" class="de.njsm.stocks.client.init.InitManager">
+    <bean id="initManager" class="de.njsm.stocks.clientold.init.InitManager">
         <constructor-arg index="0" ref="configGenerator" />
         <constructor-arg index="1" ref="certificateGenerator" />
         <constructor-arg index="2" ref="ticketHandler" />
@@ -107,35 +107,35 @@
         <constructor-arg index="4" ref="upgradeManager" />
     </bean>
 
-    <bean id="configuration" class="de.njsm.stocks.client.config.Configuration" >
+    <bean id="configuration" class="de.njsm.stocks.clientold.config.Configuration" >
         <constructor-arg index="0" ref="propertiesFileHandler" />
     </bean>
 
-    <bean id="screenWriter" class="de.njsm.stocks.client.frontend.cli.service.ScreenWriter">
+    <bean id="screenWriter" class="de.njsm.stocks.clientold.frontend.cli.service.ScreenWriter">
         <constructor-arg index="0" ref="stdout" />
         <constructor-arg index="1" ref="stringBuilder" />
     </bean>
 
     <bean id="serverManager" factory-bean="configuration" factory-method="getServerManager" />
 
-    <bean id="refresher" class="de.njsm.stocks.client.service.Refresher" >
+    <bean id="refresher" class="de.njsm.stocks.clientold.service.Refresher" >
         <constructor-arg index="0" ref="serverManager" />
         <constructor-arg index="1" ref="dbManager" />
     </bean>
 
-    <bean id="inputCollector" class="de.njsm.stocks.client.frontend.cli.commands.InputCollector">
+    <bean id="inputCollector" class="de.njsm.stocks.clientold.frontend.cli.commands.InputCollector">
         <constructor-arg index="0" ref="screenWriter" />
         <constructor-arg index="1" ref="inputReader" />
         <constructor-arg index="2" ref="dbManager" />
         <constructor-arg index="3" ref="timeProvider" />
     </bean>
 
-    <bean id="deviceList" class="de.njsm.stocks.client.frontend.cli.commands.dev.DeviceListCommandHandler">
+    <bean id="deviceList" class="de.njsm.stocks.clientold.frontend.cli.commands.dev.DeviceListCommandHandler">
         <constructor-arg index="0" ref="screenWriter" />
         <constructor-arg index="1" ref="dbManager" />
     </bean>
 
-    <bean id="deviceAdd" class="de.njsm.stocks.client.frontend.cli.commands.dev.DeviceAddCommandHandler">
+    <bean id="deviceAdd" class="de.njsm.stocks.clientold.frontend.cli.commands.dev.DeviceAddCommandHandler">
         <constructor-arg index="0" ref="configuration" />
         <constructor-arg index="1" ref="screenWriter" />
         <constructor-arg index="2" ref="refresher" />
@@ -145,14 +145,14 @@
         <constructor-arg index="6" ref="qrGenerator" />
     </bean>
 
-    <bean id="deviceRemove" class="de.njsm.stocks.client.frontend.cli.commands.dev.DeviceRemoveCommandHandler">
+    <bean id="deviceRemove" class="de.njsm.stocks.clientold.frontend.cli.commands.dev.DeviceRemoveCommandHandler">
         <constructor-arg index="0" ref="screenWriter" />
         <constructor-arg index="1" ref="refresher" />
         <constructor-arg index="2" ref="inputCollector" />
         <constructor-arg index="3" ref="serverManager" />
     </bean>
 
-    <bean id="deviceHandler" class="de.njsm.stocks.client.frontend.cli.commands.DefaultCommandHandler">
+    <bean id="deviceHandler" class="de.njsm.stocks.clientold.frontend.cli.commands.DefaultCommandHandler">
         <constructor-arg index="0" ref="screenWriter" />
         <constructor-arg index="1" type="java.lang.String" value="dev" />
         <constructor-arg index="2" type="java.lang.String" value="Manage the devices accessing the stocks system" />
@@ -166,26 +166,26 @@
         </constructor-arg>
     </bean>
 
-    <bean id="userList" class="de.njsm.stocks.client.frontend.cli.commands.user.UserListCommandHandler">
+    <bean id="userList" class="de.njsm.stocks.clientold.frontend.cli.commands.user.UserListCommandHandler">
         <constructor-arg index="0" ref="screenWriter" />
         <constructor-arg index="1" ref="dbManager" />
     </bean>
 
-    <bean id="userAdd" class="de.njsm.stocks.client.frontend.cli.commands.user.UserAddCommandHandler">
+    <bean id="userAdd" class="de.njsm.stocks.clientold.frontend.cli.commands.user.UserAddCommandHandler">
         <constructor-arg index="0" ref="screenWriter" />
         <constructor-arg index="1" ref="serverManager" />
         <constructor-arg index="2" ref="inputCollector" />
         <constructor-arg index="3" ref="refresher" />
     </bean>
 
-    <bean id="userRemove" class="de.njsm.stocks.client.frontend.cli.commands.user.UserRemoveCommandHandler">
+    <bean id="userRemove" class="de.njsm.stocks.clientold.frontend.cli.commands.user.UserRemoveCommandHandler">
         <constructor-arg index="0" ref="screenWriter" />
         <constructor-arg index="1" ref="serverManager" />
         <constructor-arg index="2" ref="inputCollector" />
         <constructor-arg index="3" ref="refresher" />
     </bean>
 
-    <bean id="userHandler" class="de.njsm.stocks.client.frontend.cli.commands.DefaultCommandHandler">
+    <bean id="userHandler" class="de.njsm.stocks.clientold.frontend.cli.commands.DefaultCommandHandler">
         <constructor-arg index="0" ref="screenWriter" />
         <constructor-arg index="1" type="java.lang.String" value="user" />
         <constructor-arg index="2" type="java.lang.String" value="Manage the users of the stocks system" />
@@ -199,33 +199,33 @@
         </constructor-arg>
     </bean>
 
-    <bean id="locList" class="de.njsm.stocks.client.frontend.cli.commands.loc.LocationListCommandHandler">
+    <bean id="locList" class="de.njsm.stocks.clientold.frontend.cli.commands.loc.LocationListCommandHandler">
         <constructor-arg index="0" ref="screenWriter" />
         <constructor-arg index="1" ref="dbManager" />
     </bean>
 
-    <bean id="locAdd" class="de.njsm.stocks.client.frontend.cli.commands.loc.LocationAddCommandHandler">
+    <bean id="locAdd" class="de.njsm.stocks.clientold.frontend.cli.commands.loc.LocationAddCommandHandler">
         <constructor-arg index="0" ref="screenWriter" />
         <constructor-arg index="1" ref="refresher" />
         <constructor-arg index="2" ref="inputCollector" />
         <constructor-arg index="3" ref="serverManager" />
     </bean>
 
-    <bean id="locRename" class="de.njsm.stocks.client.frontend.cli.commands.loc.LocationRenameCommandHandler">
+    <bean id="locRename" class="de.njsm.stocks.clientold.frontend.cli.commands.loc.LocationRenameCommandHandler">
         <constructor-arg index="0" ref="screenWriter" />
         <constructor-arg index="1" ref="inputCollector" />
         <constructor-arg index="2" ref="refresher" />
         <constructor-arg index="3" ref="serverManager" />
     </bean>
 
-    <bean id="locRemove" class="de.njsm.stocks.client.frontend.cli.commands.loc.LocationRemoveCommandHandler">
+    <bean id="locRemove" class="de.njsm.stocks.clientold.frontend.cli.commands.loc.LocationRemoveCommandHandler">
         <constructor-arg index="0" ref="screenWriter" />
         <constructor-arg index="1" ref="inputCollector" />
         <constructor-arg index="2" ref="refresher" />
         <constructor-arg index="3" ref="serverManager" />
     </bean>
 
-    <bean id="locHandler" class="de.njsm.stocks.client.frontend.cli.commands.DefaultCommandHandler">
+    <bean id="locHandler" class="de.njsm.stocks.clientold.frontend.cli.commands.DefaultCommandHandler">
         <constructor-arg index="0" ref="screenWriter" />
         <constructor-arg index="1" type="java.lang.String" value="loc" />
         <constructor-arg index="2" type="java.lang.String" value="Manage the locations to store food" />
@@ -240,34 +240,34 @@
         </constructor-arg>
     </bean>
 
-    <bean id="foodList" class="de.njsm.stocks.client.frontend.cli.commands.food.FoodListCommandHandler">
+    <bean id="foodList" class="de.njsm.stocks.clientold.frontend.cli.commands.food.FoodListCommandHandler">
         <constructor-arg index="0" ref="screenWriter" />
         <constructor-arg index="1" ref="dbManager" />
         <constructor-arg index="2" ref="timeProvider" />
     </bean>
 
-    <bean id="foodAdd" class="de.njsm.stocks.client.frontend.cli.commands.food.FoodAddCommandHandler">
+    <bean id="foodAdd" class="de.njsm.stocks.clientold.frontend.cli.commands.food.FoodAddCommandHandler">
         <constructor-arg index="0" ref="screenWriter" />
         <constructor-arg index="1" ref="refresher" />
         <constructor-arg index="2" ref="inputCollector" />
         <constructor-arg index="3" ref="serverManager" />
     </bean>
 
-    <bean id="foodRename" class="de.njsm.stocks.client.frontend.cli.commands.food.FoodRenameCommandHandler">
+    <bean id="foodRename" class="de.njsm.stocks.clientold.frontend.cli.commands.food.FoodRenameCommandHandler">
         <constructor-arg index="0" ref="screenWriter" />
         <constructor-arg index="1" ref="inputCollector" />
         <constructor-arg index="2" ref="refresher" />
         <constructor-arg index="3" ref="serverManager" />
     </bean>
 
-    <bean id="foodRemove" class="de.njsm.stocks.client.frontend.cli.commands.food.FoodRemoveCommandHandler">
+    <bean id="foodRemove" class="de.njsm.stocks.clientold.frontend.cli.commands.food.FoodRemoveCommandHandler">
         <constructor-arg index="0" ref="screenWriter" />
         <constructor-arg index="1" ref="inputCollector" />
         <constructor-arg index="2" ref="refresher" />
         <constructor-arg index="3" ref="serverManager" />
     </bean>
 
-    <bean id="foodHandler" class="de.njsm.stocks.client.frontend.cli.commands.DefaultCommandHandler">
+    <bean id="foodHandler" class="de.njsm.stocks.clientold.frontend.cli.commands.DefaultCommandHandler">
         <constructor-arg index="0" ref="screenWriter" />
         <constructor-arg index="1" type="java.lang.String" value="food" />
         <constructor-arg index="2" type="java.lang.String" value="Manage the food types" />
@@ -282,33 +282,33 @@
         </constructor-arg>
     </bean>
 
-    <bean id="eat" class="de.njsm.stocks.client.frontend.cli.commands.eat.EatCommandHandler">
+    <bean id="eat" class="de.njsm.stocks.clientold.frontend.cli.commands.eat.EatCommandHandler">
         <constructor-arg index="0" ref="serverManager" />
         <constructor-arg index="1" ref="screenWriter" />
         <constructor-arg index="2" ref="inputCollector" />
         <constructor-arg index="3" ref="refresher" />
     </bean>
 
-    <bean id="add" class="de.njsm.stocks.client.frontend.cli.commands.add.AddCommandHandler">
+    <bean id="add" class="de.njsm.stocks.clientold.frontend.cli.commands.add.AddCommandHandler">
         <constructor-arg index="0" ref="inputCollector" />
         <constructor-arg index="1" ref="serverManager" />
         <constructor-arg index="2" ref="refresher" />
         <constructor-arg index="3" ref="screenWriter" />
     </bean>
 
-    <bean id="move" class="de.njsm.stocks.client.frontend.cli.commands.edit.EditCommandHandler">
+    <bean id="move" class="de.njsm.stocks.clientold.frontend.cli.commands.edit.EditCommandHandler">
         <constructor-arg index="0" ref="serverManager" />
         <constructor-arg index="1" ref="inputCollector" />
         <constructor-arg index="2" ref="screenWriter" />
         <constructor-arg index="3" ref="refresher" />
     </bean>
 
-    <bean id="refresh" class="de.njsm.stocks.client.frontend.cli.commands.refresh.RefreshCommandHandler">
+    <bean id="refresh" class="de.njsm.stocks.clientold.frontend.cli.commands.refresh.RefreshCommandHandler">
         <constructor-arg index="0" ref="screenWriter" />
         <constructor-arg index="1" ref="refresher" />
     </bean>
 
-    <bean id="rootCommandHandler" class="de.njsm.stocks.client.frontend.cli.commands.AggregatedCommandHandler">
+    <bean id="rootCommandHandler" class="de.njsm.stocks.clientold.frontend.cli.commands.AggregatedCommandHandler">
         <constructor-arg index="0" ref="screenWriter" />
         <constructor-arg index="1">
             <list>
@@ -324,7 +324,7 @@
         </constructor-arg>
     </bean>
 
-    <bean id="mainHandler" class="de.njsm.stocks.client.frontend.cli.CliMainHandler">
+    <bean id="mainHandler" class="de.njsm.stocks.clientold.frontend.cli.CliMainHandler">
         <constructor-arg index="0" ref="rootCommandHandler" />
         <constructor-arg index="1" ref="inputReader" />
     </bean>

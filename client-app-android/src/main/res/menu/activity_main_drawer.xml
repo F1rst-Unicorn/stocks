@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    stocks is client-server program to manage a household's food stock
+    Copyright (C) 2019  The stocks developers
+
+    This file is part of the stocks program suite.
+
+    stocks is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    stocks is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see https://www.gnu.org/licenses/.
+-->
+
+
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/activity_main_drawer_shopping_list"
+            android:icon="@drawable/ic_shopping_cart_black_24"
+            android:title="@string/action_shopping_list" />
+        <item
+            android:id="@+id/activity_main_drawer_recipes"
+            android:icon="@drawable/baseline_text_snippet_black_24"
+            android:title="@string/action_recipes" />
+        <item
+            android:id="@+id/activity_main_drawer_locations"
+            android:icon="@drawable/baseline_kitchen_black_24"
+            android:title="@string/action_locations" />
+        <item
+            android:id="@+id/activity_main_drawer_units"
+            android:icon="@drawable/ic_weight_black_24"
+            android:title="@string/action_units" />
+        <item
+            android:id="@+id/activity_main_drawer_users"
+            android:icon="@drawable/ic_people_black_24dp"
+            android:title="@string/action_users" />
+    </group>
+
+    <group android:checkableBehavior="none">
+        <item
+            android:id="@+id/activity_main_drawer_settings"
+            android:icon="@drawable/ic_settings_black_24dp"
+            android:title="@string/action_settings" />
+    </group>
+</menu>

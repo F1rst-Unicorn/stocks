@@ -1,0 +1,199 @@
+<resources>
+<!--
+    stocks is client-server program to manage a household's food stock
+    Copyright (C) 2019  The stocks developers
+
+    This file is part of the stocks program suite.
+
+    stocks is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    stocks is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see https://www.gnu.org/licenses/.
+-->
+
+    <attr name="colorFadedIcon" format="color"/>
+
+    <style name="StocksTheme" parent="Theme.MaterialComponents.Light">
+        <item name="windowNoTitle">true</item>
+        <item name="windowActionBar">false</item>
+        <item name="android:windowFullscreen">false</item>
+        <item name="android:windowContentOverlay">@null</item>
+
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorOnPrimary">@color/colorOnPrimary</item>
+        <item name="colorPrimaryVariant">@color/colorPrimaryVariant</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryVariant</item>
+
+        <item name="colorSecondary">@color/colorSecondary</item>
+        <item name="colorOnSecondary">@color/colorOnSecondary</item>
+        <item name="colorSecondaryVariant">@color/colorSecondaryVariant</item>
+
+        <item name="colorSurface">@color/colorSurface</item>
+        <item name="colorOnSurface">@color/colorOnSurface</item>
+        <item name="android:colorBackground">@color/colorSurface</item>
+        <item name="colorError">@color/colorError</item>
+        <item name="colorFadedIcon">@color/colorFadedIcon</item>
+
+        <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
+        <item name="android:windowLightStatusBar">false</item>
+        <item name="drawerArrowStyle">@style/DrawerArrow</item>
+        <item name="actionOverflowButtonStyle">@style/actionButtonOverflow</item>
+        <item name="android:searchViewStyle">@style/TopToolbar</item>
+        <item name="searchViewStyle">@style/TopToolbar</item>
+        <item name="textAppearanceSearchResultTitle">@style/StocksTheme.AutoCompleteTextView</item>
+        <item name="autoCompleteTextViewStyle">@style/StocksTheme.SearchDropdownBackground</item>
+    </style>
+
+    <style name="actionButtonOverflow" parent="Widget.AppCompat.Light.ActionButton.Overflow">
+        <item name="android:tint">@color/colorOnPrimary</item>
+    </style>
+
+    <style name="TopToolbar">
+        <item name="android:background">@color/colorPrimary</item>
+        <item name="android:popupBackground">@color/colorOnPrimary</item>
+        <item name="titleTextColor">@color/colorOnPrimary</item>
+        <item name="android:textColorPrimary">@color/colorOnPrimary</item>
+        <item name="android:textColorSecondary">@color/colorOnPrimary</item>
+        <item name="android:textColorHint">#8DD98F</item>
+        <item name="android:tint">@color/colorOnPrimary</item>
+        <item name="tint">@color/colorOnPrimary</item>
+    </style>
+
+    <style name="TopToolbarPopup">
+        <item name="android:background">@color/colorOnPrimary</item>
+        <item name="titleTextColor">@color/colorOnSurface</item>
+        <item name="android:textColorPrimary">@color/colorOnSurface</item>
+        <item name="android:tint">@color/colorOnPrimary</item>
+    </style>
+
+    <style name="Toolbar">
+        <item name="android:background">?attr/colorPrimary</item>
+        <item name="titleTextColor">?attr/colorOnPrimary</item>
+    </style>
+
+    <style name="DrawerArrow" parent="Widget.AppCompat.DrawerArrowToggle">
+        <item name="spinBars">true</item>
+        <item name="color">?attr/colorOnPrimary</item>
+    </style>
+
+    <style name="ListItem">
+        <item name="android:drawablePadding">@dimen/text_margin</item>
+        <item name="android:drawableTint">?attr/colorFadedIcon</item>
+        <item name="android:padding">@dimen/list_item_padding_large</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:minHeight">?android:attr/listPreferredItemHeightSmall</item>
+    </style>
+
+    <style name="StocksTheme.TextLarge">
+        <item name="android:textAppearance">?android:attr/textAppearanceMedium</item>
+    </style>
+
+    <style name="StocksTheme.TextSmall">
+        <item name="android:textAppearance">?android:attr/textAppearanceSmall</item>
+    </style>
+
+    <style name="Subheader" parent="StocksTheme">
+        <item name="android:textAppearance">?android:attr/textAppearanceMedium</item>
+    </style>
+
+    <style name="StocksTheme.AutoCompleteTextView" parent="TextAppearance.AppCompat.SearchResult.Title">
+        <item name="android:textColor">@android:color/black</item>
+    </style>
+
+    <style name="StocksTheme.SearchDropdownBackground" parent="Widget.AppCompat.Light.AutoCompleteTextView">
+        <item name="android:popupBackground">#ffffff</item>
+    </style>
+
+    <!-- Base application theme. -->
+    <style name="OldStocksThemeOld" parent="Theme.AppCompat">
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorPrimaryVariant">@color/colorPrimaryDark</item>
+        <item name="android:colorBackground">@android:color/white</item>
+        <item name="colorOnPrimary">@android:color/white</item>
+        <item name="colorSecondary">@color/colorAccent</item>
+        <item name="colorOnSecondary">@android:color/white</item>
+        <item name="textAppearanceSearchResultTitle">@style/OldStocksTheme.AutoCompleteTextView</item>
+        <item name="autoCompleteTextViewStyle">@style/OldStocksTheme.SearchDropdownBackground</item>
+    </style>
+
+    <style name="OldStocksThemeOld.NoActionBar" parent="Theme.AppCompat.NoActionBar">
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorPrimaryVariant">@color/colorPrimaryDark</item>
+        <item name="android:colorBackground">@android:color/white</item>
+        <item name="colorOnPrimary">@android:color/white</item>
+        <item name="colorSecondary">@color/colorAccent</item>
+        <item name="colorOnSecondary">@android:color/white</item>
+        <item name="textAppearanceSearchResultTitle">@style/OldStocksTheme.AutoCompleteTextView</item>
+        <item name="autoCompleteTextViewStyle">@style/OldStocksTheme.SearchDropdownBackground</item>
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="OldAppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="OldAppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+    <style name="OldStocksThemeOld.Activity">
+        <item name="android:paddingBottom">@dimen/activity_vertical_margin</item>
+        <item name="android:paddingLeft">@dimen/activity_horizontal_margin</item>
+        <item name="android:paddingRight">@dimen/activity_horizontal_margin</item>
+        <item name="android:paddingTop">@dimen/activity_vertical_margin</item>
+    </style>
+
+    <style name="OldStocksThemeOld.EditText">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_gravity">left|top</item>
+        <item name="android:layout_alignParentStart">true</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:paddingTop">16dp</item>
+        <item name="android:paddingBottom">16dp</item>
+        <item name="android:paddingLeft">16dp</item>
+        <item name="android:paddingRight">16dp</item>
+    </style>
+
+    <style name="OldStocksThemeOld.TextView">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_gravity">left|top</item>
+        <item name="android:layout_alignParentStart">true</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:paddingTop">16dp</item>
+        <item name="android:paddingBottom">16dp</item>
+        <item name="android:paddingLeft">16dp</item>
+        <item name="android:paddingRight">16dp</item>
+    </style>
+
+    <style name="OldStocksTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="OldStocksTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+    <style name="OldStocksTheme.AutoCompleteTextView" parent="TextAppearance.AppCompat.SearchResult.Title">
+        <item name="android:textColor">@android:color/black</item>
+    </style>
+
+    <style name="OldStocksTheme.SearchDropdownBackground" parent="Widget.AppCompat.Light.AutoCompleteTextView">
+        <item name="android:popupBackground">#ffffff</item>
+    </style>
+
+    <style name="OldDivider" parent="OldStocksThemeOld">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">2dp</item>
+        <item name="android:layout_marginTop">8dp</item>
+        <item name="android:layout_marginBottom">8dp</item>
+        <item name="android:background">@android:color/darker_gray</item>
+    </style>
+    <style name="OldSubheader" parent="OldStocksThemeOld">
+        <item name="android:textAppearance">?android:attr/textAppearanceMedium</item>
+    </style>
+</resources>

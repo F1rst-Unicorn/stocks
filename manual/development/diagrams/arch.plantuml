@@ -1,0 +1,328 @@
+@startuml
+
+' Error handling and Conflict resolution
+
+' Data refresh
+
+package business {
+
+    together {
+
+        interface LocationListInteractor {
+            getLocations(): Observable<LocationForList>
+        }
+
+        class LocationListInteractorImpl {
+            - Observable<Location> locations
+        }
+
+        LocationListInteractorImpl --> LocationRepository
+        LocationListInteractorImpl -up-|> LocationListInteractor
+    }
+
+    together {
+        interface LocationDeleter {
+            deleteLocation(int listItemPosition)
+        }
+
+        class LocationDeleteBackgroundJob {
+            - Scheduler
+            - LocationDeleteInteractor
+        }
+
+        LocationDeleteBackgroundJob --|> LocationDeleter
+        LocationDeleteBackgroundJob --> Scheduler
+        LocationDeleteBackgroundJob --> LocationDeleteInteractor
+    }
+
+    class LocationDeleteInteractorImpl {
+        - LocationDeleteService
+        - LocationRepository
+        - Synchroniser
+    }
+
+    LocationDeleteInteractorImpl -up-|> LocationDeleteInteractor
+    LocationDeleteInteractorImpl --> LocationDeleteService
+    LocationDeleteInteractorImpl --> LocationRepository
+    LocationDeleteInteractorImpl --> Synchroniser
+
+    interface LocationDeleteInteractor {
+        deleteLocation(int listItemPosition)
+    }
+
+    interface LocationRepository {
+        getLocations(): Observable<List<Location>>
+        getLocation(int id): LocationForDeletion
+    }
+
+    interface LocationDeleteService {
+        deleteLocation(LocationForDeletion): StatusCode
+    }
+
+    interface Scheduler {
+        execute(Job)
+    }
+
+    interface SchedulerStatusInteractor {
+        getNumberOfRunningJobs(): Observable<int>
+    }
+
+    class SchedulerStatusInteractorImpl {
+        - SchedulerStatusReporter
+    }
+
+    SchedulerStatusInteractorImpl --|> SchedulerStatusInteractor
+    SchedulerStatusInteractorImpl --> SchedulerStatusReporter
+
+    interface SchedulerStatusReporter {
+        getNumberOfRunningJobs(): Observable<int>
+    }
+
+    interface Synchroniser {
+        synchronise()
+    }
+
+    class SynchroniserBackgroundJob {
+        - Scheduler
+        - SynchroniseInteractor
+    }
+
+    SynchroniserBackgroundJob --|> Synchroniser
+    SynchroniserBackgroundJob --> Scheduler
+    SynchroniserBackgroundJob --> SynchroniseInteractor
+
+    interface SynchroniseInteractor {
+        synchronise()
+    }
+
+    class SynchroniseInteractorImpl {
+        - SynchronisationRepository
+        - UpdateService
+    }
+
+    SynchroniseInteractorImpl --|> SynchroniseInteractor
+    SynchroniseInteractorImpl --> SynchronisationRepository
+    SynchroniseInteractorImpl --> UpdateService
+
+    interface UpdateService {
+        getUpdates(): List<Update>
+        getLocations(): List<LocationForSynchronisation>
+    }
+
+    UpdateService --> LocationForSynchronisation
+
+    interface SynchronisationRepository {
+        getUpdates(): List<Update>
+        writeUpdates(List<Update>)
+        writeLocations(List<LocationForSynchronisation>)
+    }
+
+    SynchronisationRepository --> Update
+
+    class Update <<DS>> {
+        table: String
+        lastUpdate: OffsetDateTime
+    }
+
+    class LocationForDeletion <<DS>> {
+        id: int
+        version: int
+    }
+
+    class Location <<DS>> {
+        id: int
+        name: String
+    }
+
+    class LocationForSynchronisation <<DS>> {
+        id: integer
+        version: integer
+        validTimeStart: OffsetDateTime
+        validTimeEnd: OffsetDateTime
+        transactionTimeStart: OffsetDateTime
+        transactionTimeEnd: OffsetDateTime
+        initiates: integer
+        name: String
+        description: String
+    }
+
+    class LocationForListing <<DS>> {
+        id: int
+        name: String
+    }
+
+    class Job <<DS>> {
+        name: int
+        Runnable
+    }
+
+    LocationListInteractorImpl --> Location
+    LocationListInteractorImpl --> LocationForListing
+    LocationRepository --> Location
+    LocationDeleteInteractorImpl --> LocationForDeletion
+}
+
+package database #A4C639 {
+
+    class LocationRepositoryImpl {
+        - LocationDao
+    }
+
+    LocationRepositoryImpl -up-|> LocationRepository
+    LocationRepositoryImpl --> LocationDao
+
+    class LocationDao {
+        getLocations(): Observable<List<LocationDbEntity>>
+        getLocation(int id): LocationDbEntity
+    }
+
+    class SynchronisationDao {
+    }
+
+    SynchronisationDao --> UpdateDbEntity
+    SynchronisationDao --|> SynchronisationRepository
+
+    class LocationDbEntity <<DS>> {
+        id: integer
+        version: integer
+        validTimeStart: OffsetDateTime
+        validTimeEnd: OffsetDateTime
+        transactionTimeStart: OffsetDateTime
+        transactionTimeEnd: OffsetDateTime
+        initiates: integer
+        name: String
+        description: String
+    }
+
+    class UpdateDbEntity <<DS>> {
+        table: String
+        lastUpdate: OffsetDateTime
+    }
+
+    LocationRepositoryImpl --> LocationDbEntity
+    LocationDao --> LocationDbEntity
+
+    class OperationErrorDbEntity <<DS>> {
+        id: int
+        entity: String
+        entityId: int
+        baseVersion: int
+        data: int
+        operation: INSERT | UPDATE | DELETE
+        statusCode: StatusCode
+    }
+
+    OperationErrorDbEntity --> LocationUpdateOperationErrorDbEntity : data
+
+    class LocationUpdateOperationErrorDbEntity <<DS>> {
+        id: int
+        name: String
+        description: String
+    }
+}
+
+package presenter #A4C639 {
+    class LocationViewModel {
+        - LocationListInteractor
+        - LocationDeleter
+        - Synchroniser
+        getLocations(): Observable<LocationForListing>
+        addLocation(): Observable<LocationListNavigationArgs>
+        deleteLocation(int listItemPosition)
+        editLocation(int listItemPosition): Observable<LocationListNavigationArgs>
+        synchronise()
+    }
+
+    LocationViewModel --> LocationListInteractor
+    LocationViewModel --> LocationDeleter
+    LocationViewModel --> Synchroniser
+
+    class BackgroundJobViewModel {
+        - SchedulerStatusInteractor
+        getNumberOfRunningJobs(): Observable<int>
+        showRunningJobs(): Observable<NavigationArgs>
+    }
+
+    BackgroundJobViewModel --> SchedulerStatusInteractor
+}
+
+package view #A4C639 {
+    class LocationListFragment {
+        - LocationViewModel
+        onItemSwipedRight(View item)
+        onItemClicked(View item)
+        onAddItem(View button)
+        onSwipeToRefresh()
+    }
+
+    LocationListFragment --> LocationViewModel
+    LocationListFragment *-- LocationListAdapter
+
+    class LocationListAdapter {
+        data: List<LocationForListing>
+        setData(List<LocationForListing>)
+    }
+
+    LocationListAdapter o-- LocationViewHolder
+
+    class LocationViewHolder {
+        name: TextField
+        setName(String name)
+        getListItemPosition(): int
+    }
+
+    class MainActivity {
+        - BackgroundJobViewModel
+        onBackgroundJobsClicked()
+    }
+
+    MainActivity *-- BackgroundJobView
+    MainActivity --> BackgroundJobViewModel
+
+    class BackgroundJobView {
+        setRunningJobs(int jobs)
+    }
+}
+
+package execution {
+
+    class SchedulerImpl {
+        - Observable<int> numberOfJobs
+        - Observable<List<Job>> jobs
+        - executor
+    }
+
+    SchedulerImpl --|> SchedulerStatusReporter
+    SchedulerImpl --|> Scheduler
+    SchedulerImpl --> Executor
+    SchedulerImpl --> Job
+
+    class Executor {
+        threads
+        execute(Runnable)
+    }
+}
+
+package server {
+    interface Api {
+        getUpdates(): List<Update>
+        deleteLocation(int id, int version): Call<Response>
+    }
+
+    class LocationDeleteServiceImpl {
+        - Api
+    }
+
+    LocationDeleteServiceImpl --> Api
+    LocationDeleteServiceImpl --|> LocationDeleteService
+
+    class UpdateServiceImpl {
+        - Api
+    }
+
+    UpdateServiceImpl --|> UpdateService
+    UpdateServiceImpl --> Api
+
+}
+
+@enduml

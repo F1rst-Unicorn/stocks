@@ -78,15 +78,21 @@ object Build : BuildType({
     artifactRules = """
         deploy-server/stocks-server-*-any.pkg.tar.zst
         deploy-client/stocks-*-any.pkg.tar.zst
-        android-client/app/build/outputs/apk/app-release-unsigned.apk
-        android-client/app/build/outputs/apk/debug/app-debug.apk
-        android-client/app/build/outputs/apk/release/app-release-unsigned.apk
+
         server/target/server.log
         client/target/client-client.log
         client/target/client-server.log
-        android-client/app/build/android-app.log
-        android-client/app/build/android-server.log
-        android-client/app/build/reports/androidTests/connected/flavors/debugAndroidTest/**/* => android-test-report
+
+        client-app-android/build/reports/**/* => client-app-android
+        client-core/build/reports/**/* => client-core
+        client-crypto/build/reports/**/* => client-crypto
+        client-database-android/build/reports/**/* => client-database-android
+        client-fakes-android/build/reports/**/* => client-fakes-android
+        client-fakes/build/reports/**/* => client-fakes
+        client-navigation-android/build/reports/**/* => client-navigation-android
+        client-network/build/reports/**/* => client-network
+        client-settings-android/build/reports/**/* => client-settings-android
+        client-ui-android/build/reports/**/* => client-ui-android
     """.trimIndent()
     maxRunningBuilds = 2
 
@@ -109,7 +115,7 @@ object Build : BuildType({
             coverageEngine = idea {
                 includeClasses = "de.njsm.stocks.*"
                 excludeClasses = """
-                    de.njsm.stocks.client.storage.jooq.tables.*
+                    de.njsm.stocks.clientold.storage.jooq.tables.*
                     de.njsm.stocks.server.v2.db.jooq.tables.*
                     de.njsm.stocks.server.v2.db.jooq.Sequences
                     de.njsm.stocks.server.v2.db.jooq.Keys
@@ -128,38 +134,12 @@ object Build : BuildType({
             }
         }
         gradle {
-            name = "Compile & Unit Test Android Client"
-            tasks = "test"
-            buildFile = "android-client/build.gradle"
+            name = "Assemble new module system"
+            tasks = "check test connectedCheck assemble"
+            buildFile = "build.gradle"
             gradleHome = "/usr/bin/gradle"
-            gradleWrapperPath = "android-client"
+            gradleWrapperPath = "."
             enableStacktrace = true
-            coverageEngine = idea {
-                includeClasses = "de.njsm.*"
-                excludeClasses = """
-                    *Test
-                    de.njsm.stocks.BuildConfig
-                    de.njsm.stocks.NavigationGraphDirections
-                    de.njsm.stocks.android.Application_MembersInjector
-                    de.njsm.stocks.android.dagger.DaggerRootComponent
-                    de.njsm.stocks.android.*.*_*Factory
-                    de.njsm.stocks.android.*.*_MembersInjector
-                    de.njsm.stocks.android.*.*_Impl
-                    de.njsm.stocks.android.*.*_Contribute*
-                """.trimIndent()
-            }
-        }
-        gradle {
-            name = "Android Client Instrumented Test"
-            tasks = "connectedDebugAndroidTest"
-            buildFile = "android-client/build.gradle"
-            gradleHome = "/usr/bin/gradle"
-            gradleWrapperPath = "android-client"
-            enableStacktrace = true
-            // https://developer.android.com/reference/android/support/test/runner/AndroidJUnitRunner.html
-            gradleParams = """
-                -Pandroid.testInstrumentationRunnerArguments.notPackage=de.njsm.stocks.android.test.system
-            """.trimIndent()
         }
         exec {
             name = "Package server"
@@ -172,16 +152,6 @@ object Build : BuildType({
             workingDir = "deploy-client"
             path = "makepkg"
             arguments = "-cf"
-        }
-        gradle {
-            name = "Package Android App"
-            tasks = "assemble"
-            buildFile = "android-client/build.gradle"
-            gradleWrapperPath = "android-client"
-            coverageEngine = idea {
-                includeClasses = "de.njsm.*"
-                excludeClasses = "*Test"
-            }
         }
         exec {
             name = "Clean server"
@@ -213,10 +183,6 @@ object Build : BuildType({
         exec {
             name = "Client Deployment test"
             path = "client/src/test/system/bin/vm-deployment-test.sh"
-        }
-        exec {
-            name = "Android Deployment test"
-            path = "android-client/app/src/test/system/bin/vm-deployment-test.sh"
         }
     }
 

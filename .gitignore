@@ -6,6 +6,8 @@
 lib
 target
 build
+.gradle
+local.properties
 
 # Archlinux packaging
 pkg
@@ -16,7 +18,7 @@ pkg
 .idea
 *.iml
 
-# Latex files
+# Docu files
 *.aux
 *.toc
 *.log
@@ -24,6 +26,7 @@ pkg
 *.png
 *.dvi
 *.ps
+*.svg
 
 # test files
 client/src/test/system/resources
@@ -32,3 +35,6 @@ server-test/keystore_test
 # Ansible
 *.retry
 cache
+
+# Local files
+.envrc

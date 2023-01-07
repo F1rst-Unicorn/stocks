@@ -22,9 +22,7 @@
 package de.njsm.stocks.server.v3.web;
 
 
-import de.njsm.stocks.common.api.DataResponse;
-import de.njsm.stocks.common.api.FoodForInsertion;
-import de.njsm.stocks.common.api.StatusCode;
+import de.njsm.stocks.common.api.*;
 import de.njsm.stocks.server.v2.business.FoodManager;
 import de.njsm.stocks.server.v2.web.Endpoint;
 import fj.data.Validation;
@@ -57,5 +55,16 @@ public class FoodEndpoint extends Endpoint {
         manager.setPrincipals(getPrincipals(request));
         Validation<StatusCode, Integer> status = manager.addReturningId(food);
         return new DataResponse<>(status);
+    }
+
+    @PUT
+    @Path("edit")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response edit(@Context HttpServletRequest request,
+                         @NotNull FoodForFullEditing food) {
+        manager.setPrincipals(getPrincipals(request));
+        StatusCode status = manager.edit(food);
+        return new Response(status);
     }
 }

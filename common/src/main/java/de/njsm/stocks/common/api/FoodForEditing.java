@@ -1,4 +1,5 @@
-/* stocks is client-server program to manage a household's food stock
+/*
+ * stocks is client-server program to manage a household's food stock
  * Copyright (C) 2019  The stocks developers
  *
  * This file is part of the stocks program suite.
@@ -15,31 +16,43 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  */
 
 package de.njsm.stocks.common.api;
 
+import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.google.auto.value.AutoValue;
 import com.google.common.base.Preconditions;
+import de.njsm.stocks.common.api.serialisers.PeriodDeserialiser;
+import de.njsm.stocks.common.api.serialisers.PeriodSerialiser;
 
 import javax.annotation.Nullable;
 import java.time.Period;
 import java.util.Optional;
 
 @AutoValue
-@JsonDeserialize(builder = AutoValue_FoodForEditing.class)
+@JsonDeserialize(builder = AutoValue_FoodForEditing.Builder.class)
 public abstract class FoodForEditing implements Versionable<Food> {
 
+    @JsonGetter
     public abstract String name();
 
+    @JsonGetter
+    @JsonSerialize(using = PeriodSerialiser.class)
     public abstract Optional<Period> expirationOffset();
 
+    @JsonGetter
     public abstract Optional<Integer> location();
 
+    @JsonGetter
     public abstract Optional<String> description();
 
+    @JsonGetter
     public abstract Optional<Integer> storeUnit();
 
     public static Builder builder() {
@@ -54,8 +67,10 @@ public abstract class FoodForEditing implements Versionable<Food> {
 
         public abstract Builder name(String v);
 
+        @JsonDeserialize(using = PeriodDeserialiser.class)
         public abstract Builder expirationOffset(Optional<Period> v);
 
+        @JsonIgnore
         public Builder expirationOffset(@Nullable Integer v) {
             return expirationOffset(Optional.ofNullable(v).map(Period::ofDays));
         }

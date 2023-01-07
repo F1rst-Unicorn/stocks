@@ -2,6 +2,14 @@
 
 ## Unreleased
 
+### Added
+
+* Bottom toolbar for error handling and background work indication
+  ([#42](https://j.njsm.de/git/veenj/stocks/issues/42)).
+
+* Any errors when changing data is now recorded for later retrying
+  ([#42](https://j.njsm.de/git/veenj/stocks/issues/42)).
+
 ## [3.16.0.0]
 
 ### Added

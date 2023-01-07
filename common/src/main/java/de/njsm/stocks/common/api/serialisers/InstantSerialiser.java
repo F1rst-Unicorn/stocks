@@ -1,4 +1,5 @@
-/* stocks is client-server program to manage a household's food stock
+/*
+ * stocks is client-server program to manage a household's food stock
  * Copyright (C) 2019  The stocks developers
  *
  * This file is part of the stocks program suite.
@@ -15,6 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  */
 
 package de.njsm.stocks.common.api.serialisers;
@@ -43,6 +45,13 @@ public class InstantSerialiser extends StdSerializer<Instant> {
 
     @Override
     public void serialize(Instant value, JsonGenerator gen, SerializerProvider provider) throws IOException {
-        gen.writeString(FORMAT.format(value));
+        gen.writeString(serialize(value));
+    }
+
+    public static String serialize(Instant value) {
+        if (Instant.MIN.equals(value))
+            return null;
+        else
+            return FORMAT.format(value);
     }
 }

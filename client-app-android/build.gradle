@@ -1,0 +1,172 @@
+/* stocks is client-server program to manage a household's food stock
+ * Copyright (C) 2019  The stocks developers
+ *
+ * This file is part of the stocks program suite.
+ *
+ * stocks is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * stocks is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+plugins {
+    id "com.android.application"
+    id "checkstyle"
+}
+
+android {
+    compileSdkVersion 32
+
+    defaultConfig {
+        applicationId "de.njsm.stocks"
+        minSdkVersion 24
+        targetSdkVersion 32
+        versionCode 1
+        versionName "4.0.0.0"
+        multiDexEnabled true
+
+        testInstrumentationRunner "de.njsm.stocks.client.TestRunner"
+    }
+
+    sourceSets {
+        uimock {
+            java.srcDir "src/uimock/java"
+        }
+        prod {
+            java.srcDir "src/prod/java"
+        }
+        demo {
+            java.srcDir "src/demo/java"
+        }
+    }
+
+    buildTypes {
+        debug {
+            debuggable true
+            minifyEnabled false
+            jniDebuggable true
+        }
+        release {
+            debuggable false
+            minifyEnabled false
+        }
+    }
+
+    flavorDimensions "type"
+
+    productFlavors {
+        uimock {
+            dimension "type"
+            applicationIdSuffix ".uimock"
+            versionNameSuffix "-uimock"
+            manifestPlaceholders = [
+                    appName: "@string/app_name_ui"
+            ]
+        }
+
+        demo {
+            dimension "type"
+            applicationIdSuffix ".demo"
+            versionNameSuffix "-demo"
+            manifestPlaceholders = [
+                    appName: "@string/app_name_demo"
+            ]
+        }
+
+        prod {
+            dimension "type"
+            manifestPlaceholders = [
+                    appName: "@string/app_name"
+            ]
+        }
+    }
+
+
+    compileOptions {
+        coreLibraryDesugaringEnabled true
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
+    }
+
+    testOptions {
+        animationsDisabled true
+        unitTests {
+            includeAndroidResources = true
+        }
+    }
+    packagingOptions {
+        resources {
+            excludes += ['META-INF/DEPENDENCIES.txt', 'META-INF/LICENSE.txt', 'META-INF/LICENSE.md', 'META-INF/LICENSE-notice.md', 'META-INF/NOTICE.txt', 'META-INF/NOTICE', 'META-INF/LICENSE', 'META-INF/DEPENDENCIES', 'META-INF/notice.txt', 'META-INF/license.txt', 'META-INF/dependencies.txt', 'META-INF/LGPL2.1']
+        }
+    }
+
+    lint {
+        abortOnError false
+        checkAllWarnings true
+        lintConfig file("$projectDir/../config/android-lint/lint.xml")
+    }
+    namespace 'de.njsm.stocks'
+}
+
+dependencies {
+    implementation project(":client-core")
+    implementation project(":client-ui-android")
+    implementation project(":client-navigation-android")
+    uimockImplementation project(":client-fakes")
+    prodImplementation project(":client-settings-android")
+    prodImplementation project(":client-database-android")
+    prodImplementation project(":client-network")
+    prodImplementation project(":client-crypto")
+    demoImplementation project(":client-settings-android")
+    demoImplementation project(":client-database-android")
+    demoImplementation project(":client-network")
+    demoImplementation project(":client-crypto")
+    implementation "com.google.dagger:dagger:${dagger_version}"
+    implementation "com.google.dagger:dagger-android:${dagger_version}"
+    implementation "com.google.dagger:dagger-android-support:${dagger_version}"
+    implementation "org.slf4j:slf4j-api:${slf4j_version}"
+    implementation "com.google.android.material:material:${material_version}"
+    implementation "androidx.navigation:navigation-fragment:${navigation_version}"
+    implementation "androidx.navigation:navigation-ui:${navigation_version}"
+    implementation("androidx.preference:preference:1.2.0")
+    implementation "io.reactivex.rxjava3:rxjava:${rxjava_version}"
+    implementation "androidx.lifecycle:lifecycle-reactivestreams:${lifecycle_version}"
+    implementation "org.slf4j:slf4j-api:${slf4j_version}"
+    implementation "uk.uuid.slf4j:slf4j-android:${slf4j_version}-0"
+    implementation "com.google.zxing:core:${zxing_version}"
+    implementation "com.journeyapps:zxing-android-embedded:${zxing_android_version}"
+    implementation "com.journeyapps:zxing-android-legacy:${zxing_android_version}"
+    implementation "com.journeyapps:zxing-android-integration:${zxing_android_version}"
+
+    annotationProcessor "com.google.dagger:dagger-compiler:${dagger_version}"
+    annotationProcessor "com.google.dagger:dagger-android-processor:${dagger_version}"
+
+    androidTestImplementation "junit:junit:${junit4_version}"
+    androidTestImplementation "org.mockito:mockito-core:${mockito_version}"
+    androidTestImplementation "org.mockito:mockito-android:${mockito_version}"
+    androidTestImplementation "androidx.arch.core:core-testing:${androidx_core_version}"
+    androidTestImplementation "androidx.test.ext:junit:${androidx_test_junit_version}"
+    androidTestImplementation "androidx.test.espresso:espresso-core:${espresso_version}"
+    androidTestImplementation("androidx.test.espresso:espresso-contrib:${espresso_version}") {
+        exclude group: "org.checkerframework", module: "checker"
+    }
+    androidTestImplementation "androidx.test:runner:${androidx_test_version}"
+    androidTestImplementation "androidx.test:rules:${androidx_test_version}"
+    androidTestImplementation "androidx.fragment:fragment-testing:${fragment_testing_version}"
+    androidTestImplementation "androidx.test.espresso:espresso-intents:${espresso_version}"
+    androidTestImplementation project(":client-fakes")
+    androidTestImplementation project(":client-fakes-android")
+
+    androidTestAnnotationProcessor "com.google.dagger:dagger-android-processor:${dagger_version}"
+    androidTestAnnotationProcessor "com.google.dagger:dagger-compiler:${dagger_version}"
+
+    coreLibraryDesugaring "com.android.tools:desugar_jdk_libs:${desugar_jdk_version}"
+}

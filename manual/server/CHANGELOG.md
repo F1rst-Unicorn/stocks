@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+### Added
+
+* New food endpoint to edit all its fields at once.
+
 ## [5.7.0.1]
 
 ### Performance

@@ -1,0 +1,62 @@
+/* stocks is client-server program to manage a household's food stock
+ * Copyright (C) 2019  The stocks developers
+ *
+ * This file is part of the stocks program suite.
+ *
+ * stocks is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * stocks is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+plugins {
+    id "java-library"
+    id "checkstyle"
+}
+
+dependencies {
+    implementation "javax.inject:javax.inject:${inject_version}"
+    implementation "com.squareup.retrofit2:retrofit:${retrofit_version}"
+    implementation "com.squareup.retrofit2:converter-jackson:${retrofit_version}"
+    implementation "com.squareup.retrofit2:converter-scalars:${retrofit_version}"
+    implementation "com.fasterxml.jackson.datatype:jackson-datatype-jdk8:${jackson_version}"
+    implementation project(":client-core")
+    implementation project(":common")
+    implementation "org.slf4j:slf4j-api:${slf4j_version}"
+    implementation "io.reactivex.rxjava3:rxjava:${rxjava_version}"
+    implementation "com.google.dagger:dagger:${dagger_version}"
+
+    annotationProcessor "com.google.dagger:dagger-compiler:${dagger_version}"
+
+    testImplementation "org.junit.jupiter:junit-jupiter:${junit5_version}"
+    testImplementation "org.hamcrest:hamcrest:${hamcrest_version}"
+    testImplementation "org.mockito:mockito-core:${mockito_version}"
+    testImplementation "org.apache.logging.log4j:log4j-api:${log4j_version}"
+    testImplementation "org.apache.logging.log4j:log4j-core:${log4j_version}"
+    testImplementation "org.apache.logging.log4j:log4j-web:${log4j_version}"
+    testImplementation "org.apache.logging.log4j:log4j-slf4j-impl:${log4j_version}"
+}
+
+group = "de.njsm.stocks"
+version = "0.1"
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_11
+    targetCompatibility = JavaVersion.VERSION_11
+}
+
+tasks.withType(JavaCompile) {
+    options.encoding = "UTF-8"
+}
+
+test {
+    useJUnitPlatform()
+}
