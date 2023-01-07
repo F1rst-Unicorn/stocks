@@ -39,7 +39,7 @@ fi
 
 echo Patching version number
 sed -i "s/versionName .*/versionName \"$VERSION\"/g" \
-        "$STOCKS_ROOT"/android-client/app/build.gradle
+        "$STOCKS_ROOT"/client-app-android/build.gradle
 
 sed -i -e "/## Unreleased/a ## [$VERSION]" -e "/## Unreleased/G" \
         "$STOCKS_ROOT/manual/android-client/CHANGELOG.md"

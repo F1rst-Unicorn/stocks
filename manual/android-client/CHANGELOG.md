@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## [4.0.0.0]
+
 ### Added
 
 * Bottom toolbar for error handling and background work indication
