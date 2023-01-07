@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## [5.7.0.2]
+
 ### Added
 
 * New food endpoint to edit all its fields at once.
