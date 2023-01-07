@@ -24,6 +24,7 @@ package de.njsm.stocks.client.database;
 import androidx.room.Dao;
 import androidx.room.Query;
 import de.njsm.stocks.client.business.entities.EanNumberForDeletion;
+import io.reactivex.rxjava3.core.Maybe;
 import io.reactivex.rxjava3.core.Observable;
 
 import java.util.List;
@@ -44,4 +45,9 @@ abstract class EanNumberDao {
             "from current_ean_number " +
             "where id = :id")
     public abstract EanNumberForDeletion getForDeletion(int id);
+
+    @Query("select identifies " +
+            "from current_ean_number " +
+            "where number = :eanNumber")
+    abstract Maybe<Integer> lookup(String eanNumber);
 }

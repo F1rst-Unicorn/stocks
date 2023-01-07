@@ -28,11 +28,16 @@ import androidx.paging.Pager;
 import androidx.paging.PagingConfig;
 import androidx.paging.PagingData;
 import androidx.paging.PagingLiveData;
-import de.njsm.stocks.client.business.event.EventInteractor;
+import de.njsm.stocks.client.business.EanNumberLookupInteractor;
 import de.njsm.stocks.client.business.Localiser;
 import de.njsm.stocks.client.business.Synchroniser;
+import de.njsm.stocks.client.business.entities.EanNumberForLookup;
+import de.njsm.stocks.client.business.entities.Food;
+import de.njsm.stocks.client.business.entities.Id;
 import de.njsm.stocks.client.business.entities.event.ActivityEvent;
+import de.njsm.stocks.client.business.event.EventInteractor;
 import de.njsm.stocks.client.databind.event.EventPagingSource;
+import io.reactivex.rxjava3.core.Maybe;
 import kotlinx.coroutines.CoroutineScope;
 
 import javax.inject.Inject;
@@ -46,11 +51,14 @@ public class OutlineViewModel extends ViewModel {
 
     private final EventInteractor interactor;
 
+    private final EanNumberLookupInteractor lookupInteractor;
+
     @Inject
-    OutlineViewModel(Synchroniser synchroniser, Localiser localiser, EventInteractor interactor) {
+    OutlineViewModel(Synchroniser synchroniser, Localiser localiser, EventInteractor interactor, EanNumberLookupInteractor lookupInteractor) {
         this.synchroniser = synchroniser;
         this.localiser = localiser;
         this.interactor = interactor;
+        this.lookupInteractor = lookupInteractor;
     }
 
     public void synchronise() {
@@ -63,5 +71,9 @@ public class OutlineViewModel extends ViewModel {
                 new PagingConfig(20),
                 () -> new EventPagingSource(interactor, localiser));
         return PagingLiveData.cachedIn(PagingLiveData.getLiveData(pager), viewModelScope);
+    }
+
+    public Maybe<Id<Food>> searchFood(String eanNumber) {
+        return lookupInteractor.lookup(EanNumberForLookup.create(eanNumber));
     }
 }

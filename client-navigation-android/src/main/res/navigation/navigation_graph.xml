@@ -69,6 +69,13 @@
                     android:name="foodId"
                     app:argType="integer"/>
         </action>
+        <action
+                android:id="@+id/action_nav_fragment_outline_to_nav_fragment_food_ean_assignment"
+                app:destination="@id/nav_fragment_food_ean_assignment">
+            <argument
+                    android:name="eanNumber"
+                    app:argType="string" />
+        </action>
     </fragment>
     <fragment
         android:id="@+id/nav_fragment_location_list"
@@ -529,6 +536,21 @@
                 android:name="foodId"
                 app:argType="integer"
                 android:defaultValue="-1" />
+    </fragment>
+    <fragment
+            android:id="@+id/nav_fragment_food_ean_assignment"
+            android:name="de.njsm.stocks.client.fragment.eanassign.FoodEanNumberAssignmentFragment"
+            android:label="@string/title_new_barcode">
+        <argument
+                android:name="eanNumber"
+                app:argType="string" />
+        <action
+                android:id="@+id/action_nav_fragment_food_ean_assignment_to_nav_fragment_food_item_tabs"
+                app:destination="@id/nav_fragment_food_item_tabs">
+            <argument
+                    android:name="foodId"
+                    app:argType="integer"/>
+        </action>
     </fragment>
     <action
             android:id="@+id/action_global_nav_fragment_error_list"

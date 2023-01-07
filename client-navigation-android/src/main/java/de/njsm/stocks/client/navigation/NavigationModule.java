@@ -125,4 +125,7 @@ public interface NavigationModule {
 
     @Binds
     HistoryNavigator HistoryNavigator(HistoryNavigatorImpl impl);
+
+    @Binds
+    FoodEanNumberAssignmentNavigator FoodEanNumberAssignmentNavigator(FoodEanNumberAssignmentNavigatorImpl impl);
 }

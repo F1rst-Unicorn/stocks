@@ -21,24 +21,30 @@
 
 package de.njsm.stocks.client.navigation;
 
+import android.os.Bundle;
 import de.njsm.stocks.client.business.entities.Food;
 import de.njsm.stocks.client.business.entities.Id;
-import de.njsm.stocks.client.business.entities.event.ActivityEvent;
-import de.njsm.stocks.client.business.entities.event.Visitor;
 
-public interface OutlineNavigator extends Visitor<Void, Void> {
+import de.njsm.stocks.client.fragment.eanassign.FoodEanNumberAssignmentFragmentArgs;
+import de.njsm.stocks.client.fragment.eanassign.FoodEanNumberAssignmentFragmentDirections;
+import javax.inject.Inject;
 
-    void addFood();
+class FoodEanNumberAssignmentNavigatorImpl extends BaseNavigator implements FoodEanNumberAssignmentNavigator {
 
-    void showAllFood();
+    @Inject
+    FoodEanNumberAssignmentNavigatorImpl(NavigationArgConsumer navigationArgConsumer) {
+        super(navigationArgConsumer);
+    }
 
-    void showEmptyFood();
+    @Override
+    public String getEanNumber(Bundle arguments) {
+        return FoodEanNumberAssignmentFragmentArgs.fromBundle(arguments).getEanNumber();
+    }
 
-    void showFood(Id<Food> foodId);
-
-    void showAllFoodForEanNumber(String eanNumber);
-
-    default void showEventDetails(ActivityEvent event) {
-        visit(event, null);
+    @Override
+    public void showFood(Id<Food> foodId) {
+        getNavigationArgConsumer().navigate(
+                FoodEanNumberAssignmentFragmentDirections.actionNavFragmentFoodEanAssignmentToNavFragmentFoodItemTabs(foodId.id())
+        );
     }
 }

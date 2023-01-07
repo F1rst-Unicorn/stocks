@@ -156,4 +156,9 @@ abstract class FoodDao {
                 "from current_food_item" +
             ")")
     abstract Observable<List<StoredFoodAmount>> getFoodAmountsOfAbsentFoodToBuy();
+
+    @Query("select id, name " +
+            "from current_food " +
+            "order by name")
+    abstract Observable<List<FoodForEanNumberAssignment>> getForEanNumberAssignment();
 }

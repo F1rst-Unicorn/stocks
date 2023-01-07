@@ -248,4 +248,10 @@ class FakeNavigationModule {
     HistoryNavigator HistoryNavigator() {
         return mock(HistoryNavigator.class);
     }
+
+    @Provides
+    @Singleton
+    FoodEanNumberAssignmentNavigator FoodEanNumberAssignmentNavigator() {
+        return mock(FoodEanNumberAssignmentNavigator.class);
+    }
 }

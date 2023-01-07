@@ -19,26 +19,19 @@
  *
  */
 
-package de.njsm.stocks.client.navigation;
+package de.njsm.stocks.client.business;
 
+import de.njsm.stocks.client.business.entities.EanNumberForLookup;
 import de.njsm.stocks.client.business.entities.Food;
+import de.njsm.stocks.client.business.entities.FoodForEanNumberAssignment;
 import de.njsm.stocks.client.business.entities.Id;
-import de.njsm.stocks.client.business.entities.event.ActivityEvent;
-import de.njsm.stocks.client.business.entities.event.Visitor;
+import io.reactivex.rxjava3.core.Observable;
 
-public interface OutlineNavigator extends Visitor<Void, Void> {
+import java.util.List;
 
-    void addFood();
+public interface EanNumberAssignmentInteractor {
 
-    void showAllFood();
+    Observable<List<FoodForEanNumberAssignment>> get();
 
-    void showEmptyFood();
-
-    void showFood(Id<Food> foodId);
-
-    void showAllFoodForEanNumber(String eanNumber);
-
-    default void showEventDetails(ActivityEvent event) {
-        visit(event, null);
-    }
+    void assignEanNumber(Id<Food> food, EanNumberForLookup eanNumber);
 }

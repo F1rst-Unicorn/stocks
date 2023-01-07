@@ -46,4 +46,6 @@ public interface FoodListRepository {
     Observable<List<StoredFoodAmount>> getFoodAmountsIn(Id<Location> location);
 
     Observable<LocationName> getLocationName(Id<Location> location);
+
+    Observable<List<FoodForEanNumberAssignment>> getForEanNumberAssignment();
 }

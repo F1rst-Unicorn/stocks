@@ -69,7 +69,7 @@ public class InMemoryEventInteractorImpl implements EventInteractor {
                                 localiser.toInstant(day),
                                 localiser.toInstant(day),
                                 "Jane",
-                                "Fridge",
+                                "Cupboard",
                                 "")
                 ), localiser),
                 LocationDeletedEvent.create(LocationEventFeedItem.create(
@@ -77,7 +77,7 @@ public class InMemoryEventInteractorImpl implements EventInteractor {
                         localiser.toInstant(day),
                         localiser.toInstant(day),
                         "Jane",
-                        "Fridge",
+                        "Cupboard",
                         ""
                 ), localiser))
         );

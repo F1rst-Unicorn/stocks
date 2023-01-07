@@ -65,4 +65,9 @@ class FoodListRepositoryImpl implements FoodListRepository {
         return locationDao.getCurrentLocation(location.id())
                 .map(v -> LocationName.create(v.name()));
     }
+
+    @Override
+    public Observable<List<FoodForEanNumberAssignment>> getForEanNumberAssignment() {
+        return foodDao.getForEanNumberAssignment();
+    }
 }

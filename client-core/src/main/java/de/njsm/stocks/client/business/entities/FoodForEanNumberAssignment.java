@@ -19,26 +19,16 @@
  *
  */
 
-package de.njsm.stocks.client.navigation;
+package de.njsm.stocks.client.business.entities;
 
-import de.njsm.stocks.client.business.entities.Food;
-import de.njsm.stocks.client.business.entities.Id;
-import de.njsm.stocks.client.business.entities.event.ActivityEvent;
-import de.njsm.stocks.client.business.entities.event.Visitor;
+import com.google.auto.value.AutoValue;
 
-public interface OutlineNavigator extends Visitor<Void, Void> {
+@AutoValue
+public abstract class FoodForEanNumberAssignment implements Id<Food> {
 
-    void addFood();
+    public abstract String name();
 
-    void showAllFood();
-
-    void showEmptyFood();
-
-    void showFood(Id<Food> foodId);
-
-    void showAllFoodForEanNumber(String eanNumber);
-
-    default void showEventDetails(ActivityEvent event) {
-        visit(event, null);
+    public static FoodForEanNumberAssignment create(int id, String name) {
+        return new AutoValue_FoodForEanNumberAssignment(id, name);
     }
 }

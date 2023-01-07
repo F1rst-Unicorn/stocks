@@ -250,7 +250,7 @@ public class ErrorRecorderImpl implements ErrorRecorder {
         ExceptionData exceptionData = new ExceptionInserter().visit(e, null);
         Instant foodTransactionTime = errorDao.getTransactionTimeOf(EntityType.FOOD);
         EanNumberAddEntity entity = EanNumberAddEntity.create(
-                "123",
+                eanNumberAddForm.eanNumber(),
                 PreservedId.create(eanNumberAddForm.identifies().id(), foodTransactionTime)
         );
         long dataId = errorDao.insert(entity);

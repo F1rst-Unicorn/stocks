@@ -19,7 +19,7 @@
  *
  */
 
-package de.njsm.stocks.client.fragment.eanlist;
+package de.njsm.stocks.client.databind;
 
 import android.app.Activity;
 import android.content.Context;

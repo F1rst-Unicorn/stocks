@@ -444,4 +444,16 @@ public interface FakeBusinessModule {
         when(result.forLocation(any())).thenReturn(EventInteractor());
         return result;
     }
+
+    @Provides
+    @Singleton
+    static EanNumberLookupInteractor EanNumberLookupInteractor() {
+        return mock(EanNumberLookupInteractor.class);
+    }
+
+    @Provides
+    @Singleton
+    static EanNumberAssignmentInteractor EanNumberAssignmentInteractor() {
+        return mock(EanNumberAssignmentInteractor.class);
+    }
 }

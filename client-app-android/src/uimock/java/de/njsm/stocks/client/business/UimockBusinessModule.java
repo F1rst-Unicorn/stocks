@@ -215,4 +215,10 @@ public interface UimockBusinessModule {
 
     @Binds
     EventInteractorFactory InMemoryEventInteractorFactoryImpl(InMemoryEventInteractorFactoryImpl impl);
+
+    @Binds
+    EanNumberLookupInteractor EanNumberLookupInteractor(InMemoryEanNumberLookupInteractorImpl impl);
+
+    @Binds
+    EanNumberAssignmentInteractor EanNumberAssignmentInteractor(InMemoryEanNumberAssignmentInteractorImpl impl);
 }

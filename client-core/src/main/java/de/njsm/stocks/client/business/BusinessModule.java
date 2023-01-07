@@ -196,4 +196,10 @@ public interface BusinessModule {
 
     @Binds
     EventInteractorFactory EventInteractorFactory(EventInteractorFactoryImpl impl);
+
+    @Binds
+    EanNumberLookupInteractor EanNumberLookupInteractor(EanNumberLookupInteractorImpl impl);
+
+    @Binds
+    EanNumberAssignmentInteractor EanNumberAssignmentInteractor(EanNumberAssignmentInteractorImpl impl);
 }

@@ -21,12 +21,14 @@
 
 package de.njsm.stocks.client.fragment.outline;
 
+import android.app.Activity;
 import android.app.SearchManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.os.Bundle;
 import android.view.*;
 import android.widget.EditText;
+import androidx.activity.result.ActivityResultLauncher;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.SearchView;
@@ -38,21 +40,29 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import de.njsm.stocks.client.business.Localiser;
 import de.njsm.stocks.client.business.entities.event.ActivityEvent;
+import de.njsm.stocks.client.databind.ScanEanNumberContract;
 import de.njsm.stocks.client.databind.event.EventAdapter;
 import de.njsm.stocks.client.fragment.BottomToolbarFragment;
 import de.njsm.stocks.client.navigation.OutlineNavigator;
 import de.njsm.stocks.client.presenter.OutlineViewModel;
 import de.njsm.stocks.client.ui.R;
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 
 public class OutlineFragment extends BottomToolbarFragment implements MenuProvider {
+
+    private static final Logger LOG = LoggerFactory.getLogger(OutlineFragment.class);
 
     private OutlineNavigator outlineNavigator;
 
     private OutlineViewModel outlineViewModel;
 
     private Localiser localiser;
+
+    private ActivityResultLauncher<Activity> eanNumberScanOperation;
 
     @NonNull
     @Override
@@ -82,7 +92,20 @@ public class OutlineFragment extends BottomToolbarFragment implements MenuProvid
         });
 
         requireActivity().addMenuProvider(this, getViewLifecycleOwner());
+
+        this.eanNumberScanOperation = registerForActivityResult(new ScanEanNumberContract(),
+                v -> v.ifPresent(this::onEanNumberScanned));
+
         return root;
+    }
+
+    private void onEanNumberScanned(String eanNumber) {
+        outlineViewModel.searchFood(eanNumber)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(food -> outlineNavigator.showFood(food),
+                        e -> LOG.error("failed to lookup ean number", e),
+                        () -> outlineNavigator.showAllFoodForEanNumber(eanNumber)
+                );
     }
 
     @Override
@@ -106,6 +129,11 @@ public class OutlineFragment extends BottomToolbarFragment implements MenuProvid
 
     @Override
     public boolean onMenuItemSelected(@NonNull MenuItem menuItem) {
+        if (menuItem.getItemId() == R.id.menu_outline_options_scan) {
+            eanNumberScanOperation.launch(requireActivity());
+            return true;
+        }
+
         return false;
     }
 

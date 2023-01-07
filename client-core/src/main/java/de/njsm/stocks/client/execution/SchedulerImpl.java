@@ -23,6 +23,7 @@ package de.njsm.stocks.client.execution;
 
 import de.njsm.stocks.client.business.entities.Job;
 import io.reactivex.rxjava3.core.Observable;
+import io.reactivex.rxjava3.schedulers.Schedulers;
 import io.reactivex.rxjava3.subjects.BehaviorSubject;
 import io.reactivex.rxjava3.subjects.Subject;
 import org.slf4j.Logger;
@@ -75,6 +76,11 @@ class SchedulerImpl implements Scheduler, SchedulerStatusReporter {
             }
             lock.visit(job.name(), false);
         });
+    }
+
+    @Override
+    public io.reactivex.rxjava3.core.Scheduler into() {
+        return Schedulers.from(executor);
     }
 
     @Override

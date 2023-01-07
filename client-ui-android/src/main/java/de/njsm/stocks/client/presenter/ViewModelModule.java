@@ -167,8 +167,8 @@ public class ViewModelModule {
     @Provides
     @IntoMap
     @ViewModelKey(OutlineViewModel.class)
-    ViewModel OutlineViewModel(Synchroniser synchroniser, Localiser localiser, EventInteractor interactor) {
-        return new OutlineViewModel(synchroniser, localiser, interactor);
+    ViewModel OutlineViewModel(Synchroniser synchroniser, Localiser localiser, EventInteractor interactor, EanNumberLookupInteractor lookupInteractor) {
+        return new OutlineViewModel(synchroniser, localiser, interactor, lookupInteractor);
     }
 
     @Provides
@@ -309,5 +309,12 @@ public class ViewModelModule {
     @ViewModelKey(HistoryViewModel.class)
     ViewModel HistoryViewModel(Localiser localiser, UnitEventInteractor interactor, EventInteractorFactory factory) {
         return new HistoryViewModel(localiser, interactor, factory);
+    }
+
+    @Provides
+    @IntoMap
+    @ViewModelKey(FoodEanNumberAssignmentViewModel.class)
+    ViewModel FoodEanNumberAssignmentViewModel(EanNumberAssignmentInteractor interactor, Synchroniser synchroniser) {
+        return new FoodEanNumberAssignmentViewModel(interactor, synchroniser);
     }
 }

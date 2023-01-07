@@ -21,6 +21,8 @@
 
 package de.njsm.stocks.client.navigation;
 
+import de.njsm.stocks.client.business.entities.Food;
+import de.njsm.stocks.client.business.entities.Id;
 import de.njsm.stocks.client.business.entities.event.*;
 import de.njsm.stocks.client.fragment.outline.OutlineFragmentDirections;
 
@@ -49,6 +51,20 @@ class OutlineNavigatorImpl extends BaseNavigator implements OutlineNavigator {
     public void showEmptyFood() {
         getNavigationArgConsumer().navigate(
                 OutlineFragmentDirections.actionNavFragmentOutlineToNavFragmentEmptyFood());
+    }
+
+    @Override
+    public void showFood(Id<Food> foodId) {
+        getNavigationArgConsumer().navigate(
+                OutlineFragmentDirections.actionNavFragmentOutlineToNavFragmentFoodItemTabs(foodId.id())
+        );
+    }
+
+    @Override
+    public void showAllFoodForEanNumber(String eanNumber) {
+        getNavigationArgConsumer().navigate(
+                OutlineFragmentDirections.actionNavFragmentOutlineToNavFragmentFoodEanAssignment(eanNumber)
+        );
     }
 
     @Override

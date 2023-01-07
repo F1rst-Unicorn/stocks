@@ -26,4 +26,6 @@ import de.njsm.stocks.client.business.entities.Job;
 public interface Scheduler {
 
     void schedule(Job job);
+
+    io.reactivex.rxjava3.core.Scheduler into();
 }

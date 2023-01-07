@@ -21,24 +21,13 @@
 
 package de.njsm.stocks.client.navigation;
 
+import android.os.Bundle;
 import de.njsm.stocks.client.business.entities.Food;
 import de.njsm.stocks.client.business.entities.Id;
-import de.njsm.stocks.client.business.entities.event.ActivityEvent;
-import de.njsm.stocks.client.business.entities.event.Visitor;
 
-public interface OutlineNavigator extends Visitor<Void, Void> {
+public interface FoodEanNumberAssignmentNavigator {
 
-    void addFood();
-
-    void showAllFood();
-
-    void showEmptyFood();
+    String getEanNumber(Bundle arguments);
 
     void showFood(Id<Food> foodId);
-
-    void showAllFoodForEanNumber(String eanNumber);
-
-    default void showEventDetails(ActivityEvent event) {
-        visit(event, null);
-    }
 }

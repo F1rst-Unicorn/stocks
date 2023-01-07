@@ -19,26 +19,31 @@
  *
  */
 
-package de.njsm.stocks.client.navigation;
+package de.njsm.stocks.client.business;
 
+import de.njsm.stocks.client.business.entities.EanNumberForLookup;
 import de.njsm.stocks.client.business.entities.Food;
 import de.njsm.stocks.client.business.entities.Id;
-import de.njsm.stocks.client.business.entities.event.ActivityEvent;
-import de.njsm.stocks.client.business.entities.event.Visitor;
+import de.njsm.stocks.client.execution.Scheduler;
+import io.reactivex.rxjava3.core.Maybe;
 
-public interface OutlineNavigator extends Visitor<Void, Void> {
+import javax.inject.Inject;
 
-    void addFood();
+class EanNumberLookupInteractorImpl implements EanNumberLookupInteractor {
 
-    void showAllFood();
+    private final EanNumberLookupRepository repository;
 
-    void showEmptyFood();
+    private final Scheduler scheduler;
 
-    void showFood(Id<Food> foodId);
+    @Inject
+    public EanNumberLookupInteractorImpl(EanNumberLookupRepository repository, Scheduler scheduler) {
+        this.repository = repository;
+        this.scheduler = scheduler;
+    }
 
-    void showAllFoodForEanNumber(String eanNumber);
-
-    default void showEventDetails(ActivityEvent event) {
-        visit(event, null);
+    @Override
+    public Maybe<Id<Food>> lookup(EanNumberForLookup eanNumber) {
+        return repository.lookup(eanNumber)
+                .subscribeOn(scheduler.into());
     }
 }

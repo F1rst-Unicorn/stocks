@@ -241,4 +241,7 @@ public interface DatabaseModule {
 
     @ContributesAndroidInjector
     SearchSuggestionsProvider SearchSuggestionsProvider();
+
+    @Binds
+    EanNumberLookupRepository EanNumberLookupRepository(EanNumberRepositoryImpl impl);
 }
