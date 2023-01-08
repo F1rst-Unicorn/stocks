@@ -66,6 +66,7 @@ public interface DatabaseModule {
                         LOG.trace(sqlQuery + "; args " + bindArgs);
                 }, executor)
                 .addMigrations(new Legacy40To44())
+                .addCallback(new PerformanceTweaker())
                 .build();
     }
 
