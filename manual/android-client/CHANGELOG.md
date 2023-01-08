@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## [4.0.0.1]
+
 ### Fixed
 
 * Improve performance of listing food
