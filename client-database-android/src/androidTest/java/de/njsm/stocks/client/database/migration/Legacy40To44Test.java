@@ -21,11 +21,12 @@
 
 package de.njsm.stocks.client.database.migration;
 
-import androidx.room.Room;
 import androidx.room.testing.MigrationTestHelper;
+import androidx.sqlite.db.SupportSQLiteDatabase;
 import androidx.test.platform.app.InstrumentationRegistry;
 import de.njsm.stocks.client.business.entities.EntityType;
 import de.njsm.stocks.client.database.StocksDatabase;
+import de.njsm.stocks.client.database.TypeConverters;
 import io.requery.android.database.sqlite.RequerySQLiteOpenHelperFactory;
 import org.junit.Before;
 import org.junit.Rule;
@@ -66,23 +67,27 @@ public class Legacy40To44Test {
             db.execSQL("insert into updates (_id, name, last_update) values (11, 'recipe', '1970-01-01 00:00:00.000000')");
         }
         try (var db = helper.runMigrationsAndValidate(TEST_DB, 44, true, new Legacy40To44())) {
-            StocksDatabase orm = Room.databaseBuilder(InstrumentationRegistry.getInstrumentation().getTargetContext(),
-                            StocksDatabase.class,
-                            TEST_DB)
-                    .openHelperFactory(new RequerySQLiteOpenHelperFactory())
-                    .build();
+            assertEquals(Instant.EPOCH, getTransactionTimeOf(db, EntityType.SCALED_UNIT));
+            assertEquals(Instant.EPOCH, getTransactionTimeOf(db, EntityType.LOCATION));
+            assertEquals(Instant.EPOCH, getTransactionTimeOf(db, EntityType.FOOD));
+            assertEquals(Instant.EPOCH, getTransactionTimeOf(db, EntityType.EAN_NUMBER));
+            assertEquals(Instant.EPOCH, getTransactionTimeOf(db, EntityType.USER_DEVICE));
+            assertEquals(Instant.EPOCH, getTransactionTimeOf(db, EntityType.RECIPE_PRODUCT));
+            assertEquals(Instant.EPOCH, getTransactionTimeOf(db, EntityType.RECIPE_INGREDIENT));
+            assertEquals(Instant.EPOCH, getTransactionTimeOf(db, EntityType.UNIT));
+            assertEquals(Instant.EPOCH, getTransactionTimeOf(db, EntityType.USER));
+            assertEquals(Instant.EPOCH, getTransactionTimeOf(db, EntityType.FOOD_ITEM));
+            assertEquals(Instant.EPOCH, getTransactionTimeOf(db, EntityType.RECIPE));
+        }
+    }
 
-            assertEquals(Instant.EPOCH, orm.errorDao().getTransactionTimeOf(EntityType.SCALED_UNIT));
-            assertEquals(Instant.EPOCH, orm.errorDao().getTransactionTimeOf(EntityType.LOCATION));
-            assertEquals(Instant.EPOCH, orm.errorDao().getTransactionTimeOf(EntityType.FOOD));
-            assertEquals(Instant.EPOCH, orm.errorDao().getTransactionTimeOf(EntityType.EAN_NUMBER));
-            assertEquals(Instant.EPOCH, orm.errorDao().getTransactionTimeOf(EntityType.USER_DEVICE));
-            assertEquals(Instant.EPOCH, orm.errorDao().getTransactionTimeOf(EntityType.RECIPE_PRODUCT));
-            assertEquals(Instant.EPOCH, orm.errorDao().getTransactionTimeOf(EntityType.RECIPE_INGREDIENT));
-            assertEquals(Instant.EPOCH, orm.errorDao().getTransactionTimeOf(EntityType.UNIT));
-            assertEquals(Instant.EPOCH, orm.errorDao().getTransactionTimeOf(EntityType.USER));
-            assertEquals(Instant.EPOCH, orm.errorDao().getTransactionTimeOf(EntityType.FOOD_ITEM));
-            assertEquals(Instant.EPOCH, orm.errorDao().getTransactionTimeOf(EntityType.RECIPE));
+    private static Instant getTransactionTimeOf(SupportSQLiteDatabase db, EntityType entityType) {
+        try (var cursor = db.query("select last_update " +
+                "from updates " +
+                "where name = '" + entityType + "'")) {
+
+            cursor.moveToNext();
+            return new TypeConverters().dbToInstant(cursor.getString(0));
         }
     }
 }
