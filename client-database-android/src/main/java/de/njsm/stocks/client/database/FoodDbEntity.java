@@ -33,6 +33,8 @@ import java.time.Period;
                 @Index(value = {"id"}, name = "food_pkey"),
                 @Index(value = {"transaction_time_start"}, name = "food_transaction_time_start"),
                 @Index(value = {"transaction_time_end"}, name = "food_transaction_time_end"),
+
+                @Index(value = {"id", "valid_time_start", "valid_time_end", "to_buy"}, name = "food_current_to_buy"),
         })
 @AutoValue
 public abstract class FoodDbEntity extends ServerDbEntity<FoodDbEntity> implements FoodFields {

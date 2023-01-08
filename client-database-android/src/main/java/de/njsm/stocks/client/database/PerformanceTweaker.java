@@ -45,6 +45,8 @@ public class PerformanceTweaker extends Callback {
         recreateCurrentIndex(db, "recipe");
         recreateCurrentIndex(db, "recipe_ingredient");
         recreateCurrentIndex(db, "recipe_product");
+
+        recreateFoodToBuyIndex(db);
     }
 
     private static void recreateCurrentIndex(SupportSQLiteDatabase db, String tableName) {
@@ -56,6 +58,20 @@ public class PerformanceTweaker extends Callback {
                 db.execSQL("drop index if exists " + tableName + "_current");
                 db.execSQL("create index " + tableName + "_current " +
                         "on " + tableName + " (id, valid_time_start, valid_time_end) " +
+                        "where transaction_time_end = " + StocksDatabase.DATABASE_INFINITY_STRING_SQL);
+            }
+        }
+    }
+
+    private void recreateFoodToBuyIndex(SupportSQLiteDatabase db) {
+        try (var cursor = db.query("select sql from sqlite_master " +
+                "where name = 'food_current_to_buy'")) {
+            cursor.moveToNext();
+            String sql = cursor.getString(0);
+            if (!sql.contains("where")) {
+                db.execSQL("drop index if exists food_current_to_buy");
+                db.execSQL("create index food_current_to_buy " +
+                        "on food (id, valid_time_start, valid_time_end, to_buy) " +
                         "where transaction_time_end = " + StocksDatabase.DATABASE_INFINITY_STRING_SQL);
             }
         }
