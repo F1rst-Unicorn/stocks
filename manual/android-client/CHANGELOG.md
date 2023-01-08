@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+### Fixed
+
+* Improve performance of listing food
+  ([#27](https://j.njsm.de/git/veenj/stocks/issues/27)).
+
 ## [4.0.0.0]
 
 ### Added
