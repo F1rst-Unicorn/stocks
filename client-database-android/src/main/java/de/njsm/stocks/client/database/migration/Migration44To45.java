@@ -35,6 +35,7 @@ public class Migration44To45 extends Migration {
     public void migrate(@NonNull SupportSQLiteDatabase db) {
         db.execSQL("create index food_current_to_buy " +
                 "on food (id, valid_time_start, valid_time_end, to_buy) " +
-                "where transaction_time_end = '9999-12-31 23:59:59.999999'");
+                "where to_buy " +
+                "and transaction_time_end = '9999-12-31 23:59:59.999999'");
     }
 }

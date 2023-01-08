@@ -68,11 +68,12 @@ public class PerformanceTweaker extends Callback {
                 "where name = 'food_current_to_buy'")) {
             cursor.moveToNext();
             String sql = cursor.getString(0);
-            if (!sql.contains("where")) {
+            if (!sql.contains("where to_buy")) {
                 db.execSQL("drop index if exists food_current_to_buy");
                 db.execSQL("create index food_current_to_buy " +
                         "on food (id, valid_time_start, valid_time_end, to_buy) " +
-                        "where transaction_time_end = " + StocksDatabase.DATABASE_INFINITY_STRING_SQL);
+                        "where to_buy " +
+                        "and transaction_time_end = " + StocksDatabase.DATABASE_INFINITY_STRING_SQL);
             }
         }
     }
