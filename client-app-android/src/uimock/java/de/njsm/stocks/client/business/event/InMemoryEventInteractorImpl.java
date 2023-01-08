@@ -22,7 +22,6 @@
 package de.njsm.stocks.client.business.event;
 
 import de.njsm.stocks.client.business.Localiser;
-import de.njsm.stocks.client.business.entities.event.ActivityEvent;
 import de.njsm.stocks.client.business.entities.event.LocationCreatedEvent;
 import de.njsm.stocks.client.business.entities.event.LocationDeletedEvent;
 import de.njsm.stocks.client.business.entities.event.LocationEditedEvent;
@@ -34,6 +33,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 public class InMemoryEventInteractorImpl implements EventInteractor {
 
@@ -45,11 +45,14 @@ public class InMemoryEventInteractorImpl implements EventInteractor {
     }
 
     @Override
-    public Single<List<ActivityEvent>> getEventsOf(LocalDate day) {
+    public Single<ActivityEventPage> getEventsOf(LocalDate day) {
         if (day.isAfter(LocalDate.now()))
-            return Single.just(Collections.emptyList());
+            return Single.just(ActivityEventPage.create(
+                    Collections.emptyList(),
+                    Optional.empty(),
+                    Optional.empty()));
 
-        return Single.just(List.of(
+        return Single.just(ActivityEventPage.create(List.of(
                 LocationCreatedEvent.create(LocationEventFeedItem.create(
                         (int) day.toEpochDay(),
                         localiser.toInstant(day),
@@ -79,17 +82,14 @@ public class InMemoryEventInteractorImpl implements EventInteractor {
                         "Jane",
                         "Cupboard",
                         ""
-                ), localiser))
+                ), localiser)),
+                Optional.empty(),
+                Optional.empty())
         );
     }
 
     @Override
     public Observable<LocalDateTime> getNewEventNotifier() {
         return Observable.empty();
-    }
-
-    @Override
-    public Single<LocalDate> getOldestEventTime() {
-        return Single.just(LocalDate.now().minusMonths(1));
     }
 }

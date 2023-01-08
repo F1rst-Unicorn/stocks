@@ -21,35 +21,23 @@
 
 package de.njsm.stocks.client.business.event;
 
-import de.njsm.stocks.client.business.Localiser;
-import io.reactivex.rxjava3.core.Observable;
-import io.reactivex.rxjava3.core.Single;
+import com.google.auto.value.AutoValue;
+import de.njsm.stocks.client.business.entities.event.ActivityEvent;
 
-import javax.inject.Inject;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
-public class InMemoryUnitEventInteractorImpl implements UnitEventInteractor {
+@AutoValue
+public abstract class ActivityEventPage {
 
-    private final Localiser localiser;
+    public abstract List<ActivityEvent> events();
 
-    @Inject
-    public InMemoryUnitEventInteractorImpl(Localiser localiser) {
-        this.localiser = localiser;
-    }
+    public abstract Optional<LocalDate> previousPageKey();
 
-    @Override
-    public Single<ActivityEventPage> getEventsOf(LocalDate day) {
-            return Single.just(ActivityEventPage.create(
-                    Collections.emptyList(),
-                    Optional.empty(),
-                    Optional.empty()));
-    }
+    public abstract Optional<LocalDate> nextPageKey();
 
-    @Override
-    public Observable<LocalDateTime> getNewEventNotifier() {
-        return Observable.empty();
+    public static ActivityEventPage create(List<ActivityEvent> events, Optional<LocalDate> previous, Optional<LocalDate> next) {
+        return new AutoValue_ActivityEventPage(events, previous,  next);
     }
 }

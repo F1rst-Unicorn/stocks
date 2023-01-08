@@ -25,6 +25,7 @@ import de.njsm.stocks.client.business.entities.Food;
 import de.njsm.stocks.client.business.entities.Id;
 import de.njsm.stocks.client.business.entities.Location;
 import de.njsm.stocks.client.business.event.*;
+import io.reactivex.rxjava3.core.Maybe;
 import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.core.Single;
 
@@ -123,15 +124,19 @@ class EventRepositoryImpl implements EventRepository {
     }
 
     @Override
+    public Maybe<Instant> getPreviousDayContainingEvents(Instant day) {
+        return eventDao.getPreviousDayContainingEvents(day);
+    }
+
+    @Override
+    public Maybe<Instant> getNextDayContainingEvents(Instant day) {
+        return eventDao.getNextDayContainingEvents(day.plus(1, ChronoUnit.DAYS));
+    }
+
+    @Override
     public Observable<Instant> getNewEventNotifier() {
         return eventDao.getLatestUpdateTimestamp()
                 .distinctUntilChanged()
                 .skip(1);
-    }
-
-    @Override
-    public Single<Instant> getOldestEventTime() {
-        return eventDao.getOldestEventTime()
-                .first(Instant.MAX);
     }
 }

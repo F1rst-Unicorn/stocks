@@ -25,6 +25,7 @@ import androidx.room.Dao;
 import androidx.room.Query;
 import de.njsm.stocks.client.business.event.*;
 import io.reactivex.rxjava3.core.Flowable;
+import io.reactivex.rxjava3.core.Maybe;
 import io.reactivex.rxjava3.core.Observable;
 
 import java.time.Instant;
@@ -347,40 +348,100 @@ abstract class EventDao {
     abstract Observable<Instant> getLatestUpdateTimestamp();
 
     @Query("select min(x) from (" +
-                "select * from (" +
-                    "select min(transaction_time_start) x " +
-                    "from location" +
-                ") union select * from (" +
-                    "select min(transaction_time_start) x " +
-                    "from unit" +
-                ") union select * from (" +
-                    "select min(transaction_time_start) x " +
-                    "from scaled_unit" +
-                ") union select * from (" +
-                    "select min(transaction_time_start) x " +
-                    "from food" +
-                ") union select * from (" +
-                    "select min(transaction_time_start) x " +
-                    "from food_item" +
-                ") union select * from (" +
-                    "select min(transaction_time_start) x " +
-                    "from ean_number" +
-                ") union select * from (" +
-                    "select min(transaction_time_start) x " +
-                    "from recipe" +
-                ") union select * from (" +
-                    "select min(transaction_time_start) x " +
-                    "from recipe_ingredient" +
-                ") union select * from (" +
-                    "select min(transaction_time_start) x " +
-                    "from recipe_product" +
-                ") union select * from (" +
-                    "select min(transaction_time_start) x " +
-                    "from user" +
-                ") union select * from (" +
-                    "select min(transaction_time_start) x " +
-                    "from user_device" +
-                ")" +
+            "select * from (" +
+                "select min(transaction_time_start) x " +
+                "from location " +
+                "where transaction_time_start >= :day" +
+            ") union select * from (" +
+                "select min(transaction_time_start) x " +
+                "from unit " +
+              "where transaction_time_start >= :day" +
+            ") union select * from (" +
+                "select min(transaction_time_start) x " +
+                "from scaled_unit " +
+                "where transaction_time_start >= :day" +
+            ") union select * from (" +
+                "select min(transaction_time_start) x " +
+                "from food " +
+                "where transaction_time_start >= :day" +
+            ") union select * from (" +
+                "select min(transaction_time_start) x " +
+                "from food_item " +
+                "where transaction_time_start >= :day" +
+            ") union select * from (" +
+                "select min(transaction_time_start) x " +
+                "from ean_number " +
+                "where transaction_time_start >= :day" +
+            ") union select * from (" +
+                "select min(transaction_time_start) x " +
+                "from recipe " +
+                "where transaction_time_start >= :day" +
+            ") union select * from (" +
+                "select min(transaction_time_start) x " +
+                "from recipe_ingredient " +
+                "where transaction_time_start >= :day" +
+            ") union select * from (" +
+                "select min(transaction_time_start) x " +
+                "from recipe_product " +
+                "where transaction_time_start >= :day" +
+            ") union select * from (" +
+                "select min(transaction_time_start) x " +
+                "from user " +
+                "where transaction_time_start >= :day" +
+            ") union select * from (" +
+                "select min(transaction_time_start) x " +
+                "from user_device " +
+                "where transaction_time_start >= :day" +
+            ")" +
             ")")
-    abstract Flowable<Instant> getOldestEventTime();
+    abstract Maybe<Instant> getNextDayContainingEvents(Instant day);
+
+    @Query("select max(x) from (" +
+            "select * from (" +
+                "select max(transaction_time_start) x " +
+                "from location " +
+                "where transaction_time_start < :day" +
+            ") union select * from (" +
+                "select max(transaction_time_start) x " +
+                "from unit " +
+              "where transaction_time_start < :day" +
+            ") union select * from (" +
+                "select max(transaction_time_start) x " +
+                "from scaled_unit " +
+                "where transaction_time_start < :day" +
+            ") union select * from (" +
+                "select max(transaction_time_start) x " +
+                "from food " +
+                "where transaction_time_start < :day" +
+            ") union select * from (" +
+                "select max(transaction_time_start) x " +
+                "from food_item " +
+                "where transaction_time_start < :day" +
+            ") union select * from (" +
+                "select max(transaction_time_start) x " +
+                "from ean_number " +
+                "where transaction_time_start < :day" +
+            ") union select * from (" +
+                "select max(transaction_time_start) x " +
+                "from recipe " +
+                "where transaction_time_start < :day" +
+            ") union select * from (" +
+                "select max(transaction_time_start) x " +
+                "from recipe_ingredient " +
+                "where transaction_time_start < :day" +
+            ") union select * from (" +
+                "select max(transaction_time_start) x " +
+                "from recipe_product " +
+                "where transaction_time_start < :day" +
+            ") union select * from (" +
+                "select max(transaction_time_start) x " +
+                "from user " +
+                "where transaction_time_start < :day" +
+            ") union select * from (" +
+                "select max(transaction_time_start) x " +
+                "from user_device " +
+                "where transaction_time_start < :day" +
+            ")" +
+            ")")
+    abstract Maybe<Instant> getPreviousDayContainingEvents(Instant day);
 }

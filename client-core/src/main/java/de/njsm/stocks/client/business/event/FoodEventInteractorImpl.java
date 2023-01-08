@@ -25,6 +25,7 @@ import de.njsm.stocks.client.business.Localiser;
 import de.njsm.stocks.client.business.entities.Food;
 import de.njsm.stocks.client.business.entities.Id;
 import de.njsm.stocks.client.business.entities.event.ActivityEvent;
+import de.njsm.stocks.client.execution.Scheduler;
 import io.reactivex.rxjava3.core.Single;
 
 import javax.inject.Inject;
@@ -38,15 +39,15 @@ public class FoodEventInteractorImpl extends BaseEventInteractorImpl implements 
     private final Id<Food> food;
 
     @Inject
-    public FoodEventInteractorImpl(Id<Food> food, EventRepository repository, ActivityEventFactory eventFactory, Localiser localiser) {
-        super(repository, eventFactory, localiser);
+    public FoodEventInteractorImpl(Id<Food> food, EventRepository repository, ActivityEventFactory eventFactory, Localiser localiser, Scheduler scheduler) {
+        super(repository, eventFactory, localiser, scheduler);
         this.food = food;
     }
 
     @Override
-    public Single<List<ActivityEvent>> getEventsOf(LocalDate day) {
-        return repository.getFoodEventsOf(food, localiser.toInstant(day))
-                        .map(v -> transformToEvents(v, eventFactory::getFoodEventFrom))
+    public Single<ActivityEventPage> getEventsOf(LocalDate day) {
+        Single<List<ActivityEvent>> events = repository.getFoodEventsOf(food, localiser.toInstant(day))
+                .map(v -> transformToEvents(v, eventFactory::getFoodEventFrom))
                 .mergeWith(repository.getFoodItemEventsOf(food, localiser.toInstant(day))
                         .map(v -> transformToEvents(v, eventFactory::getFoodItemEventFrom)))
                 .mergeWith(repository.getEanNumberEventsOf(food, localiser.toInstant(day))
@@ -55,5 +56,7 @@ public class FoodEventInteractorImpl extends BaseEventInteractorImpl implements 
                 .buffer(3) // align with number of merged feeds above
                 .map(this::sortEvents)
                 .first(emptyList());
+
+        return toEventPage(day, events);
     }
 }

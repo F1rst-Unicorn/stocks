@@ -21,19 +21,15 @@
 
 package de.njsm.stocks.client.business.event;
 
-import de.njsm.stocks.client.business.entities.event.ActivityEvent;
 import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.core.Single;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.List;
 
 public interface EventInteractor {
 
-    Single<List<ActivityEvent>> getEventsOf(LocalDate day);
+    Single<ActivityEventPage> getEventsOf(LocalDate day);
 
     Observable<LocalDateTime> getNewEventNotifier();
-
-    Single<LocalDate> getOldestEventTime();
 }

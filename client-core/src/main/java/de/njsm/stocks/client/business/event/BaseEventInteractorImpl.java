@@ -25,6 +25,7 @@ import de.njsm.stocks.client.business.Localiser;
 import de.njsm.stocks.client.business.entities.Entity;
 import de.njsm.stocks.client.business.entities.Id;
 import de.njsm.stocks.client.business.entities.event.ActivityEvent;
+import de.njsm.stocks.client.execution.Scheduler;
 import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.core.Single;
 
@@ -46,22 +47,19 @@ abstract class BaseEventInteractorImpl implements EventInteractor {
 
     final Localiser localiser;
 
-    BaseEventInteractorImpl(EventRepository repository, ActivityEventFactory eventFactory, Localiser localiser) {
+    private final Scheduler scheduler;
+
+    BaseEventInteractorImpl(EventRepository repository, ActivityEventFactory eventFactory, Localiser localiser, Scheduler scheduler) {
         this.repository = repository;
         this.eventFactory = eventFactory;
         this.localiser = localiser;
+        this.scheduler = scheduler;
     }
 
     @Override
     public Observable<LocalDateTime> getNewEventNotifier() {
         return repository.getNewEventNotifier()
                 .map(localiser::toLocalDateTime);
-    }
-
-    @Override
-    public Single<LocalDate> getOldestEventTime() {
-        return repository.getOldestEventTime()
-                .map(localiser::toLocalDate);
     }
 
     <T extends EventFeedItem<E>, E extends Entity<E>>
@@ -84,5 +82,27 @@ abstract class BaseEventInteractorImpl implements EventInteractor {
         lists.forEach(result::addAll);
         result.sort(comparing(ActivityEvent::timeOccurred).reversed());
         return result;
+    }
+
+    Single<Optional<Instant>> getPreviousDay(LocalDate day) {
+        return repository.getNextDayContainingEvents(localiser.toInstant(day))
+                .map(Optional::of)
+                .defaultIfEmpty(Optional.empty())
+                .subscribeOn(scheduler.into());
+    }
+
+    Single<Optional<Instant>> getNextDay(LocalDate day) {
+        return repository.getPreviousDayContainingEvents(localiser.toInstant(day))
+                .map(Optional::of)
+                .defaultIfEmpty(Optional.empty())
+                .subscribeOn(scheduler.into());
+    }
+
+    Single<ActivityEventPage> toEventPage(LocalDate day, Single<List<ActivityEvent>> events) {
+        return Single.zip(
+                events,
+                getNextDay(day),
+                getPreviousDay(day), (e, p, n) ->
+                        ActivityEventPage.create(e, p.map(localiser::toLocalDate), n.map(localiser::toLocalDate)));
     }
 }

@@ -23,6 +23,7 @@ package de.njsm.stocks.client.business.event;
 
 import de.njsm.stocks.client.business.Localiser;
 import de.njsm.stocks.client.business.entities.event.ActivityEvent;
+import de.njsm.stocks.client.execution.Scheduler;
 import io.reactivex.rxjava3.core.Single;
 
 import javax.inject.Inject;
@@ -34,13 +35,13 @@ import static java.util.Collections.emptyList;
 public class EventInteractorImpl extends BaseEventInteractorImpl {
 
     @Inject
-    public EventInteractorImpl(EventRepository repository, ActivityEventFactory eventFactory, Localiser localiser) {
-        super(repository, eventFactory, localiser);
+    public EventInteractorImpl(EventRepository repository, ActivityEventFactory eventFactory, Localiser localiser, Scheduler scheduler) {
+        super(repository, eventFactory, localiser, scheduler);
     }
 
     @Override
-    public Single<List<ActivityEvent>> getEventsOf(LocalDate day) {
-        return repository.getLocationFeed(localiser.toInstant(day))
+    public Single<ActivityEventPage> getEventsOf(LocalDate day) {
+        Single<List<ActivityEvent>> events = repository.getLocationFeed(localiser.toInstant(day))
                 .map(v -> transformToEvents(v, eventFactory::getLocationEventFrom))
                 .mergeWith(repository.getUnitFeed(localiser.toInstant(day))
                         .map(v -> transformToEvents(v, eventFactory::getUnitEventFrom)))
@@ -60,5 +61,7 @@ public class EventInteractorImpl extends BaseEventInteractorImpl {
                 .buffer(8) // align with number of merged feeds above
                 .map(this::sortEvents)
                 .first(emptyList());
+
+        return toEventPage(day, events);
     }
 }

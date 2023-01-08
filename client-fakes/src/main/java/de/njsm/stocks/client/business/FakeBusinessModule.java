@@ -25,6 +25,7 @@ import dagger.Binds;
 import dagger.Module;
 import dagger.Provides;
 import de.njsm.stocks.client.business.entities.*;
+import de.njsm.stocks.client.business.event.ActivityEventPage;
 import de.njsm.stocks.client.business.event.EventInteractor;
 import de.njsm.stocks.client.business.event.EventInteractorFactory;
 import de.njsm.stocks.client.business.event.UnitEventInteractor;
@@ -36,7 +37,7 @@ import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.core.Single;
 
 import javax.inject.Singleton;
-import java.time.LocalDate;
+import java.util.Optional;
 
 import static java.util.Collections.emptyList;
 import static org.mockito.ArgumentMatchers.any;
@@ -421,8 +422,7 @@ public interface FakeBusinessModule {
     static EventInteractor EventInteractor() {
         EventInteractor result = mock(EventInteractor.class);
         when(result.getNewEventNotifier()).thenReturn(Observable.empty());
-        when(result.getOldestEventTime()).thenReturn(Single.just(LocalDate.now()));
-        when(result.getEventsOf(any())).thenReturn(Single.just(emptyList()));
+        when(result.getEventsOf(any())).thenReturn(Single.just(ActivityEventPage.create(emptyList(), Optional.empty(), Optional.empty())));
         return result;
     }
 
@@ -431,8 +431,7 @@ public interface FakeBusinessModule {
     static UnitEventInteractor UnitEventInteractor() {
         UnitEventInteractor result = mock(UnitEventInteractor.class);
         when(result.getNewEventNotifier()).thenReturn(Observable.empty());
-        when(result.getOldestEventTime()).thenReturn(Single.just(LocalDate.now()));
-        when(result.getEventsOf(any())).thenReturn(Single.just(emptyList()));
+        when(result.getEventsOf(any())).thenReturn(Single.just(ActivityEventPage.create(emptyList(), Optional.empty(), Optional.empty())));
         return result;
     }
 

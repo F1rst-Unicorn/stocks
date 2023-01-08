@@ -25,6 +25,7 @@ import de.njsm.stocks.client.business.Localiser;
 import de.njsm.stocks.client.business.entities.Food;
 import de.njsm.stocks.client.business.entities.Id;
 import de.njsm.stocks.client.business.entities.Location;
+import de.njsm.stocks.client.execution.Scheduler;
 
 import javax.inject.Inject;
 
@@ -36,20 +37,23 @@ public class EventInteractorFactoryImpl implements EventInteractorFactory {
 
     private final Localiser localiser;
 
+    private final Scheduler scheduler;
+
     @Inject
-    EventInteractorFactoryImpl(EventRepository repository, ActivityEventFactory eventFactory, Localiser localiser) {
+    EventInteractorFactoryImpl(EventRepository repository, ActivityEventFactory eventFactory, Localiser localiser, Scheduler scheduler) {
         this.repository = repository;
         this.eventFactory = eventFactory;
         this.localiser = localiser;
+        this.scheduler = scheduler;
     }
 
     @Override
     public EventInteractor forLocation(Id<Location> location) {
-        return new LocationEventInteractorImpl(location, repository, eventFactory, localiser);
+        return new LocationEventInteractorImpl(location, repository, eventFactory, localiser, scheduler);
     }
 
     @Override
     public EventInteractor forFood(Id<Food> food) {
-        return new FoodEventInteractorImpl(food, repository, eventFactory, localiser);
+        return new FoodEventInteractorImpl(food, repository, eventFactory, localiser, scheduler);
     }
 }

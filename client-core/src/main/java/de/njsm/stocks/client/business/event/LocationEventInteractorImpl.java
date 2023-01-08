@@ -25,6 +25,7 @@ import de.njsm.stocks.client.business.Localiser;
 import de.njsm.stocks.client.business.entities.Id;
 import de.njsm.stocks.client.business.entities.Location;
 import de.njsm.stocks.client.business.entities.event.ActivityEvent;
+import de.njsm.stocks.client.execution.Scheduler;
 import io.reactivex.rxjava3.core.Single;
 
 import javax.inject.Inject;
@@ -38,20 +39,22 @@ public class LocationEventInteractorImpl extends BaseEventInteractorImpl impleme
     private final Id<Location> location;
 
     @Inject
-    public LocationEventInteractorImpl(Id<Location> location, EventRepository repository, ActivityEventFactory eventFactory, Localiser localiser) {
-        super(repository, eventFactory, localiser);
+    public LocationEventInteractorImpl(Id<Location> location, EventRepository repository, ActivityEventFactory eventFactory, Localiser localiser, Scheduler scheduler) {
+        super(repository, eventFactory, localiser, scheduler);
         this.location = location;
     }
 
     @Override
-    public Single<List<ActivityEvent>> getEventsOf(LocalDate day) {
-        return repository.getLocationEventsOf(location, localiser.toInstant(day))
-                        .map(v -> transformToEvents(v, eventFactory::getLocationEventFrom))
+    public Single<ActivityEventPage> getEventsOf(LocalDate day) {
+        Single<List<ActivityEvent>> events = repository.getLocationEventsOf(location, localiser.toInstant(day))
+                .map(v -> transformToEvents(v, eventFactory::getLocationEventFrom))
                 .mergeWith(repository.getFoodItemEventsInvolving(location, localiser.toInstant(day))
                         .map(v -> transformToEvents(v, eventFactory::getFoodItemEventFrom)))
 
                 .buffer(2) // align with number of merged feeds above
                 .map(this::sortEvents)
                 .first(emptyList());
+
+        return toEventPage(day, events);
     }
 }

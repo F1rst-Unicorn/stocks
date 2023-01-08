@@ -22,11 +22,15 @@
 package de.njsm.stocks.client.business.event;
 
 import de.njsm.stocks.client.business.Localiser;
+import de.njsm.stocks.client.business.entities.Job;
 import de.njsm.stocks.client.business.entities.event.EditedField;
 import de.njsm.stocks.client.business.entities.event.LocationCreatedEvent;
 import de.njsm.stocks.client.business.entities.event.LocationDeletedEvent;
 import de.njsm.stocks.client.business.entities.event.LocationEditedEvent;
+import de.njsm.stocks.client.execution.Scheduler;
+import io.reactivex.rxjava3.core.Maybe;
 import io.reactivex.rxjava3.core.Single;
+import io.reactivex.rxjava3.schedulers.Schedulers;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -36,6 +40,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.Instant;
 import java.time.LocalDate;
+import java.util.Optional;
+import java.util.concurrent.Executors;
 
 import static de.njsm.stocks.client.business.Constants.INFINITY;
 import static io.reactivex.rxjava3.core.Single.just;
@@ -58,7 +64,17 @@ public class EventInteractorImplTest {
     @BeforeEach
     void setUp() {
         localiser = new Localiser(null);
-        uut = new EventInteractorImpl(repository, new ActivityEventFactory(localiser), localiser);
+        uut = new EventInteractorImpl(repository, new ActivityEventFactory(localiser), localiser, new Scheduler() {
+            @Override
+            public void schedule(Job job) {
+                job.runnable().run();
+            }
+
+            @Override
+            public io.reactivex.rxjava3.core.Scheduler into() {
+                return Schedulers.from(Executors.newSingleThreadExecutor());
+            }
+        });
 
         when(repository.getUnitFeed(any())).thenReturn(Single.just(emptyList()));
         when(repository.getUserFeed(any())).thenReturn(Single.just(emptyList()));
@@ -67,6 +83,8 @@ public class EventInteractorImplTest {
         when(repository.getFoodFeed(any())).thenReturn(Single.just(emptyList()));
         when(repository.getFoodItemFeed(any())).thenReturn(Single.just(emptyList()));
         when(repository.getEanNumberFeed(any())).thenReturn(Single.just(emptyList()));
+        when(repository.getPreviousDayContainingEvents(any())).thenReturn(Maybe.empty());
+        when(repository.getNextDayContainingEvents(any())).thenReturn(Maybe.empty());
     }
 
     @AfterEach
@@ -81,12 +99,14 @@ public class EventInteractorImplTest {
 
         var actual = uut.getEventsOf(LocalDate.EPOCH);
 
-        actual.test().assertValue(of(LocationCreatedEvent.create(
+        actual.test()
+                .awaitCount(1)
+                .assertValue(ActivityEventPage.create(of(LocationCreatedEvent.create(
                 input.id(),
                 localiser.toLocalDateTime(Instant.EPOCH),
                 input.userName(),
                 input.name()
-        )));
+        )), Optional.empty(), Optional.empty()));
     }
 
     @Test
@@ -96,12 +116,14 @@ public class EventInteractorImplTest {
 
         var actual = uut.getEventsOf(LocalDate.EPOCH);
 
-        actual.test().assertValue(of(LocationDeletedEvent.create(
+        actual.test()
+                .awaitCount(1)
+                .assertValue(ActivityEventPage.create(of(LocationDeletedEvent.create(
                 input.id(),
                 localiser.toLocalDateTime(Instant.EPOCH),
                 input.userName(),
                 input.name()
-        )));
+        )), Optional.empty(), Optional.empty()));
     }
 
     @Test
@@ -112,13 +134,15 @@ public class EventInteractorImplTest {
 
         var actual = uut.getEventsOf(LocalDate.EPOCH);
 
-        actual.test().assertValue(of(LocationEditedEvent.create(
+        actual.test()
+                .awaitCount(1)
+                .assertValue(ActivityEventPage.create(of(LocationEditedEvent.create(
                 current.id(),
                 localiser.toLocalDateTime(Instant.EPOCH),
                 former.userName(),
                 EditedField.create(former.name(), current.name()),
                 EditedField.create(former.description(), current.description())
-        )));
+        )), Optional.empty(), Optional.empty()));
     }
 
     @Test
@@ -141,7 +165,9 @@ public class EventInteractorImplTest {
 
         var actual = uut.getEventsOf(LocalDate.EPOCH);
 
-        actual.test().assertValue(of(
+        actual.test()
+                .awaitCount(1)
+                .assertValue(ActivityEventPage.create(of(
                 LocationCreatedEvent.create(
                         second.id(),
                         localiser.toLocalDateTime(second.transactionTimeStart()),
@@ -152,7 +178,7 @@ public class EventInteractorImplTest {
                         localiser.toLocalDateTime(first.transactionTimeStart()),
                         first.userName(),
                         first.name())
-        ));
+        ), Optional.empty(), Optional.empty()));
     }
 
     private static LocationEventFeedItem getValid() {
