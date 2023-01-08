@@ -70,10 +70,9 @@ abstract class FoodDao {
             "select f.id, f.name, f.to_buy as toBuy, d.eat_by as nextEatByDate " +
             "from current_food f " +
             "join least_eat_by_date d on f.id = d.of_type " +
-            "where exists (select 1 " +
+            "where f.id in (select i.of_type " +
                 "from current_food_item i " +
-                "where i.of_type = f.id " +
-                "and i.stored_in = :location" +
+                "where i.stored_in = :location" +
             ")")
     public abstract Observable<List<FoodForListingBaseData>> getCurrentFoodBy(int location);
 
@@ -94,9 +93,8 @@ abstract class FoodDao {
             "select f.id, f.name, f.to_buy as toBuy, d.eat_by as nextEatByDate " +
             "from current_food f " +
             "join least_eat_by_date d on f.id = d.of_type " +
-            "where exists (select 1 " +
-                "from current_food_item i " +
-                "where i.of_type = f.id " +
+            "where f.id in (select i.of_type " +
+                "from current_food_item i" +
             ")")
     public abstract Observable<List<FoodForListingBaseData>> getCurrentFood();
 
