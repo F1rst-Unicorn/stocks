@@ -51,17 +51,20 @@ class RecipeListRepositoryImpl implements RecipeListRepository {
 
     @Override
     public Observable<List<RecipeIngredientAmount>> getIngredients() {
-        return recipeDao.getIngredientsRequiredAmount().zipWith(recipeDao.getIngredientsPresentAmounts(), (required, present) -> {
-            List<RecipeIngredientAmount> result = new ArrayList<>();
-            var regrouper = new ListRegrouper<>(
-                    new ListRegrouper.Group<>(required.iterator(), RecipeIngredientAmountBaseData::ingredient),
-                    new ListRegrouper.Group<>(present.iterator(), RecipeIngredientAmountBaseData::ingredient),
-                    (requiredItem, presentItems) -> result.add(RecipeIngredientAmount.create(requiredItem.recipe(), requiredItem.intoAmount(),
-                            presentItems.stream().map(RecipeIngredientAmountBaseData::intoAmount).collect(toList()))
-                    ));
-            regrouper.execute();
-            return result;
-        });
+        return recipeDao.getIngredientsRequiredAmount()
+                .zipWith(recipeDao.getIngredientsPresentAmounts(), RecipeListRepositoryImpl::regroup);
+    }
+
+    static List<RecipeIngredientAmount> regroup(List<RecipeIngredientAmountBaseData> required, List<RecipeIngredientAmountBaseData> present) {
+        List<RecipeIngredientAmount> result = new ArrayList<>();
+        var regrouper = new ListRegrouper<>(
+                new ListRegrouper.Group<>(required.iterator(), RecipeIngredientAmountBaseData::ingredient),
+                new ListRegrouper.Group<>(present.iterator(), RecipeIngredientAmountBaseData::ingredient),
+                (requiredItem, presentItems) -> result.add(RecipeIngredientAmount.create(requiredItem.recipe(), requiredItem.intoAmount(),
+                        presentItems.stream().map(RecipeIngredientAmountBaseData::intoAmount).collect(toList()))
+                ));
+        regrouper.execute();
+        return result;
     }
 
     @AutoValue

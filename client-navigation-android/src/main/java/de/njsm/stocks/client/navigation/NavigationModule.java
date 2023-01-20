@@ -128,4 +128,7 @@ public interface NavigationModule {
 
     @Binds
     FoodEanNumberAssignmentNavigator FoodEanNumberAssignmentNavigator(FoodEanNumberAssignmentNavigatorImpl impl);
+
+    @Binds
+    RecipeDetailNavigator RecipeDetailNavigator(RecipeDetailNavigatorImpl impl);
 }

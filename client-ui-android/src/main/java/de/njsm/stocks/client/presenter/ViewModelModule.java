@@ -317,4 +317,11 @@ public class ViewModelModule {
     ViewModel FoodEanNumberAssignmentViewModel(EanNumberAssignmentInteractor interactor, Synchroniser synchroniser) {
         return new FoodEanNumberAssignmentViewModel(interactor, synchroniser);
     }
+
+    @Provides
+    @IntoMap
+    @ViewModelKey(RecipeDetailViewModel.class)
+    ViewModel RecipeDetailViewModel(Synchroniser synchroniser, RecipeDetailInteractor interactor) {
+        return new RecipeDetailViewModel(synchroniser, interactor);
+    }
 }

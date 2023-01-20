@@ -446,7 +446,7 @@
         </action>
         <action
                 android:id="@+id/action_nav_fragment_recipe_list_to_nav_fragment_recipe"
-                app:destination="@id/nav_fragment_recipe">
+                app:destination="@id/nav_fragment_recipe_detail">
             <argument
                     android:name="id"
                     app:argType="integer"/>
@@ -458,11 +458,33 @@
             android:label="@string/title_add_recipe">
     </fragment>
     <fragment
-            android:id="@+id/nav_fragment_recipe"
-            android:name="androidx.fragment.app.Fragment">
+            android:id="@+id/nav_fragment_recipe_detail"
+            android:name="de.njsm.stocks.client.fragment.recipedetail.RecipeDetailFragment">
         <argument
                 android:name="id"
                 app:argType="integer"/>
+        <action
+                android:id="@+id/action_nav_fragment_recipe_detail_to_nav_fragment_recipe_prepare"
+                app:destination="@id/nav_fragment_recipe_prepare">
+            <argument
+                    android:name="id"
+                    app:argType="integer"/>
+        </action>
+        <action
+                android:id="@+id/action_nav_fragment_recipe_detail_to_nav_fragment_recipe_edit"
+                app:destination="@id/nav_fragment_recipe_edit">
+            <argument
+                    android:name="id"
+                    app:argType="integer"/>
+        </action>
+    </fragment>
+    <fragment
+            android:id="@+id/nav_fragment_recipe_prepare"
+            android:name="androidx.fragment.app.Fragment">
+    </fragment>
+    <fragment
+            android:id="@+id/nav_fragment_recipe_edit"
+            android:name="androidx.fragment.app.Fragment">
     </fragment>
     <fragment
             android:id="@+id/nav_fragment_ean_numbers"

@@ -455,4 +455,10 @@ public interface FakeBusinessModule {
     static EanNumberAssignmentInteractor EanNumberAssignmentInteractor() {
         return mock(EanNumberAssignmentInteractor.class);
     }
+
+    @Provides
+    @Singleton
+    static RecipeDetailInteractor RecipeDetailInteractor() {
+        return mock(RecipeDetailInteractor.class);
+    }
 }

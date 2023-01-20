@@ -254,4 +254,10 @@ class FakeNavigationModule {
     FoodEanNumberAssignmentNavigator FoodEanNumberAssignmentNavigator() {
         return mock(FoodEanNumberAssignmentNavigator.class);
     }
+
+    @Provides
+    @Singleton
+    RecipeDetailNavigator RecipeDetailNavigator() {
+        return mock(RecipeDetailNavigator.class);
+    }
 }

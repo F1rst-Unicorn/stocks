@@ -221,4 +221,7 @@ public interface UimockBusinessModule {
 
     @Binds
     EanNumberAssignmentInteractor EanNumberAssignmentInteractor(InMemoryEanNumberAssignmentInteractorImpl impl);
+
+    @Binds
+    RecipeDetailInteractor RecipeDetailInteractor(InMemoryRecipeDetailInteractorImpl impl);
 }

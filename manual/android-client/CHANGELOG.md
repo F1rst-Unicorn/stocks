@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+### Added
+
+* Show recipe details for cooking
+  ([#67](https://j.njsm.de/git/veenj/stocks/issues/67)).
+
 ## [4.0.0.1]
 
 ### Fixed

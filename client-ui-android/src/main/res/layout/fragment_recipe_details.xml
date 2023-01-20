@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    stocks is client-server program to manage a household's food stock
+    Copyright (C) 2019  The stocks developers
+
+    This file is part of the stocks program suite.
+
+    stocks is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    stocks is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see https://www.gnu.org/licenses/.
+-->
+
+<LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="8dp"
+        android:orientation="vertical">
+
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+            android:id="@+id/fragment_recipe_details_swipe"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+        <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+            <TextView
+                    android:id="@+id/fragment_recipe_details_title_ingredients"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    style="@style/TextAppearance.AppCompat.Large"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/title_ingredients"/>
+
+            <TextView
+                    android:id="@+id/fragment_recipe_details_ingredient_list"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    style="@style/TextAppearance.AppCompat.Medium"
+                    app:layout_constraintTop_toBottomOf="@id/fragment_recipe_details_title_ingredients"
+                    app:layout_constraintStart_toStartOf="parent"
+                    android:layout_marginStart="24dp"/>
+
+            <TextView
+                    android:id="@+id/fragment_recipe_details_title_products"
+                    app:layout_constraintTop_toBottomOf="@id/fragment_recipe_details_ingredient_list"
+                    app:layout_constraintStart_toStartOf="parent"
+                    style="@style/TextAppearance.AppCompat.Large"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/title_products"
+                    android:layout_marginTop="24dp"/>
+
+            <TextView
+                    android:id="@+id/fragment_recipe_details_product_list"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    style="@style/TextAppearance.AppCompat.Medium"
+                    app:layout_constraintTop_toBottomOf="@id/fragment_recipe_details_title_products"
+                    app:layout_constraintStart_toStartOf="parent"
+                    android:layout_marginStart="24dp"/>
+
+            <TextView
+                    android:id="@+id/fragment_recipe_details_duration_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/title_duration"
+                    style="@style/TextAppearance.AppCompat.Medium"
+                    app:layout_constraintTop_toBottomOf="@id/fragment_recipe_details_product_list"
+                    app:layout_constraintStart_toStartOf="parent"
+                    android:layout_marginTop="24dp"/>
+
+            <TextView
+                    android:id="@+id/fragment_recipe_details_duration_title_colon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text=": "
+                    style="@style/TextAppearance.AppCompat.Medium"
+                    app:layout_constraintTop_toBottomOf="@id/fragment_recipe_details_product_list"
+                    app:layout_constraintStart_toEndOf="@id/fragment_recipe_details_duration_title"
+                    android:layout_marginTop="24dp"/>
+
+            <TextView
+                    android:id="@+id/fragment_recipe_details_duration"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    style="@style/TextAppearance.AppCompat.Medium"
+                    android:text="45"
+                    app:layout_constraintTop_toBottomOf="@id/fragment_recipe_details_product_list"
+                    app:layout_constraintStart_toEndOf="@id/fragment_recipe_details_duration_title_colon"
+                    android:layout_marginTop="24dp"/>
+
+            <TextView
+                    android:id="@+id/fragment_recipe_details_duration_title_minutes"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingStart="4dp"
+                    android:text="@string/hint_minutes"
+                    style="@style/TextAppearance.AppCompat.Medium"
+                    app:layout_constraintTop_toBottomOf="@id/fragment_recipe_details_product_list"
+                    app:layout_constraintStart_toEndOf="@id/fragment_recipe_details_duration"
+                    android:layout_marginTop="24dp"/>
+
+            <TextView
+                    android:id="@+id/fragment_recipe_details_instructions"
+                    app:layout_constraintTop_toBottomOf="@id/fragment_recipe_details_duration_title"
+                    app:layout_constraintStart_toStartOf="parent"
+                    style="@style/TextAppearance.AppCompat.Medium"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"/>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+</LinearLayout>

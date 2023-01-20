@@ -142,6 +142,7 @@
     <string name="hint_no_food_to_buy">Nichts einzukaufen</string>
     <string name="hint_no_food_in_location">Keine Lebensmittel an diesem Ort.</string>
     <string name="hint_no_food_items">Keine Lebensmittel vorhanden.</string>
+    <string name="hint_minutes">Minuten</string>
 
     <string name="dialog_success">Erfolgreich</string>
     <string name="dialog_finished">Registrierung abgeschlossen</string>
@@ -207,7 +208,7 @@
     <string name="dialog_conflicting_description">Die Beschreibung wurde von jemand anderem geändert. Führe den originalen Text, die Änderungen der anderen Person und deinen eigenen Text jetzt zusammen.</string>
     <string name="dialog_new_unit">Neue Einheit erstellen</string>
     <string name="dialog_recipe_was_deleted">Rezept wurde gelöscht</string>
-    <string name="dialog_recipe_item">%1$s (Vorrat: %2$s)</string>
+    <string name="dialog_recipe_item">%1$s %2$s (Vorrat: %3$s)</string>
 
     <string name="error_may_not_be_empty">Hier Eingabe machen</string>
     <string name="error_no_id">ID darf nicht leer sein</string>

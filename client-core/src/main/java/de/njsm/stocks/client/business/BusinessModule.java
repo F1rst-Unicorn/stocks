@@ -202,4 +202,7 @@ public interface BusinessModule {
 
     @Binds
     EanNumberAssignmentInteractor EanNumberAssignmentInteractor(EanNumberAssignmentInteractorImpl impl);
+
+    @Binds
+    RecipeDetailInteractor RecipeDetailInteractor(RecipeDetailInteractorImpl impl);
 }

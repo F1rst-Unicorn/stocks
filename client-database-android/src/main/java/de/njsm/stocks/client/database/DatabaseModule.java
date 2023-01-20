@@ -247,4 +247,7 @@ public interface DatabaseModule {
 
     @Binds
     EanNumberLookupRepository EanNumberLookupRepository(EanNumberRepositoryImpl impl);
+
+    @Binds
+    RecipeDetailRepository RecipeDetailRepository(RecipeDetailRepositoryImpl impl);
 }
