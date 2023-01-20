@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## [4.1.0.0]
+
 ### Added
 
 * Show recipe details for cooking
