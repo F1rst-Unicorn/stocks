@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+### Fixed
+
+* Locations are now ordered alphabetically when adding food items.
+  ([#75](https://j.njsm.de/git/veenj/stocks/issues/75)).
+
 ## [4.1.0.0]
 
 ### Added
