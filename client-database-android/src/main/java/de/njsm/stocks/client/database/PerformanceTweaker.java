@@ -47,34 +47,68 @@ public class PerformanceTweaker extends Callback {
         recreateCurrentIndex(db, "recipe_product");
 
         recreateFoodToBuyIndex(db);
+
+        indexFoodItemByType(db);
+        indexRecipeIngredientByRecipe(db);
+        indexRecipeProductByRecipe(db);
     }
 
     private static void recreateCurrentIndex(SupportSQLiteDatabase db, String tableName) {
-        try (var cursor = db.query("select sql from sqlite_master " +
-                "where name = '" + tableName + "_current'")) {
-            cursor.moveToNext();
-            String sql = cursor.getString(0);
-            if (!sql.contains("where")) {
-                db.execSQL("drop index if exists " + tableName + "_current");
-                db.execSQL("create index " + tableName + "_current " +
-                        "on " + tableName + " (id, valid_time_start, valid_time_end) " +
-                        "where transaction_time_end = " + StocksDatabase.DATABASE_INFINITY_STRING_SQL);
-            }
+        String sql = getSqlOf(db, tableName + "_current");
+        if (!sql.contains("where")) {
+            db.execSQL("drop index if exists " + tableName + "_current");
+            db.execSQL("create index " + tableName + "_current " +
+                    "on " + tableName + " (id, valid_time_start, valid_time_end) " +
+                    "where transaction_time_end = " + StocksDatabase.DATABASE_INFINITY_STRING_SQL);
         }
     }
 
     private void recreateFoodToBuyIndex(SupportSQLiteDatabase db) {
+        String sql = getSqlOf(db, "food_current_to_buy");
+        if (!sql.contains("where to_buy")) {
+            db.execSQL("drop index if exists food_current_to_buy");
+            db.execSQL("create index food_current_to_buy " +
+                    "on food (id, valid_time_start, valid_time_end, to_buy) " +
+                    "where to_buy " +
+                    "and transaction_time_end = " + StocksDatabase.DATABASE_INFINITY_STRING_SQL);
+        }
+    }
+
+    private void indexFoodItemByType(SupportSQLiteDatabase db) {
+        String sql = getSqlOf(db, "food_item_current_by_of_type");
+        if (!sql.contains("where")) {
+            db.execSQL("drop index if exists food_item_current_by_of_type");
+            db.execSQL("create index food_item_current_by_of_type " +
+                    "on food_item (of_type, valid_time_start, valid_time_end) " +
+                    "where transaction_time_end = " + StocksDatabase.DATABASE_INFINITY_STRING_SQL);
+        }
+    }
+
+    private void indexRecipeIngredientByRecipe(SupportSQLiteDatabase db) {
+        String sql = getSqlOf(db, "recipe_ingredient_current_by_recipe");
+        if (!sql.contains("where")) {
+            db.execSQL("drop index if exists recipe_ingredient_current_by_recipe");
+            db.execSQL("create index recipe_ingredient_current_by_recipe " +
+                    "on recipe_ingredient (recipe, valid_time_start, valid_time_end) " +
+                    "where transaction_time_end = " + StocksDatabase.DATABASE_INFINITY_STRING_SQL);
+        }
+    }
+
+    private void indexRecipeProductByRecipe(SupportSQLiteDatabase db) {
+        String sql = getSqlOf(db, "recipe_product_current_by_recipe");
+        if (!sql.contains("where")) {
+            db.execSQL("drop index if exists recipe_product_current_by_recipe");
+            db.execSQL("create index recipe_product_current_by_recipe " +
+                    "on recipe_product (recipe, valid_time_start, valid_time_end) " +
+                    "where transaction_time_end = " + StocksDatabase.DATABASE_INFINITY_STRING_SQL);
+        }
+    }
+
+    private static String getSqlOf(SupportSQLiteDatabase db, String objectName) {
         try (var cursor = db.query("select sql from sqlite_master " +
-                "where name = 'food_current_to_buy'")) {
+                "where name = '" + objectName + "'")) {
             cursor.moveToNext();
-            String sql = cursor.getString(0);
-            if (!sql.contains("where to_buy")) {
-                db.execSQL("drop index if exists food_current_to_buy");
-                db.execSQL("create index food_current_to_buy " +
-                        "on food (id, valid_time_start, valid_time_end, to_buy) " +
-                        "where to_buy " +
-                        "and transaction_time_end = " + StocksDatabase.DATABASE_INFINITY_STRING_SQL);
-            }
+            return cursor.getString(0);
         }
     }
 }

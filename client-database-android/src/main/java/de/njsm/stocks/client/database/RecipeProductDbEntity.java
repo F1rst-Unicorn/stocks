@@ -33,6 +33,7 @@ import java.time.Instant;
                 @Index(value = {"id"}, name = "recipe_product_pkey"),
                 @Index(value = {"transaction_time_start"}, name = "recipe_product_transaction_time_start"),
                 @Index(value = {"transaction_time_end"}, name = "recipe_product_transaction_time_end"),
+                @Index(value = {"recipe", "valid_time_start", "valid_time_end"}, name = "recipe_product_current_by_recipe"),
         })
 @AutoValue
 public abstract class RecipeProductDbEntity extends ServerDbEntity<RecipeProductDbEntity> implements RecipeProductFields {
