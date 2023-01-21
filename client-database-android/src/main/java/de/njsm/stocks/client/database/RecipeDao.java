@@ -58,7 +58,7 @@ abstract class RecipeDao {
             "order by i.id")
     abstract Observable<List<RecipeListRepositoryImpl.RecipeIngredientAmountBaseData>> getIngredientsRequiredAmount();
 
-    @Query("select i.id, food.name as foodName, u.abbreviation, s.scale, count(*) as amount " +
+    @Query("select i.id, food.name as foodName, u.abbreviation, s.scale, count(*) as numberOfFoodItemsWithSameScaledUnit, u.id as unitId " +
             "from current_recipe_ingredient i " +
             "join current_food food on food.id = i.ingredient " +
             "join current_food_item f on f.of_type = i.ingredient " +
@@ -82,7 +82,7 @@ abstract class RecipeDao {
             "order by i.id")
     abstract Observable<List<RecipeFoodForDetailsBaseData>> getIngredientsRequiredAmountOf(int recipeId);
 
-    @Query("select i.id, food.name as foodName, u.abbreviation, s.scale, count(*) as amount " +
+    @Query("select i.id, food.name as foodName, u.abbreviation, s.scale, count(*) as numberOfFoodItemsWithSameScaledUnit, u.id as unitId " +
             "from current_recipe_product i " +
             "join current_food food on food.id = i.product " +
             "join current_food_item f on f.of_type = i.product " +

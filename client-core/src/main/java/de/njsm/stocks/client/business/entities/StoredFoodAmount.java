@@ -26,21 +26,13 @@ import com.google.auto.value.AutoValue;
 import java.math.BigDecimal;
 
 @AutoValue
-public abstract class StoredFoodAmount {
-
-    public abstract BigDecimal scale();
-
-    public abstract String abbreviation();
+public abstract class StoredFoodAmount implements UnitAmountForRegrouping {
 
     public abstract int foodId();
 
     public abstract int scaledUnitId();
 
-    public abstract int unitId();
-
-    public abstract int numberOfFoodItemsWithSameScaledUnit();
-
     public static StoredFoodAmount create(int foodId, int scaledUnitId, int unitId, BigDecimal scale, String abbreviation, int numberOfFoodItemsWithSameScaledUnit) {
-        return new AutoValue_StoredFoodAmount(scale, abbreviation, foodId, scaledUnitId, unitId, numberOfFoodItemsWithSameScaledUnit);
+        return new AutoValue_StoredFoodAmount(scale, abbreviation, unitId, numberOfFoodItemsWithSameScaledUnit, foodId, scaledUnitId);
     }
 }

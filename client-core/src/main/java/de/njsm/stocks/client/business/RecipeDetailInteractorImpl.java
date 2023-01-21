@@ -30,15 +30,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static java.util.Comparator.comparing;
-import static java.util.stream.Collectors.toList;
 
 class RecipeDetailInteractorImpl implements RecipeDetailInteractor {
 
     private final RecipeDetailRepository repository;
 
+    private final FoodRegrouper foodRegrouper;
+
     @Inject
-    RecipeDetailInteractorImpl(RecipeDetailRepository repository) {
+    RecipeDetailInteractorImpl(RecipeDetailRepository repository, FoodRegrouper foodRegrouper) {
         this.repository = repository;
+        this.foodRegrouper = foodRegrouper;
     }
 
     @Override
@@ -62,7 +64,7 @@ class RecipeDetailInteractorImpl implements RecipeDetailInteractor {
                                     requiredItem.foodName(),
                                     UnitAmount.of(requiredItem.scale().multiply(BigDecimal.valueOf(requiredItem.amount())),
                                             requiredItem.abbreviation()),
-                                    collectPresentAmounts(requiredItem, presentItems)
+                                    getStoredAmounts(requiredItem, presentItems)
                             )));
                     regrouper.execute();
                     result.sort(comparing(RecipeIngredientForDetails::foodName));
@@ -82,7 +84,7 @@ class RecipeDetailInteractorImpl implements RecipeDetailInteractor {
                                     requiredItem.foodName(),
                                     UnitAmount.of(requiredItem.scale().multiply(BigDecimal.valueOf(requiredItem.amount())),
                                             requiredItem.abbreviation()),
-                                    collectPresentAmounts(requiredItem, presentItems)
+                                    getStoredAmounts(requiredItem, presentItems)
                             )));
                     regrouper.execute();
                     result.sort(comparing(RecipeProductForDetails::foodName));
@@ -90,12 +92,11 @@ class RecipeDetailInteractorImpl implements RecipeDetailInteractor {
                 });
     }
 
-    private List<UnitAmount> collectPresentAmounts(RecipeFoodForDetailsBaseData requiredItem, List<PresentRecipeFoodForDetailsBaseData> presentItems) {
+    private List<UnitAmount> getStoredAmounts(RecipeFoodForDetailsBaseData requiredItem, List<PresentRecipeFoodForDetailsBaseData> presentItems) {
         if (presentItems.isEmpty())
-            return List.of(UnitAmount.of(BigDecimal.ZERO, requiredItem.foodDefaultUnitAbbreviation()));
+            return List.of(UnitAmount.of(BigDecimal.ZERO, requiredItem.abbreviation()));
         else
-            return presentItems.stream()
-                    .map(v -> UnitAmount.of(v.scale().multiply(BigDecimal.valueOf(v.amount())), v.abbreviation()))
-                    .collect(toList());
+            return foodRegrouper.regroupSingleFood(presentItems);
     }
+
 }

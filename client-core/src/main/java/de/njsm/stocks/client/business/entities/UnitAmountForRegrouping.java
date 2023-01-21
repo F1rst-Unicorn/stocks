@@ -21,18 +21,15 @@
 
 package de.njsm.stocks.client.business.entities;
 
-import com.google.auto.value.AutoValue;
-
 import java.math.BigDecimal;
 
-@AutoValue
-public abstract class PresentRecipeFoodForDetailsBaseData implements UnitAmountForRegrouping {
+public interface UnitAmountForRegrouping {
 
-    public abstract int id();
+    BigDecimal scale();
 
-    public abstract String foodName();
+    String abbreviation();
 
-    public static PresentRecipeFoodForDetailsBaseData create(int id, String foodName, int unitId, String abbreviation, BigDecimal scale, int numberOfFoodItemsWithSameScaledUnit) {
-        return new AutoValue_PresentRecipeFoodForDetailsBaseData(scale, abbreviation, unitId, numberOfFoodItemsWithSameScaledUnit, id, foodName);
-    }
+    int unitId();
+
+    int numberOfFoodItemsWithSameScaledUnit();
 }

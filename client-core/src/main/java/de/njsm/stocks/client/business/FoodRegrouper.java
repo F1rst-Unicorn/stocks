@@ -21,10 +21,7 @@
 
 package de.njsm.stocks.client.business;
 
-import de.njsm.stocks.client.business.entities.Food;
-import de.njsm.stocks.client.business.entities.Id;
-import de.njsm.stocks.client.business.entities.StoredFoodAmount;
-import de.njsm.stocks.client.business.entities.UnitAmount;
+import de.njsm.stocks.client.business.entities.*;
 
 import javax.inject.Inject;
 import java.math.BigDecimal;
@@ -64,15 +61,19 @@ class FoodRegrouper {
                 .collect(toList());
     }
 
-    private <O, I extends Id<Food>> O regroupSingleFood(I food, List<StoredFoodAmount> storedFoodAmounts, ResultFactory<I, O> factory) {
-        List<UnitAmount> amountsSummedByUnit = storedFoodAmounts.stream().collect(groupingBy(StoredFoodAmount::unitId))
+    <O, I extends Id<Food>>
+    O regroupSingleFood(I food, List<? extends UnitAmountForRegrouping> storedFoodAmounts, ResultFactory<I, O> factory) {
+        return factory.build(food, regroupSingleFood(storedFoodAmounts), localiser);
+    }
+
+    List<UnitAmount> regroupSingleFood(List<? extends UnitAmountForRegrouping> storedFoodAmounts) {
+        return storedFoodAmounts.stream().collect(groupingBy(UnitAmountForRegrouping::unitId))
                 .values().stream()
                 .map(FoodRegrouper::addAmountsOfSameUnit)
                 .collect(toList());
-        return factory.build(food, amountsSummedByUnit, localiser);
     }
 
-    private static UnitAmount addAmountsOfSameUnit(List<StoredFoodAmount> singleUnitAmounts) {
+    private static UnitAmount addAmountsOfSameUnit(List<? extends UnitAmountForRegrouping> singleUnitAmounts) {
         BigDecimal amount = singleUnitAmounts.stream()
                 .map(v -> v.scale().multiply(valueOf(v.numberOfFoodItemsWithSameScaledUnit())))
                 .reduce(ZERO, BigDecimal::add);

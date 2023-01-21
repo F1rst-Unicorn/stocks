@@ -4,22 +4,25 @@
 
 ### Fixed
 
+* Sum amounts of same unit in recipe ingredient details
+  ([#75](https://j.njsm.de/git/veenj/stocks/issues/75)).
+
 * Show food default unit of food in stock in recipe details instead of no text
   ([#75](https://j.njsm.de/git/veenj/stocks/issues/75)).
 
-* Hide optional ingredients with needed amount of 0 from recipe ingredients.
+* Hide optional ingredients with needed amount of 0 from recipe ingredients
   ([#75](https://j.njsm.de/git/veenj/stocks/issues/75)).
 
-* Sort ingredients and products alphabetically.
+* Sort ingredients and products alphabetically
   ([#75](https://j.njsm.de/git/veenj/stocks/issues/75)).
 
-* Hide ingredients or products if they are empty, respectively.
+* Hide ingredients or products if they are empty, respectively
   ([#75](https://j.njsm.de/git/veenj/stocks/issues/75)).
 
-* Show bottom toolbar when viewing specific history lists.
+* Show bottom toolbar when viewing specific history lists
   ([#75](https://j.njsm.de/git/veenj/stocks/issues/75)).
 
-* Locations are now ordered alphabetically when adding food items.
+* Locations are now ordered alphabetically when adding food items
   ([#75](https://j.njsm.de/git/veenj/stocks/issues/75)).
 
 ## [4.1.0.0]
