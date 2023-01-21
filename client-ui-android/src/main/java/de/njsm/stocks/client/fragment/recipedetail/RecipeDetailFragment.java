@@ -71,10 +71,13 @@ public class RecipeDetailFragment extends BottomToolbarFragment implements MenuP
 
     private void onBindData(RecipeForDetails recipeForDetails) {
         requireActivity().setTitle(recipeForDetails.name());
-        TextView instructions = getView().findViewById(R.id.fragment_recipe_details_instructions);
+        requireView().findViewById(R.id.fragment_recipe_details_loading_indicator).setVisibility(View.GONE);
+        requireView().findViewById(R.id.fragment_recipe_details_content).setVisibility(View.VISIBLE);
+
+        TextView instructions = requireView().findViewById(R.id.fragment_recipe_details_instructions);
         instructions.setText(recipeForDetails.instructions());
 
-        TextView duration = getView().findViewById(R.id.fragment_recipe_details_duration);
+        TextView duration = requireView().findViewById(R.id.fragment_recipe_details_duration);
         duration.setText(String.valueOf(recipeForDetails.duration().toMinutes()));
 
         renderRecipeItems(recipeForDetails.ingredients(), R.id.fragment_recipe_details_ingredient_list, R.id.fragment_recipe_details_title_ingredients);
@@ -82,10 +85,10 @@ public class RecipeDetailFragment extends BottomToolbarFragment implements MenuP
     }
 
     private void renderRecipeItems(List<? extends RecipeItem> list, @IdRes int targetViewId, @IdRes int headlineView) {
-        TextView targetView = getView().findViewById(targetViewId);
+        TextView targetView = requireView().findViewById(targetViewId);
         if (list.isEmpty()) {
             targetView.setVisibility(View.GONE);
-            getView().findViewById(headlineView).setVisibility(View.GONE);
+            requireView().findViewById(headlineView).setVisibility(View.GONE);
         }
 
         String content = list

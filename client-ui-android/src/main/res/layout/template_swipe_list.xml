@@ -66,10 +66,7 @@
                     android:paddingRight="8dp"
                     app:indicatorSize="48dp"
                     app:trackThickness="4dp"
-                    app:indicatorColor="@android:color/darker_gray">
-
-            </com.google.android.material.progressindicator.CircularProgressIndicator>
-
+                    app:indicatorColor="@android:color/darker_gray"/>
         </RelativeLayout>
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
