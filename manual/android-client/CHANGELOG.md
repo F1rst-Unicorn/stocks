@@ -4,6 +4,9 @@
 
 ### Fixed
 
+* Sort ingredients and products alphabetically.
+  ([#75](https://j.njsm.de/git/veenj/stocks/issues/75)).
+
 * Hide ingredients or products if they are empty, respectively.
   ([#75](https://j.njsm.de/git/veenj/stocks/issues/75)).
 

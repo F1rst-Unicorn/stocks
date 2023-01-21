@@ -32,6 +32,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
+import static java.util.Comparator.comparing;
 import static java.util.stream.Collectors.toList;
 
 class RecipeDetailRepositoryImpl implements RecipeDetailRepository {
@@ -66,6 +67,7 @@ class RecipeDetailRepositoryImpl implements RecipeDetailRepository {
                                             .collect(toList())
                             )));
                     regrouper.execute();
+                    result.sort(comparing(RecipeIngredientForDetails::foodName));
                     return result;
                 });
     }
@@ -88,6 +90,7 @@ class RecipeDetailRepositoryImpl implements RecipeDetailRepository {
                                             .collect(toList())
                             )));
                     regrouper.execute();
+                    result.sort(comparing(RecipeProductForDetails::foodName));
                     return result;
                 });
     }
