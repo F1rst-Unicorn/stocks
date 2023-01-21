@@ -34,7 +34,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import de.njsm.stocks.client.business.Localiser;
 import de.njsm.stocks.client.business.entities.event.ActivityEvent;
 import de.njsm.stocks.client.databind.event.EventAdapter;
-import de.njsm.stocks.client.fragment.InjectableFragment;
+import de.njsm.stocks.client.fragment.BottomToolbarFragment;
 import de.njsm.stocks.client.fragment.view.TemplateSwipeList;
 import de.njsm.stocks.client.navigation.HistoryNavigator;
 import de.njsm.stocks.client.presenter.HistoryViewModel;
@@ -42,7 +42,7 @@ import de.njsm.stocks.client.ui.R;
 
 import javax.inject.Inject;
 
-public class HistoryFragment extends InjectableFragment {
+public class HistoryFragment extends BottomToolbarFragment {
 
     private HistoryViewModel historyViewModel;
 
@@ -53,15 +53,18 @@ public class HistoryFragment extends InjectableFragment {
     @NonNull
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View root = inflater.inflate(R.layout.template_swipe_list, container, false);
-        TemplateSwipeList templateSwipeList = new TemplateSwipeList(root);
+        View root = super.onCreateView(inflater, container, savedInstanceState);
+        View listRoot = insertContent(inflater, root, R.layout.template_swipe_list);
+
+        TemplateSwipeList templateSwipeList = new TemplateSwipeList(listRoot);
+        templateSwipeList.hideFloatingActionButton();
 
         EventAdapter adapter = new EventAdapter(
                 this::doNothing,
                 localiser,
                 this::getString);
         templateSwipeList.initialiseList(requireContext(), adapter);
-        RecyclerView activityFeed = root.findViewById(R.id.template_swipe_list_list);
+        RecyclerView activityFeed = listRoot.findViewById(R.id.template_swipe_list_list);
         getActivityFeed().observe(getViewLifecycleOwner(), v -> {
             activityFeed.scrollToPosition(0);
             adapter.submitData(getLifecycle(), v);
@@ -84,6 +87,7 @@ public class HistoryFragment extends InjectableFragment {
 
     @Inject
     protected void setViewModelFactory(ViewModelProvider.Factory viewModelFactory) {
+        super.setViewModelFactory(viewModelFactory);
         ViewModelProvider viewModelProvider = new ViewModelProvider(this, viewModelFactory);
         historyViewModel = viewModelProvider.get(HistoryViewModel.class);
     }
