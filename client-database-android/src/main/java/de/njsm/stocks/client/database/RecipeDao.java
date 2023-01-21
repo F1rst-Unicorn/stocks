@@ -63,6 +63,7 @@ abstract class RecipeDao {
             "join current_scaled_unit s on f.unit = s.id " +
             "join current_unit u on u.id = s.unit " +
             "where i.recipe = :recipeId " +
+            "and i.amount > 0 " +
             "group by i.recipe, i.id, u.id, s.scale " +
             "order by i.id")
     abstract Observable<List<RecipeDetailRepositoryImpl.RecipeFoodForDetailsBaseData>> getIngredientsPresentAmountsOf(int recipeId);
@@ -73,6 +74,7 @@ abstract class RecipeDao {
             "join current_scaled_unit s on i.unit = s.id " +
             "join current_unit u on u.id = s.unit " +
             "where i.recipe = :recipeId " +
+            "and i.amount > 0 " +
             "order by i.id")
     abstract Observable<List<RecipeDetailRepositoryImpl.RecipeFoodForDetailsBaseData>> getIngredientsRequiredAmountOf(int recipeId);
 
@@ -83,6 +85,7 @@ abstract class RecipeDao {
             "join current_scaled_unit s on f.unit = s.id " +
             "join current_unit u on u.id = s.unit " +
             "where i.recipe = :recipeId " +
+            "and i.amount > 0 " +
             "group by i.recipe, i.id, u.id, s.scale " +
             "order by i.id")
     abstract Observable<List<RecipeDetailRepositoryImpl.RecipeFoodForDetailsBaseData>> getProductsPresentAmountsOf(int recipeId);
@@ -93,6 +96,7 @@ abstract class RecipeDao {
             "join current_scaled_unit s on i.unit = s.id " +
             "join current_unit u on u.id = s.unit " +
             "where i.recipe = :recipeId " +
+            "and i.amount > 0 " +
             "order by i.id")
     abstract Observable<List<RecipeDetailRepositoryImpl.RecipeFoodForDetailsBaseData>> getProductsProducedAmountOf(int recipeId);
 

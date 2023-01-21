@@ -4,6 +4,9 @@
 
 ### Fixed
 
+* Hide optional ingredients with needed amount of 0 from recipe ingredients.
+  ([#75](https://j.njsm.de/git/veenj/stocks/issues/75)).
+
 * Sort ingredients and products alphabetically.
   ([#75](https://j.njsm.de/git/veenj/stocks/issues/75)).
 
