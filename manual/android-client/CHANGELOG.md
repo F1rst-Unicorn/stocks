@@ -4,6 +4,9 @@
 
 ### Fixed
 
+* Hide ingredients or products if they are empty, respectively.
+  ([#75](https://j.njsm.de/git/veenj/stocks/issues/75)).
+
 * Show bottom toolbar when viewing specific history lists.
   ([#75](https://j.njsm.de/git/veenj/stocks/issues/75)).
 

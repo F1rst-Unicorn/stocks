@@ -77,11 +77,17 @@ public class RecipeDetailFragment extends BottomToolbarFragment implements MenuP
         TextView duration = getView().findViewById(R.id.fragment_recipe_details_duration);
         duration.setText(String.valueOf(recipeForDetails.duration().toMinutes()));
 
-        renderRecipeItems(recipeForDetails.ingredients(), R.id.fragment_recipe_details_ingredient_list);
-        renderRecipeItems(recipeForDetails.products(), R.id.fragment_recipe_details_product_list);
+        renderRecipeItems(recipeForDetails.ingredients(), R.id.fragment_recipe_details_ingredient_list, R.id.fragment_recipe_details_title_ingredients);
+        renderRecipeItems(recipeForDetails.products(), R.id.fragment_recipe_details_product_list, R.id.fragment_recipe_details_title_products);
     }
 
-    private void renderRecipeItems(List<? extends RecipeItem> list, @IdRes int targetViewId) {
+    private void renderRecipeItems(List<? extends RecipeItem> list, @IdRes int targetViewId, @IdRes int headlineView) {
+        TextView targetView = getView().findViewById(targetViewId);
+        if (list.isEmpty()) {
+            targetView.setVisibility(View.GONE);
+            getView().findViewById(headlineView).setVisibility(View.GONE);
+        }
+
         String content = list
                 .stream()
                 .map(v -> String.format(getString(R.string.dialog_recipe_item),
@@ -89,7 +95,6 @@ public class RecipeDetailFragment extends BottomToolbarFragment implements MenuP
                         v.foodName(),
                         renderStrategy.render(v.storedAmounts())))
                 .collect(Collectors.joining("\n"));
-        TextView targetView = getView().findViewById(targetViewId);
         targetView.setText(content);
     }
 
