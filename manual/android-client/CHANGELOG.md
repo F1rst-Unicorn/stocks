@@ -4,6 +4,9 @@
 
 ### Fixed
 
+* Show food default unit of food in stock in recipe details instead of no text
+  ([#75](https://j.njsm.de/git/veenj/stocks/issues/75)).
+
 * Hide optional ingredients with needed amount of 0 from recipe ingredients.
   ([#75](https://j.njsm.de/git/veenj/stocks/issues/75)).
 

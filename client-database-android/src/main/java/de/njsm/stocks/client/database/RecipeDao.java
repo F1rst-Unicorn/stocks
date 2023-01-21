@@ -22,6 +22,8 @@ package de.njsm.stocks.client.database;
 
 import androidx.room.Dao;
 import androidx.room.Query;
+import de.njsm.stocks.client.business.entities.PresentRecipeFoodForDetailsBaseData;
+import de.njsm.stocks.client.business.entities.RecipeFoodForDetailsBaseData;
 import de.njsm.stocks.client.business.entities.RecipeForDetailsBaseData;
 import de.njsm.stocks.client.business.entities.RecipeForListingBaseData;
 import io.reactivex.rxjava3.core.Observable;
@@ -66,17 +68,19 @@ abstract class RecipeDao {
             "and i.amount > 0 " +
             "group by i.recipe, i.id, u.id, s.scale " +
             "order by i.id")
-    abstract Observable<List<RecipeDetailRepositoryImpl.RecipeFoodForDetailsBaseData>> getIngredientsPresentAmountsOf(int recipeId);
+    abstract Observable<List<PresentRecipeFoodForDetailsBaseData>> getIngredientsPresentAmountsOf(int recipeId);
 
-    @Query("select i.id, f.name as foodName, u.abbreviation, s.scale, i.amount " +
+    @Query("select i.id, f.name as foodName, u.abbreviation, s.scale, i.amount, food_unit.abbreviation as foodDefaultUnitAbbreviation " +
             "from current_recipe_ingredient i " +
             "join current_food f on f.id = i.ingredient " +
             "join current_scaled_unit s on i.unit = s.id " +
             "join current_unit u on u.id = s.unit " +
+            "join current_scaled_unit food_scaled_unit on f.store_unit = food_scaled_unit.id " +
+            "join current_unit food_unit on food_scaled_unit.unit = food_unit.id " +
             "where i.recipe = :recipeId " +
             "and i.amount > 0 " +
             "order by i.id")
-    abstract Observable<List<RecipeDetailRepositoryImpl.RecipeFoodForDetailsBaseData>> getIngredientsRequiredAmountOf(int recipeId);
+    abstract Observable<List<RecipeFoodForDetailsBaseData>> getIngredientsRequiredAmountOf(int recipeId);
 
     @Query("select i.id, food.name as foodName, u.abbreviation, s.scale, count(*) as amount " +
             "from current_recipe_product i " +
@@ -88,17 +92,19 @@ abstract class RecipeDao {
             "and i.amount > 0 " +
             "group by i.recipe, i.id, u.id, s.scale " +
             "order by i.id")
-    abstract Observable<List<RecipeDetailRepositoryImpl.RecipeFoodForDetailsBaseData>> getProductsPresentAmountsOf(int recipeId);
+    abstract Observable<List<PresentRecipeFoodForDetailsBaseData>> getProductsPresentAmountsOf(int recipeId);
 
-    @Query("select i.id, f.name as foodName, u.abbreviation, s.scale, i.amount " +
+    @Query("select i.id, f.name as foodName, u.abbreviation, s.scale, i.amount, food_unit.abbreviation as foodDefaultUnitAbbreviation " +
             "from current_recipe_product i " +
             "join current_food f on f.id = i.product " +
             "join current_scaled_unit s on i.unit = s.id " +
             "join current_unit u on u.id = s.unit " +
+            "join current_scaled_unit food_scaled_unit on f.store_unit = food_scaled_unit.id " +
+            "join current_unit food_unit on food_scaled_unit.unit = food_unit.id " +
             "where i.recipe = :recipeId " +
             "and i.amount > 0 " +
             "order by i.id")
-    abstract Observable<List<RecipeDetailRepositoryImpl.RecipeFoodForDetailsBaseData>> getProductsProducedAmountOf(int recipeId);
+    abstract Observable<List<RecipeFoodForDetailsBaseData>> getProductsProducedAmountOf(int recipeId);
 
     @Query("select r.id, r.name, r.instructions, r.duration " +
             "from current_recipe r " +

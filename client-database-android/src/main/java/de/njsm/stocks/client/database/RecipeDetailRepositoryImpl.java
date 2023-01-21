@@ -21,19 +21,12 @@
 
 package de.njsm.stocks.client.database;
 
-import com.google.auto.value.AutoValue;
-import de.njsm.stocks.client.business.ListRegrouper;
 import de.njsm.stocks.client.business.RecipeDetailRepository;
 import de.njsm.stocks.client.business.entities.*;
 import io.reactivex.rxjava3.core.Observable;
 
 import javax.inject.Inject;
-import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
-
-import static java.util.Comparator.comparing;
-import static java.util.stream.Collectors.toList;
 
 class RecipeDetailRepositoryImpl implements RecipeDetailRepository {
 
@@ -50,66 +43,22 @@ class RecipeDetailRepositoryImpl implements RecipeDetailRepository {
     }
 
     @Override
-    public Observable<List<RecipeIngredientForDetails>> getIngredientsOf(Id<Recipe> recipeId) {
-        return recipeDao.getIngredientsRequiredAmountOf(recipeId.id())
-                .zipWith(recipeDao.getIngredientsPresentAmountsOf(recipeId.id()), (required, present) -> {
-                    List<RecipeIngredientForDetails> result = new ArrayList<>();
-                    var regrouper = new ListRegrouper<>(
-                            new ListRegrouper.Group<>(required.iterator(), RecipeFoodForDetailsBaseData::id),
-                            new ListRegrouper.Group<>(present.iterator(), RecipeFoodForDetailsBaseData::id),
-                            (requiredItem, presentItems) -> result.add(RecipeIngredientForDetails.create(
-                                    requiredItem.id(),
-                                    requiredItem.foodName(),
-                                    UnitAmount.of(requiredItem.scale().multiply(BigDecimal.valueOf(requiredItem.amount())),
-                                            requiredItem.abbreviation()),
-                                    presentItems.stream()
-                                            .map(v -> UnitAmount.of(v.scale().multiply(BigDecimal.valueOf(v.amount())), v.abbreviation()))
-                                            .collect(toList())
-                            )));
-                    regrouper.execute();
-                    result.sort(comparing(RecipeIngredientForDetails::foodName));
-                    return result;
-                });
+    public Observable<List<PresentRecipeFoodForDetailsBaseData>> getIngredientsPresentAmountsOf(Id<Recipe> recipeId) {
+        return recipeDao.getIngredientsPresentAmountsOf(recipeId.id());
     }
 
     @Override
-    public Observable<List<RecipeProductForDetails>> getProductsOf(Id<Recipe> recipeId) {
-        return recipeDao.getProductsProducedAmountOf(recipeId.id())
-                .zipWith(recipeDao.getProductsPresentAmountsOf(recipeId.id()), (required, present) -> {
-                    List<RecipeProductForDetails> result = new ArrayList<>();
-                    var regrouper = new ListRegrouper<>(
-                            new ListRegrouper.Group<>(required.iterator(), RecipeFoodForDetailsBaseData::id),
-                            new ListRegrouper.Group<>(present.iterator(), RecipeFoodForDetailsBaseData::id),
-                            (requiredItem, presentItems) -> result.add(RecipeProductForDetails.create(
-                                    requiredItem.id(),
-                                    requiredItem.foodName(),
-                                    UnitAmount.of(requiredItem.scale().multiply(BigDecimal.valueOf(requiredItem.amount())),
-                                            requiredItem.abbreviation()),
-                                    presentItems.stream()
-                                            .map(v -> UnitAmount.of(v.scale().multiply(BigDecimal.valueOf(v.amount())), v.abbreviation()))
-                                            .collect(toList())
-                            )));
-                    regrouper.execute();
-                    result.sort(comparing(RecipeProductForDetails::foodName));
-                    return result;
-                });
+    public Observable<List<RecipeFoodForDetailsBaseData>> getIngredientsRequiredAmountOf(Id<Recipe> recipeId) {
+        return recipeDao.getIngredientsRequiredAmountOf(recipeId.id());
     }
 
-    @AutoValue
-    abstract static class RecipeFoodForDetailsBaseData {
+    @Override
+    public Observable<List<PresentRecipeFoodForDetailsBaseData>> getProductsPresentAmountsOf(Id<Recipe> recipeId) {
+        return recipeDao.getProductsPresentAmountsOf(recipeId.id());
+    }
 
-        public abstract int id();
-
-        public abstract String foodName();
-
-        public abstract String abbreviation();
-
-        public abstract BigDecimal scale();
-
-        public abstract int amount();
-
-        public static RecipeFoodForDetailsBaseData create(int id, String foodName, String abbreviation, BigDecimal scale, int amount) {
-            return new AutoValue_RecipeDetailRepositoryImpl_RecipeFoodForDetailsBaseData(id, foodName, abbreviation, scale, amount);
-        }
+    @Override
+    public Observable<List<RecipeFoodForDetailsBaseData>> getProductsProducedAmountOf(Id<Recipe> recipeId) {
+        return recipeDao.getProductsProducedAmountOf(recipeId.id());
     }
 }

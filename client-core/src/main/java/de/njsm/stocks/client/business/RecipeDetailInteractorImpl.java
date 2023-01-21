@@ -21,12 +21,16 @@
 
 package de.njsm.stocks.client.business;
 
-import de.njsm.stocks.client.business.entities.Id;
-import de.njsm.stocks.client.business.entities.Recipe;
-import de.njsm.stocks.client.business.entities.RecipeForDetails;
+import de.njsm.stocks.client.business.entities.*;
 import io.reactivex.rxjava3.core.Observable;
 
 import javax.inject.Inject;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
+
+import static java.util.Comparator.comparing;
+import static java.util.stream.Collectors.toList;
 
 class RecipeDetailInteractorImpl implements RecipeDetailInteractor {
 
@@ -41,8 +45,57 @@ class RecipeDetailInteractorImpl implements RecipeDetailInteractor {
     public Observable<RecipeForDetails> get(Id<Recipe> recipeId) {
         return Observable.zip(
                 repository.get(recipeId),
-                repository.getIngredientsOf(recipeId),
-                repository.getProductsOf(recipeId), (r, i, p) ->
+                getIngredientsOf(recipeId),
+                getProductsOf(recipeId), (r, i, p) ->
                         RecipeForDetails.create(r.id(), r.name(), r.duration(), r.instructions(), i, p));
+    }
+
+    private Observable<List<RecipeIngredientForDetails>> getIngredientsOf(Id<Recipe> recipeId) {
+        return repository.getIngredientsRequiredAmountOf(recipeId)
+                .zipWith(repository.getIngredientsPresentAmountsOf(recipeId), (required, present) -> {
+                    List<RecipeIngredientForDetails> result = new ArrayList<>();
+                    var regrouper = new ListRegrouper<>(
+                            new ListRegrouper.Group<>(required.iterator(), RecipeFoodForDetailsBaseData::id),
+                            new ListRegrouper.Group<>(present.iterator(), PresentRecipeFoodForDetailsBaseData::id),
+                            (requiredItem, presentItems) -> result.add(RecipeIngredientForDetails.create(
+                                    requiredItem.id(),
+                                    requiredItem.foodName(),
+                                    UnitAmount.of(requiredItem.scale().multiply(BigDecimal.valueOf(requiredItem.amount())),
+                                            requiredItem.abbreviation()),
+                                    collectPresentAmounts(requiredItem, presentItems)
+                            )));
+                    regrouper.execute();
+                    result.sort(comparing(RecipeIngredientForDetails::foodName));
+                    return result;
+                });
+    }
+
+    private Observable<List<RecipeProductForDetails>> getProductsOf(Id<Recipe> recipeId) {
+        return repository.getProductsProducedAmountOf(recipeId)
+                .zipWith(repository.getProductsPresentAmountsOf(recipeId), (required, present) -> {
+                    List<RecipeProductForDetails> result = new ArrayList<>();
+                    var regrouper = new ListRegrouper<>(
+                            new ListRegrouper.Group<>(required.iterator(), RecipeFoodForDetailsBaseData::id),
+                            new ListRegrouper.Group<>(present.iterator(), PresentRecipeFoodForDetailsBaseData::id),
+                            (requiredItem, presentItems) -> result.add(RecipeProductForDetails.create(
+                                    requiredItem.id(),
+                                    requiredItem.foodName(),
+                                    UnitAmount.of(requiredItem.scale().multiply(BigDecimal.valueOf(requiredItem.amount())),
+                                            requiredItem.abbreviation()),
+                                    collectPresentAmounts(requiredItem, presentItems)
+                            )));
+                    regrouper.execute();
+                    result.sort(comparing(RecipeProductForDetails::foodName));
+                    return result;
+                });
+    }
+
+    private List<UnitAmount> collectPresentAmounts(RecipeFoodForDetailsBaseData requiredItem, List<PresentRecipeFoodForDetailsBaseData> presentItems) {
+        if (presentItems.isEmpty())
+            return List.of(UnitAmount.of(BigDecimal.ZERO, requiredItem.foodDefaultUnitAbbreviation()));
+        else
+            return presentItems.stream()
+                    .map(v -> UnitAmount.of(v.scale().multiply(BigDecimal.valueOf(v.amount())), v.abbreviation()))
+                    .collect(toList());
     }
 }

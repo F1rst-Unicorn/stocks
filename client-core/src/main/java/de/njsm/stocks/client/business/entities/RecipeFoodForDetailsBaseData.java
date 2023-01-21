@@ -19,22 +19,28 @@
  *
  */
 
-package de.njsm.stocks.client.business;
+package de.njsm.stocks.client.business.entities;
 
-import de.njsm.stocks.client.business.entities.*;
-import io.reactivex.rxjava3.core.Observable;
+import com.google.auto.value.AutoValue;
 
-import java.util.List;
+import java.math.BigDecimal;
 
-public interface RecipeDetailRepository {
+@AutoValue
+public abstract class RecipeFoodForDetailsBaseData {
 
-    Observable<RecipeForDetailsBaseData> get(Id<Recipe> recipeId);
+    public abstract int id();
 
-    Observable<List<PresentRecipeFoodForDetailsBaseData>> getIngredientsPresentAmountsOf(Id<Recipe> recipeId);
+    public abstract String foodName();
 
-    Observable<List<RecipeFoodForDetailsBaseData>> getIngredientsRequiredAmountOf(Id<Recipe> recipeId);
+    public abstract String abbreviation();
 
-    Observable<List<PresentRecipeFoodForDetailsBaseData>> getProductsPresentAmountsOf(Id<Recipe> recipeId);
+    public abstract BigDecimal scale();
 
-    Observable<List<RecipeFoodForDetailsBaseData>> getProductsProducedAmountOf(Id<Recipe> recipeId);
+    public abstract int amount();
+
+    public abstract String foodDefaultUnitAbbreviation();
+
+    public static RecipeFoodForDetailsBaseData create(int id, String foodName, String abbreviation, BigDecimal scale, int amount, String foodDefaultUnitAbbreviation) {
+        return new AutoValue_RecipeFoodForDetailsBaseData(id, foodName, abbreviation, scale, amount, foodDefaultUnitAbbreviation);
+    }
 }
