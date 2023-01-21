@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## [4.1.0.1]
+
 ### Fixed
 
 * Sum amounts of same unit in recipe ingredient details
