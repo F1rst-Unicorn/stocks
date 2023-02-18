@@ -199,4 +199,10 @@ public class ErrorDetailsPrinterTest {
         var recipe = RecipeAddForm.create("Pizza", "just bake", Duration.ofMinutes(3), emptyList(), emptyList());
         assertEquals(recipe.name(), uut.visit(recipe, null));
     }
+
+    @Test
+    public void userAddingShowsName() {
+        var user = UserAddForm.create("Joanna");
+        assertEquals(user.name(), uut.visit(user, null));
+    }
 }

@@ -154,4 +154,9 @@ public class ErrorDetailsDetailsVisitor implements ErrorDetailsVisitor<Void, Str
         // not really used
         return String.valueOf(foodForBuying.id());
     }
+
+    @Override
+    public String userAddForm(UserAddForm userAddForm, Void input) {
+        return userAddForm.name();
+    }
 }

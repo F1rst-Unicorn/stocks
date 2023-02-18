@@ -461,4 +461,10 @@ public interface FakeBusinessModule {
     static RecipeDetailInteractor RecipeDetailInteractor() {
         return mock(RecipeDetailInteractor.class);
     }
+
+    @Provides
+    @Singleton
+    static UserAddInteractor UserAddInteractor() {
+        return mock(UserAddInteractor.class);
+    }
 }

@@ -248,5 +248,10 @@ public class ErrorDetailsFragment extends InjectableFragment {
             // not really used
             return String.valueOf(foodForBuying.id());
         }
+
+        @Override
+        public String userAddForm(UserAddForm userAddForm, Void input) {
+            return userAddForm.name();
+        }
     }
 }

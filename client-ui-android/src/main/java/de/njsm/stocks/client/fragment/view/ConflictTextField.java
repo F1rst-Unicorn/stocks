@@ -66,6 +66,10 @@ public class ConflictTextField extends ConflictField {
         onEditorOf(textInputField, v -> v.addTextChangedListener(new NonEmptyValidator(textInputField, callback)));
     }
 
+    public void addPrincipalNameValidator(BiConsumer<TextInputLayout, Boolean> callback) {
+        onEditorOf(textInputField, v -> v.addTextChangedListener(new InvalidPrincipalNameValidator(textInputField, callback)));
+    }
+
     public String get() {
         return stringFromForm(textInputField);
     }

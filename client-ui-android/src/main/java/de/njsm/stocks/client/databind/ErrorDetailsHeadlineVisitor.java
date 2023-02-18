@@ -135,4 +135,9 @@ public class ErrorDetailsHeadlineVisitor implements ErrorDetailsVisitor<Void, In
     public Integer foodForBuying(FoodForBuying foodForBuying, Void input) {
         return R.string.error_details_food_to_buy;
     }
+
+    @Override
+    public Integer userAddForm(UserAddForm userAddForm, Void input) {
+        return R.string.error_details_user_add;
+    }
 }

@@ -176,4 +176,7 @@ public interface ServerApi {
     Call<Response> editFoodToBuy(@Query("id") int id,
                                  @Query("version") int version,
                                  @Query("buy") int toBuy);
+
+    @PUT("/v2/user")
+    Call<DataResponse<Integer>> addUser(@Query("name") String name);
 }

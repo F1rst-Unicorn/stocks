@@ -26,6 +26,7 @@ import androidx.room.Insert;
 import androidx.room.Query;
 import de.njsm.stocks.client.business.entities.EntityType;
 import de.njsm.stocks.client.business.entities.FoodForBuying;
+import de.njsm.stocks.client.business.entities.UserAddForm;
 import de.njsm.stocks.client.database.*;
 import io.reactivex.rxjava3.core.Observable;
 
@@ -779,4 +780,20 @@ public abstract class ErrorDao {
     @Query("delete from food_to_buy " +
             "where id = :id")
     abstract void deleteFoodToBuy(Long id);
+
+    @Query("select * " +
+            "from user_to_add")
+    abstract List<UserAddEntity> getUserAdds();
+
+    @Insert
+    abstract long insert(UserAddEntity entity);
+
+    @Query("select * " +
+            "from user_to_add " +
+            "where id = :id")
+    abstract UserAddForm getUserToAdd(long id);
+
+    @Query("delete from user_to_add " +
+            "where id = :id")
+    abstract void deleteUserToAdd(long id);
 }

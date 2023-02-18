@@ -205,4 +205,7 @@ public interface BusinessModule {
 
     @Binds
     RecipeDetailInteractor RecipeDetailInteractor(RecipeDetailInteractorImpl impl);
+
+    @Binds
+    UserAddInteractor UserAddInteractor(UserAddInteractorImpl impl);
 }

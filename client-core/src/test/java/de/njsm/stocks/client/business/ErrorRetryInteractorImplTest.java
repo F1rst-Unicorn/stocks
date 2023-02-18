@@ -110,6 +110,9 @@ public class ErrorRetryInteractorImplTest {
     private FoodToBuyInteractor foodToBuyInteractor;
 
     @Mock
+    private UserAddInteractor userAddInteractor;
+
+    @Mock
     private Synchroniser synchroniser;
 
     @Mock
@@ -141,6 +144,7 @@ public class ErrorRetryInteractorImplTest {
                 userDeleteInteractor,
                 recipeAddInteractor,
                 foodToBuyInteractor,
+                userAddInteractor,
                 synchroniser,
                 scheduler,
                 errorRepository);
@@ -475,6 +479,17 @@ public class ErrorRetryInteractorImplTest {
         uut.retryInBackground(input);
 
         verify(foodToBuyInteractor).manageFoodToBuy(FoodToBuy.putOnShoppingList(food.id()));
+        verify(errorRepository).deleteError(input);
+    }
+
+    @Test
+    void userAddingDispatches() {
+        var user = UserAddForm.create("Joanna");
+        ErrorDescription input = ErrorDescription.create(1, StatusCode.DATABASE_UNREACHABLE, "", "test", user);
+
+        uut.retryInBackground(input);
+
+        verify(userAddInteractor).add(user);
         verify(errorRepository).deleteError(input);
     }
 }

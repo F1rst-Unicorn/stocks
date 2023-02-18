@@ -527,6 +527,18 @@ public class ErrorRecorderImplTest extends DbTestCase {
         );
     }
 
+    @Test
+    public void recordingErrorAddingUserWorks() {
+        test(UserAddForm.create("Joanna"),
+                uut::recordUserAddError,
+                ErrorEntity.Action.ADD_USER,
+                stocksDatabase.errorDao()::getUserAdds,
+                (expected, actual) -> {
+                    assertEquals(expected.name(), actual.name());
+                }
+        );
+    }
+
     private <T, E> void test(T input,
                              BiConsumer<? super SubsystemException, T> recorder,
                              ErrorEntity.Action action,

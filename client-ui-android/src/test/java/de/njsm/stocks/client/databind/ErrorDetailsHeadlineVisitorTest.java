@@ -76,5 +76,6 @@ public class ErrorDetailsHeadlineVisitorTest {
         assertEquals(R.string.error_details_user_delete_error_list, (long) uut.visit(UserDeleteErrorDetails.create(1, "Jack"), null));
         assertEquals(R.string.error_details_recipe_add_error_list, (long) uut.visit(RecipeAddForm.create("Pizza", "just bake", Duration.ofMinutes(3), emptyList(), emptyList()), null));
         assertEquals(R.string.error_details_food_to_buy, (long) uut.visit(FoodForBuying.create(1, 2, false), null));
+        assertEquals(R.string.error_details_user_add, (long) uut.visit(UserAddForm.create("Joanna"), null));
     }
 }

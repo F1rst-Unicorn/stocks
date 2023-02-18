@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+### Added
+
+* Users can now be added again
+  ([#70](https://j.njsm.de/git/veenj/stocks/issues/70)).
+
 ## [4.1.0.1]
 
 ### Fixed

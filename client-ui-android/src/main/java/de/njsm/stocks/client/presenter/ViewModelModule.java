@@ -324,4 +324,11 @@ public class ViewModelModule {
     ViewModel RecipeDetailViewModel(Synchroniser synchroniser, RecipeDetailInteractor interactor) {
         return new RecipeDetailViewModel(synchroniser, interactor);
     }
+
+    @Provides
+    @IntoMap
+    @ViewModelKey(UserAddViewModel.class)
+    ViewModel UserAddViewModel(UserAddInteractor interactor) {
+        return new UserAddViewModel(interactor);
+    }
 }

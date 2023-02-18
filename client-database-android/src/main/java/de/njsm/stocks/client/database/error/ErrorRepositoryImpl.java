@@ -278,4 +278,9 @@ public class ErrorRepositoryImpl implements ErrorRepository, ErrorEntity.ActionV
     public ErrorDetails foodShopping(ErrorEntity.Action action, Long input) {
         return errorDao.getFoodToBuy(input);
     }
+
+    @Override
+    public ErrorDetails addUser(ErrorEntity.Action action, Long input) {
+        return errorDao.getUserToAdd(input);
+    }
 }

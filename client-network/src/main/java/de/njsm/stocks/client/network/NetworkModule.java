@@ -120,6 +120,9 @@ public interface NetworkModule {
     @Binds
     FoodToBuyService FoodToBuyService(FoodToBuyServiceImpl impl);
 
+    @Binds
+    UserAddService UserAddService(UserAddServiceImpl impl);
+
     @Provides
     @Singleton
     static ServerApi serverApi(ServerEndpoint serverEndpoint, HostnameInterceptor interceptor) {

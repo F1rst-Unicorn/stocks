@@ -323,6 +323,7 @@
     <string name="error_details_user_delete_error_list">Benutzer löschen</string>
     <string name="error_details_recipe_add_error_list">Rezept anlegen</string>
     <string name="error_details_food_to_buy">Auf Einkaufliste setzen</string>
+    <string name="error_details_user_add">Benutzer hinzufügen</string>
 
     <string name="text_no_errors">Alles in Ordnung.</string>
 </resources>

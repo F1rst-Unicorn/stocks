@@ -68,4 +68,6 @@ public interface ErrorRecorder {
     void recordRecipeAddError(SubsystemException e, RecipeAddForm input);
 
     void recordFoodToBuyError(SubsystemException e, FoodForBuying networkData);
+
+    void recordUserAddError(SubsystemException e, UserAddForm form);
 }
