@@ -92,7 +92,7 @@ public class UserAddFragmentTest {
         onView(allOf(
                 isDescendantOfA(withId(R.id.fragment_user_form_name)),
                 withClassName(is(TextInputEditText.class.getName()))
-        )).perform(replaceText("some name"), clearText());
+        )).perform(replaceText("Joanna"), clearText());
 
         onView(withId(R.id.fragment_user_form_name))
                 .check(matches(hasDescendant(withText(R.string.error_may_not_be_empty))));
