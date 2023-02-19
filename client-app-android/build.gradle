@@ -30,7 +30,7 @@ android {
         minSdkVersion 24
         targetSdkVersion 32
         versionCode 1
-        versionName "4.1.0.1"
+        versionName "4.2.0.0"
         multiDexEnabled true
 
         testInstrumentationRunner "de.njsm.stocks.client.TestRunner"

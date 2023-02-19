@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## [4.2.0.0]
+
 ### Added
 
 * Users can now be added again
