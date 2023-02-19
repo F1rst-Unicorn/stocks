@@ -413,7 +413,7 @@
     </fragment>
     <fragment
             android:id="@+id/nav_fragment_user_add"
-            android:name="androidx.fragment.app.Fragment">
+            android:name="de.njsm.stocks.client.fragment.useradd.UserAddFragment">
     </fragment>
     <fragment
             android:id="@+id/nav_fragment_device_list"
