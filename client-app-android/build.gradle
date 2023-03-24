@@ -143,8 +143,6 @@ dependencies {
     implementation "uk.uuid.slf4j:slf4j-android:${slf4j_version}-0"
     implementation "com.google.zxing:core:${zxing_version}"
     implementation "com.journeyapps:zxing-android-embedded:${zxing_android_version}"
-    implementation "com.journeyapps:zxing-android-legacy:${zxing_android_version}"
-    implementation "com.journeyapps:zxing-android-integration:${zxing_android_version}"
 
     annotationProcessor "com.google.dagger:dagger-compiler:${dagger_version}"
     annotationProcessor "com.google.dagger:dagger-android-processor:${dagger_version}"

@@ -27,8 +27,9 @@ import android.content.Intent;
 import androidx.activity.result.contract.ActivityResultContract;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import com.google.zxing.integration.android.IntentIntegrator;
-import com.google.zxing.integration.android.IntentResult;
+import com.journeyapps.barcodescanner.ScanContract;
+import com.journeyapps.barcodescanner.ScanIntentResult;
+import com.journeyapps.barcodescanner.ScanOptions;
 import de.njsm.stocks.client.business.entities.RegistrationForm;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,18 +40,25 @@ class ScanRegistrationFormContract extends ActivityResultContract<Activity, Opti
 
     private static final Logger LOG = LoggerFactory.getLogger(ScanRegistrationFormContract.class);
 
+    private final ScanContract delegate;
+
+    public ScanRegistrationFormContract() {
+        this.delegate = new ScanContract();
+    }
+
     @NonNull
     @Override
     public Intent createIntent(@NonNull Context context, Activity input) {
         LOG.info("Starting QR code scanner");
-        IntentIntegrator integrator = new IntentIntegrator(input);
-        return integrator.createScanIntent();
+        ScanOptions options = new ScanOptions();
+        options.setBeepEnabled(false);
+        return delegate.createIntent(context, options);
     }
 
     @Override
     public Optional<RegistrationForm> parseResult(int resultCode, @Nullable Intent intent) {
-        return Optional.ofNullable(IntentIntegrator.parseActivityResult(IntentIntegrator.REQUEST_CODE, resultCode, intent))
-                .map(IntentResult::getContents)
+        return Optional.ofNullable(delegate.parseResult(resultCode, intent))
+                .map(ScanIntentResult::getContents)
                 .map(v -> {
                     LOG.info("Scanned QR code: " + v);
                     return v;

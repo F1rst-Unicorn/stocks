@@ -25,8 +25,9 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import androidx.activity.result.contract.ActivityResultContract;
-import com.google.zxing.integration.android.IntentIntegrator;
-import com.google.zxing.integration.android.IntentResult;
+import com.journeyapps.barcodescanner.ScanContract;
+import com.journeyapps.barcodescanner.ScanIntentResult;
+import com.journeyapps.barcodescanner.ScanOptions;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
@@ -38,18 +39,25 @@ public class ScanEanNumberContract extends ActivityResultContract<Activity, Opti
 
     private static final Logger LOG = LoggerFactory.getLogger(ScanEanNumberContract.class);
 
+    private final ScanContract delegate;
+
+    public ScanEanNumberContract() {
+        this.delegate = new ScanContract();
+    }
+
     @NotNull
     @Override
     public Intent createIntent(@NotNull Context context, Activity activity) {
         LOG.info("Starting EAN number scanner");
-        IntentIntegrator integrator = new IntentIntegrator(activity);
-        return integrator.createScanIntent();
+        ScanOptions options = new ScanOptions();
+        options.setBeepEnabled(false);
+        return delegate.createIntent(context, options);
     }
 
     @Override
     public Optional<String> parseResult(int resultCode, @Nullable Intent intent) {
-        return Optional.ofNullable(IntentIntegrator.parseActivityResult(IntentIntegrator.REQUEST_CODE, resultCode, intent))
-                .map(IntentResult::getContents)
+        return Optional.ofNullable(delegate.parseResult(resultCode, intent))
+                .map(ScanIntentResult::getContents)
                 .map(v -> {
                     LOG.info("Scanned EAN number: " + v);
                     return v;
