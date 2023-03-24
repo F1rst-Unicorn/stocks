@@ -159,4 +159,9 @@ public class ErrorDetailsDetailsVisitor implements ErrorDetailsVisitor<Void, Str
     public String userAddForm(UserAddForm userAddForm, Void input) {
         return userAddForm.name();
     }
+
+    @Override
+    public String userDeviceAddErrorDetails(UserDeviceAddErrorDetails userDeviceAddErrorDetails, Void input) {
+        return String.format("%s (%s)", userDeviceAddErrorDetails.name(), userDeviceAddErrorDetails.ownerName());
+    }
 }

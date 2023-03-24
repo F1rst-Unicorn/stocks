@@ -72,6 +72,8 @@ class ErrorRetryInteractorImpl implements ErrorRetryInteractor, ErrorDetailsVisi
 
     private final UserAddInteractor userAddInteractor;
 
+    private final UserDeviceAddInteractor userDeviceAddInteractor;
+
     private final Synchroniser synchroniser;
 
     private final Scheduler scheduler;
@@ -103,6 +105,7 @@ class ErrorRetryInteractorImpl implements ErrorRetryInteractor, ErrorDetailsVisi
                              RecipeAddInteractor recipeAddInteractor,
                              FoodToBuyInteractor foodToBuyInteractor,
                              UserAddInteractor userAddInteractor,
+                             UserDeviceAddInteractor userDeviceAddInteractor,
                              Synchroniser synchroniser,
                              Scheduler scheduler,
                              ErrorRepository errorRepository) {
@@ -128,6 +131,7 @@ class ErrorRetryInteractorImpl implements ErrorRetryInteractor, ErrorDetailsVisi
         this.recipeAddInteractor = recipeAddInteractor;
         this.foodToBuyInteractor = foodToBuyInteractor;
         this.userAddInteractor = userAddInteractor;
+        this.userDeviceAddInteractor = userDeviceAddInteractor;
         this.synchroniser = synchroniser;
         this.scheduler = scheduler;
         this.errorRepository = errorRepository;
@@ -326,6 +330,12 @@ class ErrorRetryInteractorImpl implements ErrorRetryInteractor, ErrorDetailsVisi
         return null;
     }
 
+    @Override
+    public Void userDeviceAddErrorDetails(UserDeviceAddErrorDetails userDeviceAddErrorDetails, Void input) {
+        userDeviceAddInteractor.add(userDeviceAddErrorDetails.into());
+        return null;
+    }
+
     private static final class JobTypeTranslator implements ErrorDetailsVisitor<Void, Job.Type> {
 
         @Override
@@ -441,6 +451,11 @@ class ErrorRetryInteractorImpl implements ErrorRetryInteractor, ErrorDetailsVisi
         @Override
         public Job.Type userAddForm(UserAddForm userAddForm, Void input) {
             return Job.Type.ADD_USER;
+        }
+
+        @Override
+        public Job.Type userDeviceAddErrorDetails(UserDeviceAddErrorDetails userDeviceAddErrorDetails, Void input) {
+            return Job.Type.ADD_USER_DEVICE;
         }
     }
 }

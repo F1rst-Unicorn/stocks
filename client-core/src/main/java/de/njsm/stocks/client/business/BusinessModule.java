@@ -208,4 +208,7 @@ public interface BusinessModule {
 
     @Binds
     UserAddInteractor UserAddInteractor(UserAddInteractorImpl impl);
+
+    @Binds
+    UserDeviceAddInteractor UserDeviceAddInteractor(UserDeviceAddInteractorImpl impl);
 }

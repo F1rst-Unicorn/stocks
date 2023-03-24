@@ -113,6 +113,9 @@ public class ErrorRetryInteractorImplTest {
     private UserAddInteractor userAddInteractor;
 
     @Mock
+    private UserDeviceAddInteractor userDeviceAddInteractor;
+
+    @Mock
     private Synchroniser synchroniser;
 
     @Mock
@@ -145,6 +148,7 @@ public class ErrorRetryInteractorImplTest {
                 recipeAddInteractor,
                 foodToBuyInteractor,
                 userAddInteractor,
+                userDeviceAddInteractor,
                 synchroniser,
                 scheduler,
                 errorRepository);
@@ -490,6 +494,17 @@ public class ErrorRetryInteractorImplTest {
         uut.retryInBackground(input);
 
         verify(userAddInteractor).add(user);
+        verify(errorRepository).deleteError(input);
+    }
+
+    @Test
+    void userDeviceAddingDispatches() {
+        var userDevice = UserDeviceAddErrorDetails.create("Mobile", IdImpl.create(42), "John");
+        ErrorDescription input = ErrorDescription.create(1, StatusCode.DATABASE_UNREACHABLE, "", "test", userDevice);
+
+        uut.retryInBackground(input);
+
+        verify(userDeviceAddInteractor).add(userDevice.into());
         verify(errorRepository).deleteError(input);
     }
 }

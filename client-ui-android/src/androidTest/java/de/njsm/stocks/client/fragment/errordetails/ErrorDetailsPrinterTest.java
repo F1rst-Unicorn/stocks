@@ -34,6 +34,7 @@ import java.time.LocalDate;
 import java.time.Period;
 import java.util.function.Function;
 
+import static de.njsm.stocks.client.business.entities.IdImpl.create;
 import static java.util.Collections.emptyList;
 import static org.junit.Assert.assertEquals;
 
@@ -204,5 +205,11 @@ public class ErrorDetailsPrinterTest {
     public void userAddingShowsName() {
         var user = UserAddForm.create("Joanna");
         assertEquals(user.name(), uut.visit(user, null));
+    }
+
+    @Test
+    public void userDeviceAddingShowsName() {
+        var device = UserDeviceAddErrorDetails.create("Mobile", create(2), "Joanna");
+        assertEquals(device.name() + " (" + device.ownerName() + ")", uut.visit(device, null));
     }
 }

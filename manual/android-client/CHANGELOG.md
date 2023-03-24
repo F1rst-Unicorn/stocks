@@ -9,6 +9,9 @@
 * Editing food was not possible and is fixed now
   ([#80](https://j.njsm.de/git/veenj/stocks/issues/80)).
 
+* Devices can now be added again
+  ([#71](https://j.njsm.de/git/veenj/stocks/issues/71)).
+
 ## [4.2.0.0]
 
 ### Added

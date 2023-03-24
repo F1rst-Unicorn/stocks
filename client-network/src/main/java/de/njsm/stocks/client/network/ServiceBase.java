@@ -37,14 +37,14 @@ abstract class ServiceBase<T> {
 
     final ServerApi api;
 
-    private final CallHandler callHandler;
+    final CallHandler callHandler;
 
     ServiceBase(ServerApi api, CallHandler callHandler) {
         this.api = api;
         this.callHandler = callHandler;
     }
 
-    public void perform(T input) {
+    void perform(T input) {
         LOG.debug(input.toString());
         Call<? extends Response> call = buildCall(input);
         StatusCode result = callHandler.executeCommand(call);

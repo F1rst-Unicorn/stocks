@@ -28,7 +28,7 @@ import androidx.annotation.Nullable;
 import androidx.core.view.MenuProvider;
 import androidx.lifecycle.ViewModelProvider;
 import de.njsm.stocks.client.business.entities.UserAddForm;
-import de.njsm.stocks.client.fragment.view.UserForm;
+import de.njsm.stocks.client.fragment.view.SingleNameForm;
 import de.njsm.stocks.client.fragment.BottomToolbarFragment;
 import de.njsm.stocks.client.navigation.Navigator;
 import de.njsm.stocks.client.presenter.UserAddViewModel;
@@ -42,7 +42,7 @@ public class UserAddFragment extends BottomToolbarFragment implements MenuProvid
 
     private Navigator navigator;
 
-    private UserForm form;
+    private SingleNameForm form;
 
     @NonNull
     @Override
@@ -50,7 +50,7 @@ public class UserAddFragment extends BottomToolbarFragment implements MenuProvid
         View root = super.onCreateView(inflater, container, savedInstanceState);
 
         View result = insertContent(inflater, root, R.layout.fragment_user_form);
-        form = new UserForm(result, this::getString);
+        form = new SingleNameForm(result, this::getString, R.id.fragment_user_form_name);
 
         requireActivity().addMenuProvider(this, getViewLifecycleOwner());
         return root;

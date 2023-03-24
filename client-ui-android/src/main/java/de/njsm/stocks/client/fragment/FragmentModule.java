@@ -62,6 +62,7 @@ import de.njsm.stocks.client.fragment.unitedit.UnitEditFragment;
 import de.njsm.stocks.client.fragment.unitlist.UnitListFragment;
 import de.njsm.stocks.client.fragment.unittabs.UnitTabsFragment;
 import de.njsm.stocks.client.fragment.useradd.UserAddFragment;
+import de.njsm.stocks.client.fragment.userdeviceadd.UserDeviceAddFragment;
 import de.njsm.stocks.client.fragment.userdevicelist.UserDeviceListFragment;
 import de.njsm.stocks.client.fragment.userlist.UserListFragment;
 
@@ -196,4 +197,7 @@ public abstract class FragmentModule {
 
     @ContributesAndroidInjector
     public abstract UserAddFragment UserAddFragment();
+
+    @ContributesAndroidInjector
+    public abstract UserDeviceAddFragment UserDeviceAddFragment();
 }

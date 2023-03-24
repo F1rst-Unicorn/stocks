@@ -131,4 +131,7 @@ public interface NavigationModule {
 
     @Binds
     RecipeDetailNavigator RecipeDetailNavigator(RecipeDetailNavigatorImpl impl);
+
+    @Binds
+    UserDeviceAddNavigator UserDeviceAddNavigator(UserDeviceAddNavigatorImpl impl);
 }

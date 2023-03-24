@@ -332,6 +332,15 @@ public class ErrorRecorderImpl implements ErrorRecorder {
         errorDao.insert(ErrorEntity.create(ErrorEntity.Action.ADD_USER, dataId, exceptionData.exceptionType(), exceptionData.exceptionId()));
     }
 
+    @Override
+    public void recordUserDeviceAddError(SubsystemException e, UserDeviceAddForm form) {
+        ExceptionData exceptionData = new ExceptionInserter().visit(e, null);
+        Instant userTransactionTime = errorDao.getTransactionTimeOf(EntityType.USER);
+        UserDeviceAddEntity entity = UserDeviceAddEntity.create(form.name(), PreservedId.create(form.owner().id(), userTransactionTime));
+        long dataId = errorDao.insert(entity);
+        errorDao.insert(ErrorEntity.create(ErrorEntity.Action.ADD_USER_DEVICE, dataId, exceptionData.exceptionType(), exceptionData.exceptionId()));
+    }
+
     @AutoValue
     abstract static class ExceptionData {
 

@@ -70,4 +70,6 @@ public interface ErrorRecorder {
     void recordFoodToBuyError(SubsystemException e, FoodForBuying networkData);
 
     void recordUserAddError(SubsystemException e, UserAddForm form);
+
+    void recordUserDeviceAddError(SubsystemException e, UserDeviceAddForm form);
 }

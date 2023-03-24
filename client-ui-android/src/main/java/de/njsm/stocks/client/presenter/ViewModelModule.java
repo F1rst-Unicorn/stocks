@@ -331,4 +331,11 @@ public class ViewModelModule {
     ViewModel UserAddViewModel(UserAddInteractor interactor) {
         return new UserAddViewModel(interactor);
     }
+
+    @Provides
+    @IntoMap
+    @ViewModelKey(UserDeviceAddViewModel.class)
+    ViewModel UserDeviceAddViewModel(UserDeviceAddInteractor interactor) {
+        return new UserDeviceAddViewModel(interactor);
+    }
 }

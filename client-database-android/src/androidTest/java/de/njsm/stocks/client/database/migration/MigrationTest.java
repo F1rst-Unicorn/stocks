@@ -31,7 +31,7 @@ import org.junit.Test;
 
 import java.io.IOException;
 
-public class Migration46To47Test {
+public class MigrationTest {
 
     private static final String TEST_DB = "migration-test";
 
@@ -49,5 +49,11 @@ public class Migration46To47Test {
     public void migratingFromLegacyToRewriteWorks() throws IOException {
         try (var __ = helper.createDatabase(TEST_DB, 46)) {}
         try (var __ = helper.runMigrationsAndValidate(TEST_DB, 47, true, new Migration46To47())) {}
+    }
+
+    @Test
+    public void migratingTo48Works() throws IOException {
+        try (var __ = helper.createDatabase(TEST_DB, 47)) {}
+        try (var __ = helper.runMigrationsAndValidate(TEST_DB, 48, true, new Migration47To48())) {}
     }
 }

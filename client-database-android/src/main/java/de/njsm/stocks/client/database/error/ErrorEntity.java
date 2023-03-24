@@ -204,6 +204,13 @@ public abstract class ErrorEntity implements IdFields {
             <I, O> O accept(ActionVisitor<I, O> visitor, I input) {
                 return visitor.addUser(this, input);
             }
+        },
+
+        ADD_USER_DEVICE {
+            @Override
+            <I, O> O accept(ActionVisitor<I, O> visitor, I input) {
+                return visitor.addUserDevice(this, input);
+            }
         };
 
         abstract <I, O> O accept(ActionVisitor<I, O> visitor, I input);
@@ -260,6 +267,8 @@ public abstract class ErrorEntity implements IdFields {
         O foodShopping(Action action, I input);
 
         O addUser(Action action, I input);
+
+        O addUserDevice(Action action, I input);
     }
 
     enum ExceptionType {

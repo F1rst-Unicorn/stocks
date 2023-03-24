@@ -31,6 +31,7 @@ import java.time.Duration;
 import java.time.LocalDate;
 import java.time.Period;
 
+import static de.njsm.stocks.client.business.entities.IdImpl.create;
 import static java.util.Collections.emptyList;
 import static org.junit.Assert.assertEquals;
 
@@ -77,5 +78,6 @@ public class ErrorDetailsHeadlineVisitorTest {
         assertEquals(R.string.error_details_recipe_add_error_list, (long) uut.visit(RecipeAddForm.create("Pizza", "just bake", Duration.ofMinutes(3), emptyList(), emptyList()), null));
         assertEquals(R.string.error_details_food_to_buy, (long) uut.visit(FoodForBuying.create(1, 2, false), null));
         assertEquals(R.string.error_details_user_add, (long) uut.visit(UserAddForm.create("Joanna"), null));
+        assertEquals(R.string.error_details_user_device_add, (long) uut.visit(UserDeviceAddErrorDetails.create("Mobile", create(2), "Joanna"), null));
     }
 }

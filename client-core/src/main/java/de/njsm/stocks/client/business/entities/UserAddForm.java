@@ -29,8 +29,7 @@ public abstract class UserAddForm implements ErrorDetails {
     public abstract String name();
 
     public static UserAddForm create(String name) {
-        if (name.matches(".*[ =$].*"))
-            throw new IllegalArgumentException("invalid character in name");
+        PrincipalNameValidator.validate(name);
         return new AutoValue_UserAddForm(name);
     }
 

@@ -283,4 +283,11 @@ public class ErrorRepositoryImpl implements ErrorRepository, ErrorEntity.ActionV
     public ErrorDetails addUser(ErrorEntity.Action action, Long input) {
         return errorDao.getUserToAdd(input);
     }
+
+    @Override
+    public ErrorDetails addUserDevice(ErrorEntity.Action action, Long input) {
+        var userDevice = errorDao.getUserDeviceToAdd(input);
+        var user = errorDao.getUserByValidOrTransactionTime(userDevice.belongsTo());
+        return UserDeviceAddErrorDetails.create(userDevice.name(), user::id, user.name());
+    }
 }

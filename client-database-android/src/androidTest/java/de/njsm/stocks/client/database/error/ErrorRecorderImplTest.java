@@ -539,6 +539,20 @@ public class ErrorRecorderImplTest extends DbTestCase {
         );
     }
 
+    @Test
+    public void recordingErrorAddingUserDeviceWorks() {
+        test(UserDeviceAddForm.create("Mobile", IdImpl.create(42)),
+                uut::recordUserDeviceAddError,
+                ErrorEntity.Action.ADD_USER_DEVICE,
+                stocksDatabase.errorDao()::getUserDeviceAdds,
+                (expected, actual) -> {
+                    assertEquals(expected.name(), actual.name());
+                    assertEquals(expected.owner().id(), actual.belongsTo().id());
+                    assertEquals(stocksDatabase.errorDao().getTransactionTimeOf(EntityType.USER), actual.belongsTo().transactionTime());
+                }
+        );
+    }
+
     private <T, E> void test(T input,
                              BiConsumer<? super SubsystemException, T> recorder,
                              ErrorEntity.Action action,

@@ -123,6 +123,9 @@ public interface NetworkModule {
     @Binds
     UserAddService UserAddService(UserAddServiceImpl impl);
 
+    @Binds
+    UserDeviceAddService UserDeviceAddService(UserDeviceAddServiceImpl impl);
+
     @Provides
     @Singleton
     static ServerApi serverApi(ServerEndpoint serverEndpoint, HostnameInterceptor interceptor) {

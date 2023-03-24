@@ -140,4 +140,9 @@ public class ErrorDetailsHeadlineVisitor implements ErrorDetailsVisitor<Void, In
     public Integer userAddForm(UserAddForm userAddForm, Void input) {
         return R.string.error_details_user_add;
     }
+
+    @Override
+    public Integer userDeviceAddErrorDetails(UserDeviceAddErrorDetails userDeviceAddErrorDetails, Void input) {
+        return R.string.error_details_user_device_add;
+    }
 }

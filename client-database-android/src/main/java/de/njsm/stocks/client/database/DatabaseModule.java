@@ -34,10 +34,7 @@ import de.njsm.stocks.client.database.error.ConflictRepositoryImpl;
 import de.njsm.stocks.client.database.error.ErrorDao;
 import de.njsm.stocks.client.database.error.ErrorRecorderImpl;
 import de.njsm.stocks.client.database.error.ErrorRepositoryImpl;
-import de.njsm.stocks.client.database.migration.Legacy40To44;
-import de.njsm.stocks.client.database.migration.Migration44To45;
-import de.njsm.stocks.client.database.migration.Migration45To46;
-import de.njsm.stocks.client.database.migration.Migration46To47;
+import de.njsm.stocks.client.database.migration.*;
 import de.njsm.stocks.client.execution.Scheduler;
 import io.requery.android.database.sqlite.RequerySQLiteOpenHelperFactory;
 import org.slf4j.Logger;
@@ -71,7 +68,8 @@ public interface DatabaseModule {
                 .addMigrations(new Legacy40To44(),
                         new Migration44To45(),
                         new Migration45To46(),
-                        new Migration46To47()
+                        new Migration46To47(),
+                        new Migration47To48()
                 )
                 .addCallback(new PerformanceTweaker())
                 .build();
@@ -255,4 +253,7 @@ public interface DatabaseModule {
 
     @Binds
     RecipeDetailRepository RecipeDetailRepository(RecipeDetailRepositoryImpl impl);
+
+    @Binds
+    UserDeviceAddRepository UserDeviceAddRepository(UserDeviceAddRepositoryImpl impl);
 }

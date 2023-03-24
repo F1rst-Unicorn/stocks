@@ -24,6 +24,7 @@ package de.njsm.stocks.client.fragment.view;
 import android.text.Editable;
 import android.text.TextWatcher;
 import com.google.android.material.textfield.TextInputLayout;
+import de.njsm.stocks.client.business.entities.PrincipalNameValidator;
 
 import java.util.function.BiConsumer;
 
@@ -51,6 +52,6 @@ public class InvalidPrincipalNameValidator implements TextWatcher {
     @Override
     public void afterTextChanged(Editable s) {
         String input = s.toString();
-        errorTextResourceSetter.accept(view, input.matches(".*[ =$].*"));
+        errorTextResourceSetter.accept(view, !PrincipalNameValidator.isValid(input));
     }
 }

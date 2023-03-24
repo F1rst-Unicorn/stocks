@@ -22,12 +22,14 @@
 package de.njsm.stocks.client.fragment.view;
 
 import android.view.View;
+import androidx.annotation.IdRes;
+import androidx.annotation.StringRes;
 import com.google.android.material.textfield.TextInputLayout;
 import de.njsm.stocks.client.ui.R;
 
 import java.util.function.Function;
 
-public class UserForm {
+public class SingleNameForm {
 
     private final ConflictTextField nameField;
 
@@ -37,8 +39,8 @@ public class UserForm {
 
     private boolean containsInvalidCharacter = true;
 
-    public UserForm(View root, Function<Integer, String> dictionary) {
-        this.nameField = new ConflictTextField(root.findViewById(R.id.fragment_user_form_name));
+    public SingleNameForm(View root, Function<Integer, String> dictionary, @IdRes int nameView) {
+        this.nameField = new ConflictTextField(root.findViewById(nameView));
         this.dictionary = dictionary;
 
         nameField.addNonEmptyValidator(this::onNameChanged);

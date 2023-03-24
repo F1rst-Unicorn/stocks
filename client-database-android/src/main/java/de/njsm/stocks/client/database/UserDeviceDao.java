@@ -22,6 +22,7 @@
 package de.njsm.stocks.client.database;
 
 import androidx.room.Dao;
+import androidx.room.Insert;
 import androidx.room.Query;
 import de.njsm.stocks.client.business.entities.UserDeviceForDeletion;
 import de.njsm.stocks.client.business.entities.UserDeviceForListing;
@@ -46,4 +47,7 @@ abstract class UserDeviceDao {
             "from current_user_device " +
             "where id = :id")
     abstract UserDeviceForDeletion get(int id);
+
+    @Insert
+    abstract void store(TicketEntity entity);
 }

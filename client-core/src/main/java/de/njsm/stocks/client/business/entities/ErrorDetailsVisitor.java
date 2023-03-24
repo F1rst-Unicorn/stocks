@@ -73,6 +73,8 @@ public interface ErrorDetailsVisitor<I, O> {
 
     O userAddForm(UserAddForm userAddForm, I input);
 
+    O userDeviceAddErrorDetails(UserDeviceAddErrorDetails userDeviceAddErrorDetails, I input);
+
     interface Default<I, O> extends ErrorDetailsVisitor<I, O> {
 
         O defaultImpl(ErrorDetails errorDetails, I input);
@@ -190,6 +192,11 @@ public interface ErrorDetailsVisitor<I, O> {
         @Override
         default O userAddForm(UserAddForm foodForBuying, I input) {
             return defaultImpl(foodForBuying, input);
+        }
+
+        @Override
+        default O userDeviceAddErrorDetails(UserDeviceAddErrorDetails userDeviceAddErrorDetails, I input) {
+            return defaultImpl(userDeviceAddErrorDetails, input);
         }
     }
 }

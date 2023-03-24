@@ -227,4 +227,7 @@ public interface UimockBusinessModule {
 
     @Binds
     UserAddInteractor UserAddInteractor(InMemoryUserAddInteractor impl);
+
+    @Binds
+    UserDeviceAddInteractor UserDeviceAddInteractor(InMemoryUserDeviceAddInteractor impl);
 }
