@@ -21,9 +21,16 @@
 
 package de.njsm.stocks.client;
 
+import android.content.Context;
 import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.StateListDrawable;
 import android.view.View;
 import android.widget.DatePicker;
+import android.widget.ImageView;
+import android.widget.TextView;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.test.espresso.matcher.BoundedMatcher;
 import de.njsm.stocks.client.business.entities.Entity;
@@ -115,6 +122,71 @@ public class Matchers {
                 }
             };
         }
+    }
+
+    public static Matcher<View> withBackground(final int resourceId) {
+        return new TypeSafeMatcher<>() {
+
+            @Override
+            public boolean matchesSafely(View view) {
+                return sameBitmap(view.getContext(), view.getBackground(), resourceId);
+            }
+
+            @Override
+            public void describeTo(Description description) {
+                description.appendText("has background resource " + resourceId);
+            }
+        };
+    }
+
+    public static Matcher<View> withCompoundDrawable(final int resourceId) {
+        return new BoundedMatcher<>(TextView.class) {
+            @Override
+            public void describeTo(Description description) {
+                description.appendText("has compound drawable resource " + resourceId);
+            }
+
+            @Override
+            public boolean matchesSafely(TextView textView) {
+                for (Drawable drawable : textView.getCompoundDrawables()) {
+                    if (sameBitmap(textView.getContext(), drawable, resourceId)) {
+                        return true;
+                    }
+                }
+                return false;
+            }
+        };
+    }
+
+    public static Matcher<View> withImageDrawable(final int resourceId) {
+        return new BoundedMatcher<>(ImageView.class) {
+            @Override
+            public void describeTo(Description description) {
+                description.appendText("has image drawable resource " + resourceId);
+            }
+
+            @Override
+            public boolean matchesSafely(ImageView imageView) {
+                return sameBitmap(imageView.getContext(), imageView.getDrawable(), resourceId);
+            }
+        };
+    }
+
+    private static boolean sameBitmap(Context context, Drawable drawable, int resourceId) {
+        Drawable otherDrawable = context.getResources().getDrawable(resourceId);
+        if (drawable == null || otherDrawable == null) {
+            return false;
+        }
+        if (drawable instanceof StateListDrawable && otherDrawable instanceof StateListDrawable) {
+            drawable = drawable.getCurrent();
+            otherDrawable = otherDrawable.getCurrent();
+        }
+        if (drawable instanceof BitmapDrawable) {
+            Bitmap bitmap = ((BitmapDrawable) drawable).getBitmap();
+            Bitmap otherBitmap = ((BitmapDrawable) otherDrawable).getBitmap();
+            return bitmap.sameAs(otherBitmap);
+        }
+        return false;
     }
 
     public static <T extends Entity<T>> Id<T> equalBy(Id<T> id) {

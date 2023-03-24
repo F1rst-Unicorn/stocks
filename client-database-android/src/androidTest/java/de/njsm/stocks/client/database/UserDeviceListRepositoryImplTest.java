@@ -54,13 +54,14 @@ public class UserDeviceListRepositoryImplTest extends DbTestCase {
                 .belongsTo(user.id())
                 .build();
         stocksDatabase.synchronisationDao().writeUserDevices(List.of(device1, device2));
+        stocksDatabase.userDeviceDao().store(TicketEntity.create("ticket", device1.id()));
 
         var actual = uut.getUserDevices(user::id);
 
         test(actual).assertValue(UserDevicesForListing.create(
                 List.of(
-                        UserDeviceForListing.create(device1.id(), device1.name()),
-                        UserDeviceForListing.create(device2.id(), device2.name())
+                        UserDeviceForListing.create(device1.id(), device1.name(), true),
+                        UserDeviceForListing.create(device2.id(), device2.name(), false)
                 ),
                 user.name())
         );

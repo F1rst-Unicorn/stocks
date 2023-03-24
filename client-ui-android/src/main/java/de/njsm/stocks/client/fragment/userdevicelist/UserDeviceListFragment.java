@@ -37,6 +37,7 @@ import de.njsm.stocks.client.business.entities.UserDevicesForListing;
 import de.njsm.stocks.client.fragment.BottomToolbarFragment;
 import de.njsm.stocks.client.fragment.listswipe.SwipeCallback;
 import de.njsm.stocks.client.fragment.view.TemplateSwipeList;
+import de.njsm.stocks.client.fragment.view.TextWithPrefixIconViewHolder;
 import de.njsm.stocks.client.navigation.UserDeviceListNavigator;
 import de.njsm.stocks.client.presenter.UserDeviceListViewModel;
 import de.njsm.stocks.client.ui.R;
@@ -65,7 +66,7 @@ public class UserDeviceListFragment extends BottomToolbarFragment {
         templateSwipeList.setLoading();
 
         userId = userDeviceListNavigator.getUserId(requireArguments());
-        userDeviceAdapter = new UserDeviceAdapter();
+        userDeviceAdapter = new UserDeviceAdapter(this::onListItemClicked);
         userDeviceListViewModel.get(userId).observe(getViewLifecycleOwner(), this::onListDataReceived);
 
         SwipeCallback callback = new SwipeCallback(
@@ -79,6 +80,11 @@ public class UserDeviceListFragment extends BottomToolbarFragment {
         templateSwipeList.bindSwipeDown(this::onSwipeDown);
 
         return root;
+    }
+
+    private void onListItemClicked(View listItem) {
+        int listItemIndex = ((TextWithPrefixIconViewHolder) listItem.getTag()).getBindingAdapterPosition();
+        userDeviceListViewModel.resolveId(listItemIndex, userDeviceListNavigator::showTicket);
     }
 
     private void onListDataReceived(UserDevicesForListing data) {

@@ -38,9 +38,9 @@ public class UserDevicesForListing {
     public static de.njsm.stocks.client.business.entities.UserDevicesForListing generate() {
         return de.njsm.stocks.client.business.entities.UserDevicesForListing.create(
                 List.of(
-                        UserDeviceForListing.create(1, "Mobile"),
-                        UserDeviceForListing.create(2, "Tablet"),
-                        UserDeviceForListing.create(4, "Laptop")
+                        UserDeviceForListing.create(1, "Mobile", false),
+                        UserDeviceForListing.create(2, "Tablet", true),
+                        UserDeviceForListing.create(4, "Laptop", true)
                 ),
                 "Jack"
         );

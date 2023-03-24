@@ -24,6 +24,7 @@ package de.njsm.stocks.client.navigation;
 import android.os.Bundle;
 import de.njsm.stocks.client.business.entities.Id;
 import de.njsm.stocks.client.business.entities.User;
+import de.njsm.stocks.client.business.entities.UserDevice;
 import de.njsm.stocks.client.fragment.userdevicelist.UserDeviceListFragmentArgs;
 import de.njsm.stocks.client.fragment.userdevicelist.UserDeviceListFragmentDirections;
 
@@ -45,5 +46,11 @@ class UserDeviceListNavigatorImpl extends BaseNavigator implements UserDeviceLis
     @Override
     public Id<User> getUserId(Bundle arguments) {
         return UserDeviceListFragmentArgs.fromBundle(arguments)::getId;
+    }
+
+    @Override
+    public void showTicket(Id<UserDevice> id) {
+        var direction = UserDeviceListFragmentDirections.actionNavFragmentDeviceListToNavFragmentShowTicket(id.id());
+        getNavigationArgConsumer().navigate(direction);
     }
 }

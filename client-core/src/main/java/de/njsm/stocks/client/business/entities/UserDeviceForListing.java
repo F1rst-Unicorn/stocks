@@ -28,7 +28,9 @@ public abstract class UserDeviceForListing implements Id<UserDevice> {
 
     public abstract String name();
 
-    public static UserDeviceForListing create(int id, String name) {
-        return new AutoValue_UserDeviceForListing(id, name);
+    public abstract boolean ticketPresent();
+
+    public static UserDeviceForListing create(int id, String name, boolean ticketPresent) {
+        return new AutoValue_UserDeviceForListing(id, name, ticketPresent);
     }
 }

@@ -60,4 +60,13 @@ public class UserDeviceListNavigatorTest extends NavigationTest {
         UserDeviceListFragmentDirections.ActionNavFragmentDeviceListToNavFragmentUserDeviceAdd actual = navigationArgConsumer.getLastArgument(UserDeviceListFragmentDirections.ActionNavFragmentDeviceListToNavFragmentUserDeviceAdd.class);
         assertThat(actual.getId(), is(expectedId));
     }
+
+    @Test
+    public void showingTicketBindsCorrectly() {
+        int expectedId = 42;
+        uut.showTicket(() -> expectedId);
+
+        UserDeviceListFragmentDirections.ActionNavFragmentDeviceListToNavFragmentShowTicket actual = navigationArgConsumer.getLastArgument(UserDeviceListFragmentDirections.ActionNavFragmentDeviceListToNavFragmentShowTicket.class);
+        assertThat(actual.getId(), is(expectedId));
+    }
 }

@@ -24,10 +24,13 @@ package de.njsm.stocks.client.navigation;
 import android.os.Bundle;
 import de.njsm.stocks.client.business.entities.Id;
 import de.njsm.stocks.client.business.entities.User;
+import de.njsm.stocks.client.business.entities.UserDevice;
 
 public interface UserDeviceListNavigator {
 
     void add(Id<User> userId);
 
     Id<User> getUserId(Bundle arguments);
+
+    void showTicket(Id<UserDevice> integer);
 }

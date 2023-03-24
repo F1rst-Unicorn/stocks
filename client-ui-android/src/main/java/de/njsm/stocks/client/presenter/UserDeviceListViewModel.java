@@ -73,6 +73,10 @@ public class UserDeviceListViewModel extends ViewModel {
         performOnCurrentData(list -> deleter.delete(list.devices().get(listItemIndex)));
     }
 
+    public void resolveId(int listItemIndex, Consumer<Id<UserDevice>> callback) {
+        performOnCurrentData(list -> callback.accept(list.devices().get(listItemIndex)::id));
+    }
+
     private void performOnCurrentData(Consumer<UserDevicesForListing> runnable) {
         data.firstElement()
                 .observeOn(AndroidSchedulers.mainThread())

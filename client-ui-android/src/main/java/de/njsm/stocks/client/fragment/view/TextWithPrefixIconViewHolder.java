@@ -32,6 +32,8 @@ public class TextWithPrefixIconViewHolder extends RecyclerView.ViewHolder {
 
     private final TextView text;
 
+    private final int startIcon;
+
     public TextWithPrefixIconViewHolder(@NonNull View itemView) {
         this(itemView, 0);
     }
@@ -41,11 +43,25 @@ public class TextWithPrefixIconViewHolder extends RecyclerView.ViewHolder {
         text = itemView.findViewById(R.id.item_text_with_prefix_icon_name);
         itemView.setTag(this);
 
-        if (icon != 0)
-            text.setCompoundDrawablesRelativeWithIntrinsicBounds(icon, 0, 0, 0);
+        startIcon = icon;
+        if (icon != 0) {
+            text.setCompoundDrawablesRelativeWithIntrinsicBounds(startIcon, 0, 0, 0);
+        }
     }
 
     public void setText(CharSequence text) {
         this.text.setText(text);
+    }
+
+    public void setIconAtEnd(@DrawableRes int icon) {
+        text.setCompoundDrawablesRelativeWithIntrinsicBounds(startIcon, 0, icon, 0);
+    }
+
+    public void removeIconAtEnd() {
+        text.setCompoundDrawablesRelativeWithIntrinsicBounds(startIcon, 0, 0, 0);
+    }
+
+    public void setClickable(boolean clickable) {
+        text.setClickable(clickable);
     }
 }

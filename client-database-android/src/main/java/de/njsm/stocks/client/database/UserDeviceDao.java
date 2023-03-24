@@ -37,10 +37,11 @@ abstract class UserDeviceDao {
             "from current_user_device")
     abstract List<UserDeviceDbEntity> getAll();
 
-    @Query("select * " +
-            "from current_user_device " +
-            "where belongs_to = :id " +
-            "order by name, id")
+    @Query("select d.id as id, d.name as name, ticket.ticket is not null as ticketPresent " +
+            "from current_user_device d " +
+            "left join ticket on ticket.device_id = d.id " +
+            "where d.belongs_to = :id " +
+            "order by d.name, d.id")
     abstract Observable<List<UserDeviceForListing>> getUserDevices(int id);
 
     @Query("select * " +

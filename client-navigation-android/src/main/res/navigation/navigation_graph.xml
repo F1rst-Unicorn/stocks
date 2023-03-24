@@ -428,6 +428,13 @@
                     android:name="id"
                     app:argType="integer"/>
         </action>
+        <action
+                android:id="@+id/action_nav_fragment_device_list_to_nav_fragment_show_ticket"
+                app:destination="@id/nav_fragment_show_ticket">
+            <argument
+                    android:name="id"
+                    app:argType="integer"/>
+        </action>
     </fragment>
     <fragment
             android:id="@+id/nav_fragment_user_device_add"
@@ -480,6 +487,10 @@
     </fragment>
     <fragment
             android:id="@+id/nav_fragment_recipe_prepare"
+            android:name="androidx.fragment.app.Fragment">
+    </fragment>
+    <fragment
+            android:id="@+id/nav_fragment_show_ticket"
             android:name="androidx.fragment.app.Fragment">
     </fragment>
     <fragment

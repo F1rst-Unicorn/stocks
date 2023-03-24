@@ -46,8 +46,10 @@ import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.action.ViewActions.swipeRight;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.contrib.RecyclerViewActions.actionOnItemAtPosition;
-import static androidx.test.espresso.matcher.ViewMatchers.*;
-import static de.njsm.stocks.client.Matchers.equalBy;
+import static androidx.test.espresso.matcher.ViewMatchers.withId;
+import static androidx.test.espresso.matcher.ViewMatchers.withText;
+import static de.njsm.stocks.client.Matchers.*;
+import static org.hamcrest.Matchers.not;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -83,9 +85,21 @@ public class UserDeviceListFragmentTest {
     public void dataIsListed() {
         userDeviceListInteractor.setData(UserDevicesForListing.generate());
 
+        int i = 0;
         for (UserDeviceForListing item : UserDevicesForListing.generate().devices()) {
-            onView(withId(R.id.template_swipe_list_list))
-                    .check(matches(withChild(withText(item.name()))));
+            onView(recyclerView(R.id.template_swipe_list_list)
+                    .atPositionOnView(i, R.id.item_text_with_prefix_icon_name))
+                    .check(matches(withText(item.name())));
+            if (item.ticketPresent()) {
+                onView(recyclerView(R.id.template_swipe_list_list)
+                        .atPositionOnView(i, R.id.item_text_with_prefix_icon_name))
+                        .check(matches(withCompoundDrawable(R.drawable.baseline_qr_code_black_24)));
+            } else {
+                onView(recyclerView(R.id.template_swipe_list_list)
+                        .atPositionOnView(i, R.id.item_text_with_prefix_icon_name))
+                        .check(matches(not(withCompoundDrawable(R.drawable.baseline_qr_code_black_24))));
+            }
+            i++;
         }
     }
 
@@ -95,6 +109,25 @@ public class UserDeviceListFragmentTest {
                 .perform(click());
 
         verify(userDeviceListNavigator).add(equalBy(userId));
+    }
+
+    @Test
+    public void clickingDeviceShowsTicket() {
+        userDeviceListInteractor.setData(UserDevicesForListing.generate());
+
+        int i = 0;
+        for (UserDeviceForListing item : UserDevicesForListing.generate().devices()) {
+            reset(userDeviceListNavigator);
+            onView(recyclerView(R.id.template_swipe_list_list)
+                    .atPositionOnView(i, R.id.item_text_with_prefix_icon_name))
+                    .perform(click());
+            i++;
+            if (item.ticketPresent()) {
+                verify(userDeviceListNavigator).showTicket(equalBy(item));
+            } else {
+                verifyNoInteractions(userDeviceListNavigator);
+            }
+        }
     }
 
     @Test
