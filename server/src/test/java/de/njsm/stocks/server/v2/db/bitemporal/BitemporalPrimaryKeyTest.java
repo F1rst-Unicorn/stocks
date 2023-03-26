@@ -23,6 +23,7 @@ package de.njsm.stocks.server.v2.db.bitemporal;
 
 import de.njsm.stocks.server.v2.db.DbTestCase;
 import de.njsm.stocks.server.v2.db.jooq.tables.records.LocationRecord;
+import org.jooq.exception.DataAccessException;
 import org.jooq.impl.DSL;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -36,7 +37,7 @@ import static de.njsm.stocks.server.v2.db.jooq.Tables.CURRENT_USER_DEVICE;
 import static de.njsm.stocks.server.v2.db.jooq.Tables.LOCATION;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class ContiguousPrimaryKeyTest extends DbTestCase {
+public class BitemporalPrimaryKeyTest extends DbTestCase {
 
     private Connection connection;
 
@@ -78,32 +79,11 @@ public class ContiguousPrimaryKeyTest extends DbTestCase {
     }
 
     @Test
-    public void insertionWithGapIsRejected() {
+    public void overlappingValidityIsRejected() throws SQLException {
         LocationRecord first = getLocation();
         first.setVersion(0);
         first.setValidTimeStart(getTimeTick(0));
-        first.setValidTimeEnd(getTimeTick(1));
-        first.setTransactionTimeStart(getTimeTick(0));
-        first.setTransactionTimeEnd(INFINITY);
-        first.insert();
-
-        LocationRecord second = getLocation();
-        second.setVersion(1);
-        second.setValidTimeStart(getTimeTick(2));
-        second.setValidTimeEnd(INFINITY);
-        second.setTransactionTimeStart(getTimeTick(0));
-        second.setTransactionTimeEnd(INFINITY);
-        second.insert();
-
-        assertFailure();
-    }
-
-    @Test
-    public void updateToGapIsRejected() throws SQLException {
-        LocationRecord first = getLocation();
-        first.setVersion(0);
-        first.setValidTimeStart(getTimeTick(0));
-        first.setValidTimeEnd(getTimeTick(1));
+        first.setValidTimeEnd(getTimeTick(2));
         first.setTransactionTimeStart(getTimeTick(0));
         first.setTransactionTimeEnd(INFINITY);
         first.insert();
@@ -116,59 +96,26 @@ public class ContiguousPrimaryKeyTest extends DbTestCase {
         second.setTransactionTimeEnd(INFINITY);
         second.insert();
 
-        connection.commit();
-
-        int changed = getDSLContext().update(LOCATION)
-                .set(LOCATION.VALID_TIME_START, getTimeTick(2))
-                .where(LOCATION.ID.eq(ID))
-                .and(LOCATION.VERSION.eq(second.getVersion()))
-                .execute();
-
-        assertEquals(1, changed);
         assertFailure();
     }
 
     @Test
-    public void deletingToAGap() throws SQLException {
-        LocationRecord first = getLocation();
-        first.setVersion(0);
-        first.setValidTimeStart(getTimeTick(0));
-        first.setValidTimeEnd(getTimeTick(1));
-        first.setTransactionTimeStart(getTimeTick(0));
-        first.setTransactionTimeEnd(INFINITY);
-        first.insert();
-
-        LocationRecord second = getLocation();
-        second.setVersion(1);
-        second.setValidTimeStart(getTimeTick(1));
-        second.setValidTimeEnd(getTimeTick(2));
-        second.setTransactionTimeStart(getTimeTick(0));
-        second.setTransactionTimeEnd(INFINITY);
-        second.insert();
-
-        LocationRecord third = getLocation();
-        third.setVersion(2);
-        third.setValidTimeStart(getTimeTick(2));
-        third.setValidTimeEnd(INFINITY);
-        third.setTransactionTimeStart(getTimeTick(0));
-        third.setTransactionTimeEnd(INFINITY);
-        third.insert();
-
-        connection.commit();
-
-        int changed = getDSLContext().deleteFrom(LOCATION)
-                .where(LOCATION.ID.eq(ID))
-                .and(LOCATION.VERSION.eq(second.getVersion()))
-                .execute();
-
-        assertEquals(1, changed);
-        assertFailure();
+    public void insertionWithNullIdIsProhibited() {
+        LocationRecord record = getLocation();
+        record.setId(null);
+        record.setVersion(0);
+        record.setValidTimeStart(getTimeTick(0));
+        record.setValidTimeEnd(INFINITY);
+        record.setTransactionTimeStart(getTimeTick(0));
+        record.setTransactionTimeEnd(INFINITY);
+        DataAccessException e = assertThrows(DataAccessException.class, record::insert);
+        assertEquals("23502", e.getCause(SQLException.class).getSQLState());
     }
 
     private void assertFailure() {
         SQLException e = assertThrows(SQLException.class, () -> connection.commit());
         assertEquals("23514", e.getSQLState());
-        assertTrue(e.getMessage().contains("contiguous_primary_key"));
+        assertTrue(e.getMessage().contains("bitemporal_primary_key"));
     }
 
     private LocationRecord getLocation() {

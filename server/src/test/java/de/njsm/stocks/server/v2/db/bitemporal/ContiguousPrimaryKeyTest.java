@@ -78,7 +78,7 @@ public class ContiguousPrimaryKeyTest extends DbTestCase {
     }
 
     @Test
-    public void insertionWithGapIsRejected() throws SQLException {
+    public void insertionWithGapIsRejected() {
         LocationRecord first = getLocation();
         first.setVersion(0);
         first.setValidTimeStart(getTimeTick(0));
