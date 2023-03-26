@@ -1,0 +1,556 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    stocks is client-server program to manage a household's food stock
+    Copyright (C) 2019  The stocks developers
+
+    This file is part of the stocks program suite.
+
+    stocks is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    stocks is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see https://www.gnu.org/licenses/.
+-->
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd"
+        context="production">
+
+    <changeSet id="1" author="admin">
+        <sql endDelimiter=";;">
+            create or replace function bitemporal_primary_key() returns trigger
+                language PLPGSQL
+            as
+            $$
+            declare
+                violating_row_count int;
+                triggered_record record;
+                message text;
+            begin
+                if old is null then
+                    triggered_record = new;
+                else
+                    triggered_record = old;
+                end if;
+
+                execute format(
+                    'select count(*) '
+                    'from %I as u1 '
+                    'where u1.id is null '
+                    'or ('
+                        'u1.id = $1.id '
+                        'and 1 &lt; ( '
+                            'select count(*) '
+                            'from %I as u2 '
+                            'where u1.id = u2.id '
+                            'and u1.valid_time_start &lt; u2.valid_time_end '
+                            'and u2.valid_time_start &lt; u1.valid_time_end '
+                            'and u1.transaction_time_end = %L '
+                            'and u2.transaction_time_end = %L '
+                        ')'
+                    ')',
+                    tg_table_name, tg_table_name, 'infinity', 'infinity')
+                    into violating_row_count using triggered_record;
+
+                message = 'on table ' || tg_table_name || ' id ' || triggered_record.id;
+                if violating_row_count != 0 then
+                    raise check_violation using message = message;
+                else
+                    raise debug using message = message;
+                end if;
+                return new;
+            end;
+            $$;;
+
+            create or replace function contiguous_primary_key() returns trigger
+                language plpgsql
+            as
+            $$
+            declare
+                violating_row_count int;
+                triggered_record record;
+                message text;
+            begin
+                if old is null then
+                    triggered_record = new;
+                else
+                    triggered_record = old;
+                end if;
+
+                execute format(
+                    'select count(*) '
+                    'from %I u1, %I u2 '
+                    'where u1.valid_time_end &lt; u2.valid_time_end '
+                    'and u1.id = $1.id '
+                    'and u1.id = u2.id '
+                    'and u1.transaction_time_end = %L '
+                    'and u2.transaction_time_end = %L '
+                    'and not exists( '
+                        'select * '
+                        'from %I u3 '
+                        'where u3.id = u1.id '
+                        'and u3.transaction_time_end = %L '
+                        'and (((u3.valid_time_start &lt;= u1.valid_time_end) '
+                            'and (u1.valid_time_end &lt; u3.valid_time_end)) '
+                        'or ((u3.valid_time_start &lt; u2.valid_time_start) '
+                            'and u2.valid_time_start &lt;= u3.valid_time_end)) '
+                    ')',
+                    tg_table_name, tg_table_name, 'infinity', 'infinity', tg_table_name, 'infinity')
+                    into violating_row_count using triggered_record;
+
+                message = 'on table ' || tg_table_name || ' id ' || triggered_record.id;
+                if violating_row_count != 0 then
+                    raise check_violation using message = message;
+                else
+                    raise debug using message = message;
+                end if;
+                return new;
+            end;
+            $$;;
+
+            -- arg 0: Referring table
+            -- arg 1: Referring column
+            -- arg 2: Referred table
+            create or replace function bitemporal_foreign_key() returns trigger
+                language plpgsql
+            as
+            $$
+            declare
+                violating_row_count int;
+                triggered_record record;
+                column_to_use text;
+                message text;
+            begin
+                if old is null then
+                    triggered_record = new;
+                else
+                    triggered_record = old;
+                end if;
+
+                if tg_table_name = tg_argv[0] then
+                    column_to_use = tg_argv[1];
+                else
+                    column_to_use = 'id';
+                end if;
+
+                execute format(
+                    'select * '
+                    'from %I f '
+                    'where f.transaction_time_end = %L '
+                    'and f.%I = $1.%I '
+                    'and ( '
+                        'not exists( '
+                            'select * '
+                            'from %I p '
+                            'where f.%I = p.id '
+                            'and p.transaction_time_end = %L '
+                            'and p.valid_time_start &lt;= f.valid_time_start '
+                            'and f.valid_time_start &lt; p.valid_time_end '
+                        ') '
+                        'or not exists( '
+                            'select * '
+                            'from %I u '
+                            'where f.%I = u.id '
+                            'and u.transaction_time_end = %L '
+                            'and u.valid_time_start &lt; f.valid_time_end '
+                            'and f.valid_time_end &lt;= u.valid_time_end '
+                        ') '
+                    ')',
+                    tg_argv[0], 'infinity', tg_argv[1], column_to_use, tg_argv[2], tg_argv[1], 'infinity', tg_argv[2], tg_argv[1], 'infinity')
+                    into violating_row_count using triggered_record;
+
+                message = tg_argv[0] || '.' || tg_argv[1] || ' -> ' || tg_argv[2] || ' (' || TG_TABLE_NAME || '.id ' || triggered_record.id || ')';
+                if violating_row_count != 0 then
+                    raise check_violation using message = message;
+                else
+                    raise debug using message = message;
+                end if;
+                return new;
+            end;
+            $$;
+
+            -- arg 0: Referring table
+            create or replace function bitemporal_initiates_foreign_key() returns trigger
+                language plpgsql
+            as
+            $$
+            declare
+                violating_row_count int;
+                triggered_record record;
+                column_to_use text;
+                message text;
+            begin
+                if old is null then
+                    triggered_record = new;
+                else
+                    triggered_record = old;
+                end if;
+
+                if tg_table_name = tg_argv[0] then
+                    column_to_use = 'initiates';
+                else
+                    column_to_use = 'id';
+                end if;
+                execute format(
+                    'select count(*) '
+                    'from %I f '
+                    'where f.transaction_time_end = %L '
+                    'and f.initiates = $1.%I '
+                    'and ( '
+                        'not exists( '
+                           'select * '
+                            'from user_device p '
+                            'where f.initiates = p.id '
+                            'and p.transaction_time_end = %L '
+                            'and p.valid_time_start &lt;= f.transaction_time_start '
+                            'and f.transaction_time_start &lt; p.valid_time_end '
+                        ') '
+                    ')', tg_argv[0], 'infinity', column_to_use, 'infinity')
+                    into violating_row_count using triggered_record;
+
+                message = tg_argv[0] || '.initiates -> user_device (' || tg_table_name || '.id ' || triggered_record.id || ')';
+                if violating_row_count != 0 then
+                    raise check_violation using message = message;
+                else
+                    raise debug using message = message;
+                end if;
+                return new;
+            end;
+            $$;;
+
+            -- arg 0: Referring table
+            -- arg 1: Referring column
+            -- arg 2: Referred table
+            create or replace function current_to_bitemporal_foreign_key() returns trigger
+                language plpgsql
+            as
+            $$
+            declare
+                violating_row_count int;
+                triggered_record record;
+                column_to_use text;
+                message text;
+            begin
+                if old is null then
+                    triggered_record = new;
+                else
+                    triggered_record = old;
+                end if;
+
+                if tg_table_name = tg_argv[0] then
+                    column_to_use = tg_argv[1];
+                else
+                    column_to_use = 'id';
+                end if;
+
+                execute format(
+                    'select count(*) '
+                    'from %I as f '
+                    'where f.%I = $1.%I '
+                    'and not exists( '
+                        'select * '
+                        'from %I as p '
+                        'where p.id = f.%I '
+                        'and p.valid_time_end = %L '
+                        'and p.transaction_time_end = %L '
+                    ')',
+                    tg_argv[0], tg_argv[1], column_to_use, tg_argv[2], tg_argv[1], 'infinity', 'infinity')
+                    into violating_row_count using triggered_record;
+
+                message = tg_argv[0] || '.' || tg_argv[1] || ' -> ' || tg_argv[2] || ' (' || TG_TABLE_NAME || '.id ' || triggered_record.id || ')';
+                if violating_row_count != 0 then
+                    raise check_violation using message = message;
+                else
+                    raise debug using message = message;
+                end if;
+                return new;
+            end;
+            $$;;
+
+            -- arg 0: Referring table
+            -- arg 1: Referring column
+            -- arg 2: Referred table
+            create or replace function nullable_bitemporal_foreign_key() returns trigger
+                language plpgsql
+            as
+            $$
+            declare
+                violating_row_count int;
+                triggered_record record;
+                column_to_use text;
+                message text;
+            begin
+                if old is null then
+                    triggered_record = new;
+                else
+                    triggered_record = old;
+                end if;
+
+                if tg_table_name = tg_argv[0] then
+                    column_to_use = tg_argv[1];
+                else
+                    column_to_use = 'id';
+                end if;
+
+                execute format(
+                    'select * '
+                    'from %I f '
+                    'where f.transaction_time_end = %L '
+                    'and f.%I = $1.%I '
+                    'and f.%I is not null '
+                    'and ( '
+                        'not exists( '
+                            'select * '
+                            'from %I p '
+                            'where f.%I = p.id '
+                            'and p.transaction_time_end = %L '
+                            'and p.valid_time_start &lt;= f.valid_time_start '
+                            'and f.valid_time_start &lt; p.valid_time_end '
+                        ') '
+                        'or not exists( '
+                            'select * '
+                            'from %I p '
+                            'where f.%I = p.id '
+                            'and p.transaction_time_end = %L '
+                            'and p.valid_time_start &lt; f.valid_time_end '
+                            'and f.valid_time_end &lt;= p.valid_time_end '
+                        ') '
+                    ')', tg_argv[0], 'infinity', tg_argv[1], column_to_use, tg_argv[1], tg_argv[2],
+                    tg_argv[1], 'infinity', tg_argv[2], tg_argv[1], 'infinity')
+                    into violating_row_count using triggered_record;
+
+                message = tg_argv[0] || '.' || tg_argv[1] || ' -> ' || tg_argv[2] || ' (' || TG_TABLE_NAME || '.id ' || triggered_record.id || ')';
+                if violating_row_count != 0 then
+                    raise check_violation using message = message;
+                else
+                    raise debug using message = message;
+                end if;
+                return new;
+            end;
+            $$;;
+        </sql>
+        <rollback>
+            <sql endDelimiter=";;">
+                create or replace function bitemporal_primary_key() returns trigger
+                    language PLPGSQL
+                as
+                $$
+                declare
+                    violating_row_count int;
+                begin
+                    execute format(
+                            'select count(*) '
+                                'from %I as u1 '
+                                'where u1.id is null '
+                                'or 1 &lt; ( '
+                                'select count(*) '
+                                'from %I as u2 '
+                                'where u1.id = u2.id '
+                                'and u1.valid_time_start &lt; u2.valid_time_end '
+                                'and u2.valid_time_start &lt; u1.valid_time_end '
+                                'and u1.transaction_time_end = %L '
+                                'and u2.transaction_time_end = %L '
+                                ')',
+                            tg_table_name, tg_table_name, 'infinity', 'infinity')
+                        into violating_row_count;
+
+                    if violating_row_count != 0 then
+                        raise check_violation using message = 'on table ' || tg_table_name;
+                    end if;
+                    return new;
+                end;
+                $$;;
+
+                create or replace function contiguous_primary_key() returns trigger
+                    language plpgsql
+                as
+                $$
+                declare
+                    count int;
+                begin
+                    execute format(
+                            'select count(*) '
+                                'from %I u1, '
+                                '%I u2 '
+                                'where u1.valid_time_end &lt; u2.valid_time_end '
+                                'and u1.id = u2.id '
+                                'and u1.transaction_time_end = %L '
+                                'and u2.transaction_time_end = %L '
+                                'and not exists( '
+                                'select * '
+                                'from %I u3 '
+                                'where u3.id = u1.id '
+                                'and u3.transaction_time_end = %L '
+                                'and (((u3.valid_time_start &lt;= u1.valid_time_end) '
+                                'and (u1.valid_time_end &lt; u3.valid_time_end)) '
+                                'or ((u3.valid_time_start &lt; u2.valid_time_start) '
+                                'and '
+                                'u2.valid_time_start &lt;= u3.valid_time_end)) '
+                                ')',
+                            tg_table_name, tg_table_name, 'infinity', 'infinity', tg_table_name, 'infinity')
+                        into count;
+
+                    if count != 0 then
+                        raise check_violation using message = 'on table ' || tg_table_name;
+                    end if;
+                    return new;
+                end;
+                $$;;
+
+                -- arg 0: Referring table
+                -- arg 1: Referring column
+                -- arg 2: Referred table
+                create or replace function bitemporal_foreign_key() returns trigger
+                    language plpgsql
+                as
+                $$
+                declare
+                    count int;
+                begin
+                    execute format(
+                            'select * '
+                                'from %I f '
+                                'where f.transaction_time_end = %L '
+                                'and ( '
+                                'not exists( '
+                                'select * '
+                                'from %I p '
+                                'where f.%I = p.id '
+                                'and p.transaction_time_end = %L '
+                                'and p.valid_time_start &lt;= f.valid_time_start '
+                                'and f.valid_time_start &lt; p.valid_time_end '
+                                ') '
+                                'or not exists( '
+                                'select * '
+                                'from %I u '
+                                'where f.%I = u.id '
+                                'and u.transaction_time_end = %L '
+                                'and u.valid_time_start &lt; f.valid_time_end '
+                                'and f.valid_time_end &lt;= u.valid_time_end '
+                                ') '
+                                ')',
+                            tg_argv[0], 'infinity', tg_argv[2], tg_argv[1], 'infinity', tg_argv[2], tg_argv[1], 'infinity')
+                        into count;
+
+                    if count != 0 then
+                        raise check_violation using message = tg_argv[0] || '.' || tg_argv[1] || ' -> ' || tg_argv[2];
+                    end if;
+                    return new;
+                end;
+                $$;;
+
+                -- arg 0: Referring table
+                create or replace function bitemporal_initiates_foreign_key() returns trigger
+                    language plpgsql
+                as
+                $$
+                declare
+                    count int;
+                begin
+                    execute format(
+                            'select * '
+                                'from %I f '
+                                'where f.transaction_time_end = %L '
+                                'and ( '
+                                'not exists( '
+                                'select * '
+                                'from user_device p '
+                                'where f.initiates = p.id '
+                                'and p.transaction_time_end = %L '
+                                'and p.valid_time_start &lt;= f.transaction_time_start '
+                                'and f.transaction_time_start &lt; p.valid_time_end '
+                                ') '
+                                ')', tg_argv[0], 'infinity', 'infinity')
+                        into count;
+
+                    if count != 0 then
+                        raise check_violation using message = tg_argv[0] || '.initiates -> user_device';
+                    end if;
+                    return new;
+                end;
+                $$;;
+
+                -- arg 0: Referring table
+                -- arg 1: Referring column
+                -- arg 2: Referred table
+                create or replace function current_to_bitemporal_foreign_key() returns trigger
+                    language plpgsql
+                as
+                $$
+                declare
+                    count int;
+                begin
+                    execute format(
+                            'select count(*) '
+                                'from %I as f '
+                                'where not exists( '
+                                'select * '
+                                'from %I as p '
+                                'where p.id = f.%I '
+                                'and p.valid_time_end = %L '
+                                'and p.transaction_time_end = %L '
+                                ')',
+                            tg_argv[0], tg_argv[2], tg_argv[1], 'infinity', 'infinity')
+                        into count;
+
+                    if count != 0 then
+                        raise check_violation using message = tg_argv[0] || '.' || tg_argv[1] || ' -> ' || tg_argv[2];
+                    end if;
+                    return new;
+                end;
+                $$;;
+
+                -- arg 0: Referring table
+                -- arg 1: Referring column
+                -- arg 2: Referred table
+                create or replace function nullable_bitemporal_foreign_key() returns trigger
+                    language plpgsql
+                as
+                $$
+                declare
+                    count int;
+                begin
+                    execute format(
+                            'select * '
+                                'from %I f '
+                                'where f.transaction_time_end = %L '
+                                'and f.%I is not null '
+                                'and ( '
+                                'not exists( '
+                                'select * '
+                                'from %I p '
+                                'where f.%I = p.id '
+                                'and p.transaction_time_end = %L '
+                                'and p.valid_time_start &lt;= f.valid_time_start '
+                                'and f.valid_time_start &lt; p.valid_time_end '
+                                ') '
+                                'or not exists( '
+                                'select * '
+                                'from %I p '
+                                'where f.%I = p.id '
+                                'and p.transaction_time_end = %L '
+                                'and p.valid_time_start &lt; f.valid_time_end '
+                                'and f.valid_time_end &lt;= p.valid_time_end '
+                                ') '
+                                ')', tg_argv[0], 'infinity', tg_argv[1], tg_argv[2],
+                            tg_argv[1], 'infinity', tg_argv[2], tg_argv[1], 'infinity')
+                        into count;
+
+                    if count != 0 then
+                        raise check_violation using message = tg_argv[0] || '.' || tg_argv[1] || ' -> ' || tg_argv[2];
+                    end if;
+                    return new;
+                end;
+                $$;;
+            </sql>
+        </rollback>
+    </changeSet>
+</databaseChangeLog>
