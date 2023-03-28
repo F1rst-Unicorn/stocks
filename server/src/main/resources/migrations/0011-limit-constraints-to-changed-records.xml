@@ -75,7 +75,7 @@
             as
             $$
             declare
-                violating_row_count int;
+                id int;
                 triggered_record record;
                 message text;
             begin
@@ -84,30 +84,22 @@
                 else
                     triggered_record = old;
                 end if;
-
                 execute format(
-                    'select count(*) '
-                    'from %I u1, %I u2 '
-                    'where u1.valid_time_end &lt; u2.valid_time_end '
-                    'and u1.id = $1.id '
-                    'and u1.id = u2.id '
-                    'and u1.transaction_time_end = %L '
-                    'and u2.transaction_time_end = %L '
-                    'and not exists( '
-                        'select * '
-                        'from %I u3 '
-                        'where u3.id = u1.id '
-                        'and u3.transaction_time_end = %L '
-                        'and (((u3.valid_time_start &lt;= u1.valid_time_end) '
-                            'and (u1.valid_time_end &lt; u3.valid_time_end)) '
-                        'or ((u3.valid_time_start &lt; u2.valid_time_start) '
-                            'and u2.valid_time_start &lt;= u3.valid_time_end)) '
-                    ')',
-                    tg_table_name, tg_table_name, 'infinity', 'infinity', tg_table_name, 'infinity')
-                    into violating_row_count using triggered_record;
+                        'select versions_as_range.id '
+                        'from ('
+                            'select id, tstzrange(valid_time_start, valid_time_end) part '
+                            'from %I '
+                            'where id = $1.id '
+                            'and transaction_time_end = %L) versions_as_range '
+                        'group by id '
+                        'having not range_agg(versions_as_range.part) '
+                            '@> tstzrange(lower(range_agg(versions_as_range.part)), upper(range_agg(versions_as_range.part))) '
+                        'limit 1',
+                        tg_table_name, 'infinity')
+                    into id using triggered_record;
 
-                message = 'on table ' || tg_table_name || ' id ' || triggered_record.id;
-                if violating_row_count != 0 then
+                message = 'on table ' || tg_table_name || ' with id ' || triggered_record.id;
+                if id is not null then
                     raise check_violation using message = message;
                 else
                     raise debug using message = message;

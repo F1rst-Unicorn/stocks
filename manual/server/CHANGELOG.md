@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+### Performance
+
+* Accelerate consistency checks by only checking changed data instead of the
+  whole database on change
+  ([#79](https://j.njsm.de/git/veenj/stocks/issues/79)).
+
 ## [5.7.0.2]
 
 ### Added
