@@ -135,6 +135,27 @@ public class BitemporalForeignKeyTest extends DbTestCase {
         assertFailure();
     }
 
+    @Test
+    public void validInsertionWorks() throws SQLException {
+        UnitRecord unit = getUnit();
+        unit.setVersion(0);
+        unit.setValidTimeStart(getTimeTick(0));
+        unit.setValidTimeEnd(getTimeTick(3));
+        unit.setTransactionTimeStart(getTimeTick(0));
+        unit.setTransactionTimeEnd(INFINITY);
+        unit.insert();
+
+        ScaledUnitRecord scaledUnit = getScaledUnit(unit.getId());
+        scaledUnit.setVersion(0);
+        scaledUnit.setValidTimeStart(getTimeTick(1));
+        scaledUnit.setValidTimeEnd(getTimeTick(2));
+        scaledUnit.setTransactionTimeStart(getTimeTick(0));
+        scaledUnit.setTransactionTimeEnd(INFINITY);
+        scaledUnit.insert();
+
+        connection.commit();
+    }
+
     private void assertFailure() {
         SQLException e = assertThrows(SQLException.class, () -> connection.commit());
         assertEquals("23514", e.getSQLState());
