@@ -141,11 +141,11 @@ public class FoodItemListFragmentTest {
         onView(withId(R.id.template_swipe_list_list))
                 .perform(actionOnItemAtPosition(itemIndex, click()));
 
-        verify(foodItemListNavigator).edit(equalBy(item::id));
+        verify(foodItemListNavigator).edit(equalBy(item));
     }
 
     @Test
-    public void clickingToBuyNavigates() {
+    public void clickingToBuyTriggersShoppingList() {
         List<FoodItemForListing> data = FoodItemsForListing.get();
         foodItemListInteractor.setData(data);
 
@@ -154,6 +154,26 @@ public class FoodItemListFragmentTest {
         ArgumentCaptor<FoodToToggleBuy> captor = ArgumentCaptor.forClass(FoodToToggleBuy.class);
         verify(toBuyInteractor).manageFoodToBuy(captor.capture());
         assertEquals(food.id(), captor.getValue().id());
+    }
+
+    @Test
+    public void clickingEditFoodNavigates() {
+        List<FoodItemForListing> data = FoodItemsForListing.get();
+        foodItemListInteractor.setData(data);
+
+        scenario.onFragment(v -> v.onMenuItemSelected(menuItem(v.requireContext(), R.id.menu_food_items_edit)));
+
+        verify(foodItemListNavigator).editFood(equalBy(food));
+    }
+
+    @Test
+    public void clickingEanNumbersNavigates() {
+        List<FoodItemForListing> data = FoodItemsForListing.get();
+        foodItemListInteractor.setData(data);
+
+        scenario.onFragment(v -> v.onMenuItemSelected(menuItem(v.requireContext(), R.id.menu_food_items_ean_codes)));
+
+        verify(foodItemListNavigator).showEanNumbers(equalBy(food));
     }
 
     @Test

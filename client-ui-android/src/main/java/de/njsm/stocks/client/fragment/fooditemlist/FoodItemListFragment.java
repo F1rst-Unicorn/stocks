@@ -108,7 +108,7 @@ public class FoodItemListFragment extends InjectableFragment implements MenuProv
     public boolean onMenuItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == R.id.menu_food_items_edit) {
             Id<Food> foodId = navigator.getFoodId(requireArguments());
-            navigator.edit(foodId);
+            navigator.editFood(foodId);
             return true;
         } else if (item.getItemId() == R.id.menu_food_items_ean_codes) {
             Id<Food> foodId = navigator.getFoodId(requireArguments());
@@ -140,7 +140,7 @@ public class FoodItemListFragment extends InjectableFragment implements MenuProv
 
     private void onItemClicked(View listItem) {
         int listItemIndex = ((RecyclerView.ViewHolder) listItem.getTag()).getBindingAdapterPosition();
-        viewModel.resolveId(listItemIndex, v -> navigator.edit(() -> v));
+        viewModel.resolveId(listItemIndex, navigator::edit);
     }
 
     private void onItemSwipedRight(int listItemIndex) {

@@ -6,6 +6,9 @@
 
 * Show error message when adding user and clearing its name in the form.
 
+* Editing food was not possible and is fixed now
+  ([#80](https://j.njsm.de/git/veenj/stocks/issues/80)).
+
 ## [4.2.0.0]
 
 ### Added

@@ -23,6 +23,7 @@ package de.njsm.stocks.client.navigation;
 
 import android.os.Bundle;
 import de.njsm.stocks.client.business.entities.Food;
+import de.njsm.stocks.client.business.entities.FoodItem;
 import de.njsm.stocks.client.business.entities.Id;
 
 public interface FoodItemListNavigator {
@@ -31,7 +32,9 @@ public interface FoodItemListNavigator {
 
     void add(Id<Food> id);
 
-    void edit(Id<Food> id);
+    void edit(Id<FoodItem> id);
+
+    void editFood(Id<Food> id);
 
     void showEanNumbers(Id<Food> foodId);
 

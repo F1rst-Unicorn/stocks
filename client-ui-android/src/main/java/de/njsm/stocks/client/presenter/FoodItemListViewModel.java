@@ -59,11 +59,11 @@ public class FoodItemListViewModel extends ViewModel {
         performOnCurrentData(list -> deleter.delete(list.foodItems().get(listItemIndex)));
     }
 
-    public void resolveId(int listItemIndex, Consumer<Integer> callback) {
+    public void resolveId(int listItemIndex, Consumer<Id<FoodItem>> callback) {
         if (data == null)
             return;
 
-        performOnCurrentData(list -> callback.accept(list.foodItems().get(listItemIndex).id()));
+        performOnCurrentData(list -> callback.accept(list.foodItems().get(listItemIndex)::id));
     }
 
     private void performOnCurrentData(Consumer<FoodItemsForListing> runnable) {

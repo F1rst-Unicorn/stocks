@@ -61,6 +61,16 @@ public class FoodItemListNavigatorImplTest extends NavigationTest {
     }
 
     @Test
+    public void editingFoodContentBindsCorrectly() {
+        int expected = 42;
+
+        uut.editFood(() -> expected);
+
+        FoodItemTabsFragmentDirections.ActionNavFragmentFoodItemTabsToNavFragmentEditFood actual = navigationArgConsumer.getLastArgument(FoodItemTabsFragmentDirections.ActionNavFragmentFoodItemTabsToNavFragmentEditFood.class);
+        assertEquals(actual.getId(), expected);
+    }
+
+    @Test
     public void addingContentBindsCorrectly() {
         int expected = 42;
 

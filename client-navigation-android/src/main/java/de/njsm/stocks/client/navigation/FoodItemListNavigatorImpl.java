@@ -24,6 +24,7 @@ package de.njsm.stocks.client.navigation;
 import android.os.Bundle;
 import androidx.navigation.NavDirections;
 import de.njsm.stocks.client.business.entities.Food;
+import de.njsm.stocks.client.business.entities.FoodItem;
 import de.njsm.stocks.client.business.entities.Id;
 import de.njsm.stocks.client.fragment.fooditemlist.FoodItemListFragmentArgs;
 import de.njsm.stocks.client.fragment.fooditemtabs.FoodItemTabsFragmentDirections;
@@ -49,11 +50,16 @@ class FoodItemListNavigatorImpl extends BaseNavigator implements FoodItemListNav
     }
 
     @Override
-    public void edit(Id<Food> id) {
+    public void edit(Id<FoodItem> id) {
         NavDirections direction = FoodItemTabsFragmentDirections.actionNavFragmentFoodItemTabsToNavFragmentFoodItemEdit(id.id());
         getNavigationArgConsumer().navigate(direction);
     }
 
+    @Override
+    public void editFood(Id<Food> id) {
+        var direction = FoodItemTabsFragmentDirections.actionNavFragmentFoodItemTabsToNavFragmentEditFood(id.id());
+        getNavigationArgConsumer().navigate(direction);
+    }
 
     @Override
     public void showEanNumbers(Id<Food> foodId) {
