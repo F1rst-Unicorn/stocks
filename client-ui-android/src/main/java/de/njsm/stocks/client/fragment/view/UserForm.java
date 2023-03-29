@@ -22,7 +22,6 @@
 package de.njsm.stocks.client.fragment.view;
 
 import android.view.View;
-import androidx.annotation.StringRes;
 import com.google.android.material.textfield.TextInputLayout;
 import de.njsm.stocks.client.ui.R;
 
@@ -34,7 +33,9 @@ public class UserForm {
 
     private final Function<Integer, String> dictionary;
 
-    private boolean maySubmit = false;
+    private boolean isEmpty = true;
+
+    private boolean containsInvalidCharacter = true;
 
     public UserForm(View root, Function<Integer, String> dictionary) {
         this.nameField = new ConflictTextField(root.findViewById(R.id.fragment_user_form_name));
@@ -46,23 +47,23 @@ public class UserForm {
     }
 
     private void onNameChanged(TextInputLayout textInputLayout, boolean isEmpty) {
-        checkIfValid(isEmpty, textInputLayout, R.string.error_may_not_be_empty);
+        this.isEmpty = isEmpty;
+        if (isEmpty)
+            textInputLayout.setError(dictionary.apply(R.string.error_may_not_be_empty));
+        else if (maySubmit())
+            textInputLayout.setError(null);
     }
 
     private void onPrincipalNameChanged(TextInputLayout textInputLayout, boolean containsInvalidCharacter) {
-        checkIfValid(containsInvalidCharacter, textInputLayout, R.string.error_wrong_name_format);
-    }
-
-    private void checkIfValid(boolean invalid, TextInputLayout textInputLayout, @StringRes int errorMessage) {
-        maySubmit = !invalid;
-        if (invalid)
-            textInputLayout.setError(dictionary.apply(errorMessage));
-        else
+        this.containsInvalidCharacter = containsInvalidCharacter;
+        if (containsInvalidCharacter)
+            textInputLayout.setError(dictionary.apply(R.string.error_wrong_name_format));
+        else if (maySubmit())
             textInputLayout.setError(null);
     }
 
     public boolean maySubmit() {
-        return maySubmit;
+        return !isEmpty && !containsInvalidCharacter;
     }
 
     public void showErrors() {

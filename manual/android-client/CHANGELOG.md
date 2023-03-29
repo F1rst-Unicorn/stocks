@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+### Fixed
+
+* Show error message when adding user and clearing its name in the form.
+
 ## [4.2.0.0]
 
 ### Added
