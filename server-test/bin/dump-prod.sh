@@ -8,7 +8,7 @@ DUMP_FOR_SERVER="$STOCKS_ROOT/server-test/target/prod-dump-for-dp-server.sql"
 DEPLOYMENT_VM="${DEPLOYMENT_VM:-dp-server}"
 
 if [[ ! -f $DUMP ]] ; then
-    ssh -t db.j.njsm.de sudo -Eu postgres pg_dump -c stocks > "$DUMP"
+    ssh -t eregion.m.njsm.de sudo -Eu postgres pg_dump -c stocks > "$DUMP"
     tail -n +2 "$DUMP" > tmp
     mv tmp "$DUMP"
     sed -E "s#[a-z:]*migrations/#migrations/#g" < "$DUMP" > "$DUMP_FOR_SERVER"

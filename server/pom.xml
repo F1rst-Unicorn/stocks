@@ -311,7 +311,7 @@
         <profile>
             <id>teamcity</id>
             <properties>
-                <de.njsm.stocks.server.v2.db.host>db.j.njsm.de</de.njsm.stocks.server.v2.db.host>
+                <de.njsm.stocks.server.v2.db.host>eregion.m.njsm.de</de.njsm.stocks.server.v2.db.host>
                 <de.njsm.stocks.server.v2.db.port>5432</de.njsm.stocks.server.v2.db.port>
                 <de.njsm.stocks.server.v2.db.name>${env.POSTGRESQL_DB}</de.njsm.stocks.server.v2.db.name>
                 <de.njsm.stocks.server.v2.circuitbreaker.timeout>2000</de.njsm.stocks.server.v2.circuitbreaker.timeout>
