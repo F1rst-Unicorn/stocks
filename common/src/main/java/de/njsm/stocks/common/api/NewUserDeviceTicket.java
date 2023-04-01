@@ -28,7 +28,7 @@ import com.google.auto.value.AutoValue;
 
 @AutoValue
 @JsonDeserialize(builder = AutoValue_NewUserDeviceTicket.Builder.class)
-public abstract class NewUserDeviceTicket implements Identifiable<UserDevice> {
+public abstract class NewUserDeviceTicket {
 
     @JsonGetter
     public abstract String ticket();
@@ -42,12 +42,12 @@ public abstract class NewUserDeviceTicket implements Identifiable<UserDevice> {
 
     @AutoValue.Builder
     @JsonPOJOBuilder(withPrefix = "")
-    public abstract static class Builder
-            extends SelfValidating.Builder<NewUserDeviceTicket>
-            implements Identifiable.Builder<Builder> {
+    public abstract static class Builder {
 
         public abstract Builder ticket(String v);
 
         public abstract Builder deviceId(int v);
+
+        public abstract NewUserDeviceTicket build();
     }
 }
