@@ -180,6 +180,7 @@ public interface ServerApi {
     @PUT("/v2/user")
     Call<DataResponse<Integer>> addUser(@Query("name") String name);
 
+    @PUT("/v2/device")
     Call<DataResponse<NewUserDeviceTicket>> addUserDevice(@Query("name") String name,
                                                           @Query("belongsTo") int id);
 }
