@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## [5.7.0.3]
+
 ### Performance
 
 * Accelerate consistency checks by only checking changed data instead of the
