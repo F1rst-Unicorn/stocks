@@ -19,28 +19,13 @@
  *
  */
 
-package de.njsm.stocks.client.business;
+package de.njsm.stocks.client.navigation;
 
+import android.os.Bundle;
 import de.njsm.stocks.client.business.entities.Id;
-import de.njsm.stocks.client.business.entities.User;
-import de.njsm.stocks.client.testdata.UserDevicesForListing;
-import io.reactivex.rxjava3.core.Observable;
-import io.reactivex.rxjava3.subjects.BehaviorSubject;
+import de.njsm.stocks.client.business.entities.UserDevice;
 
-import javax.inject.Inject;
-import java.util.concurrent.TimeUnit;
+public interface TicketShowNavigator extends Navigator {
 
-class InMemoryUserDeviceListInteractorImpl implements UserDeviceListInteractor {
-
-    private final BehaviorSubject<de.njsm.stocks.client.business.entities.UserDevicesForListing> data;
-
-    @Inject
-    InMemoryUserDeviceListInteractorImpl(UserDevicesForListing UsersForListing) {
-        this.data = UsersForListing.getData();
-    }
-
-    @Override
-    public Observable<de.njsm.stocks.client.business.entities.UserDevicesForListing> getData(Id<User> user) {
-        return data;
-    }
+    Id<UserDevice> getId(Bundle arguments);
 }

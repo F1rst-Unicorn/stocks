@@ -28,7 +28,6 @@ import io.reactivex.rxjava3.subjects.BehaviorSubject;
 
 import javax.inject.Inject;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 public class InMemoryScaledUnitListInteractorImpl implements ScaledUnitListInteractor {
 
@@ -41,6 +40,6 @@ public class InMemoryScaledUnitListInteractorImpl implements ScaledUnitListInter
 
     @Override
     public Observable<List<ScaledUnitForListing>> getScaledUnits() {
-        return data.delay(1, TimeUnit.SECONDS);
+        return data;
     }
 }

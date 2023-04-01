@@ -473,4 +473,10 @@ public interface FakeBusinessModule {
     static UserDeviceAddInteractor UserDeviceAddInteractor() {
         return mock(UserDeviceAddInteractor.class);
     }
+
+    @Provides
+    @Singleton
+    static TicketDisplayInteractor TicketDisplayInteractor() {
+        return mock(TicketDisplayInteractor.class);
+    }
 }

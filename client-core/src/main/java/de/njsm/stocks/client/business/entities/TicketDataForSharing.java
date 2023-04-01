@@ -19,27 +19,22 @@
  *
  */
 
-package de.njsm.stocks.client.business;
+package de.njsm.stocks.client.business.entities;
 
-import de.njsm.stocks.client.business.entities.UserForListing;
-import de.njsm.stocks.client.testdata.UsersForListing;
-import io.reactivex.rxjava3.core.Observable;
-import io.reactivex.rxjava3.subjects.BehaviorSubject;
+import com.google.auto.value.AutoValue;
 
-import javax.inject.Inject;
-import java.util.List;
+@AutoValue
+public abstract class TicketDataForSharing {
 
-class InMemoryUserListInteractorImpl implements UserListInteractor {
+    public abstract Id<User> userId();
 
-    private final BehaviorSubject<List<UserForListing>> data;
+    public abstract String userName();
 
-    @Inject
-    InMemoryUserListInteractorImpl(UsersForListing UsersForListing) {
-        this.data = UsersForListing.getData();
-    }
+    public abstract String deviceName();
 
-    @Override
-    public Observable<List<UserForListing>> getUsers() {
-        return data;
+    public abstract String ticket();
+
+    public static TicketDataForSharing create(Id<User> userId, String userName, String deviceName, String ticket) {
+        return new AutoValue_TicketDataForSharing(userId, userName, deviceName, ticket);
     }
 }

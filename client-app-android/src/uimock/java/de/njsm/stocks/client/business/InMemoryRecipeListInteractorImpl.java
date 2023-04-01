@@ -28,7 +28,6 @@ import io.reactivex.rxjava3.subjects.BehaviorSubject;
 
 import javax.inject.Inject;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 class InMemoryRecipeListInteractorImpl implements RecipeListInteractor {
 
@@ -41,6 +40,6 @@ class InMemoryRecipeListInteractorImpl implements RecipeListInteractor {
 
     @Override
     public Observable<List<RecipeForListing>> get() {
-        return data.delay(1, TimeUnit.SECONDS);
+        return data;
     }
 }

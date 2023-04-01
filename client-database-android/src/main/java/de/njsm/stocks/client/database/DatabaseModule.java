@@ -256,4 +256,7 @@ public interface DatabaseModule {
 
     @Binds
     UserDeviceAddRepository UserDeviceAddRepository(UserDeviceAddRepositoryImpl impl);
+
+    @Binds
+    TicketDisplayRepository TicketDisplayRepository(TicketDisplayRepositoryImpl impl);
 }

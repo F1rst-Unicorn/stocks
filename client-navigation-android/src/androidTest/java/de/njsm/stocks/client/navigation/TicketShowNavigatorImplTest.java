@@ -19,28 +19,26 @@
  *
  */
 
-package de.njsm.stocks.client.business;
+package de.njsm.stocks.client.navigation;
 
+import android.os.Bundle;
 import de.njsm.stocks.client.business.entities.Id;
-import de.njsm.stocks.client.business.entities.User;
-import de.njsm.stocks.client.testdata.UserDevicesForListing;
-import io.reactivex.rxjava3.core.Observable;
-import io.reactivex.rxjava3.subjects.BehaviorSubject;
+import de.njsm.stocks.client.business.entities.UserDevice;
+import org.junit.Test;
 
-import javax.inject.Inject;
-import java.util.concurrent.TimeUnit;
+import static org.junit.Assert.assertEquals;
 
-class InMemoryUserDeviceListInteractorImpl implements UserDeviceListInteractor {
+public class TicketShowNavigatorImplTest extends NavigationTest {
 
-    private final BehaviorSubject<de.njsm.stocks.client.business.entities.UserDevicesForListing> data;
+    @Test
+    public void argumentIsExtracted() {
+        TicketShowNavigatorImpl uut = new TicketShowNavigatorImpl(navigationArgConsumer);
+        Bundle input = new Bundle();
+        int expected = 42;
+        input.putInt("id", expected);
 
-    @Inject
-    InMemoryUserDeviceListInteractorImpl(UserDevicesForListing UsersForListing) {
-        this.data = UsersForListing.getData();
-    }
+        Id<UserDevice> actual = uut.getId(input);
 
-    @Override
-    public Observable<de.njsm.stocks.client.business.entities.UserDevicesForListing> getData(Id<User> user) {
-        return data;
+        assertEquals(expected, actual.id());
     }
 }

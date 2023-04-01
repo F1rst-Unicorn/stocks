@@ -19,35 +19,27 @@
  *
  */
 
-package de.njsm.stocks.client.business;
+package de.njsm.stocks.client.database;
 
-import de.njsm.stocks.client.business.entities.EanNumberAddForm;
-import de.njsm.stocks.client.business.entities.EanNumberForListing;
-import de.njsm.stocks.client.business.entities.Food;
+import de.njsm.stocks.client.business.TicketDisplayRepository;
 import de.njsm.stocks.client.business.entities.Id;
-import de.njsm.stocks.client.testdata.EanNumbersForListing;
+import de.njsm.stocks.client.business.entities.TicketDataForSharing;
+import de.njsm.stocks.client.business.entities.UserDevice;
 import io.reactivex.rxjava3.core.Observable;
-import io.reactivex.rxjava3.subjects.BehaviorSubject;
 
 import javax.inject.Inject;
-import java.util.List;
 
-class InMemoryEanNumberListInteractorImpl implements EanNumberListInteractor {
+class TicketDisplayRepositoryImpl implements TicketDisplayRepository {
 
-    private final BehaviorSubject<List<EanNumberForListing>> data;
+    private final UserDeviceDao dao;
 
     @Inject
-    InMemoryEanNumberListInteractorImpl() {
-        this.data = BehaviorSubject.createDefault(EanNumbersForListing.generate());
+    TicketDisplayRepositoryImpl(UserDeviceDao dao) {
+        this.dao = dao;
     }
 
     @Override
-    public Observable<List<EanNumberForListing>> get(Id<Food> user) {
-        return data;
-    }
-
-    @Override
-    public void add(EanNumberAddForm eanNumberAddForm) {
-
+    public Observable<TicketDataForSharing> getRegistrationFormFor(Id<UserDevice> userDevice) {
+        return dao.getTicketFor(userDevice.id());
     }
 }

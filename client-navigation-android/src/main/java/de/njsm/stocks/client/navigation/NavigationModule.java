@@ -134,4 +134,7 @@ public interface NavigationModule {
 
     @Binds
     UserDeviceAddNavigator UserDeviceAddNavigator(UserDeviceAddNavigatorImpl impl);
+
+    @Binds
+    TicketShowNavigator TicketShowNavigator(TicketShowNavigatorImpl impl);
 }

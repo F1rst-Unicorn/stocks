@@ -338,4 +338,11 @@ public class ViewModelModule {
     ViewModel UserDeviceAddViewModel(UserDeviceAddInteractor interactor) {
         return new UserDeviceAddViewModel(interactor);
     }
+
+    @Provides
+    @IntoMap
+    @ViewModelKey(TicketShowViewModel.class)
+    ViewModel TicketShowViewModel(TicketDisplayInteractor interactor) {
+        return new TicketShowViewModel(interactor);
+    }
 }

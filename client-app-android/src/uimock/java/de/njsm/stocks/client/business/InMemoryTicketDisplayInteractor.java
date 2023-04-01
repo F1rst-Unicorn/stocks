@@ -21,33 +21,32 @@
 
 package de.njsm.stocks.client.business;
 
-import de.njsm.stocks.client.business.entities.EanNumberAddForm;
-import de.njsm.stocks.client.business.entities.EanNumberForListing;
-import de.njsm.stocks.client.business.entities.Food;
 import de.njsm.stocks.client.business.entities.Id;
-import de.njsm.stocks.client.testdata.EanNumbersForListing;
+import de.njsm.stocks.client.business.entities.RegistrationForm;
+import de.njsm.stocks.client.business.entities.UserDevice;
 import io.reactivex.rxjava3.core.Observable;
-import io.reactivex.rxjava3.subjects.BehaviorSubject;
 
 import javax.inject.Inject;
-import java.util.List;
 
-class InMemoryEanNumberListInteractorImpl implements EanNumberListInteractor {
-
-    private final BehaviorSubject<List<EanNumberForListing>> data;
+class InMemoryTicketDisplayInteractor implements TicketDisplayInteractor {
 
     @Inject
-    InMemoryEanNumberListInteractorImpl() {
-        this.data = BehaviorSubject.createDefault(EanNumbersForListing.generate());
+    InMemoryTicketDisplayInteractor() {
     }
 
     @Override
-    public Observable<List<EanNumberForListing>> get(Id<Food> user) {
-        return data;
-    }
-
-    @Override
-    public void add(EanNumberAddForm eanNumberAddForm) {
-
+    public Observable<RegistrationForm> getRegistrationFormFor(Id<UserDevice> userDevice) {
+        return Observable.just(RegistrationForm.builder()
+                .serverName("serverName")
+                .caPort(10910)
+                .registrationPort(10911)
+                .serverPort(10912)
+                .userName("userName")
+                .userId(1)
+                .userDeviceName("userDeviceName")
+                .userDeviceId(2)
+                .fingerprint("fingerprint")
+                .ticket("ticket")
+                .build());
     }
 }

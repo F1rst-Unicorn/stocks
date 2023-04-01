@@ -230,4 +230,7 @@ public interface UimockBusinessModule {
 
     @Binds
     UserDeviceAddInteractor UserDeviceAddInteractor(InMemoryUserDeviceAddInteractor impl);
+
+    @Binds
+    TicketDisplayInteractor TicketDisplayInteractor(InMemoryTicketDisplayInteractor impl);
 }

@@ -211,4 +211,7 @@ public interface BusinessModule {
 
     @Binds
     UserDeviceAddInteractor UserDeviceAddInteractor(UserDeviceAddInteractorImpl impl);
+
+    @Binds
+    TicketDisplayInteractor TicketDisplayInteractor(TicketDisplayInteractorImpl impl);
 }

@@ -41,6 +41,6 @@ public class InMemoryUnitListInteractorImpl implements UnitListInteractor {
 
     @Override
     public Observable<List<UnitForListing>> getUnits() {
-        return data.delay(1, TimeUnit.SECONDS);
+        return data;
     }
 }

@@ -24,8 +24,7 @@ package de.njsm.stocks.client.database;
 import androidx.room.Dao;
 import androidx.room.Insert;
 import androidx.room.Query;
-import de.njsm.stocks.client.business.entities.UserDeviceForDeletion;
-import de.njsm.stocks.client.business.entities.UserDeviceForListing;
+import de.njsm.stocks.client.business.entities.*;
 import io.reactivex.rxjava3.core.Observable;
 
 import java.util.List;
@@ -51,4 +50,11 @@ abstract class UserDeviceDao {
 
     @Insert
     abstract void store(TicketEntity entity);
+
+    @Query("select u.id as userId, u.name as userName, d.name as deviceName, t.ticket as ticket " +
+            "from current_user_device d " +
+            "join current_user u on d.belongs_to = u.id " +
+            "join ticket t on t.device_id = d.id " +
+            "where d.id = :userDeviceId")
+    abstract Observable<TicketDataForSharing> getTicketFor(int userDeviceId);
 }

@@ -19,35 +19,24 @@
  *
  */
 
-package de.njsm.stocks.client.business;
+package de.njsm.stocks.client.navigation;
 
-import de.njsm.stocks.client.business.entities.EanNumberAddForm;
-import de.njsm.stocks.client.business.entities.EanNumberForListing;
-import de.njsm.stocks.client.business.entities.Food;
+import android.os.Bundle;
 import de.njsm.stocks.client.business.entities.Id;
-import de.njsm.stocks.client.testdata.EanNumbersForListing;
-import io.reactivex.rxjava3.core.Observable;
-import io.reactivex.rxjava3.subjects.BehaviorSubject;
+import de.njsm.stocks.client.business.entities.UserDevice;
+import de.njsm.stocks.client.fragment.ticketshow.TicketShowFragmentArgs;
 
 import javax.inject.Inject;
-import java.util.List;
 
-class InMemoryEanNumberListInteractorImpl implements EanNumberListInteractor {
-
-    private final BehaviorSubject<List<EanNumberForListing>> data;
+class TicketShowNavigatorImpl extends BaseNavigator implements TicketShowNavigator {
 
     @Inject
-    InMemoryEanNumberListInteractorImpl() {
-        this.data = BehaviorSubject.createDefault(EanNumbersForListing.generate());
+    TicketShowNavigatorImpl(NavigationArgConsumer navigationArgConsumer) {
+        super(navigationArgConsumer);
     }
 
     @Override
-    public Observable<List<EanNumberForListing>> get(Id<Food> user) {
-        return data;
-    }
-
-    @Override
-    public void add(EanNumberAddForm eanNumberAddForm) {
-
+    public Id<UserDevice> getId(Bundle arguments) {
+        return TicketShowFragmentArgs.fromBundle(arguments)::getId;
     }
 }

@@ -266,4 +266,10 @@ class FakeNavigationModule {
 	UserDeviceAddNavigator UserDeviceAddNavigator() {
         return mock(UserDeviceAddNavigator.class);
     }
+
+    @Provides
+    @Singleton
+    TicketShowNavigator TicketShowNavigator() {
+        return mock(TicketShowNavigator.class);
+    }
 }

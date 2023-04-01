@@ -60,6 +60,7 @@ import de.njsm.stocks.client.fragment.settings.SettingsFragmentTest;
 import de.njsm.stocks.client.fragment.setupform.SetupFormFragmentTest;
 import de.njsm.stocks.client.fragment.setupgreet.SetupGreetingFragmentTest;
 import de.njsm.stocks.client.fragment.shoppinglist.ShoppingListFragmentTest;
+import de.njsm.stocks.client.fragment.ticketshow.TicketShowFragmentTest;
 import de.njsm.stocks.client.fragment.unitadd.UnitAddFragmentTest;
 import de.njsm.stocks.client.fragment.unitconflict.UnitConflictFragmentTest;
 import de.njsm.stocks.client.fragment.unitedit.UnitEditFragmentTest;
@@ -168,6 +169,8 @@ public interface TestComponent {
     void inject(UserAddFragmentTest test);
 
     void inject(UserDeviceAddFragmentTest test);
+
+    void inject(TicketShowFragmentTest test);
 
     @Component.Builder
     interface Builder {

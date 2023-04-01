@@ -56,6 +56,7 @@ import de.njsm.stocks.client.fragment.settings.SettingsFragment;
 import de.njsm.stocks.client.fragment.setupform.SetupFormFragment;
 import de.njsm.stocks.client.fragment.setupgreet.SetupGreetingFragment;
 import de.njsm.stocks.client.fragment.shoppinglist.ShoppingListFragment;
+import de.njsm.stocks.client.fragment.ticketshow.TicketShowFragment;
 import de.njsm.stocks.client.fragment.unitadd.UnitAddFragment;
 import de.njsm.stocks.client.fragment.unitconflict.UnitConflictFragment;
 import de.njsm.stocks.client.fragment.unitedit.UnitEditFragment;
@@ -200,4 +201,7 @@ public abstract class FragmentModule {
 
     @ContributesAndroidInjector
     public abstract UserDeviceAddFragment UserDeviceAddFragment();
+
+    @ContributesAndroidInjector
+    public abstract TicketShowFragment TicketShowFragment();
 }

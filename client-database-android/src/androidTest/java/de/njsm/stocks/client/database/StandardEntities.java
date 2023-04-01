@@ -144,6 +144,10 @@ public class StandardEntities {
                 .identifies(randomnessProvider.getId("ean_number identifies"));
     }
 
+    public TicketEntity ticketEntity(int userDeviceId) {
+        return TicketEntity.create(randomnessProvider.getId("ticket id"), "ticket", userDeviceId);
+    }
+
     private <E extends ServerDbEntity<E>, T extends ServerDbEntity.Builder<E, T>> T initialiseBuilder(T builder) {
         return builder
                 .id(randomnessProvider.getId(builder.getClass().getCanonicalName() + " id"))
