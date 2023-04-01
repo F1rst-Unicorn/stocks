@@ -45,7 +45,8 @@ class UserDeviceListRepositoryImpl implements UserDeviceListRepository, EntityDe
         var devices = userDeviceDao.getUserDevices(userId.id());
         var user = userDao.getUser(userId.id());
 
-        return devices.zipWith(user, (d, u) -> UserDevicesForListing.create(d, u.name()));
+        return Observable.combineLatest(devices, user, (d, u) ->
+                UserDevicesForListing.create(d, u.name()));
     }
 
     @Override
