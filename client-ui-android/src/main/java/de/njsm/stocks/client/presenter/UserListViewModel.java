@@ -22,16 +22,12 @@
 package de.njsm.stocks.client.presenter;
 
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.LiveDataReactiveStreams;
 import androidx.lifecycle.ViewModel;
 import de.njsm.stocks.client.business.EntityDeleter;
 import de.njsm.stocks.client.business.Synchroniser;
 import de.njsm.stocks.client.business.UserListInteractor;
 import de.njsm.stocks.client.business.entities.User;
 import de.njsm.stocks.client.business.entities.UserForListing;
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
-import io.reactivex.rxjava3.core.BackpressureStrategy;
-import io.reactivex.rxjava3.core.Observable;
 
 import javax.inject.Inject;
 import java.util.List;
@@ -45,25 +41,22 @@ public class UserListViewModel extends ViewModel {
 
     private final Synchroniser synchroniser;
 
-    private Observable<List<UserForListing>> data;
+    private final ObservableListCache<UserForListing> data;
 
     @Inject
-    UserListViewModel(UserListInteractor userListInteractor, EntityDeleter<User> deleter, Synchroniser synchroniser) {
+    UserListViewModel(UserListInteractor userListInteractor, EntityDeleter<User> deleter, Synchroniser synchroniser, ObservableListCache<UserForListing> data) {
         this.userListInteractor = userListInteractor;
         this.deleter = deleter;
         this.synchroniser = synchroniser;
+        this.data = data;
     }
 
     public LiveData<List<UserForListing>> get() {
-        return LiveDataReactiveStreams.fromPublisher(
-                getData().toFlowable(BackpressureStrategy.LATEST));
+        return data.getLiveData(userListInteractor::getUsers);
     }
 
     public void delete(int listItemIndex) {
-        if (data == null)
-            return;
-
-        performOnCurrentData(list -> deleter.delete(list.get(listItemIndex)));
+        data.performOnListItem(listItemIndex, deleter::delete);
     }
 
     public void synchronise() {
@@ -71,19 +64,6 @@ public class UserListViewModel extends ViewModel {
     }
 
     public void resolveId(int listItemIndex, Consumer<Integer> callback) {
-        performOnCurrentData(list -> callback.accept(list.get(listItemIndex).id()));
-    }
-
-    private void performOnCurrentData(Consumer<List<UserForListing>> runnable) {
-        getData()
-                .firstElement()
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(runnable::accept);
-    }
-
-    private Observable<List<UserForListing>> getData() {
-        if (data == null)
-            data = userListInteractor.getUsers();
-        return data;
+        data.performOnListItem(listItemIndex, v -> callback.accept(v.id()));
     }
 }

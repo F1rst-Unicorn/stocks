@@ -22,7 +22,6 @@
 package de.njsm.stocks.client.presenter;
 
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.LiveDataReactiveStreams;
 import androidx.lifecycle.ViewModel;
 import de.njsm.stocks.client.business.EntityDeleter;
 import de.njsm.stocks.client.business.FoodToBuyInteractor;
@@ -31,9 +30,6 @@ import de.njsm.stocks.client.business.Synchroniser;
 import de.njsm.stocks.client.business.entities.Food;
 import de.njsm.stocks.client.business.entities.FoodToBuy;
 import de.njsm.stocks.client.business.entities.SearchedFoodForListing;
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
-import io.reactivex.rxjava3.core.BackpressureStrategy;
-import io.reactivex.rxjava3.core.Observable;
 
 import javax.inject.Inject;
 import java.util.List;
@@ -47,16 +43,21 @@ public class SearchedFoodViewModel extends ViewModel {
 
     private final Synchroniser synchroniser;
 
-    private Observable<List<SearchedFoodForListing>> data;
+    private final ObservableListCache<SearchedFoodForListing> data;
 
     private final FoodToBuyInteractor toBuyInteractor;
 
     @Inject
-    SearchedFoodViewModel(Synchroniser synchroniser, SearchInteractor interactor, EntityDeleter<Food> deleter, FoodToBuyInteractor toBuyInteractor) {
+    SearchedFoodViewModel(Synchroniser synchroniser,
+                          SearchInteractor interactor,
+                          EntityDeleter<Food> deleter,
+                          FoodToBuyInteractor toBuyInteractor,
+                          ObservableListCache<SearchedFoodForListing> data) {
         this.synchroniser = synchroniser;
         this.interactor = interactor;
         this.deleter = deleter;
         this.toBuyInteractor = toBuyInteractor;
+        this.data = data;
     }
 
     public void synchronise() {
@@ -64,43 +65,19 @@ public class SearchedFoodViewModel extends ViewModel {
     }
 
     public LiveData<List<SearchedFoodForListing>> getFood(String query) {
-        return LiveDataReactiveStreams.fromPublisher(
-                getData(query).toFlowable(BackpressureStrategy.LATEST)
-        );
+        return data.getLiveData(() -> interactor.get(query));
     }
 
     public void delete(int listItemIndex) {
-        if (data == null)
-            return;
-
-        performOnCurrentData(list -> deleter.delete(list.get(listItemIndex)));
+        data.performOnListItem(listItemIndex, deleter::delete);
     }
 
-    public void addToShoppingList(Integer listItemIndex) {
-        if (data == null)
-            return;
-
-        performOnCurrentData(list ->
-                toBuyInteractor.manageFoodToBuy(FoodToBuy.putOnShoppingList(list.get(listItemIndex).id())));
-
+    public void addToShoppingList(int listItemIndex) {
+        data.performOnListItem(listItemIndex, v ->
+                toBuyInteractor.manageFoodToBuy(FoodToBuy.putOnShoppingList(v.id())));
     }
 
     public void resolveId(int listItemIndex, Consumer<Integer> callback) {
-        if (data == null)
-            return;
-
-        performOnCurrentData(list -> callback.accept(list.get(listItemIndex).id()));
-    }
-
-    private void performOnCurrentData(Consumer<List<SearchedFoodForListing>> runnable) {
-        data.firstElement()
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(runnable::accept);
-    }
-
-    private Observable<List<SearchedFoodForListing>> getData(String query) {
-        if (data == null)
-            data = interactor.get(query);
-        return data;
+        data.performOnListItem(listItemIndex, v -> callback.accept(v.id()));
     }
 }

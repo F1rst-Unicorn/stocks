@@ -22,14 +22,11 @@
 package de.njsm.stocks.client.presenter;
 
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.LiveDataReactiveStreams;
 import de.njsm.stocks.client.business.EntityDeleter;
 import de.njsm.stocks.client.business.FoodByLocationListInteractor;
 import de.njsm.stocks.client.business.FoodToBuyInteractor;
 import de.njsm.stocks.client.business.Synchroniser;
 import de.njsm.stocks.client.business.entities.*;
-import io.reactivex.rxjava3.core.BackpressureStrategy;
-import io.reactivex.rxjava3.core.Observable;
 
 import javax.inject.Inject;
 import java.util.List;
@@ -38,26 +35,20 @@ public class FoodByLocationListViewModel extends AbstractFoodListViewModel {
 
     private final FoodByLocationListInteractor foodByLocationListInteractor;
 
+    private final ObservableDataCache<LocationName> locationData;
+
     @Inject
-    FoodByLocationListViewModel(Synchroniser synchroniser, FoodByLocationListInteractor foodByLocationListInteractor, EntityDeleter<Food> deleter, FoodToBuyInteractor toBuyInteractor) {
-        super(synchroniser, deleter, toBuyInteractor);
+    FoodByLocationListViewModel(Synchroniser synchroniser, FoodByLocationListInteractor foodByLocationListInteractor, EntityDeleter<Food> deleter, FoodToBuyInteractor toBuyInteractor, ObservableListCache<FoodForListing> data, ObservableDataCache<LocationName> locationData) {
+        super(synchroniser, deleter, toBuyInteractor, data);
         this.foodByLocationListInteractor = foodByLocationListInteractor;
+        this.locationData = locationData;
     }
 
     public LiveData<List<FoodForListing>> getFood(Id<Location> location) {
-        return LiveDataReactiveStreams.fromPublisher(
-                getData(location).toFlowable(BackpressureStrategy.LATEST)
-        );
-    }
-
-    private Observable<List<FoodForListing>> getData(Id<Location> location) {
-        if (data == null)
-            data = foodByLocationListInteractor.getFoodBy(location);
-        return data;
+        return data.getLiveData(() -> foodByLocationListInteractor.getFoodBy(location));
     }
 
     public LiveData<LocationName> getLocation(Id<Location> location) {
-        return LiveDataReactiveStreams.fromPublisher(
-                foodByLocationListInteractor.getLocation(location).toFlowable(BackpressureStrategy.LATEST));
+        return locationData.getLiveData(() -> foodByLocationListInteractor.getLocation(location));
     }
 }

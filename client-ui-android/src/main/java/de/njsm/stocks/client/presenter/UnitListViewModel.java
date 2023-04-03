@@ -22,15 +22,11 @@
 package de.njsm.stocks.client.presenter;
 
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.LiveDataReactiveStreams;
 import androidx.lifecycle.ViewModel;
 import de.njsm.stocks.client.business.EntityDeleter;
 import de.njsm.stocks.client.business.UnitListInteractor;
 import de.njsm.stocks.client.business.entities.Unit;
 import de.njsm.stocks.client.business.entities.UnitForListing;
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
-import io.reactivex.rxjava3.core.BackpressureStrategy;
-import io.reactivex.rxjava3.core.Observable;
 
 import javax.inject.Inject;
 import java.util.List;
@@ -42,38 +38,24 @@ public class UnitListViewModel extends ViewModel {
 
     private final EntityDeleter<Unit> unitDeleter;
 
-    private Observable<List<UnitForListing>> data;
+    private final ObservableListCache<UnitForListing> data;
 
     @Inject
-    UnitListViewModel(UnitListInteractor unitListInteractor, EntityDeleter<Unit> unitDeleter) {
+    UnitListViewModel(UnitListInteractor unitListInteractor, EntityDeleter<Unit> unitDeleter, ObservableListCache<UnitForListing> data) {
         this.unitListInteractor = unitListInteractor;
         this.unitDeleter = unitDeleter;
+        this.data = data;
     }
 
     public LiveData<List<UnitForListing>> getUnits() {
-        return LiveDataReactiveStreams.fromPublisher(
-                getData().toFlowable(BackpressureStrategy.LATEST)
-        );
+        return data.getLiveData(unitListInteractor::getUnits);
     }
 
     public void deleteUnit(int listItemIndex) {
-        performOnCurrentUnits(list -> unitDeleter.delete(list.get(listItemIndex)));
+        data.performOnListItem(listItemIndex, unitDeleter::delete);
     }
 
     public void resolveUnitId(int listItemIndex, Consumer<Integer> callback) {
-        performOnCurrentUnits(list -> callback.accept(list.get(listItemIndex).id()));
-    }
-
-    private void performOnCurrentUnits(Consumer<List<UnitForListing>> runnable) {
-        getData()
-                .firstElement()
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(runnable::accept);
-    }
-
-    private Observable<List<UnitForListing>> getData() {
-        if (data == null)
-            data = unitListInteractor.getUnits();
-        return data;
+        data.performOnListItem(listItemIndex, t -> callback.accept(t.id()));
     }
 }

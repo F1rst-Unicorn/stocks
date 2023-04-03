@@ -22,15 +22,12 @@
 package de.njsm.stocks.client.presenter;
 
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.LiveDataReactiveStreams;
 import androidx.lifecycle.ViewModel;
 import de.njsm.stocks.client.business.FoodEditInteractor;
 import de.njsm.stocks.client.business.entities.Food;
 import de.njsm.stocks.client.business.entities.FoodEditingFormData;
 import de.njsm.stocks.client.business.entities.FoodToEdit;
 import de.njsm.stocks.client.business.entities.Id;
-import io.reactivex.rxjava3.core.BackpressureStrategy;
-import io.reactivex.rxjava3.core.Observable;
 
 import javax.inject.Inject;
 
@@ -38,11 +35,12 @@ public class FoodEditViewModel extends ViewModel {
 
     private final FoodEditInteractor interactor;
 
-    private Observable<FoodEditingFormData> data;
+    private final ObservableDataCache<FoodEditingFormData> data;
 
     @Inject
-    FoodEditViewModel(FoodEditInteractor interactor) {
+    FoodEditViewModel(FoodEditInteractor interactor, ObservableDataCache<FoodEditingFormData> data) {
         this.interactor = interactor;
+        this.data = data;
     }
 
     public void edit(FoodToEdit data) {
@@ -50,14 +48,6 @@ public class FoodEditViewModel extends ViewModel {
     }
 
     public LiveData<FoodEditingFormData> getFormData(Id<Food> id) {
-        return LiveDataReactiveStreams.fromPublisher(
-                getData(id).toFlowable(BackpressureStrategy.LATEST)
-        );
-    }
-
-    private Observable<FoodEditingFormData> getData(Id<Food> id) {
-        if (data == null)
-            data = interactor.getFormData(id);
-        return data;
+        return data.getLiveData(() -> interactor.getFormData(id));
     }
 }

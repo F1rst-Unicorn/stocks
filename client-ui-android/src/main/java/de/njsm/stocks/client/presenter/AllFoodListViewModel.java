@@ -22,15 +22,12 @@
 package de.njsm.stocks.client.presenter;
 
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.LiveDataReactiveStreams;
 import de.njsm.stocks.client.business.AllPresentFoodListInteractor;
 import de.njsm.stocks.client.business.EntityDeleter;
 import de.njsm.stocks.client.business.FoodToBuyInteractor;
 import de.njsm.stocks.client.business.Synchroniser;
 import de.njsm.stocks.client.business.entities.Food;
 import de.njsm.stocks.client.business.entities.FoodForListing;
-import io.reactivex.rxjava3.core.BackpressureStrategy;
-import io.reactivex.rxjava3.core.Observable;
 
 import javax.inject.Inject;
 import java.util.List;
@@ -40,20 +37,12 @@ public class AllFoodListViewModel extends AbstractFoodListViewModel {
     private final AllPresentFoodListInteractor allPresentFoodListInteractor;
 
     @Inject
-    AllFoodListViewModel(Synchroniser synchroniser, AllPresentFoodListInteractor allPresentFoodListInteractor, EntityDeleter<Food> deleter, FoodToBuyInteractor toBuyInteractor) {
-        super(synchroniser, deleter, toBuyInteractor);
+    AllFoodListViewModel(Synchroniser synchroniser, AllPresentFoodListInteractor allPresentFoodListInteractor, EntityDeleter<Food> deleter, FoodToBuyInteractor toBuyInteractor, ObservableListCache<FoodForListing> data) {
+        super(synchroniser, deleter, toBuyInteractor, data);
         this.allPresentFoodListInteractor = allPresentFoodListInteractor;
     }
 
     public LiveData<List<FoodForListing>> getFood() {
-        return LiveDataReactiveStreams.fromPublisher(
-                getData().toFlowable(BackpressureStrategy.LATEST)
-        );
-    }
-
-    private Observable<List<FoodForListing>> getData() {
-        if (data == null)
-            data = allPresentFoodListInteractor.getFood();
-        return data;
+        return data.getLiveData(allPresentFoodListInteractor::getFood);
     }
 }

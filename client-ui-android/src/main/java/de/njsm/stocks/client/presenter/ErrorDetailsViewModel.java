@@ -22,13 +22,10 @@
 package de.njsm.stocks.client.presenter;
 
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.LiveDataReactiveStreams;
 import androidx.lifecycle.ViewModel;
 import de.njsm.stocks.client.business.ErrorListInteractor;
 import de.njsm.stocks.client.business.ErrorRetryInteractor;
 import de.njsm.stocks.client.business.entities.ErrorDescription;
-import io.reactivex.rxjava3.core.BackpressureStrategy;
-import io.reactivex.rxjava3.core.Observable;
 
 import javax.inject.Inject;
 
@@ -38,34 +35,24 @@ public class ErrorDetailsViewModel extends ViewModel {
 
     private final ErrorRetryInteractor errorRetryInteractor;
 
-    private Observable<ErrorDescription> data;
+    private final ObservableDataCache<ErrorDescription> data;
 
     @Inject
-    public ErrorDetailsViewModel(ErrorListInteractor errorListInteractor, ErrorRetryInteractor errorRetryInteractor) {
+    public ErrorDetailsViewModel(ErrorListInteractor errorListInteractor, ErrorRetryInteractor errorRetryInteractor, ObservableDataCache<ErrorDescription> data) {
         this.errorListInteractor = errorListInteractor;
         this.errorRetryInteractor = errorRetryInteractor;
+        this.data = data;
     }
 
     public LiveData<ErrorDescription> getError(long errorDescriptionId) {
-        return LiveDataReactiveStreams.fromPublisher(
-                getData(errorDescriptionId).toFlowable(BackpressureStrategy.LATEST));
-    }
-
-    private Observable<ErrorDescription> getData(long errorDescriptionId) {
-        if (data == null)
-            data = errorListInteractor.getError(errorDescriptionId);
-        return data;
+        return data.getLiveData(() -> errorListInteractor.getError(errorDescriptionId));
     }
 
     public void retry() {
-        if (data != null)
-            data.firstElement()
-                    .subscribe(errorRetryInteractor::retry);
+        data.performOnCurrentData(errorRetryInteractor::retry);
     }
 
     public void delete() {
-        if (data != null)
-            data.firstElement()
-                    .subscribe(errorRetryInteractor::delete);
+        data.performOnCurrentData(errorRetryInteractor::delete);
     }
 }

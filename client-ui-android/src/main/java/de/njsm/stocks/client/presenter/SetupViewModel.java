@@ -20,13 +20,10 @@
 package de.njsm.stocks.client.presenter;
 
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.LiveDataReactiveStreams;
 import androidx.lifecycle.ViewModel;
 import de.njsm.stocks.client.business.SetupInteractor;
 import de.njsm.stocks.client.business.entities.RegistrationForm;
 import de.njsm.stocks.client.business.entities.SetupState;
-import io.reactivex.rxjava3.core.BackpressureStrategy;
-import io.reactivex.rxjava3.core.Observable;
 
 import javax.inject.Inject;
 
@@ -34,20 +31,15 @@ public class SetupViewModel extends ViewModel {
 
     private final SetupInteractor setupInteractor;
 
-    private LiveData<SetupState> currentSetupState;
+    private final ObservableDataCache<SetupState> currentSetupState;
 
     @Inject
-    public SetupViewModel(SetupInteractor setupInteractor) {
+    public SetupViewModel(SetupInteractor setupInteractor, ObservableDataCache<SetupState> currentSetupState) {
         this.setupInteractor = setupInteractor;
+        this.currentSetupState = currentSetupState;
     }
 
     public LiveData<SetupState> register(RegistrationForm registrationForm) {
-        Observable<SetupState> publisher = setupInteractor.setupWithForm(registrationForm);
-
-        if (currentSetupState == null) {
-            currentSetupState = LiveDataReactiveStreams.fromPublisher(publisher.toFlowable(BackpressureStrategy.LATEST));
-        }
-
-        return currentSetupState;
+        return currentSetupState.getLiveData(() -> setupInteractor.setupWithForm(registrationForm));
     }
 }

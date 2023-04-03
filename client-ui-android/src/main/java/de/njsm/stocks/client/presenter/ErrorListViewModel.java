@@ -20,20 +20,15 @@
 package de.njsm.stocks.client.presenter;
 
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.LiveDataReactiveStreams;
 import androidx.lifecycle.ViewModel;
 import de.njsm.stocks.client.business.ErrorListInteractor;
 import de.njsm.stocks.client.business.ErrorRetryInteractor;
 import de.njsm.stocks.client.business.Synchroniser;
 import de.njsm.stocks.client.business.entities.ErrorDescription;
-import io.reactivex.rxjava3.core.BackpressureStrategy;
-import io.reactivex.rxjava3.core.Observable;
 
 import javax.inject.Inject;
 import java.util.List;
 import java.util.function.Consumer;
-
-import static io.reactivex.rxjava3.android.schedulers.AndroidSchedulers.mainThread;
 
 public class ErrorListViewModel extends ViewModel {
 
@@ -43,13 +38,14 @@ public class ErrorListViewModel extends ViewModel {
 
     private final ErrorRetryInteractor errorRetryInteractor;
 
-    private Observable<List<ErrorDescription>> data;
+    private final ObservableListCache<ErrorDescription> data;
 
     @Inject
-    public ErrorListViewModel(ErrorListInteractor errorListInteractor, ErrorRetryInteractor errorRetryInteractor, Synchroniser synchroniser) {
+    public ErrorListViewModel(ErrorListInteractor errorListInteractor, ErrorRetryInteractor errorRetryInteractor, Synchroniser synchroniser, ObservableListCache<ErrorDescription> data) {
         this.errorRetryInteractor = errorRetryInteractor;
         this.synchroniser = synchroniser;
         this.errorListInteractor = errorListInteractor;
+        this.data = data;
     }
 
     public void synchronise() {
@@ -57,12 +53,11 @@ public class ErrorListViewModel extends ViewModel {
     }
 
     public LiveData<List<ErrorDescription>> getErrors() {
-        return LiveDataReactiveStreams.fromPublisher(
-                getData().toFlowable(BackpressureStrategy.LATEST));
+        return data.getLiveData(errorListInteractor::getErrors);
     }
 
     public void resolveDataByPosition(int listItemIndex, Consumer<ErrorDescription> callback) {
-        performOnCurrentData(list -> callback.accept(list.get(listItemIndex)));
+        data.performOnListItem(listItemIndex, callback::accept);
     }
 
     public void retry(ErrorDescription errorDescription) {
@@ -70,19 +65,6 @@ public class ErrorListViewModel extends ViewModel {
     }
 
     public void delete(int listItemPosition) {
-        performOnCurrentData(list -> errorRetryInteractor.delete(list.get(listItemPosition)));
-    }
-
-    private void performOnCurrentData(Consumer<List<ErrorDescription>> consumer) {
-        getData()
-                .firstElement()
-                .observeOn(mainThread())
-                .subscribe(consumer::accept);
-    }
-
-    private Observable<List<ErrorDescription>> getData() {
-        if (data == null)
-            data = errorListInteractor.getErrors();
-        return data;
+        data.performOnListItem(listItemPosition, errorRetryInteractor::delete);
     }
 }

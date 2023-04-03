@@ -22,18 +22,13 @@
 package de.njsm.stocks.client.presenter;
 
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.LiveDataReactiveStreams;
 import androidx.lifecycle.ViewModel;
 import de.njsm.stocks.client.business.EanNumberListInteractor;
 import de.njsm.stocks.client.business.EntityDeleter;
 import de.njsm.stocks.client.business.Synchroniser;
 import de.njsm.stocks.client.business.entities.*;
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
-import io.reactivex.rxjava3.core.BackpressureStrategy;
-import io.reactivex.rxjava3.core.Observable;
 
 import java.util.List;
-import java.util.function.Consumer;
 
 public class EanNumberListViewModel extends ViewModel {
 
@@ -43,42 +38,25 @@ public class EanNumberListViewModel extends ViewModel {
 
     private final Synchroniser synchroniser;
 
-    private Observable<List<EanNumberForListing>> data;
+    private final ObservableListCache<EanNumberForListing> data;
 
-    public EanNumberListViewModel(EanNumberListInteractor interactor, EntityDeleter<EanNumber> deleter, Synchroniser synchroniser) {
+    public EanNumberListViewModel(EanNumberListInteractor interactor, EntityDeleter<EanNumber> deleter, Synchroniser synchroniser, ObservableListCache<EanNumberForListing> data) {
         this.interactor = interactor;
         this.deleter = deleter;
         this.synchroniser = synchroniser;
+        this.data = data;
     }
 
+    public LiveData<List<EanNumberForListing>> get(Id<Food> food) {
+        return data.getLiveData(() -> interactor.get(food));
+    }
 
     public void synchronise() {
         synchroniser.synchronise();
     }
 
     public void delete(int listItemIndex) {
-        if (data == null)
-            return;
-
-        performOnCurrentData(list -> deleter.delete(list.get(listItemIndex)));
-    }
-
-    private void performOnCurrentData(Consumer<List<EanNumberForListing>> runnable) {
-        data.firstElement()
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(runnable::accept);
-    }
-
-    public LiveData<List<EanNumberForListing>> get(Id<Food> food) {
-        return LiveDataReactiveStreams.fromPublisher(
-            getData(food).toFlowable(BackpressureStrategy.LATEST)
-        );
-    }
-
-    private Observable<List<EanNumberForListing>> getData(Id<Food> food) {
-        if (data == null)
-            data = interactor.get(food);
-        return data;
+        data.performOnListItem(listItemIndex, deleter::delete);
     }
 
     public void add(Id<Food> food, String eanCode) {

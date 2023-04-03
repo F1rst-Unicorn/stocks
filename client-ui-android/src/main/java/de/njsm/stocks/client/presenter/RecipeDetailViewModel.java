@@ -22,15 +22,12 @@
 package de.njsm.stocks.client.presenter;
 
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.LiveDataReactiveStreams;
 import androidx.lifecycle.ViewModel;
 import de.njsm.stocks.client.business.RecipeDetailInteractor;
 import de.njsm.stocks.client.business.Synchroniser;
 import de.njsm.stocks.client.business.entities.Id;
 import de.njsm.stocks.client.business.entities.Recipe;
 import de.njsm.stocks.client.business.entities.RecipeForDetails;
-import io.reactivex.rxjava3.core.BackpressureStrategy;
-import io.reactivex.rxjava3.core.Observable;
 
 public class RecipeDetailViewModel extends ViewModel {
 
@@ -38,11 +35,12 @@ public class RecipeDetailViewModel extends ViewModel {
 
     private final RecipeDetailInteractor interactor;
 
-    private Observable<RecipeForDetails> data;
+    private final ObservableDataCache<RecipeForDetails> data;
 
-    public RecipeDetailViewModel(Synchroniser synchroniser, RecipeDetailInteractor interactor) {
+    public RecipeDetailViewModel(Synchroniser synchroniser, RecipeDetailInteractor interactor, ObservableDataCache<RecipeForDetails> data) {
         this.synchroniser = synchroniser;
         this.interactor = interactor;
+        this.data = data;
     }
 
     public void synchronise() {
@@ -50,13 +48,6 @@ public class RecipeDetailViewModel extends ViewModel {
     }
 
     public LiveData<RecipeForDetails> get(Id<Recipe> recipeId) {
-        return LiveDataReactiveStreams.fromPublisher(
-                getData(recipeId).toFlowable(BackpressureStrategy.LATEST));
-    }
-
-    public Observable<RecipeForDetails> getData(Id<Recipe> recipeId) {
-        if (data == null)
-            data = interactor.get(recipeId);
-        return data;
+        return data.getLiveData(() -> interactor.get(recipeId));
     }
 }

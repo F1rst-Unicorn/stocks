@@ -22,13 +22,10 @@
 package de.njsm.stocks.client.presenter;
 
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.LiveDataReactiveStreams;
 import androidx.lifecycle.ViewModel;
 import de.njsm.stocks.client.business.RecipeAddInteractor;
 import de.njsm.stocks.client.business.entities.RecipeAddData;
 import de.njsm.stocks.client.business.entities.RecipeAddForm;
-import io.reactivex.rxjava3.core.BackpressureStrategy;
-import io.reactivex.rxjava3.core.Observable;
 
 import javax.inject.Inject;
 
@@ -36,21 +33,16 @@ public class RecipeAddViewModel extends ViewModel {
 
     private final RecipeAddInteractor interactor;
 
-    private Observable<RecipeAddData> data;
+    private final ObservableDataCache<RecipeAddData> data;
 
     @Inject
-    RecipeAddViewModel(RecipeAddInteractor interactor) {
+    RecipeAddViewModel(RecipeAddInteractor interactor, ObservableDataCache<RecipeAddData> data) {
         this.interactor = interactor;
+        this.data = data;
     }
 
     public LiveData<RecipeAddData> get() {
-        return LiveDataReactiveStreams.fromPublisher(getData().toFlowable(BackpressureStrategy.LATEST));
-    }
-
-    private Observable<RecipeAddData> getData() {
-        if (data == null)
-            data = interactor.getData();
-        return data;
+        return data.getLiveData(interactor::getData);
     }
 
     public void add(RecipeAddForm form) {

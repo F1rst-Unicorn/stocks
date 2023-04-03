@@ -22,7 +22,6 @@
 package de.njsm.stocks.client.presenter;
 
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.LiveDataReactiveStreams;
 import androidx.lifecycle.ViewModel;
 import de.njsm.stocks.client.business.ErrorRetryInteractor;
 import de.njsm.stocks.client.business.LocationConflictInteractor;
@@ -30,9 +29,6 @@ import de.njsm.stocks.client.business.entities.ErrorDescription;
 import de.njsm.stocks.client.business.entities.LocationEditErrorDetails;
 import de.njsm.stocks.client.business.entities.LocationToEdit;
 import de.njsm.stocks.client.business.entities.conflict.LocationEditConflictData;
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
-import io.reactivex.rxjava3.core.BackpressureStrategy;
-import io.reactivex.rxjava3.core.Observable;
 
 
 public class LocationConflictViewModel extends ViewModel {
@@ -41,35 +37,25 @@ public class LocationConflictViewModel extends ViewModel {
 
     private final ErrorRetryInteractor errorRetryInteractor;
 
-    private Observable<LocationEditConflictData> data;
+    private final ObservableDataCache<LocationEditConflictData> data;
 
-    LocationConflictViewModel(LocationConflictInteractor locationConflictInteractor, ErrorRetryInteractor errorRetryInteractor) {
+    LocationConflictViewModel(LocationConflictInteractor locationConflictInteractor, ErrorRetryInteractor errorRetryInteractor, ObservableDataCache<LocationEditConflictData> data) {
         this.locationConflictInteractor = locationConflictInteractor;
         this.errorRetryInteractor = errorRetryInteractor;
+        this.data = data;
     }
 
     public LiveData<LocationEditConflictData> getLocationEditConflict(long errorId) {
-        return LiveDataReactiveStreams.fromPublisher(
-                getData(errorId).toFlowable(BackpressureStrategy.LATEST)
-        );
+        return data.getLiveData(() -> locationConflictInteractor.getLocationEditConflict(errorId));
     }
 
     public void editLocation(LocationToEdit data) {
-        if (this.data != null)
-            this.data.firstElement()
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(v -> {
-                        ErrorDescription errorToRetry = ErrorDescription.minimal(
-                                v.errorId(),
-                                LocationEditErrorDetails.create(data.id(), data.name(), data.description())
-                        );
-                        errorRetryInteractor.retry(errorToRetry);
-                    });
-    }
-
-    private Observable<LocationEditConflictData> getData(long errorId) {
-        if (data == null)
-            data = locationConflictInteractor.getLocationEditConflict(errorId);
-        return data;
+        this.data.performOnCurrentData(v -> {
+                ErrorDescription errorToRetry = ErrorDescription.minimal(
+                        v.errorId(),
+                        LocationEditErrorDetails.create(data.id(), data.name(), data.description())
+                );
+                errorRetryInteractor.retry(errorToRetry);
+        });
     }
 }

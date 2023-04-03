@@ -22,14 +22,11 @@
 package de.njsm.stocks.client.presenter;
 
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.LiveDataReactiveStreams;
 import androidx.lifecycle.ViewModel;
 import de.njsm.stocks.client.business.LocationEditInteractor;
 import de.njsm.stocks.client.business.entities.Id;
 import de.njsm.stocks.client.business.entities.Location;
 import de.njsm.stocks.client.business.entities.LocationToEdit;
-import io.reactivex.rxjava3.core.BackpressureStrategy;
-import io.reactivex.rxjava3.core.Observable;
 
 import javax.inject.Inject;
 
@@ -37,26 +34,19 @@ public class LocationEditViewModel extends ViewModel {
 
     private final LocationEditInteractor locationEditInteractor;
 
-    private Observable<LocationToEdit> data;
+    private final ObservableDataCache<LocationToEdit> data;
 
     @Inject
-    LocationEditViewModel(LocationEditInteractor locationEditInteractor) {
+    LocationEditViewModel(LocationEditInteractor locationEditInteractor, ObservableDataCache<LocationToEdit> data) {
         this.locationEditInteractor = locationEditInteractor;
+        this.data = data;
     }
 
     public LiveData<LocationToEdit> get(Id<Location> id) {
-        return LiveDataReactiveStreams.fromPublisher(
-                getData(id).toFlowable(BackpressureStrategy.LATEST)
-        );
+        return data.getLiveData(() -> locationEditInteractor.getLocation(id));
     }
 
     public void editLocation(LocationToEdit locationToEdit) {
         locationEditInteractor.edit(locationToEdit);
-    }
-
-    private Observable<LocationToEdit> getData(Id<Location> id) {
-        if (data == null)
-            data = locationEditInteractor.getLocation(id);
-        return data;
     }
 }

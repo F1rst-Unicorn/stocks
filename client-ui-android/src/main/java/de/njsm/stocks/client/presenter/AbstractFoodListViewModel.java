@@ -28,10 +28,7 @@ import de.njsm.stocks.client.business.Synchroniser;
 import de.njsm.stocks.client.business.entities.Food;
 import de.njsm.stocks.client.business.entities.FoodForListing;
 import de.njsm.stocks.client.business.entities.FoodToBuy;
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
-import io.reactivex.rxjava3.core.Observable;
 
-import java.util.List;
 import java.util.function.Consumer;
 
 abstract class AbstractFoodListViewModel extends ViewModel {
@@ -42,40 +39,25 @@ abstract class AbstractFoodListViewModel extends ViewModel {
 
     private final FoodToBuyInteractor toBuyInteractor;
 
-    Observable<List<FoodForListing>> data;
+    final ObservableListCache<FoodForListing> data;
 
-    AbstractFoodListViewModel(Synchroniser synchroniser, EntityDeleter<Food> deleter, FoodToBuyInteractor toBuyInteractor) {
+    AbstractFoodListViewModel(Synchroniser synchroniser, EntityDeleter<Food> deleter, FoodToBuyInteractor toBuyInteractor, ObservableListCache<FoodForListing> data) {
         this.synchroniser = synchroniser;
         this.deleter = deleter;
         this.toBuyInteractor = toBuyInteractor;
+        this.data = data;
     }
 
     public void delete(int listItemIndex) {
-        if (data == null)
-            return;
-
-        performOnCurrentData(list -> deleter.delete(list.get(listItemIndex)));
+        data.performOnListItem(listItemIndex, deleter::delete);
     }
 
     public void putOnShoppingList(int listItemIndex) {
-        if (data == null)
-            return;
-
-        performOnCurrentData(list ->
-                toBuyInteractor.manageFoodToBuy(FoodToBuy.putOnShoppingList(list.get(listItemIndex).id())));
+        data.performOnListItem(listItemIndex, v -> toBuyInteractor.manageFoodToBuy(FoodToBuy.putOnShoppingList(v.id())));
     }
 
     public void resolveId(int listItemIndex, Consumer<Integer> callback) {
-        if (data == null)
-            return;
-
-        performOnCurrentData(list -> callback.accept(list.get(listItemIndex).id()));
-    }
-
-    private void performOnCurrentData(Consumer<List<FoodForListing>> runnable) {
-        data.firstElement()
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(runnable::accept);
+        data.performOnListItem(listItemIndex, v -> callback.accept(v.id()));
     }
 
     public void synchronise() {

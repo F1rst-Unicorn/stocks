@@ -84,7 +84,7 @@ public class SearchedFoodFragment extends BottomToolbarFragment {
         viewModel.delete(listItemIndex);
     }
 
-    private void onItemSwipedLeft(Integer listItemIndex) {
+    private void onItemSwipedLeft(int listItemIndex) {
         viewModel.addToShoppingList(listItemIndex);
     }
 

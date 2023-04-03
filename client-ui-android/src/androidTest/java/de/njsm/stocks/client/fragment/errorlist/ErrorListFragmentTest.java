@@ -39,7 +39,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import javax.inject.Inject;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -85,7 +84,7 @@ public class ErrorListFragmentTest {
     public void locationAddErrorIsListed() {
         LocationAddForm locationAddForm = LocationAddForm.create("Fridge", "The cold one");
         ErrorDescription errorDescription = ErrorDescription.create(1, StatusCode.DATABASE_UNREACHABLE, "", "", locationAddForm);
-        List<ErrorDescription> errors = Arrays.asList(errorDescription);
+        List<ErrorDescription> errors = List.of(errorDescription);
 
         errorListInteractor.setData(errors);
 
@@ -101,8 +100,7 @@ public class ErrorListFragmentTest {
     public void swipingListItemRetriesTheErroredAction() {
         LocationAddForm locationAddForm = LocationAddForm.create("Fridge", "The cold one");
         ErrorDescription errorDescription = ErrorDescription.create(1, StatusCode.DATABASE_UNREACHABLE, "", "", locationAddForm);
-        List<ErrorDescription> errors = Arrays.asList(errorDescription);
-        errorListInteractor.setData(errors);
+        errorListInteractor.setData(List.of(errorDescription));
 
         onView(withId(R.id.template_swipe_list_list))
                 .perform(actionOnItemAtPosition(0, swipeRight()));
@@ -114,8 +112,7 @@ public class ErrorListFragmentTest {
     public void swipingListItemLeftDeletesTheError() {
         LocationAddForm locationAddForm = LocationAddForm.create("Fridge", "The cold one");
         ErrorDescription errorDescription = ErrorDescription.create(1, StatusCode.DATABASE_UNREACHABLE, "", "", locationAddForm);
-        List<ErrorDescription> errors = Arrays.asList(errorDescription);
-        errorListInteractor.setData(errors);
+        errorListInteractor.setData(List.of(errorDescription));
 
         onView(withId(R.id.template_swipe_list_list))
                 .perform(actionOnItemAtPosition(0, swipeLeft()));
@@ -127,8 +124,7 @@ public class ErrorListFragmentTest {
     public void clickingListItemNavigates() {
         LocationAddForm locationAddForm = LocationAddForm.create("Fridge", "The cold one");
         ErrorDescription errorDescription = ErrorDescription.create(1, StatusCode.DATABASE_UNREACHABLE, "", "", locationAddForm);
-        List<ErrorDescription> errors = Arrays.asList(errorDescription);
-        errorListInteractor.setData(errors);
+        errorListInteractor.setData(List.of(errorDescription));
 
         onView(withId(R.id.template_swipe_list_list))
                 .perform(actionOnItemAtPosition(0, click()));
@@ -140,8 +136,7 @@ public class ErrorListFragmentTest {
     public void clickingLocationEditConflictNavigatesToConflictFragment() {
         LocationEditErrorDetails details = LocationEditErrorDetails.create(3, "name", "description");
         ErrorDescription errorDescription = ErrorDescription.create(1, StatusCode.INVALID_DATA_VERSION, "", "", details);
-        List<ErrorDescription> errors = Arrays.asList(errorDescription);
-        errorListInteractor.setData(errors);
+        errorListInteractor.setData(List.of(errorDescription));
 
         onView(withId(R.id.template_swipe_list_list))
                 .perform(actionOnItemAtPosition(0, click()));
@@ -153,8 +148,7 @@ public class ErrorListFragmentTest {
     public void retryingLocationEditConflictNavigatesToConflictFragment() {
         LocationEditErrorDetails details = LocationEditErrorDetails.create(3, "name", "description");
         ErrorDescription errorDescription = ErrorDescription.create(1, StatusCode.INVALID_DATA_VERSION, "", "", details);
-        List<ErrorDescription> errors = Arrays.asList(errorDescription);
-        errorListInteractor.setData(errors);
+        errorListInteractor.setData(List.of(errorDescription));
 
         onView(withId(R.id.template_swipe_list_list))
                 .perform(actionOnItemAtPosition(0, swipeLeft()));

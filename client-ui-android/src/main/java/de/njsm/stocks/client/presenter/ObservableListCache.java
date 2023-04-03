@@ -21,32 +21,31 @@
 
 package de.njsm.stocks.client.presenter;
 
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.ViewModel;
-import de.njsm.stocks.client.business.UnitEditInteractor;
-import de.njsm.stocks.client.business.entities.Id;
-import de.njsm.stocks.client.business.entities.Unit;
-import de.njsm.stocks.client.business.entities.UnitToEdit;
+import io.reactivex.rxjava3.functions.Consumer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
+import java.util.List;
 
-public class UnitEditViewModel extends ViewModel {
+class ObservableListCache<T> extends ObservableDataCache<List<T>>  {
 
-    private final UnitEditInteractor unitEditInteractor;
-
-    private final ObservableDataCache<UnitToEdit> data;
+    private static final Logger LOG = LoggerFactory.getLogger(ObservableListCache.class);
 
     @Inject
-    UnitEditViewModel(UnitEditInteractor unitEditInteractor, ObservableDataCache<UnitToEdit> data) {
-        this.unitEditInteractor = unitEditInteractor;
-        this.data = data;
+    ObservableListCache() {
     }
 
-    public LiveData<UnitToEdit> get(Id<Unit> id) {
-        return data.getLiveData(() -> unitEditInteractor.get(id));
+    void performOnListItem(int listItemIndex, Consumer<? super T> callback) {
+        performOnNestedList(listItemIndex, x -> x, callback);
     }
 
-    public void edit(UnitToEdit data) {
-        unitEditInteractor.edit(data);
+    static <T> void performOnResolvedList(int listItemIndex, Consumer<? super T> callback, List<T> list) throws Throwable {
+        if (listItemIndex < 0 || list.size() <= listItemIndex) {
+            LOG.error("index " + listItemIndex + " out of range for list size " + list.size());
+            return;
+        }
+
+        callback.accept(list.get(listItemIndex));
     }
 }

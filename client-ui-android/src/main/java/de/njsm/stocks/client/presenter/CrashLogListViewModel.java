@@ -22,13 +22,9 @@
 package de.njsm.stocks.client.presenter;
 
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.LiveDataReactiveStreams;
 import androidx.lifecycle.ViewModel;
 import de.njsm.stocks.client.business.CrashListInteractor;
 import de.njsm.stocks.client.business.entities.CrashLog;
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
-import io.reactivex.rxjava3.core.BackpressureStrategy;
-import io.reactivex.rxjava3.core.Observable;
 
 import java.util.List;
 import java.util.function.Consumer;
@@ -37,41 +33,22 @@ public class CrashLogListViewModel extends ViewModel {
 
     private final CrashListInteractor interactor;
 
-    private Observable<List<CrashLog>> data;
+    private final ObservableListCache<CrashLog> data;
 
-    CrashLogListViewModel(CrashListInteractor interactor) {
+    CrashLogListViewModel(CrashListInteractor interactor, ObservableListCache<CrashLog> data) {
         this.interactor = interactor;
-    }
-
-    public void delete(int listItemIndex) {
-        if (data == null)
-            return;
-
-        performOnCurrentData(list -> interactor.delete(list.get(listItemIndex)));
-    }
-
-    public void resolve(int listItemIndex, Consumer<CrashLog> callback) {
-        if (data == null)
-            return;
-
-        performOnCurrentData(list -> callback.accept(list.get(listItemIndex)));
-    }
-
-    private void performOnCurrentData(Consumer<List<CrashLog>> runnable) {
-        data.firstElement()
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(runnable::accept);
+        this.data = data;
     }
 
     public LiveData<List<CrashLog>> get() {
-        return LiveDataReactiveStreams.fromPublisher(
-                getData().toFlowable(BackpressureStrategy.LATEST)
-        );
+        return data.getLiveData(interactor::get);
     }
 
-    private Observable<List<CrashLog>> getData() {
-        if (data == null)
-            data = interactor.get();
-        return data;
+    public void delete(int listItemIndex) {
+        data.performOnListItem(listItemIndex, interactor::delete);
+    }
+
+    public void resolve(int listItemIndex, Consumer<CrashLog> callback) {
+        data.performOnListItem(listItemIndex, callback::accept);
     }
 }

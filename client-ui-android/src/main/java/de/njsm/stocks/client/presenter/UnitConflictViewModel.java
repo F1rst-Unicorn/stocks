@@ -22,15 +22,13 @@
 package de.njsm.stocks.client.presenter;
 
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.LiveDataReactiveStreams;
 import androidx.lifecycle.ViewModel;
 import de.njsm.stocks.client.business.ErrorRetryInteractor;
 import de.njsm.stocks.client.business.UnitConflictInteractor;
-import de.njsm.stocks.client.business.entities.*;
+import de.njsm.stocks.client.business.entities.ErrorDescription;
+import de.njsm.stocks.client.business.entities.UnitEditErrorDetails;
+import de.njsm.stocks.client.business.entities.UnitToEdit;
 import de.njsm.stocks.client.business.entities.conflict.UnitEditConflictData;
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
-import io.reactivex.rxjava3.core.BackpressureStrategy;
-import io.reactivex.rxjava3.core.Observable;
 
 
 public class UnitConflictViewModel extends ViewModel {
@@ -39,35 +37,25 @@ public class UnitConflictViewModel extends ViewModel {
 
     private final ErrorRetryInteractor errorRetryInteractor;
 
-    private Observable<UnitEditConflictData> data;
+    private final ObservableDataCache<UnitEditConflictData> data;
 
-    UnitConflictViewModel(UnitConflictInteractor unitConflictInteractor, ErrorRetryInteractor errorRetryInteractor) {
+    UnitConflictViewModel(UnitConflictInteractor unitConflictInteractor, ErrorRetryInteractor errorRetryInteractor, ObservableDataCache<UnitEditConflictData> data) {
         this.unitConflictInteractor = unitConflictInteractor;
         this.errorRetryInteractor = errorRetryInteractor;
+        this.data = data;
     }
 
     public LiveData<UnitEditConflictData> getUnitEditConflict(long errorId) {
-        return LiveDataReactiveStreams.fromPublisher(
-                getData(errorId).toFlowable(BackpressureStrategy.LATEST)
-        );
+        return data.getLiveData(() -> unitConflictInteractor.getUnitEditConflict(errorId));
     }
 
     public void edit(UnitToEdit editedData) {
-        if (this.data != null)
-            this.data.firstElement()
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(v -> {
-                        ErrorDescription errorToRetry = ErrorDescription.minimal(
-                                v.errorId(),
-                                UnitEditErrorDetails.create(editedData.id(), editedData.name(), editedData.abbreviation())
-                        );
-                        errorRetryInteractor.retry(errorToRetry);
-                    });
-    }
-
-    private Observable<UnitEditConflictData> getData(long errorId) {
-        if (data == null)
-            data = unitConflictInteractor.getUnitEditConflict(errorId);
-        return data;
+        data.performOnCurrentData(v -> {
+            ErrorDescription errorToRetry = ErrorDescription.minimal(
+                    v.errorId(),
+                    UnitEditErrorDetails.create(editedData.id(), editedData.name(), editedData.abbreviation())
+            );
+            errorRetryInteractor.retry(errorToRetry);
+        });
     }
 }

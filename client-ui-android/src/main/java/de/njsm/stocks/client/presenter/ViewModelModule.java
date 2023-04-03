@@ -27,6 +27,7 @@ import dagger.Provides;
 import dagger.multibindings.IntoMap;
 import de.njsm.stocks.client.business.*;
 import de.njsm.stocks.client.business.entities.*;
+import de.njsm.stocks.client.business.entities.conflict.*;
 import de.njsm.stocks.client.business.event.EventInteractor;
 import de.njsm.stocks.client.business.event.EventInteractorFactory;
 import de.njsm.stocks.client.business.event.UnitEventInteractor;
@@ -48,15 +49,15 @@ public class ViewModelModule {
     @Provides
     @IntoMap
     @ViewModelKey(LocationListViewModel.class)
-    ViewModel locationViewModel(LocationListInteractor locationListInteractor, EntityDeleter<Location> locationDeleter, Synchroniser synchroniser) {
-        return new LocationListViewModel(locationListInteractor, locationDeleter, synchroniser);
+    ViewModel locationViewModel(LocationListInteractor locationListInteractor, EntityDeleter<Location> locationDeleter, Synchroniser synchroniser, ObservableListCache<LocationForListing> data) {
+        return new LocationListViewModel(locationListInteractor, locationDeleter, synchroniser, data);
     }
 
     @Provides
     @IntoMap
     @ViewModelKey(SetupViewModel.class)
-    ViewModel setupViewModel(SetupInteractor setupInteractor) {
-        return new SetupViewModel(setupInteractor);
+    ViewModel setupViewModel(SetupInteractor setupInteractor, ObservableDataCache<SetupState> currentSetupState) {
+        return new SetupViewModel(setupInteractor, currentSetupState);
     }
 
     @Provides
@@ -76,43 +77,43 @@ public class ViewModelModule {
     @Provides
     @IntoMap
     @ViewModelKey(ErrorListViewModel.class)
-    ViewModel errorListViewModel(Synchroniser synchroniser, ErrorRetryInteractor errorRetryInteractor, ErrorListInteractor errorListInteractor) {
-        return new ErrorListViewModel(errorListInteractor, errorRetryInteractor, synchroniser);
+    ViewModel errorListViewModel(Synchroniser synchroniser, ErrorRetryInteractor errorRetryInteractor, ErrorListInteractor errorListInteractor, ObservableListCache<ErrorDescription> data) {
+        return new ErrorListViewModel(errorListInteractor, errorRetryInteractor, synchroniser, data);
     }
 
     @Provides
     @IntoMap
     @ViewModelKey(ErrorDetailsViewModel.class)
-    ViewModel errorDetailsViewModel(ErrorListInteractor errorListInteractor, ErrorRetryInteractor errorRetryInteractor) {
-        return new ErrorDetailsViewModel(errorListInteractor, errorRetryInteractor);
+    ViewModel errorDetailsViewModel(ErrorListInteractor errorListInteractor, ErrorRetryInteractor errorRetryInteractor, ObservableDataCache<ErrorDescription> cache) {
+        return new ErrorDetailsViewModel(errorListInteractor, errorRetryInteractor, cache);
     }
 
     @Provides
     @IntoMap
     @ViewModelKey(LocationEditViewModel.class)
-    ViewModel locationEditViewModel(LocationEditInteractor locationEditInteractor) {
-        return new LocationEditViewModel(locationEditInteractor);
+    ViewModel locationEditViewModel(LocationEditInteractor locationEditInteractor, ObservableDataCache<LocationToEdit> data) {
+        return new LocationEditViewModel(locationEditInteractor, data);
     }
 
     @Provides
     @IntoMap
     @ViewModelKey(LocationConflictViewModel.class)
-    ViewModel locationConflictViewModel(LocationConflictInteractor locationConflictInteractor, ErrorRetryInteractor errorRetryInteractor) {
-        return new LocationConflictViewModel(locationConflictInteractor, errorRetryInteractor);
+    ViewModel locationConflictViewModel(LocationConflictInteractor locationConflictInteractor, ErrorRetryInteractor errorRetryInteractor, ObservableDataCache<LocationEditConflictData> cache) {
+        return new LocationConflictViewModel(locationConflictInteractor, errorRetryInteractor, cache);
     }
 
     @Provides
     @IntoMap
     @ViewModelKey(UnitListViewModel.class)
-    ViewModel UnitListViewModel(UnitListInteractor unitListInteractor, EntityDeleter<Unit> unitDeleter) {
-        return new UnitListViewModel(unitListInteractor, unitDeleter);
+    ViewModel UnitListViewModel(UnitListInteractor unitListInteractor, EntityDeleter<Unit> unitDeleter, ObservableListCache<UnitForListing> data) {
+        return new UnitListViewModel(unitListInteractor, unitDeleter, data);
     }
 
     @Provides
     @IntoMap
     @ViewModelKey(ScaledUnitListViewModel.class)
-    ViewModel ScaledUnitListViewModel(ScaledUnitListInteractor scaledUnitListInteractor, EntityDeleter<ScaledUnit> scaledUnitDeleter) {
-        return new ScaledUnitListViewModel(scaledUnitListInteractor, scaledUnitDeleter);
+    ViewModel ScaledUnitListViewModel(ScaledUnitListInteractor scaledUnitListInteractor, EntityDeleter<ScaledUnit> scaledUnitDeleter, ObservableListCache<ScaledUnitForListing> data) {
+        return new ScaledUnitListViewModel(scaledUnitListInteractor, scaledUnitDeleter, data);
     }
 
     @Provides
@@ -132,15 +133,15 @@ public class ViewModelModule {
     @Provides
     @IntoMap
     @ViewModelKey(UnitEditViewModel.class)
-    ViewModel UnitEditViewModel(UnitEditInteractor unitEditInteractor) {
-        return new UnitEditViewModel(unitEditInteractor);
+    ViewModel UnitEditViewModel(UnitEditInteractor unitEditInteractor, ObservableDataCache<UnitToEdit> data) {
+        return new UnitEditViewModel(unitEditInteractor, data);
     }
 
     @Provides
     @IntoMap
     @ViewModelKey(UnitConflictViewModel.class)
-    ViewModel UnitConflictViewModel(UnitConflictInteractor unitConflictInteractor, ErrorRetryInteractor errorRetryInteractor) {
-        return new UnitConflictViewModel(unitConflictInteractor, errorRetryInteractor);
+    ViewModel UnitConflictViewModel(UnitConflictInteractor unitConflictInteractor, ErrorRetryInteractor errorRetryInteractor, ObservableDataCache<UnitEditConflictData> data) {
+        return new UnitConflictViewModel(unitConflictInteractor, errorRetryInteractor, data);
     }
 
     @Provides
@@ -153,15 +154,15 @@ public class ViewModelModule {
     @Provides
     @IntoMap
     @ViewModelKey(ScaledUnitEditViewModel.class)
-    ViewModel ScaledUnitEditViewModel(ScaledUnitEditInteractor scaledUnitEditInteractor) {
-        return new ScaledUnitEditViewModel(scaledUnitEditInteractor);
+    ViewModel ScaledUnitEditViewModel(ScaledUnitEditInteractor scaledUnitEditInteractor, ObservableDataCache<ScaledUnitEditingFormData> data) {
+        return new ScaledUnitEditViewModel(scaledUnitEditInteractor, data);
     }
 
     @Provides
     @IntoMap
     @ViewModelKey(ScaledUnitConflictViewModel.class)
-    ViewModel ScaledUnitConflictViewModel(ScaledUnitConflictInteractor scaledUnitConflictInteractor, ErrorRetryInteractor errorRetryInteractor) {
-        return new ScaledUnitConflictViewModel(scaledUnitConflictInteractor, errorRetryInteractor);
+    ViewModel ScaledUnitConflictViewModel(ScaledUnitConflictInteractor scaledUnitConflictInteractor, ErrorRetryInteractor errorRetryInteractor, ObservableDataCache<ScaledUnitEditConflictFormData> data) {
+        return new ScaledUnitConflictViewModel(scaledUnitConflictInteractor, errorRetryInteractor, data);
     }
 
     @Provides
@@ -181,43 +182,43 @@ public class ViewModelModule {
     @Provides
     @IntoMap
     @ViewModelKey(EmptyFoodViewModel.class)
-    ViewModel EmptyFoodViewModel(EmptyFoodInteractor emptyFoodInteractor, Synchroniser synchroniser, EntityDeleter<Food> deleter, FoodToBuyInteractor toBuyInteractor) {
-        return new EmptyFoodViewModel(synchroniser, emptyFoodInteractor, deleter, toBuyInteractor);
+    ViewModel EmptyFoodViewModel(EmptyFoodInteractor emptyFoodInteractor, Synchroniser synchroniser, EntityDeleter<Food> deleter, FoodToBuyInteractor toBuyInteractor, ObservableListCache<EmptyFood> cache) {
+        return new EmptyFoodViewModel(synchroniser, emptyFoodInteractor, deleter, toBuyInteractor, cache);
     }
 
     @Provides
     @IntoMap
     @ViewModelKey(FoodEditViewModel.class)
-    ViewModel FoodEditViewModel(FoodEditInteractor interactor) {
-        return new FoodEditViewModel(interactor);
+    ViewModel FoodEditViewModel(FoodEditInteractor interactor, ObservableDataCache<FoodEditingFormData> data) {
+        return new FoodEditViewModel(interactor, data);
     }
 
     @Provides
     @IntoMap
     @ViewModelKey(FoodConflictViewModel.class)
-    ViewModel FoodConflictViewModel(FoodConflictInteractor conflictInteractor, ErrorRetryInteractor errorRetryInteractor) {
-        return new FoodConflictViewModel(conflictInteractor, errorRetryInteractor);
+    ViewModel FoodConflictViewModel(FoodConflictInteractor conflictInteractor, ErrorRetryInteractor errorRetryInteractor, ObservableDataCache<FoodEditConflictFormData> cache) {
+        return new FoodConflictViewModel(conflictInteractor, errorRetryInteractor, cache);
     }
 
     @Provides
     @IntoMap
     @ViewModelKey(FoodByLocationListViewModel.class)
-    ViewModel FoodByLocationListViewModel(FoodByLocationListInteractor foodByLocationListInteractor, Synchroniser synchroniser, EntityDeleter<Food> deleter, FoodToBuyInteractor toBuyInteractor) {
-        return new FoodByLocationListViewModel(synchroniser, foodByLocationListInteractor, deleter, toBuyInteractor);
+    ViewModel FoodByLocationListViewModel(FoodByLocationListInteractor foodByLocationListInteractor, Synchroniser synchroniser, EntityDeleter<Food> deleter, FoodToBuyInteractor toBuyInteractor, ObservableListCache<FoodForListing> data, ObservableDataCache<LocationName> locationData) {
+        return new FoodByLocationListViewModel(synchroniser, foodByLocationListInteractor, deleter, toBuyInteractor, data, locationData);
     }
 
     @Provides
     @IntoMap
     @ViewModelKey(AllFoodListViewModel.class)
-    ViewModel AllFoodListViewModel(Synchroniser synchroniser, AllPresentFoodListInteractor allPresentFoodListInteractor, EntityDeleter<Food> deleter, FoodToBuyInteractor toBuyInteractor) {
-        return new AllFoodListViewModel(synchroniser, allPresentFoodListInteractor, deleter, toBuyInteractor);
+    ViewModel AllFoodListViewModel(Synchroniser synchroniser, AllPresentFoodListInteractor allPresentFoodListInteractor, EntityDeleter<Food> deleter, FoodToBuyInteractor toBuyInteractor, ObservableListCache<FoodForListing> data) {
+        return new AllFoodListViewModel(synchroniser, allPresentFoodListInteractor, deleter, toBuyInteractor, data);
     }
 
     @Provides
     @IntoMap
     @ViewModelKey(FoodItemListViewModel.class)
-    ViewModel FoodItemListViewModel(FoodItemListInteractor interactor, EntityDeleter<FoodItem> deleter, FoodToBuyInteractor toBuyInteractor) {
-        return new FoodItemListViewModel(interactor, deleter, toBuyInteractor);
+    ViewModel FoodItemListViewModel(FoodItemListInteractor interactor, EntityDeleter<FoodItem> deleter, FoodToBuyInteractor toBuyInteractor, ObservableDataCache<FoodItemsForListing> data) {
+        return new FoodItemListViewModel(interactor, deleter, toBuyInteractor, data);
     }
 
     @Provides
@@ -237,43 +238,43 @@ public class ViewModelModule {
     @Provides
     @IntoMap
     @ViewModelKey(FoodItemConflictViewModel.class)
-    ViewModel FoodItemConflictViewModel(FoodItemConflictInteractor interactor, ErrorRetryInteractor errorRetryInteractor) {
-        return new FoodItemConflictViewModel(interactor, errorRetryInteractor);
+    ViewModel FoodItemConflictViewModel(FoodItemConflictInteractor interactor, ErrorRetryInteractor errorRetryInteractor, ObservableDataCache<FoodItemEditConflictFormData> cache) {
+        return new FoodItemConflictViewModel(interactor, errorRetryInteractor, cache);
     }
 
     @Provides
     @IntoMap
     @ViewModelKey(UserListViewModel.class)
-    ViewModel UserListViewModel(UserListInteractor interactor, Synchroniser errorRetryInteractor, EntityDeleter<User> deleter) {
-        return new UserListViewModel(interactor, deleter, errorRetryInteractor);
+    ViewModel UserListViewModel(UserListInteractor interactor, Synchroniser errorRetryInteractor, EntityDeleter<User> deleter, ObservableListCache<UserForListing> cache) {
+        return new UserListViewModel(interactor, deleter, errorRetryInteractor, cache);
     }
 
     @Provides
     @IntoMap
     @ViewModelKey(UserDeviceListViewModel.class)
-    ViewModel UserDeviceListViewModel(UserDeviceListInteractor interactor, Synchroniser errorRetryInteractor, EntityDeleter<UserDevice> deleter) {
-        return new UserDeviceListViewModel(interactor, deleter, errorRetryInteractor);
+    ViewModel UserDeviceListViewModel(UserDeviceListInteractor interactor, Synchroniser errorRetryInteractor, EntityDeleter<UserDevice> deleter, ObservableDataCache<UserDevicesForListing> data) {
+        return new UserDeviceListViewModel(interactor, deleter, errorRetryInteractor, data);
     }
 
     @Provides
     @IntoMap
     @ViewModelKey(RecipeListViewModel.class)
-    ViewModel RecipeListViewModel(RecipeListInteractor interactor, Synchroniser errorRetryInteractor) {
-        return new RecipeListViewModel(interactor, errorRetryInteractor);
+    ViewModel RecipeListViewModel(RecipeListInteractor interactor, Synchroniser errorRetryInteractor, ObservableListCache<RecipeForListing> data) {
+        return new RecipeListViewModel(interactor, errorRetryInteractor, data);
     }
 
     @Provides
     @IntoMap
     @ViewModelKey(EanNumberListViewModel.class)
-    ViewModel EanNumberListViewModel(EanNumberListInteractor interactor, Synchroniser synchroniser, EntityDeleter<EanNumber> deleter) {
-        return new EanNumberListViewModel(interactor, deleter, synchroniser);
+    ViewModel EanNumberListViewModel(EanNumberListInteractor interactor, Synchroniser synchroniser, EntityDeleter<EanNumber> deleter, ObservableListCache<EanNumberForListing> cache) {
+        return new EanNumberListViewModel(interactor, deleter, synchroniser, cache);
     }
 
     @Provides
     @IntoMap
     @ViewModelKey(RecipeAddViewModel.class)
-    ViewModel RecipeAddViewModel(RecipeAddInteractor interactor) {
-        return new RecipeAddViewModel(interactor);
+    ViewModel RecipeAddViewModel(RecipeAddInteractor interactor, ObservableDataCache<RecipeAddData> data) {
+        return new RecipeAddViewModel(interactor, data);
     }
 
     @Provides
@@ -286,22 +287,22 @@ public class ViewModelModule {
     @Provides
     @IntoMap
     @ViewModelKey(CrashLogListViewModel.class)
-    ViewModel CrashLogListViewModel(CrashListInteractor interactor) {
-        return new CrashLogListViewModel(interactor);
+    ViewModel CrashLogListViewModel(CrashListInteractor interactor, ObservableListCache<CrashLog> cache) {
+        return new CrashLogListViewModel(interactor, cache);
     }
 
     @Provides
     @IntoMap
     @ViewModelKey(SearchedFoodViewModel.class)
-    ViewModel SearchedFoodViewModel(Synchroniser synchroniser, SearchInteractor interactor, EntityDeleter<Food> deleter, FoodToBuyInteractor toBuyInteractor) {
-        return new SearchedFoodViewModel(synchroniser, interactor, deleter, toBuyInteractor);
+    ViewModel SearchedFoodViewModel(Synchroniser synchroniser, SearchInteractor interactor, EntityDeleter<Food> deleter, FoodToBuyInteractor toBuyInteractor, ObservableListCache<SearchedFoodForListing> cache) {
+        return new SearchedFoodViewModel(synchroniser, interactor, deleter, toBuyInteractor, cache);
     }
 
     @Provides
     @IntoMap
     @ViewModelKey(ShoppingListViewModel.class)
-    ViewModel ShoppingListViewModel(Synchroniser synchroniser, FoodToBuyInteractor interactor) {
-        return new ShoppingListViewModel(synchroniser, interactor);
+    ViewModel ShoppingListViewModel(Synchroniser synchroniser, FoodToBuyInteractor interactor, ObservableListCache<FoodWithAmountForListing> data) {
+        return new ShoppingListViewModel(synchroniser, interactor, data);
     }
 
     @Provides
@@ -314,15 +315,15 @@ public class ViewModelModule {
     @Provides
     @IntoMap
     @ViewModelKey(FoodEanNumberAssignmentViewModel.class)
-    ViewModel FoodEanNumberAssignmentViewModel(EanNumberAssignmentInteractor interactor, Synchroniser synchroniser) {
-        return new FoodEanNumberAssignmentViewModel(interactor, synchroniser);
+    ViewModel FoodEanNumberAssignmentViewModel(EanNumberAssignmentInteractor interactor, Synchroniser synchroniser, ObservableListCache<FoodForEanNumberAssignment> cache) {
+        return new FoodEanNumberAssignmentViewModel(interactor, synchroniser, cache);
     }
 
     @Provides
     @IntoMap
     @ViewModelKey(RecipeDetailViewModel.class)
-    ViewModel RecipeDetailViewModel(Synchroniser synchroniser, RecipeDetailInteractor interactor) {
-        return new RecipeDetailViewModel(synchroniser, interactor);
+    ViewModel RecipeDetailViewModel(Synchroniser synchroniser, RecipeDetailInteractor interactor, ObservableDataCache<RecipeForDetails> data) {
+        return new RecipeDetailViewModel(synchroniser, interactor, data);
     }
 
     @Provides
@@ -342,7 +343,7 @@ public class ViewModelModule {
     @Provides
     @IntoMap
     @ViewModelKey(TicketShowViewModel.class)
-    ViewModel TicketShowViewModel(TicketDisplayInteractor interactor) {
-        return new TicketShowViewModel(interactor);
+    ViewModel TicketShowViewModel(TicketDisplayInteractor interactor, ObservableDataCache<RegistrationForm> data) {
+        return new TicketShowViewModel(interactor, data);
     }
 }

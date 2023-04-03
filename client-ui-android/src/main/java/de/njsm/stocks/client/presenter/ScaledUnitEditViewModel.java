@@ -22,15 +22,12 @@
 package de.njsm.stocks.client.presenter;
 
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.LiveDataReactiveStreams;
 import androidx.lifecycle.ViewModel;
 import de.njsm.stocks.client.business.ScaledUnitEditInteractor;
 import de.njsm.stocks.client.business.entities.Id;
 import de.njsm.stocks.client.business.entities.ScaledUnit;
 import de.njsm.stocks.client.business.entities.ScaledUnitEditingFormData;
 import de.njsm.stocks.client.business.entities.ScaledUnitToEdit;
-import io.reactivex.rxjava3.core.BackpressureStrategy;
-import io.reactivex.rxjava3.core.Observable;
 
 import javax.inject.Inject;
 
@@ -38,27 +35,19 @@ public class ScaledUnitEditViewModel extends ViewModel {
 
     private final ScaledUnitEditInteractor scaledUnitEditInteractor;
 
-    private Observable<ScaledUnitEditingFormData> data;
+    private final ObservableDataCache<ScaledUnitEditingFormData> data;
 
     @Inject
-    ScaledUnitEditViewModel(ScaledUnitEditInteractor scaledUnitEditInteractor) {
+    ScaledUnitEditViewModel(ScaledUnitEditInteractor scaledUnitEditInteractor, ObservableDataCache<ScaledUnitEditingFormData> data) {
         this.scaledUnitEditInteractor = scaledUnitEditInteractor;
+        this.data = data;
     }
 
-
     public LiveData<ScaledUnitEditingFormData> getFormData(Id<ScaledUnit> id) {
-        return LiveDataReactiveStreams.fromPublisher(
-                getData(id).toFlowable(BackpressureStrategy.LATEST)
-        );
+        return data.getLiveData(() -> scaledUnitEditInteractor.getFormData(id));
     }
 
     public void edit(ScaledUnitToEdit editedScaledUnit) {
         scaledUnitEditInteractor.edit(editedScaledUnit);
-    }
-
-    private Observable<ScaledUnitEditingFormData> getData(Id<ScaledUnit> id) {
-        if (data == null)
-            data = scaledUnitEditInteractor.getFormData(id);
-        return data;
     }
 }

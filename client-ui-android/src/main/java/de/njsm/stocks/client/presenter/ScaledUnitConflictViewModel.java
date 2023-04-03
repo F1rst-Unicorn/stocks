@@ -22,7 +22,6 @@
 package de.njsm.stocks.client.presenter;
 
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.LiveDataReactiveStreams;
 import androidx.lifecycle.ViewModel;
 import de.njsm.stocks.client.business.ErrorRetryInteractor;
 import de.njsm.stocks.client.business.ScaledUnitConflictInteractor;
@@ -30,9 +29,6 @@ import de.njsm.stocks.client.business.entities.ErrorDescription;
 import de.njsm.stocks.client.business.entities.ScaledUnitEditErrorDetails;
 import de.njsm.stocks.client.business.entities.ScaledUnitToEdit;
 import de.njsm.stocks.client.business.entities.conflict.ScaledUnitEditConflictFormData;
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
-import io.reactivex.rxjava3.core.BackpressureStrategy;
-import io.reactivex.rxjava3.core.Observable;
 
 import javax.inject.Inject;
 
@@ -42,42 +38,31 @@ public class ScaledUnitConflictViewModel extends ViewModel {
 
     private final ErrorRetryInteractor errorRetryInteractor;
 
-    private Observable<ScaledUnitEditConflictFormData> data;
+    private final ObservableDataCache<ScaledUnitEditConflictFormData> data;
 
     @Inject
-    ScaledUnitConflictViewModel(ScaledUnitConflictInteractor scaledUnitConflictInteractor, ErrorRetryInteractor errorRetryInteractor) {
+    ScaledUnitConflictViewModel(ScaledUnitConflictInteractor scaledUnitConflictInteractor, ErrorRetryInteractor errorRetryInteractor, ObservableDataCache<ScaledUnitEditConflictFormData> data) {
         this.scaledUnitConflictInteractor = scaledUnitConflictInteractor;
         this.errorRetryInteractor = errorRetryInteractor;
+        this.data = data;
     }
 
-
     public LiveData<ScaledUnitEditConflictFormData> getScaledUnitEditConflict(long errorId) {
-        return LiveDataReactiveStreams.fromPublisher(
-                getData(errorId).toFlowable(BackpressureStrategy.LATEST)
-        );
+        return data.getLiveData(() -> scaledUnitConflictInteractor.getScaledUnitEditConflict(errorId));
     }
 
     public void edit(ScaledUnitToEdit editedScaledUnit) {
-        if (this.data != null)
-            this.data.firstElement()
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(v -> {
-                        ErrorDescription errorToRetry = ErrorDescription.minimal(
-                                v.errorId(),
-                                ScaledUnitEditErrorDetails.create(
-                                        editedScaledUnit.id(),
-                                        editedScaledUnit.scale(),
-                                        editedScaledUnit.unit(),
-                                        "", ""
-                                )
-                        );
-                        errorRetryInteractor.retry(errorToRetry);
-                    });
-    }
-
-    private Observable<ScaledUnitEditConflictFormData> getData(long errorId) {
-        if (data == null)
-            data = scaledUnitConflictInteractor.getScaledUnitEditConflict(errorId);
-        return data;
+        data.performOnCurrentData(v -> {
+                ErrorDescription errorToRetry = ErrorDescription.minimal(
+                        v.errorId(),
+                        ScaledUnitEditErrorDetails.create(
+                                editedScaledUnit.id(),
+                                editedScaledUnit.scale(),
+                                editedScaledUnit.unit(),
+                                "", ""
+                        )
+                );
+                errorRetryInteractor.retry(errorToRetry);
+        });
     }
 }

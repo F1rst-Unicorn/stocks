@@ -22,16 +22,12 @@
 package de.njsm.stocks.client.presenter;
 
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.LiveDataReactiveStreams;
 import androidx.lifecycle.ViewModel;
 import de.njsm.stocks.client.business.RecipeListInteractor;
 import de.njsm.stocks.client.business.Synchroniser;
 import de.njsm.stocks.client.business.entities.Id;
 import de.njsm.stocks.client.business.entities.Recipe;
 import de.njsm.stocks.client.business.entities.RecipeForListing;
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
-import io.reactivex.rxjava3.core.BackpressureStrategy;
-import io.reactivex.rxjava3.core.Observable;
 
 import java.util.List;
 import java.util.function.Consumer;
@@ -42,22 +38,16 @@ public class RecipeListViewModel extends ViewModel {
 
     private final Synchroniser synchroniser;
 
-    private Observable<List<RecipeForListing>> data;
+    private final ObservableListCache<RecipeForListing> data;
 
-    public RecipeListViewModel(RecipeListInteractor interactor, Synchroniser synchroniser) {
+    public RecipeListViewModel(RecipeListInteractor interactor, Synchroniser synchroniser, ObservableListCache<RecipeForListing> data) {
         this.interactor = interactor;
         this.synchroniser = synchroniser;
+        this.data = data;
     }
 
     public LiveData<List<RecipeForListing>> get() {
-        return LiveDataReactiveStreams.fromPublisher(getData().toFlowable(BackpressureStrategy.LATEST));
-    }
-
-    private Observable<List<RecipeForListing>> getData() {
-        if (data == null) {
-            data = interactor.get();
-        }
-        return data;
+        return data.getLiveData(interactor::get);
     }
 
     public void delete(int listItemIndex) {
@@ -69,13 +59,6 @@ public class RecipeListViewModel extends ViewModel {
     }
 
     public void resolveId(int listItemIndex, Consumer<Id<Recipe>> callback) {
-        performOnCurrentData(list -> callback.accept(list.get(listItemIndex)));
-    }
-
-    private void performOnCurrentData(Consumer<List<RecipeForListing>> runnable) {
-        getData()
-                .firstElement()
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(runnable::accept);
+        data.performOnListItem(listItemIndex, callback::accept);
     }
 }

@@ -22,15 +22,11 @@
 package de.njsm.stocks.client.presenter;
 
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.LiveDataReactiveStreams;
 import androidx.lifecycle.ViewModel;
 import de.njsm.stocks.client.business.EntityDeleter;
 import de.njsm.stocks.client.business.FoodItemListInteractor;
 import de.njsm.stocks.client.business.FoodToBuyInteractor;
 import de.njsm.stocks.client.business.entities.*;
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
-import io.reactivex.rxjava3.core.BackpressureStrategy;
-import io.reactivex.rxjava3.core.Observable;
 
 import javax.inject.Inject;
 import java.util.function.Consumer;
@@ -43,44 +39,26 @@ public class FoodItemListViewModel extends ViewModel {
 
     private final FoodToBuyInteractor toBuyInteractor;
 
-    private Observable<FoodItemsForListing> data;
+    private final ObservableDataCache<FoodItemsForListing> data;
 
     @Inject
-    FoodItemListViewModel(FoodItemListInteractor interactor, EntityDeleter<FoodItem> deleter, FoodToBuyInteractor toBuyInteractor) {
+    FoodItemListViewModel(FoodItemListInteractor interactor, EntityDeleter<FoodItem> deleter, FoodToBuyInteractor toBuyInteractor, ObservableDataCache<FoodItemsForListing> data) {
         this.interactor = interactor;
         this.deleter = deleter;
         this.toBuyInteractor = toBuyInteractor;
-    }
-
-    public void delete(int listItemIndex) {
-        if (data == null)
-            return;
-
-        performOnCurrentData(list -> deleter.delete(list.foodItems().get(listItemIndex)));
-    }
-
-    public void resolveId(int listItemIndex, Consumer<Id<FoodItem>> callback) {
-        if (data == null)
-            return;
-
-        performOnCurrentData(list -> callback.accept(list.foodItems().get(listItemIndex)::id));
-    }
-
-    private void performOnCurrentData(Consumer<FoodItemsForListing> runnable) {
-        data.firstElement()
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(runnable::accept);
+        this.data = data;
     }
 
     public LiveData<FoodItemsForListing> get(Id<Food> id) {
-        return LiveDataReactiveStreams.fromPublisher(getData(id)
-                .toFlowable(BackpressureStrategy.LATEST));
+        return data.getLiveData(() -> interactor.get(id));
     }
 
-    public Observable<FoodItemsForListing> getData(Id<Food> id) {
-        if (data == null)
-            data = interactor.get(id);
-        return data;
+    public void delete(int listItemIndex) {
+        data.performOnNestedList(listItemIndex, FoodItemsForListing::foodItems, deleter::delete);
+    }
+
+    public void resolveId(int listItemIndex, Consumer<Id<FoodItem>> callback) {
+        data.performOnNestedList(listItemIndex, FoodItemsForListing::foodItems, callback::accept);
     }
 
     public void toggleShoppingFlag(Id<Food> foodId) {

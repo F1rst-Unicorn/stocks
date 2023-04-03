@@ -22,7 +22,6 @@
 package de.njsm.stocks.client.presenter;
 
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.LiveDataReactiveStreams;
 import androidx.lifecycle.ViewModel;
 import de.njsm.stocks.client.business.ErrorRetryInteractor;
 import de.njsm.stocks.client.business.FoodConflictInteractor;
@@ -30,9 +29,6 @@ import de.njsm.stocks.client.business.entities.ErrorDescription;
 import de.njsm.stocks.client.business.entities.FoodEditErrorDetails;
 import de.njsm.stocks.client.business.entities.FoodToEdit;
 import de.njsm.stocks.client.business.entities.conflict.FoodEditConflictFormData;
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
-import io.reactivex.rxjava3.core.BackpressureStrategy;
-import io.reactivex.rxjava3.core.Observable;
 
 import javax.inject.Inject;
 
@@ -42,44 +38,34 @@ public class FoodConflictViewModel extends ViewModel {
 
     private final ErrorRetryInteractor errorRetryInteractor;
 
-    private Observable<FoodEditConflictFormData> data;
+    private final ObservableDataCache<FoodEditConflictFormData> data;
 
     @Inject
-    FoodConflictViewModel(FoodConflictInteractor conflictInteractor, ErrorRetryInteractor errorRetryInteractor) {
+    FoodConflictViewModel(FoodConflictInteractor conflictInteractor, ErrorRetryInteractor errorRetryInteractor, ObservableDataCache<FoodEditConflictFormData> data) {
         this.conflictInteractor = conflictInteractor;
         this.errorRetryInteractor = errorRetryInteractor;
+        this.data = data;
     }
 
     public LiveData<FoodEditConflictFormData> getFoodEditConflict(long errorId) {
-        return LiveDataReactiveStreams.fromPublisher(
-                getData(errorId).toFlowable(BackpressureStrategy.LATEST)
-        );
+        return data.getLiveData(() -> conflictInteractor.getEditConflict(errorId));
     }
 
     public void edit(FoodToEdit editedFood) {
-        if (this.data != null)
-            this.data.firstElement()
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(v -> {
-                        ErrorDescription errorToRetry = ErrorDescription.minimal(
-                                v.errorId(),
-                                FoodEditErrorDetails.create(
-                                        editedFood.id(),
-                                        editedFood.name(),
-                                        editedFood.toBuy(),
-                                        editedFood.expirationOffset(),
-                                        editedFood.location(),
-                                        editedFood.storeUnit(),
-                                        editedFood.description()
-                                )
-                        );
-                        errorRetryInteractor.retry(errorToRetry);
-                    });
-    }
-
-    private Observable<FoodEditConflictFormData> getData(long errorId) {
-        if (data == null)
-            data = conflictInteractor.getEditConflict(errorId);
-        return data;
+        data.performOnCurrentData(v -> {
+                ErrorDescription errorToRetry = ErrorDescription.minimal(
+                        v.errorId(),
+                        FoodEditErrorDetails.create(
+                                editedFood.id(),
+                                editedFood.name(),
+                                editedFood.toBuy(),
+                                editedFood.expirationOffset(),
+                                editedFood.location(),
+                                editedFood.storeUnit(),
+                                editedFood.description()
+                        )
+                );
+                errorRetryInteractor.retry(errorToRetry);
+        });
     }
 }

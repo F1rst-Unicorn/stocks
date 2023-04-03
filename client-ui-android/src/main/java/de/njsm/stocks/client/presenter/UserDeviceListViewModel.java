@@ -22,7 +22,6 @@
 package de.njsm.stocks.client.presenter;
 
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.LiveDataReactiveStreams;
 import androidx.lifecycle.ViewModel;
 import de.njsm.stocks.client.business.EntityDeleter;
 import de.njsm.stocks.client.business.Synchroniser;
@@ -31,9 +30,6 @@ import de.njsm.stocks.client.business.entities.Id;
 import de.njsm.stocks.client.business.entities.User;
 import de.njsm.stocks.client.business.entities.UserDevice;
 import de.njsm.stocks.client.business.entities.UserDevicesForListing;
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
-import io.reactivex.rxjava3.core.BackpressureStrategy;
-import io.reactivex.rxjava3.core.Observable;
 
 import javax.inject.Inject;
 import java.util.function.Consumer;
@@ -46,41 +42,26 @@ public class UserDeviceListViewModel extends ViewModel {
 
     private final Synchroniser synchroniser;
 
-    private Observable<UserDevicesForListing> data;
+    private final ObservableDataCache<UserDevicesForListing> data;
 
     @Inject
-    UserDeviceListViewModel(UserDeviceListInteractor interactor, EntityDeleter<UserDevice> deleter, Synchroniser synchroniser) {
+    UserDeviceListViewModel(UserDeviceListInteractor interactor, EntityDeleter<UserDevice> deleter, Synchroniser synchroniser, ObservableDataCache<UserDevicesForListing> data) {
         this.interactor = interactor;
         this.deleter = deleter;
         this.synchroniser = synchroniser;
+        this.data = data;
     }
 
     public LiveData<UserDevicesForListing> get(Id<User> userId) {
-        return LiveDataReactiveStreams.fromPublisher(
-                getData(userId).toFlowable(BackpressureStrategy.LATEST));
-    }
-
-    private Observable<UserDevicesForListing> getData(Id<User> userId) {
-        if (data == null)
-            data = interactor.getData(userId);
-        return data;
+        return data.getLiveData(() -> interactor.getData(userId));
     }
 
     public void delete(int listItemIndex) {
-        if (data == null)
-            return;
-
-        performOnCurrentData(list -> deleter.delete(list.devices().get(listItemIndex)));
+        data.performOnNestedList(listItemIndex, UserDevicesForListing::devices, deleter::delete);
     }
 
     public void resolveId(int listItemIndex, Consumer<Id<UserDevice>> callback) {
-        performOnCurrentData(list -> callback.accept(list.devices().get(listItemIndex)::id));
-    }
-
-    private void performOnCurrentData(Consumer<UserDevicesForListing> runnable) {
-        data.firstElement()
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(runnable::accept);
+        data.performOnNestedList(listItemIndex, UserDevicesForListing::devices, callback::accept);
     }
 
     public void synchronise() {

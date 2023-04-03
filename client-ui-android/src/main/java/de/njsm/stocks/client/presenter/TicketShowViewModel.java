@@ -22,33 +22,24 @@
 package de.njsm.stocks.client.presenter;
 
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.LiveDataReactiveStreams;
 import androidx.lifecycle.ViewModel;
 import de.njsm.stocks.client.business.TicketDisplayInteractor;
 import de.njsm.stocks.client.business.entities.Id;
 import de.njsm.stocks.client.business.entities.RegistrationForm;
 import de.njsm.stocks.client.business.entities.UserDevice;
-import io.reactivex.rxjava3.core.BackpressureStrategy;
-import io.reactivex.rxjava3.core.Observable;
 
 public class TicketShowViewModel extends ViewModel {
 
     private final TicketDisplayInteractor interactor;
 
-    private Observable<RegistrationForm> data;
+    private final ObservableDataCache<RegistrationForm> data;
 
-    TicketShowViewModel(TicketDisplayInteractor interactor) {
+    TicketShowViewModel(TicketDisplayInteractor interactor, ObservableDataCache<RegistrationForm> data) {
         this.interactor = interactor;
+        this.data = data;
     }
 
     public LiveData<RegistrationForm> getData(Id<UserDevice> id) {
-        return LiveDataReactiveStreams.fromPublisher(
-                getDataInternally(id).toFlowable(BackpressureStrategy.LATEST));
-    }
-
-    private Observable<RegistrationForm> getDataInternally(Id<UserDevice> id) {
-        if (data == null)
-            data = interactor.getRegistrationFormFor(id);
-        return data;
+        return data.getLiveData(() -> interactor.getRegistrationFormFor(id));
     }
 }

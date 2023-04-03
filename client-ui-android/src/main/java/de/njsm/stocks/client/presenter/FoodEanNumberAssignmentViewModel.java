@@ -22,14 +22,13 @@
 package de.njsm.stocks.client.presenter;
 
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.LiveDataReactiveStreams;
 import androidx.lifecycle.ViewModel;
 import de.njsm.stocks.client.business.EanNumberAssignmentInteractor;
 import de.njsm.stocks.client.business.Synchroniser;
-import de.njsm.stocks.client.business.entities.*;
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
-import io.reactivex.rxjava3.core.BackpressureStrategy;
-import io.reactivex.rxjava3.core.Observable;
+import de.njsm.stocks.client.business.entities.EanNumberForLookup;
+import de.njsm.stocks.client.business.entities.Food;
+import de.njsm.stocks.client.business.entities.FoodForEanNumberAssignment;
+import de.njsm.stocks.client.business.entities.Id;
 
 import javax.inject.Inject;
 import java.util.List;
@@ -41,12 +40,13 @@ public class FoodEanNumberAssignmentViewModel extends ViewModel {
 
     private final Synchroniser synchroniser;
 
-    private Observable<List<FoodForEanNumberAssignment>> data;
+    private final ObservableListCache<FoodForEanNumberAssignment> data;
 
     @Inject
-    FoodEanNumberAssignmentViewModel(EanNumberAssignmentInteractor interactor, Synchroniser synchroniser) {
+    FoodEanNumberAssignmentViewModel(EanNumberAssignmentInteractor interactor, Synchroniser synchroniser, ObservableListCache<FoodForEanNumberAssignment> data) {
         this.interactor = interactor;
         this.synchroniser = synchroniser;
+        this.data = data;
     }
 
     public void synchronise() {
@@ -54,26 +54,11 @@ public class FoodEanNumberAssignmentViewModel extends ViewModel {
     }
 
     public LiveData<List<FoodForEanNumberAssignment>> getFood() {
-        return LiveDataReactiveStreams.fromPublisher(
-                getData().toFlowable(BackpressureStrategy.LATEST));
-    }
-
-    private Observable<List<FoodForEanNumberAssignment>> getData() {
-        if (data == null) {
-            data = interactor.get();
-        }
-        return data;
+        return data.getLiveData(interactor::get);
     }
 
     public void resolveId(int listItemIndex, Consumer<Id<Food>> callback) {
-        performOnCurrentData(list -> callback.accept(list.get(listItemIndex)));
-    }
-
-    private void performOnCurrentData(Consumer<List<FoodForEanNumberAssignment>> runnable) {
-        getData()
-                .firstElement()
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(runnable::accept);
+        data.performOnListItem(listItemIndex, callback::accept);
     }
 
     public void assignEanNumber(Id<Food> foodId, String eanNumber) {
