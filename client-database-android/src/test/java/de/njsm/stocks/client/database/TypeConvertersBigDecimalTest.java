@@ -61,4 +61,10 @@ public class TypeConvertersBigDecimalTest {
     public void converterPreservesIdentity() {
         assertEquals(input, uut.dbToBigDecimal(uut.bigDecimalToDb(input)));
     }
+
+    @Test
+    public void exampleWorks() {
+        String input = "1.23";
+        assertEquals(new BigDecimal(input), uut.dbToBigDecimal(input));
+    }
 }

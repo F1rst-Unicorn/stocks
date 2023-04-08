@@ -26,6 +26,7 @@ import de.njsm.stocks.client.business.entities.*;
 import io.reactivex.rxjava3.core.Observable;
 
 import javax.inject.Inject;
+import java.util.Comparator;
 import java.util.List;
 
 import static java.util.stream.Collectors.toList;
@@ -42,6 +43,10 @@ public class ScaledUnitRepositoryImpl implements ScaledUnitRepository {
     @Override
     public Observable<List<ScaledUnitForListing>> getScaledUnits() {
         return scaledUnitDao.getCurrentScaledUnits()
+                .map(v -> {
+                    v.sort(Comparator.comparing(ScaledUnitWithAbbreviationRecord::scale));
+                    return v;
+                })
                 .map(v -> v.stream().map(w ->
                         ScaledUnitForListing.create(w.id(), w.abbreviation(), w.scale()))
                         .collect(toList()));
@@ -56,6 +61,10 @@ public class ScaledUnitRepositoryImpl implements ScaledUnitRepository {
     public Observable<List<ScaledUnitForSelection>> getScaledUnitsForSelection() {
         return scaledUnitDao.getScaledUnitsForSelection()
                 .distinctUntilChanged()
+                .map(v -> {
+                    v.sort(Comparator.comparing(ScaledUnitWithAbbreviationRecord::scale));
+                    return v;
+                })
                 .map(v -> v.stream().map(w ->
                                 ScaledUnitForSelection.create(w.id(), w.abbreviation(), w.scale()))
                         .collect(toList()));

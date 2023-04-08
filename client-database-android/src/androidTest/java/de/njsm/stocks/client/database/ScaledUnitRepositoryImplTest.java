@@ -30,6 +30,7 @@ import io.reactivex.rxjava3.core.Observable;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import static de.njsm.stocks.client.database.util.Util.test;
@@ -59,6 +60,30 @@ public class ScaledUnitRepositoryImplTest extends DbTestCase {
     }
 
     @Test
+    public void gettingScaledUnitsSortsByScale() {
+        UnitDbEntity unit = standardEntities.unitDbEntity();
+        ScaledUnitDbEntity scaledUnit1 = standardEntities.scaledUnitDbEntityBuilder()
+                .scale(BigDecimal.ONE)
+                .unit(unit.id()).build();
+        ScaledUnitDbEntity scaledUnit2 = standardEntities.scaledUnitDbEntityBuilder()
+                .scale(new BigDecimal("2"))
+                .unit(unit.id()).build();
+        ScaledUnitDbEntity scaledUnit3 = standardEntities.scaledUnitDbEntityBuilder()
+                .scale(new BigDecimal("10"))
+                .unit(unit.id()).build();
+        stocksDatabase.synchronisationDao().synchroniseUnits(singletonList(unit));
+        stocksDatabase.synchronisationDao().synchroniseScaledUnits(List.of(scaledUnit1, scaledUnit2, scaledUnit3));
+
+        Observable<List<ScaledUnitForListing>> actual = uut.getScaledUnits();
+
+        testList(actual).assertValue(List.of(
+                ScaledUnitForListing.create(scaledUnit1.id(), unit.abbreviation(), scaledUnit1.scale()),
+                ScaledUnitForListing.create(scaledUnit2.id(), unit.abbreviation(), scaledUnit2.scale()),
+                ScaledUnitForListing.create(scaledUnit3.id(), unit.abbreviation(), scaledUnit3.scale())
+        ));
+    }
+
+    @Test
     public void gettingScaledUnitForDeletionWorks() {
         UnitDbEntity unit = standardEntities.unitDbEntity();
         ScaledUnitDbEntity scaledUnit = standardEntities.scaledUnitDbEntityBuilder().unit(unit.id()).build();
@@ -81,5 +106,29 @@ public class ScaledUnitRepositoryImplTest extends DbTestCase {
         Observable<List<ScaledUnitForSelection>> actual = uut.getScaledUnitsForSelection();
 
         test(actual).assertValue(singletonList(ScaledUnitForSelection.create(scaledUnit.id(), unit.abbreviation(), scaledUnit.scale())));
+    }
+
+    @Test
+    public void gettingScaledUnitsForSelectionIsSortedByScale() {
+        UnitDbEntity unit = standardEntities.unitDbEntity();
+        ScaledUnitDbEntity scaledUnit1 = standardEntities.scaledUnitDbEntityBuilder()
+                .scale(BigDecimal.ONE)
+                .unit(unit.id()).build();
+        ScaledUnitDbEntity scaledUnit2 = standardEntities.scaledUnitDbEntityBuilder()
+                .scale(new BigDecimal("2"))
+                .unit(unit.id()).build();
+        ScaledUnitDbEntity scaledUnit3 = standardEntities.scaledUnitDbEntityBuilder()
+                .scale(new BigDecimal("10"))
+                .unit(unit.id()).build();
+        stocksDatabase.synchronisationDao().synchroniseUnits(singletonList(unit));
+        stocksDatabase.synchronisationDao().synchroniseScaledUnits(List.of(scaledUnit1, scaledUnit2, scaledUnit3));
+
+        Observable<List<ScaledUnitForSelection>> actual = uut.getScaledUnitsForSelection();
+
+        test(actual).assertValue(List.of(
+                ScaledUnitForSelection.create(scaledUnit1.id(), unit.abbreviation(), scaledUnit1.scale()),
+                ScaledUnitForSelection.create(scaledUnit2.id(), unit.abbreviation(), scaledUnit2.scale()),
+                ScaledUnitForSelection.create(scaledUnit3.id(), unit.abbreviation(), scaledUnit3.scale())
+        ));
     }
 }

@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+### Fixed
+
+* Sort units by their scale again
+  ([#76](https://j.njsm.de/git/veenj/stocks/issues/76)).
+
 ## [4.3.0.0]
 
 ### Added
