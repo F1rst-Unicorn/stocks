@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## [4.3.0.1]
+
 ### Fixed
 
 * Sort units by their scale again
