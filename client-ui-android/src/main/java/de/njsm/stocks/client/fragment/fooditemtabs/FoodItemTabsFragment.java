@@ -28,7 +28,9 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.google.android.material.tabs.TabLayout;
+import de.njsm.stocks.client.fragment.fooddetails.FoodDetailsFragment;
 import de.njsm.stocks.client.fragment.fooditemlist.FoodItemListFragment;
 import de.njsm.stocks.client.fragment.unittabs.TabsFragment;
 import de.njsm.stocks.client.ui.R;
@@ -64,7 +66,8 @@ public class FoodItemTabsFragment extends TabsFragment {
                     return result;
                 },
                 () -> {
-                    Fragment result = new Fragment();
+                    SwipeRefreshLayout swiper = requireView().findViewById(R.id.fragment_tab_layout_swipe);
+                    Fragment result = new FoodDetailsFragment(swiper::setEnabled);
                     result.setArguments(requireArguments());
                     return result;
                 }

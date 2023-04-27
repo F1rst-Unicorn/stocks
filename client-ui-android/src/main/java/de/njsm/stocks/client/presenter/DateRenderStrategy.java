@@ -25,13 +25,16 @@ import android.text.format.DateUtils;
 import de.njsm.stocks.client.business.Localiser;
 
 import javax.inject.Inject;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 
 public class DateRenderStrategy {
 
     private static final java.time.format.DateTimeFormatter FORMAT = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+    private static final java.time.format.DateTimeFormatter FORMAT_SHORT = DateTimeFormatter.ofPattern("dd.MM.yy");
     private static final java.time.format.DateTimeFormatter FORMAT_WITH_TIME = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss");
 
     private final Localiser localiser;
@@ -42,11 +45,21 @@ public class DateRenderStrategy {
     }
 
     public String render(LocalDate date) {
-        return FORMAT.format(date);
+        return render(date, FORMAT);
     }
 
     public String render(LocalDateTime date) {
         return FORMAT_WITH_TIME.format(date);
+    }
+
+    public String renderEpochSeconds(float value) {
+        Instant i = Instant.ofEpochSecond((long) value);
+        i = i.minusSeconds(ZoneId.systemDefault().getRules().getOffset(i).getTotalSeconds());
+        return render(localiser.toLocalDate(i), FORMAT_SHORT);
+    }
+
+    private String render(LocalDate localDate, DateTimeFormatter format) {
+        return format.format(localDate);
     }
 
     public CharSequence renderRelative(LocalDate date) {
@@ -54,5 +67,10 @@ public class DateRenderStrategy {
                 localiser.toInstant(date).toEpochMilli(),
                 localiser.epochMilli(),
                 0L, DateUtils.FORMAT_ABBREV_ALL);
+    }
+
+    public float toFloat(LocalDateTime time) {
+        var value = localiser.toInstant(time);
+        return value.getEpochSecond() + ZoneId.systemDefault().getRules().getOffset(value).getTotalSeconds();
     }
 }

@@ -19,23 +19,20 @@
  *
  */
 
-package de.njsm.stocks.client.database;
+package de.njsm.stocks.client.business.entities;
 
-import org.junit.Before;
+import com.google.auto.value.AutoValue;
 
-import static java.util.Collections.singletonList;
+import java.math.BigDecimal;
 
-public class FoodListRepositoryImplTestBase extends DbTestCase {
+@AutoValue
+public abstract class PlotPoint<T extends Comparable<? super T>> {
 
-    FoodListRepositoryImpl uut;
+    public abstract T x();
 
-    LocationDbEntity location;
+    public abstract BigDecimal y();
 
-    @Before
-    public void createTestData() {
-        uut = new FoodListRepositoryImpl(stocksDatabase.foodDao(), stocksDatabase.plotDao(), stocksDatabase.locationDao());
-
-        location = standardEntities.locationDbEntity();
-        stocksDatabase.synchronisationDao().writeLocations(singletonList(location));
+    public static <T extends Comparable<? super T>> PlotPoint<T> create(T x, BigDecimal y) {
+        return new AutoValue_PlotPoint<T>(x, y);
     }
 }

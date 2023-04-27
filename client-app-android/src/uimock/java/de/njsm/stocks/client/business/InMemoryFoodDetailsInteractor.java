@@ -19,23 +19,23 @@
  *
  */
 
-package de.njsm.stocks.client.database;
+package de.njsm.stocks.client.business;
 
-import org.junit.Before;
+import de.njsm.stocks.client.business.entities.Food;
+import de.njsm.stocks.client.business.entities.FoodDetails;
+import de.njsm.stocks.client.business.entities.Id;
+import io.reactivex.rxjava3.core.Observable;
 
-import static java.util.Collections.singletonList;
+import javax.inject.Inject;
 
-public class FoodListRepositoryImplTestBase extends DbTestCase {
+class InMemoryFoodDetailsInteractor implements FoodDetailsInteractor {
 
-    FoodListRepositoryImpl uut;
+    @Inject
+    InMemoryFoodDetailsInteractor() {
+    }
 
-    LocationDbEntity location;
-
-    @Before
-    public void createTestData() {
-        uut = new FoodListRepositoryImpl(stocksDatabase.foodDao(), stocksDatabase.plotDao(), stocksDatabase.locationDao());
-
-        location = standardEntities.locationDbEntity();
-        stocksDatabase.synchronisationDao().writeLocations(singletonList(location));
+    @Override
+    public Observable<FoodDetails> get(Id<Food> id) {
+        return Observable.empty();
     }
 }

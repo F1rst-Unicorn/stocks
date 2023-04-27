@@ -31,6 +31,7 @@ import de.njsm.stocks.client.fragment.errordetails.ErrorDetailsFragment;
 import de.njsm.stocks.client.fragment.errorlist.ErrorListFragment;
 import de.njsm.stocks.client.fragment.foodadd.FoodAddFragment;
 import de.njsm.stocks.client.fragment.foodconflict.FoodConflictFragment;
+import de.njsm.stocks.client.fragment.fooddetails.FoodDetailsFragment;
 import de.njsm.stocks.client.fragment.foodedit.FoodEditFragment;
 import de.njsm.stocks.client.fragment.foodinlocation.FoodInLocationFragment;
 import de.njsm.stocks.client.fragment.fooditemadd.FoodItemAddFragment;
@@ -204,4 +205,7 @@ public abstract class FragmentModule {
 
     @ContributesAndroidInjector
     public abstract TicketShowFragment TicketShowFragment();
+
+    @ContributesAndroidInjector
+    public abstract FoodDetailsFragment FoodDetailsFragment();
 }

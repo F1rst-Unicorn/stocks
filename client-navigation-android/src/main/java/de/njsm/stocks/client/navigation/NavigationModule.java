@@ -137,4 +137,7 @@ public interface NavigationModule {
 
     @Binds
     TicketShowNavigator TicketShowNavigator(TicketShowNavigatorImpl impl);
+
+    @Binds
+    FoodDetailsNavigator FoodDetailsNavigator(FoodDetailsNavigatorImpl impl);
 }

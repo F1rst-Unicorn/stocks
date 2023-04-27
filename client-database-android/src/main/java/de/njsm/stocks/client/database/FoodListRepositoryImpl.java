@@ -26,23 +26,45 @@ import de.njsm.stocks.client.business.entities.*;
 import io.reactivex.rxjava3.core.Observable;
 
 import javax.inject.Inject;
+import java.math.BigDecimal;
+import java.time.Instant;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 class FoodListRepositoryImpl implements FoodListRepository {
 
     private final FoodDao foodDao;
 
+    private final PlotDao plotDao;
+
     private final LocationDao locationDao;
 
     @Inject
-    FoodListRepositoryImpl(FoodDao foodDao, LocationDao locationDao) {
+    FoodListRepositoryImpl(FoodDao foodDao, PlotDao plotDao, LocationDao locationDao) {
         this.foodDao = foodDao;
+        this.plotDao = plotDao;
         this.locationDao = locationDao;
     }
 
     @Override
     public Observable<List<FoodForListingBaseData>> getFood() {
         return foodDao.getCurrentFood();
+    }
+
+    @Override
+    public Observable<FoodDetailsBaseData> getFood(Id<Food> id) {
+        return foodDao.getDetails(id.id())
+                .map(v ->
+                        FoodDetailsBaseData.create(
+                                v.food.id(),
+                                v.food.name(),
+                                v.food.expirationOffset(),
+                                Optional.ofNullable(v.locationName),
+                                ScaledUnitForSelection.create(v.scaledUnitId, v.abbreviation, v.scale),
+                                v.food.description()));
     }
 
     @Override
@@ -53,6 +75,11 @@ class FoodListRepositoryImpl implements FoodListRepository {
     @Override
     public Observable<List<StoredFoodAmount>> getFoodAmounts() {
         return foodDao.getAmounts();
+    }
+
+    @Override
+    public Observable<List<StoredFoodAmount>> getFoodAmounts(Id<Food> id) {
+        return foodDao.getAmountsOf(id.id());
     }
 
     @Override
@@ -69,5 +96,48 @@ class FoodListRepositoryImpl implements FoodListRepository {
     @Override
     public Observable<List<FoodForEanNumberAssignment>> getForEanNumberAssignment() {
         return foodDao.getForEanNumberAssignment();
+    }
+
+    @Override
+    public Observable<List<PlotByUnit<Instant>>> getAmountsOverTime(Id<Food> id) {
+
+        final class PartialAggregate {
+            final Id<Unit> unit;
+            String abbreviation;
+            final List<PlotPoint<Instant>> points;
+            BigDecimal prefixSum;
+
+            public PartialAggregate(PlotPoint<Instant> point, Id<Unit> unit, String abbreviation) {
+                this.points = new ArrayList<>();
+                this.points.add(point);
+                this.unit = unit;
+                this.abbreviation = abbreviation;
+                this.prefixSum = point.y();
+            }
+        }
+
+        return plotDao.getAmountsOverTimeOf(id.id())
+                .map(list ->
+                    StreamSupport.stream(new Aggregator<>(list.iterator(),
+                            input -> new PartialAggregate(PlotPoint.create(input.x, input.y), input.unit, input.abbreviation),
+                            (current, input) -> current.unit.id() == input.unit.id(),
+                            (current, input) -> {
+                                current.prefixSum = current.prefixSum.add(input.y);
+                                current.points.add(PlotPoint.create(input.x, current.prefixSum));
+                                current.abbreviation = input.abbreviation;
+                                return current;
+                        }), false)
+                            .map(v -> PlotByUnit.create(IdImpl.from(v.unit), v.abbreviation, v.points))
+                            .collect(Collectors.toList())
+                );
+    }
+
+    @Override
+    public Observable<List<PlotPoint<Integer>>> getEatByExpirationHistogram(Id<Food> id) {
+        return plotDao.getEatByExpirationHistogram(id.id())
+                .map(list -> list.stream()
+                        .map(v -> PlotPoint.create(v.x, v.y))
+                        .collect(Collectors.toList())
+                );
     }
 }

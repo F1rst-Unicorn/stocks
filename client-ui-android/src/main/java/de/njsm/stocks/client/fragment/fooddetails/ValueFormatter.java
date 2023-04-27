@@ -1,5 +1,4 @@
-/*
- * stocks is client-server program to manage a household's food stock
+/* stocks is client-server program to manage a household's food stock
  * Copyright (C) 2019  The stocks developers
  *
  * This file is part of the stocks program suite.
@@ -16,26 +15,23 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
- *
  */
 
-package de.njsm.stocks.client.database;
+package de.njsm.stocks.client.fragment.fooddetails;
 
-import org.junit.Before;
+import com.github.mikephil.charting.components.AxisBase;
+import de.njsm.stocks.client.presenter.DateRenderStrategy;
 
-import static java.util.Collections.singletonList;
+class ValueFormatter extends com.github.mikephil.charting.formatter.ValueFormatter {
 
-public class FoodListRepositoryImplTestBase extends DbTestCase {
+    private final DateRenderStrategy dateRenderStrategy;
 
-    FoodListRepositoryImpl uut;
+    ValueFormatter(DateRenderStrategy dateRenderStrategy) {
+        this.dateRenderStrategy = dateRenderStrategy;
+    }
 
-    LocationDbEntity location;
-
-    @Before
-    public void createTestData() {
-        uut = new FoodListRepositoryImpl(stocksDatabase.foodDao(), stocksDatabase.plotDao(), stocksDatabase.locationDao());
-
-        location = standardEntities.locationDbEntity();
-        stocksDatabase.synchronisationDao().writeLocations(singletonList(location));
+    @Override
+    public String getAxisLabel(float value, AxisBase axis) {
+        return dateRenderStrategy.renderEpochSeconds(value);
     }
 }

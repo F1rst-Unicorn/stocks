@@ -142,4 +142,6 @@ public abstract class StocksDatabase extends RoomDatabase {
     abstract SearchDao searchDao();
 
     abstract EventDao eventDao();
+
+    abstract PlotDao plotDao();
 }

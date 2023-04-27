@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+### Added
+
+* Show food details with charts again
+  ([#64](https://j.njsm.de/git/veenj/stocks/issues/64)).
+
 ## [4.3.0.1]
 
 ### Fixed

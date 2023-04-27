@@ -233,4 +233,7 @@ public interface UimockBusinessModule {
 
     @Binds
     TicketDisplayInteractor TicketDisplayInteractor(InMemoryTicketDisplayInteractor impl);
+
+    @Binds
+    FoodDetailsInteractor FoodDetailsInteractor(InMemoryFoodDetailsInteractor impl);
 }

@@ -19,23 +19,27 @@
  *
  */
 
-package de.njsm.stocks.client.database;
+package de.njsm.stocks.client.business.entities;
 
-import org.junit.Before;
+import com.google.auto.value.AutoValue;
 
-import static java.util.Collections.singletonList;
+import java.time.Period;
+import java.util.Optional;
 
-public class FoodListRepositoryImplTestBase extends DbTestCase {
+@AutoValue
+public abstract class FoodDetailsBaseData implements Id<Food> {
 
-    FoodListRepositoryImpl uut;
+    public abstract String name();
 
-    LocationDbEntity location;
+    public abstract Period expirationOffset();
 
-    @Before
-    public void createTestData() {
-        uut = new FoodListRepositoryImpl(stocksDatabase.foodDao(), stocksDatabase.plotDao(), stocksDatabase.locationDao());
+    public abstract Optional<String> locationName();
 
-        location = standardEntities.locationDbEntity();
-        stocksDatabase.synchronisationDao().writeLocations(singletonList(location));
+    public abstract ScaledUnitForSelection storeUnit();
+
+    public abstract String description();
+
+    public static FoodDetailsBaseData create(int id, String name, Period expirationOffset, Optional<String> locationName, ScaledUnitForSelection storeUnit, String description) {
+        return new AutoValue_FoodDetailsBaseData(id, name, expirationOffset, locationName, storeUnit, description);
     }
 }

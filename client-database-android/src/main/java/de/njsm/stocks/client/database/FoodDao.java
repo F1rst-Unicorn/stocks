@@ -22,10 +22,12 @@
 package de.njsm.stocks.client.database;
 
 import androidx.room.Dao;
+import androidx.room.Embedded;
 import androidx.room.Query;
 import de.njsm.stocks.client.business.entities.*;
 import io.reactivex.rxjava3.core.Observable;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Dao
@@ -55,6 +57,22 @@ abstract class FoodDao {
             "from current_food " +
             "where id = :id")
     abstract Observable<FoodDbEntity> getToEdit(int id);
+
+    class FoodWithLocation {
+        @Embedded FoodDbEntity food;
+        String locationName;
+        int scaledUnitId;
+        BigDecimal scale;
+        String abbreviation;
+    }
+
+    @Query("select f.*, l.name as locationName, s.id as scaledUnitId, s.scale, u.abbreviation " +
+            "from current_food f " +
+            "join current_scaled_unit s on s.id = f.store_unit " +
+            "join current_unit u on u.id = s.unit " +
+            "left outer join current_location l on l.id = f.location " +
+            "where f.id = :id")
+    abstract Observable<FoodWithLocation> getDetails(int id);
 
     @Query("select * " +
             "from current_food " +
@@ -105,6 +123,15 @@ abstract class FoodDao {
             "join current_unit u on s.unit = u.id " +
             "group by i.of_type, s.id, u.id, s.scale, u.abbreviation")
     abstract Observable<List<StoredFoodAmount>> getAmounts();
+
+    @Query("select i.of_type as foodId, s.id as scaledUnitId, u.id as unitId, " +
+            "count(1) as numberOfFoodItemsWithSameScaledUnit, s.scale as scale, u.abbreviation as abbreviation " +
+            "from current_food_item i " +
+            "join current_scaled_unit s on i.unit = s.id " +
+            "join current_unit u on s.unit = u.id " +
+            "where i.of_type = :foodId " +
+            "group by i.of_type, s.id, u.id, s.scale, u.abbreviation")
+    abstract Observable<List<StoredFoodAmount>> getAmountsOf(int foodId);
 
     @Query("select i.id, s.scale as amount, unit.abbreviation, l.name as location, i.eat_by as eatBy, u.name as buyer, d.name as registerer " +
             "from current_food_item i " +
