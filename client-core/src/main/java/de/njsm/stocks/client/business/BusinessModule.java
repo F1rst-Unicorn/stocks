@@ -214,4 +214,7 @@ public interface BusinessModule {
 
     @Binds
     TicketDisplayInteractor TicketDisplayInteractor(TicketDisplayInteractorImpl impl);
+
+    @Binds
+    FoodDetailsInteractor FoodDetailsInteractor(FoodDetailsInteractorImpl impl);
 }

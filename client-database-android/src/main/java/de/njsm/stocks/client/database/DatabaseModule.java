@@ -161,6 +161,11 @@ public interface DatabaseModule {
         return database.eventDao();
     }
 
+    @Provides
+    static PlotDao PlotDao(StocksDatabase database) {
+        return database.plotDao();
+    }
+
     @Binds
     ErrorRepository errorRepository(ErrorRepositoryImpl impl);
 

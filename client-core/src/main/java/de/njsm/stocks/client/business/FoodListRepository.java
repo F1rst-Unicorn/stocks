@@ -24,12 +24,16 @@ package de.njsm.stocks.client.business;
 import de.njsm.stocks.client.business.entities.*;
 import io.reactivex.rxjava3.core.Observable;
 
+import java.time.Instant;
 import java.util.List;
 
 /**
  * At every consistent state of the client database it must hold that
  * for each {@link FoodForListingBaseData} b in the result list of {@link #getFood()}}
  * there exists a {@link StoredFoodAmount} a in the result list of {@link #getFoodAmounts()}
+ * such that {@code b.id() == a.foodId()} and
+ * for each {@link FoodForListingBaseData} b in the result list of {@link #getFood(Id)}}
+ * there exists a {@link StoredFoodAmount} a in the result list of {@link #getFoodAmounts(Id)}
  * such that {@code b.id() == a.foodId()} and
  * for each {@link FoodForListingBaseData} b in the result list of {@link #getFoodBy(Id)}}
  * there exists a {@link StoredFoodAmount} a in the result list of {@link #getFoodAmountsIn(Id)}
@@ -39,13 +43,21 @@ public interface FoodListRepository {
 
     Observable<List<FoodForListingBaseData>> getFood();
 
+    Observable<FoodDetailsBaseData> getFood(Id<Food> id);
+
     Observable<List<FoodForListingBaseData>> getFoodBy(Id<Location> location);
 
     Observable<List<StoredFoodAmount>> getFoodAmounts();
+
+    Observable<List<StoredFoodAmount>> getFoodAmounts(Id<Food> id);
 
     Observable<List<StoredFoodAmount>> getFoodAmountsIn(Id<Location> location);
 
     Observable<LocationName> getLocationName(Id<Location> location);
 
     Observable<List<FoodForEanNumberAssignment>> getForEanNumberAssignment();
+
+    Observable<List<PlotByUnit<Instant>>> getAmountsOverTime(Id<Food> id);
+
+    Observable<List<PlotPoint<Integer>>> getEatByExpirationHistogram(Id<Food> id);
 }

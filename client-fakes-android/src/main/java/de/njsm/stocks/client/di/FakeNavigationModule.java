@@ -272,4 +272,10 @@ class FakeNavigationModule {
     TicketShowNavigator TicketShowNavigator() {
         return mock(TicketShowNavigator.class);
     }
+
+    @Provides
+    @Singleton
+    FoodDetailsNavigator FoodDetailsNavigator() {
+        return mock(FoodDetailsNavigator.class);
+    }
 }

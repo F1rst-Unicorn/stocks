@@ -19,23 +19,24 @@
  *
  */
 
-package de.njsm.stocks.client.database;
+package de.njsm.stocks.client.navigation;
 
-import org.junit.Before;
+import android.os.Bundle;
+import de.njsm.stocks.client.business.entities.Food;
+import de.njsm.stocks.client.business.entities.Id;
+import de.njsm.stocks.client.fragment.fooditemtabs.FoodItemTabsFragmentArgs;
 
-import static java.util.Collections.singletonList;
+import javax.inject.Inject;
 
-public class FoodListRepositoryImplTestBase extends DbTestCase {
+class FoodDetailsNavigatorImpl extends BaseNavigator implements FoodDetailsNavigator {
 
-    FoodListRepositoryImpl uut;
+    @Inject
+    FoodDetailsNavigatorImpl(NavigationArgConsumer navigationArgConsumer) {
+        super(navigationArgConsumer);
+    }
 
-    LocationDbEntity location;
-
-    @Before
-    public void createTestData() {
-        uut = new FoodListRepositoryImpl(stocksDatabase.foodDao(), stocksDatabase.plotDao(), stocksDatabase.locationDao());
-
-        location = standardEntities.locationDbEntity();
-        stocksDatabase.synchronisationDao().writeLocations(singletonList(location));
+    @Override
+    public Id<Food> getId(Bundle bundle) {
+        return FoodItemTabsFragmentArgs.fromBundle(bundle)::getFoodId;
     }
 }

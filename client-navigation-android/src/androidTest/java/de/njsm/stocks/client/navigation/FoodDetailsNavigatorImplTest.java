@@ -19,23 +19,33 @@
  *
  */
 
-package de.njsm.stocks.client.database;
+package de.njsm.stocks.client.navigation;
 
+import android.os.Bundle;
+import de.njsm.stocks.client.business.entities.Food;
+import de.njsm.stocks.client.business.entities.Id;
 import org.junit.Before;
+import org.junit.Test;
 
-import static java.util.Collections.singletonList;
+import static org.junit.Assert.assertEquals;
 
-public class FoodListRepositoryImplTestBase extends DbTestCase {
+public class FoodDetailsNavigatorImplTest extends NavigationTest {
 
-    FoodListRepositoryImpl uut;
-
-    LocationDbEntity location;
+    private FoodItemListNavigator uut;
 
     @Before
-    public void createTestData() {
-        uut = new FoodListRepositoryImpl(stocksDatabase.foodDao(), stocksDatabase.plotDao(), stocksDatabase.locationDao());
+    public void setup() {
+        uut = new FoodItemListNavigatorImpl(navigationArgConsumer);
+    }
 
-        location = standardEntities.locationDbEntity();
-        stocksDatabase.synchronisationDao().writeLocations(singletonList(location));
+    @Test
+    public void argumentIsExtracted() {
+        Bundle input = new Bundle();
+        int expected = 42;
+        input.putInt("foodId", expected);
+
+        Id<Food> actual = uut.getFoodId(input);
+
+        assertEquals(expected, actual.id());
     }
 }

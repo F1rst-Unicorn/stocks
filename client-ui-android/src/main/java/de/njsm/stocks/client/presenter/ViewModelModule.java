@@ -346,4 +346,11 @@ public class ViewModelModule {
     ViewModel TicketShowViewModel(TicketDisplayInteractor interactor, ObservableDataCache<RegistrationForm> data) {
         return new TicketShowViewModel(interactor, data);
     }
+
+    @Provides
+    @IntoMap
+    @ViewModelKey(FoodDetailsViewModel.class)
+    ViewModel FoodDetailsViewModel(FoodDetailsInteractor interactor, ObservableDataCache<FoodDetails> data) {
+        return new FoodDetailsViewModel(interactor, data);
+    }
 }

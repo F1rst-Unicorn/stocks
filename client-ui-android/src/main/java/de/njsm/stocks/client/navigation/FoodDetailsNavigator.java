@@ -19,23 +19,12 @@
  *
  */
 
-package de.njsm.stocks.client.database;
+package de.njsm.stocks.client.navigation;
 
-import org.junit.Before;
+import android.os.Bundle;
+import de.njsm.stocks.client.business.entities.Food;
+import de.njsm.stocks.client.business.entities.Id;
 
-import static java.util.Collections.singletonList;
-
-public class FoodListRepositoryImplTestBase extends DbTestCase {
-
-    FoodListRepositoryImpl uut;
-
-    LocationDbEntity location;
-
-    @Before
-    public void createTestData() {
-        uut = new FoodListRepositoryImpl(stocksDatabase.foodDao(), stocksDatabase.plotDao(), stocksDatabase.locationDao());
-
-        location = standardEntities.locationDbEntity();
-        stocksDatabase.synchronisationDao().writeLocations(singletonList(location));
-    }
+public interface FoodDetailsNavigator {
+    Id<Food> getId(Bundle bundle);
 }

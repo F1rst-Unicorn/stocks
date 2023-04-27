@@ -22,10 +22,7 @@
 package de.njsm.stocks.client.business;
 
 import javax.inject.Inject;
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
+import java.time.*;
 
 public class Localiser {
 
@@ -38,6 +35,10 @@ public class Localiser {
 
     public Instant toInstant(LocalDate d) {
         return d.atStartOfDay(ZoneId.systemDefault()).toInstant();
+    }
+
+    public Instant toInstant(LocalDateTime d) {
+        return d.atZone(ZoneId.systemDefault()).toInstant();
     }
 
     public Instant toUtcInstant(LocalDate d) {

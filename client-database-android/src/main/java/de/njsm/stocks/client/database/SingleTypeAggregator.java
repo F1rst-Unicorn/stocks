@@ -21,21 +21,12 @@
 
 package de.njsm.stocks.client.database;
 
-import org.junit.Before;
+import java.util.Iterator;
+import java.util.function.BiFunction;
+import java.util.function.BiPredicate;
 
-import static java.util.Collections.singletonList;
-
-public class FoodListRepositoryImplTestBase extends DbTestCase {
-
-    FoodListRepositoryImpl uut;
-
-    LocationDbEntity location;
-
-    @Before
-    public void createTestData() {
-        uut = new FoodListRepositoryImpl(stocksDatabase.foodDao(), stocksDatabase.plotDao(), stocksDatabase.locationDao());
-
-        location = standardEntities.locationDbEntity();
-        stocksDatabase.synchronisationDao().writeLocations(singletonList(location));
+public class SingleTypeAggregator<O> extends Aggregator<O, O> {
+    public SingleTypeAggregator(Iterator<O> iterator, BiPredicate<O, O> sameGroup, BiFunction<O, O, O> merge) {
+        super(iterator, x -> x, sameGroup, merge);
     }
 }

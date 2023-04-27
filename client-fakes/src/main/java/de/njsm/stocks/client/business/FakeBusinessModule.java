@@ -479,4 +479,10 @@ public interface FakeBusinessModule {
     static TicketDisplayInteractor TicketDisplayInteractor() {
         return mock(TicketDisplayInteractor.class);
     }
+
+    @Provides
+    @Singleton
+    static FoodDetailsInteractor FoodDetailsInteractor() {
+        return mock(FoodDetailsInteractor.class);
+    }
 }

@@ -19,23 +19,20 @@
  *
  */
 
-package de.njsm.stocks.client.database;
+package de.njsm.stocks.client.business.entities;
 
-import org.junit.Before;
+import com.google.auto.value.AutoValue;
 
-import static java.util.Collections.singletonList;
+import java.util.List;
 
-public class FoodListRepositoryImplTestBase extends DbTestCase {
+@AutoValue
+public abstract class PlotByUnit<T extends Comparable<? super T>> implements Id<Unit> {
 
-    FoodListRepositoryImpl uut;
+    public abstract String abbreviation();
 
-    LocationDbEntity location;
+    public abstract List<PlotPoint<T>> plotPoints();
 
-    @Before
-    public void createTestData() {
-        uut = new FoodListRepositoryImpl(stocksDatabase.foodDao(), stocksDatabase.plotDao(), stocksDatabase.locationDao());
-
-        location = standardEntities.locationDbEntity();
-        stocksDatabase.synchronisationDao().writeLocations(singletonList(location));
+    public static <T extends Comparable<? super T>> PlotByUnit<T> create(Id<Unit> id, String abbreviation, List<PlotPoint<T>> plotPoints) {
+        return new AutoValue_PlotByUnit<T>(id.id(), abbreviation, plotPoints);
     }
 }
