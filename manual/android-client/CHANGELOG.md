@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## [4.3.0.2]
+
 ### Added
 
 * Show food details with charts again
