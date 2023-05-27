@@ -25,11 +25,11 @@ import de.njsm.stocks.client.business.entities.Food;
 import de.njsm.stocks.client.business.entities.FoodItemAddData;
 import de.njsm.stocks.client.business.entities.FoodItemForm;
 import de.njsm.stocks.client.business.entities.Id;
-import io.reactivex.rxjava3.core.Observable;
+import io.reactivex.rxjava3.core.Maybe;
 
 public interface FoodItemAddInteractor {
 
-    Observable<FoodItemAddData> getFormData(Id<Food> food);
+    Maybe<FoodItemAddData> getFormData(Id<Food> food);
 
     void add(FoodItemForm item);
 }

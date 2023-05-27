@@ -23,18 +23,17 @@ package de.njsm.stocks.client.business;
 
 import de.njsm.stocks.client.business.entities.*;
 import io.reactivex.rxjava3.core.Maybe;
-import io.reactivex.rxjava3.core.Observable;
 
 import java.time.Instant;
 import java.util.List;
 
 public interface FoodItemAddRepository {
 
-    Observable<FoodForItemCreation> getFood(Id<Food> food);
+    Maybe<FoodForItemCreation> getFood(Id<Food> food);
 
-    Observable<List<LocationForSelection>> getLocations();
+    Maybe<List<LocationForSelection>> getLocations();
 
-    Observable<List<ScaledUnitForSelection>> getUnits();
+    Maybe<List<ScaledUnitForSelection>> getUnits();
 
     Maybe<Instant> getMaxEatByOfPresentItemsOf(Id<Food> food);
 

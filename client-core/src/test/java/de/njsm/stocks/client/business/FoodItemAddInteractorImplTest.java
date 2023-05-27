@@ -24,7 +24,6 @@ package de.njsm.stocks.client.business;
 import de.njsm.stocks.client.business.entities.*;
 import de.njsm.stocks.client.execution.Scheduler;
 import io.reactivex.rxjava3.core.Maybe;
-import io.reactivex.rxjava3.core.Observable;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -89,11 +88,11 @@ class FoodItemAddInteractorImplTest {
         FoodForItemCreation food = FoodForItemCreation.create(1, "Banana", Period.ofDays(10), Optional.of(() -> 3), () -> 4);
         List<LocationForSelection> locations = getLocations();
         List<ScaledUnitForSelection> units = getUnits();
-        when(repository.getFood(equalBy(food))).thenReturn(Observable.just(food));
-        when(repository.getLocations()).thenReturn(Observable.just(locations));
-        when(repository.getUnits()).thenReturn(Observable.just(units));
+        when(repository.getFood(equalBy(food))).thenReturn(Maybe.just(food));
+        when(repository.getLocations()).thenReturn(Maybe.just(locations));
+        when(repository.getUnits()).thenReturn(Maybe.just(units));
 
-        Observable<FoodItemAddData> actual = uut.getFormData(food);
+        Maybe<FoodItemAddData> actual = uut.getFormData(food);
 
         actual.test().assertValue(FoodItemAddData.create(food.toSelection(),
                 localiser.toLocalDate(clock.get().plus(food.expirationOffset())),
@@ -107,12 +106,12 @@ class FoodItemAddInteractorImplTest {
         FoodForItemCreation food = FoodForItemCreation.create(1, "Banana", Period.ofDays(10), Optional.empty(), () -> 4);
         List<LocationForSelection> locations = getLocations();
         List<ScaledUnitForSelection> units = getUnits();
-        when(repository.getFood(equalBy(food))).thenReturn(Observable.just(food));
-        when(repository.getLocations()).thenReturn(Observable.just(locations));
-        when(repository.getUnits()).thenReturn(Observable.just(units));
+        when(repository.getFood(equalBy(food))).thenReturn(Maybe.just(food));
+        when(repository.getLocations()).thenReturn(Maybe.just(locations));
+        when(repository.getUnits()).thenReturn(Maybe.just(units));
         when(repository.getLocationWithMostItemsOfType(food)).thenReturn(Maybe.just(() -> 3));
 
-        Observable<FoodItemAddData> actual = uut.getFormData(food);
+        Maybe<FoodItemAddData> actual = uut.getFormData(food);
 
         actual.test().assertValue(FoodItemAddData.create(food.toSelection(),
                 localiser.toLocalDate(clock.get().plus(food.expirationOffset())),
@@ -126,12 +125,12 @@ class FoodItemAddInteractorImplTest {
         FoodForItemCreation food = FoodForItemCreation.create(1, "Banana", Period.ofDays(10), Optional.empty(), () -> 4);
         List<LocationForSelection> locations = getLocations();
         List<ScaledUnitForSelection> units = getUnits();
-        when(repository.getFood(equalBy(food))).thenReturn(Observable.just(food));
-        when(repository.getLocations()).thenReturn(Observable.just(locations));
-        when(repository.getUnits()).thenReturn(Observable.just(units));
+        when(repository.getFood(equalBy(food))).thenReturn(Maybe.just(food));
+        when(repository.getLocations()).thenReturn(Maybe.just(locations));
+        when(repository.getUnits()).thenReturn(Maybe.just(units));
         when(repository.getLocationWithMostItemsOfType(food)).thenReturn(Maybe.empty());
 
-        Observable<FoodItemAddData> actual = uut.getFormData(food);
+        Maybe<FoodItemAddData> actual = uut.getFormData(food);
 
         actual.test().assertValue(FoodItemAddData.create(food.toSelection(),
                 localiser.toLocalDate(clock.get().plus(food.expirationOffset())),
@@ -145,13 +144,13 @@ class FoodItemAddInteractorImplTest {
         FoodForItemCreation food = FoodForItemCreation.create(1, "Banana", Period.ZERO, Optional.of(() -> 3), () -> 4);
         List<LocationForSelection> locations = getLocations();
         List<ScaledUnitForSelection> units = getUnits();
-        when(repository.getFood(equalBy(food))).thenReturn(Observable.just(food));
-        when(repository.getLocations()).thenReturn(Observable.just(locations));
-        when(repository.getUnits()).thenReturn(Observable.just(units));
+        when(repository.getFood(equalBy(food))).thenReturn(Maybe.just(food));
+        when(repository.getLocations()).thenReturn(Maybe.just(locations));
+        when(repository.getUnits()).thenReturn(Maybe.just(units));
         when(repository.getMaxEatByOfPresentItemsOf(food)).thenReturn(Maybe.just(Instant.EPOCH.plus(1, ChronoUnit.DAYS)));
         when(repository.getMaxEatByEverOf(food)).thenReturn(Maybe.just(Instant.EPOCH.plus(2, ChronoUnit.DAYS)));
 
-        Observable<FoodItemAddData> actual = uut.getFormData(food);
+        Maybe<FoodItemAddData> actual = uut.getFormData(food);
 
         actual.test().assertValue(FoodItemAddData.create(food.toSelection(),
                 localiser.toLocalDate(Instant.EPOCH.plus(1, ChronoUnit.DAYS)),
@@ -165,13 +164,13 @@ class FoodItemAddInteractorImplTest {
         FoodForItemCreation food = FoodForItemCreation.create(1, "Banana", Period.ZERO, Optional.of(() -> 3), () -> 4);
         List<LocationForSelection> locations = getLocations();
         List<ScaledUnitForSelection> units = getUnits();
-        when(repository.getFood(equalBy(food))).thenReturn(Observable.just(food));
-        when(repository.getLocations()).thenReturn(Observable.just(locations));
-        when(repository.getUnits()).thenReturn(Observable.just(units));
+        when(repository.getFood(equalBy(food))).thenReturn(Maybe.just(food));
+        when(repository.getLocations()).thenReturn(Maybe.just(locations));
+        when(repository.getUnits()).thenReturn(Maybe.just(units));
         when(repository.getMaxEatByOfPresentItemsOf(food)).thenReturn(Maybe.empty());
         when(repository.getMaxEatByEverOf(food)).thenReturn(Maybe.just(Instant.EPOCH.plus(2, ChronoUnit.DAYS)));
 
-        Observable<FoodItemAddData> actual = uut.getFormData(food);
+        Maybe<FoodItemAddData> actual = uut.getFormData(food);
 
         actual.test().assertValue(FoodItemAddData.create(food.toSelection(),
                 localiser.toLocalDate(Instant.EPOCH.plus(2, ChronoUnit.DAYS)),
@@ -185,13 +184,13 @@ class FoodItemAddInteractorImplTest {
         FoodForItemCreation food = FoodForItemCreation.create(1, "Banana", Period.ZERO, Optional.of(() -> 3), () -> 4);
         List<LocationForSelection> locations = getLocations();
         List<ScaledUnitForSelection> units = getUnits();
-        when(repository.getFood(equalBy(food))).thenReturn(Observable.just(food));
-        when(repository.getLocations()).thenReturn(Observable.just(locations));
-        when(repository.getUnits()).thenReturn(Observable.just(units));
+        when(repository.getFood(equalBy(food))).thenReturn(Maybe.just(food));
+        when(repository.getLocations()).thenReturn(Maybe.just(locations));
+        when(repository.getUnits()).thenReturn(Maybe.just(units));
         when(repository.getMaxEatByOfPresentItemsOf(food)).thenReturn(Maybe.empty());
         when(repository.getMaxEatByEverOf(food)).thenReturn(Maybe.empty());
 
-        Observable<FoodItemAddData> actual = uut.getFormData(food);
+        Maybe<FoodItemAddData> actual = uut.getFormData(food);
 
         actual.test().assertValue(FoodItemAddData.create(food.toSelection(),
                 localiser.toLocalDate(Instant.EPOCH),

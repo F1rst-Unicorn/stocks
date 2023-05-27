@@ -308,8 +308,8 @@ public class ViewModelModule {
     @Provides
     @IntoMap
     @ViewModelKey(HistoryViewModel.class)
-    ViewModel HistoryViewModel(Localiser localiser, UnitEventInteractor interactor, EventInteractorFactory factory) {
-        return new HistoryViewModel(localiser, interactor, factory);
+    ViewModel HistoryViewModel(Localiser localiser, UnitEventInteractor interactor, EventInteractorFactory factory, Synchroniser synchroniser) {
+        return new HistoryViewModel(localiser, interactor, factory, synchroniser);
     }
 
     @Provides

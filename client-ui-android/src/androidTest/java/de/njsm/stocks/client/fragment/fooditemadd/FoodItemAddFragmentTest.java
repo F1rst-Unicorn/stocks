@@ -88,7 +88,7 @@ public class FoodItemAddFragmentTest {
         food = () -> 42;
         when(navigator.getFood(any())).thenReturn(food);
         prefilledFormData = BehaviorSubject.createDefault(getInput());
-        when(foodItemAddInteractor.getFormData(equalBy(food))).thenReturn(prefilledFormData);
+        when(foodItemAddInteractor.getFormData(equalBy(food))).thenReturn(prefilledFormData.firstElement());
         scenario = FragmentScenario.launchInContainer(FoodItemAddFragment.class, new Bundle(), R.style.StocksTheme);
         unitAmountRenderStrategy = new UnitAmountRenderStrategy();
     }
@@ -161,20 +161,6 @@ public class FoodItemAddFragmentTest {
         scenario.onFragment(v -> v.onOptionsItemSelected(menuItem(v.requireContext(), R.id.menu_check_and_continue)));
 
         verify(navigator, never()).back();
-    }
-
-    @Test
-    public void missingLocationsReturnsWithError() {
-        prefilledFormData.onNext(FoodItemAddData.create(
-                FoodForSelection.create(food.id(), "Banana"),
-                LocalDate.ofEpochDay(5),
-                ListWithSuggestion.empty(),
-                ListWithSuggestion.create(ScaledUnitsForSelection.generate(), 1)));
-
-        onView(withId(R.id.fragment_food_item_form_unit)).check(matches(isDisplayed()));
-
-        verify(dialogDisplayer).showInformation(R.string.error_add_location_first);
-        verify(navigator).back();
     }
 
     @Inject

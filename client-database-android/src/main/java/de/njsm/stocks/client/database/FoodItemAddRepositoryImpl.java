@@ -26,7 +26,6 @@ import de.njsm.stocks.client.business.LocationRepository;
 import de.njsm.stocks.client.business.ScaledUnitRepository;
 import de.njsm.stocks.client.business.entities.*;
 import io.reactivex.rxjava3.core.Maybe;
-import io.reactivex.rxjava3.core.Observable;
 
 import javax.inject.Inject;
 import java.time.Instant;
@@ -52,7 +51,7 @@ class FoodItemAddRepositoryImpl implements FoodItemAddRepository {
     }
 
     @Override
-    public Observable<FoodForItemCreation> getFood(Id<Food> food) {
+    public Maybe<FoodForItemCreation> getFood(Id<Food> food) {
         return foodDao.getToEdit(food.id())
                 .map(f -> FoodForItemCreation.create(
                         f.id(),
@@ -60,17 +59,17 @@ class FoodItemAddRepositoryImpl implements FoodItemAddRepository {
                         f.expirationOffset(),
                         Optional.ofNullable(f.location()).map(v -> () -> v),
                         f::storeUnit
-                ));
+                )).firstElement();
     }
 
     @Override
-    public Observable<List<LocationForSelection>> getLocations() {
-        return locationRepository.getLocationsForSelection();
+    public Maybe<List<LocationForSelection>> getLocations() {
+        return locationRepository.getLocationsForSelection().firstElement();
     }
 
     @Override
-    public Observable<List<ScaledUnitForSelection>> getUnits() {
-        return scaledUnitRepository.getScaledUnitsForSelection();
+    public Maybe<List<ScaledUnitForSelection>> getUnits() {
+        return scaledUnitRepository.getScaledUnitsForSelection().firstElement();
     }
 
     @Override

@@ -29,6 +29,7 @@ import androidx.paging.PagingConfig;
 import androidx.paging.PagingData;
 import androidx.paging.PagingLiveData;
 import de.njsm.stocks.client.business.Localiser;
+import de.njsm.stocks.client.business.Synchroniser;
 import de.njsm.stocks.client.business.entities.Food;
 import de.njsm.stocks.client.business.entities.Id;
 import de.njsm.stocks.client.business.entities.Location;
@@ -49,15 +50,22 @@ public class HistoryViewModel extends ViewModel {
 
     private final EventInteractorFactory factory;
 
+    private final Synchroniser synchroniser;
+
     @Inject
-    HistoryViewModel(Localiser localiser, EventInteractor interactor, EventInteractorFactory factory) {
+    HistoryViewModel(Localiser localiser, EventInteractor interactor, EventInteractorFactory factory, Synchroniser synchroniser) {
         this.localiser = localiser;
         this.interactor = interactor;
         this.factory = factory;
+        this.synchroniser = synchroniser;
     }
 
     public LiveData<PagingData<ActivityEvent>> getActivityFeed() {
         return getPagingDataLiveData(interactor);
+    }
+
+    public void synchronise() {
+        synchroniser.synchronise();
     }
 
     private LiveData<PagingData<ActivityEvent>> getPagingDataLiveData(EventInteractor interactor) {

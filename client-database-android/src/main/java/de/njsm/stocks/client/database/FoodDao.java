@@ -25,6 +25,7 @@ import androidx.room.Dao;
 import androidx.room.Embedded;
 import androidx.room.Query;
 import de.njsm.stocks.client.business.entities.*;
+import io.reactivex.rxjava3.core.Maybe;
 import io.reactivex.rxjava3.core.Observable;
 
 import java.math.BigDecimal;
@@ -57,6 +58,11 @@ abstract class FoodDao {
             "from current_food " +
             "where id = :id")
     abstract Observable<FoodDbEntity> getToEdit(int id);
+
+    @Query("select * " +
+            "from current_food " +
+            "where id = :id")
+    abstract Maybe<FoodDbEntity> getFoodForItemAdding(int id);
 
     class FoodWithLocation {
         @Embedded FoodDbEntity food;

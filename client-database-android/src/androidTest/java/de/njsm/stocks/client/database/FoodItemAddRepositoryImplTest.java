@@ -25,7 +25,6 @@ import de.njsm.stocks.client.business.entities.FoodForItemCreation;
 import de.njsm.stocks.client.business.entities.Id;
 import de.njsm.stocks.client.business.entities.Location;
 import io.reactivex.rxjava3.core.Maybe;
-import io.reactivex.rxjava3.core.Observable;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -54,7 +53,7 @@ public class FoodItemAddRepositoryImplTest extends DbTestCase {
         FoodDbEntity food = standardEntities.foodDbEntity();
         stocksDatabase.synchronisationDao().writeFood(singletonList(food));
 
-        Observable<FoodForItemCreation> actual = uut.getFood(food::id);
+        Maybe<FoodForItemCreation> actual = uut.getFood(food::id);
 
         test(actual).assertValue(v ->
                 v.id() == food.id() &&
@@ -71,7 +70,7 @@ public class FoodItemAddRepositoryImplTest extends DbTestCase {
                 .build();
         stocksDatabase.synchronisationDao().writeFood(singletonList(food));
 
-        Observable<FoodForItemCreation> actual = uut.getFood(food::id);
+        Maybe<FoodForItemCreation> actual = uut.getFood(food::id);
 
         test(actual).assertValue(v ->
                 v.id() == food.id() &&

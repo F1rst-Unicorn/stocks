@@ -24,7 +24,7 @@ package de.njsm.stocks.client.business;
 import de.njsm.stocks.client.business.entities.*;
 import de.njsm.stocks.client.testdata.LocationsForSelection;
 import de.njsm.stocks.client.testdata.ScaledUnitsForSelection;
-import io.reactivex.rxjava3.core.Observable;
+import io.reactivex.rxjava3.core.Maybe;
 
 import javax.inject.Inject;
 import java.time.LocalDate;
@@ -36,8 +36,8 @@ class InMemoryFoodItemAddInteractorImpl implements FoodItemAddInteractor {
     }
 
     @Override
-    public Observable<FoodItemAddData> getFormData(Id<Food> food) {
-        return Observable.just(FoodItemAddData.create(
+    public Maybe<FoodItemAddData> getFormData(Id<Food> food) {
+        return Maybe.just(FoodItemAddData.create(
                 FoodForSelection.create(food.id(), "Banana"),
                 LocalDate.ofEpochDay(5),
                 ListWithSuggestion.create(LocationsForSelection.generate(), 1),

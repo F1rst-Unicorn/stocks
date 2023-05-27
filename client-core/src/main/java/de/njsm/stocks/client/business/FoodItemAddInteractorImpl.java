@@ -24,7 +24,6 @@ package de.njsm.stocks.client.business;
 import de.njsm.stocks.client.business.entities.*;
 import de.njsm.stocks.client.execution.Scheduler;
 import io.reactivex.rxjava3.core.Maybe;
-import io.reactivex.rxjava3.core.Observable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -63,9 +62,9 @@ class FoodItemAddInteractorImpl implements FoodItemAddInteractor {
     }
 
     @Override
-    public Observable<FoodItemAddData> getFormData(Id<Food> id) {
-        Observable<FoodForItemCreation> foodObservable = repository.getFood(id);
-        Observable<Instant> predictedEatBy = foodObservable.flatMapMaybe(food -> {
+    public Maybe<FoodItemAddData> getFormData(Id<Food> id) {
+        Maybe<FoodForItemCreation> foodObservable = repository.getFood(id);
+        Maybe<Instant> predictedEatBy = foodObservable.flatMap(food -> {
             if (food.expirationOffset().equals(Period.ZERO)) {
                 return Maybe.concat(repository.getMaxEatByOfPresentItemsOf(food),
                                 repository.getMaxEatByEverOf(food),
@@ -75,18 +74,19 @@ class FoodItemAddInteractorImpl implements FoodItemAddInteractor {
                 return Maybe.just(clock.get().plus(food.expirationOffset()));
             }
         });
-        Observable<Id<Location>> predictedLocation = foodObservable.flatMapMaybe(food -> food.location().map(Maybe::just)
-                .orElseGet(() -> Maybe.concat(repository.getLocationWithMostItemsOfType(food), Maybe.just(() -> -1))
-                        .firstElement()));
+        Maybe<Id<Location>> predictedLocation = foodObservable.flatMap(food -> food.location().map(Maybe::just)
+                .orElseGet(() -> repository.getLocationWithMostItemsOfType(food)).defaultIfEmpty(() -> -1).toMaybe());
 
-        Observable<List<LocationForSelection>> locations = repository.getLocations();
-        Observable<List<ScaledUnitForSelection>> units = repository.getUnits();
+        Maybe<List<LocationForSelection>> locations = repository.getLocations();
+        Maybe<List<ScaledUnitForSelection>> units = repository.getUnits();
 
-        return Observable.zip(foodObservable, locations, units, predictedEatBy, predictedLocation, (f, l, u, eatBy, location) -> {
-            ListWithSuggestion<LocationForSelection> locationWithSuggestion = ListSearcher.searchFirstSuggested(l, location);
-            ListWithSuggestion<ScaledUnitForSelection> unitWithSuggestion = ListSearcher.findFirstSuggestion(u, f.unit());
-            return FoodItemAddData.create(f.toSelection(), localiser.toLocalDate(eatBy), locationWithSuggestion, unitWithSuggestion);
-        });
+        return Maybe.zip(foodObservable, locations, units, predictedEatBy, predictedLocation, this::fdsa);
+    }
+
+    private FoodItemAddData fdsa(FoodForItemCreation f, List<LocationForSelection> l, List<ScaledUnitForSelection> u, Instant eatBy, Id<Location> location) {
+        ListWithSuggestion<LocationForSelection> locationWithSuggestion = ListSearcher.searchFirstSuggested(l, location);
+        ListWithSuggestion<ScaledUnitForSelection> unitWithSuggestion = ListSearcher.findFirstSuggestion(u, f.unit());
+        return FoodItemAddData.create(f.toSelection(), localiser.toLocalDate(eatBy), locationWithSuggestion, unitWithSuggestion);
     }
 
     @Override

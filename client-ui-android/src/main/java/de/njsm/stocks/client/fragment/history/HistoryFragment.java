@@ -57,6 +57,7 @@ public class HistoryFragment extends BottomToolbarFragment {
         View listRoot = insertContent(inflater, root, R.layout.template_swipe_list);
 
         TemplateSwipeList templateSwipeList = new TemplateSwipeList(listRoot);
+        templateSwipeList.bindSwipeDown(historyViewModel::synchronise);
         templateSwipeList.hideFloatingActionButton();
 
         EventAdapter adapter = new EventAdapter(

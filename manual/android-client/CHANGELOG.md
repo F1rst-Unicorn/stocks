@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+### Fixed
+
+* Adding food items no longer modifies the form still adding more items.
+  ([#81](https://j.njsm.de/git/veenj/stocks/issues/81)).
+
+* Inside a food's activity list swiping down now synchronises.
+
 ## [4.3.0.2]
 
 ### Added
