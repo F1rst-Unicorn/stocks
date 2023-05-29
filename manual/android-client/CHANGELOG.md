@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## [4.4.0.0]
+
 ### Added
 
 * Recipes can now be deleted again
