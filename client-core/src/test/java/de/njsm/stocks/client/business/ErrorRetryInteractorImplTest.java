@@ -116,6 +116,9 @@ public class ErrorRetryInteractorImplTest {
     private UserDeviceAddInteractor userDeviceAddInteractor;
 
     @Mock
+    private EntityDeleter<Recipe> recipeDeleteInteractor;
+
+    @Mock
     private Synchroniser synchroniser;
 
     @Mock
@@ -149,6 +152,7 @@ public class ErrorRetryInteractorImplTest {
                 foodToBuyInteractor,
                 userAddInteractor,
                 userDeviceAddInteractor,
+                recipeDeleteInteractor,
                 synchroniser,
                 scheduler,
                 errorRepository);
@@ -505,6 +509,17 @@ public class ErrorRetryInteractorImplTest {
         uut.retryInBackground(input);
 
         verify(userDeviceAddInteractor).add(userDevice.into());
+        verify(errorRepository).deleteError(input);
+    }
+
+    @Test
+    void recipeDeletingDispatches() {
+        var recipe = RecipeDeleteErrorDetails.create(42, "Pizza");
+        ErrorDescription input = ErrorDescription.create(1, StatusCode.DATABASE_UNREACHABLE, "", "test", recipe);
+
+        uut.retryInBackground(input);
+
+        verify(recipeDeleteInteractor).delete(recipe);
         verify(errorRepository).deleteError(input);
     }
 }

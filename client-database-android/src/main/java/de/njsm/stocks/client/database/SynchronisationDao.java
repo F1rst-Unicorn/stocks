@@ -149,7 +149,7 @@ public abstract class SynchronisationDao {
     }
 
     @Insert(onConflict = REPLACE)
-    abstract void writeRecipes(List<RecipeDbEntity> data);
+    public abstract void writeRecipes(List<RecipeDbEntity> data);
 
     @Query("delete from recipe")
     abstract void deleteRecipes();

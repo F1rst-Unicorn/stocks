@@ -19,22 +19,21 @@
  *
  */
 
-package de.njsm.stocks.client.database;
+package de.njsm.stocks.client.business.entities;
 
-import androidx.room.Dao;
-import androidx.room.Query;
+import com.google.auto.value.AutoValue;
 
-import java.util.List;
+@AutoValue
+public abstract class RecipeDeleteErrorDetails implements Id<Recipe>, ErrorDetails {
 
-@Dao
-abstract class RecipeProductDao {
+    public abstract String name();
 
-    @Query("select * " +
-            "from current_recipe_product")
-    abstract List<RecipeProductDbEntity> getAll();
+    public static RecipeDeleteErrorDetails create(int id, String name) {
+        return new AutoValue_RecipeDeleteErrorDetails(id, name);
+    }
 
-    @Query("select id, version " +
-            "from current_recipe_product " +
-            "where recipe = :recipeId")
-    abstract List<VersionedId> getProductsForDeletionOf(int recipeId);
+    @Override
+    public <I, O> O accept(ErrorDetailsVisitor<I, O> visitor, I input) {
+        return visitor.recipeDeleteErrorDetails(this, input);
+    }
 }

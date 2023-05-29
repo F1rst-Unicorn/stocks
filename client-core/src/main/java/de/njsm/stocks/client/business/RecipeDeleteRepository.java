@@ -19,22 +19,12 @@
  *
  */
 
-package de.njsm.stocks.client.database;
+package de.njsm.stocks.client.business;
 
-import androidx.room.Dao;
-import androidx.room.Query;
+import de.njsm.stocks.client.business.entities.Id;
+import de.njsm.stocks.client.business.entities.Recipe;
+import de.njsm.stocks.client.business.entities.RecipeDeleteData;
 
-import java.util.List;
-
-@Dao
-abstract class RecipeProductDao {
-
-    @Query("select * " +
-            "from current_recipe_product")
-    abstract List<RecipeProductDbEntity> getAll();
-
-    @Query("select id, version " +
-            "from current_recipe_product " +
-            "where recipe = :recipeId")
-    abstract List<VersionedId> getProductsForDeletionOf(int recipeId);
+public interface RecipeDeleteRepository {
+    RecipeDeleteData getData(Id<Recipe> id);
 }

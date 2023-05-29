@@ -439,8 +439,10 @@ public interface FakeBusinessModule {
     @Singleton
     static EventInteractorFactory EventInteractorFactory() {
         var result = mock(EventInteractorFactory.class);
-        when(result.forFood(any())).thenReturn(EventInteractor());
-        when(result.forLocation(any())).thenReturn(EventInteractor());
+        EventInteractor interactor1 = EventInteractor();
+        when(result.forFood(any())).thenReturn(interactor1);
+        EventInteractor interactor2 = EventInteractor();
+        when(result.forLocation(any())).thenReturn(interactor2);
         return result;
     }
 
@@ -484,5 +486,11 @@ public interface FakeBusinessModule {
     @Singleton
     static FoodDetailsInteractor FoodDetailsInteractor() {
         return mock(FoodDetailsInteractor.class);
+    }
+
+    @Provides
+    @Singleton
+    static EntityDeleter<Recipe> RecipeDeleteInteractor() {
+        return mock(EntityDeleter.class);
     }
 }

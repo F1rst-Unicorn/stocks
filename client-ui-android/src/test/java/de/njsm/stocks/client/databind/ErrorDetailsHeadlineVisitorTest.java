@@ -79,5 +79,6 @@ public class ErrorDetailsHeadlineVisitorTest {
         assertEquals(R.string.error_details_food_to_buy, (long) uut.visit(FoodForBuying.create(1, 2, false), null));
         assertEquals(R.string.error_details_user_add, (long) uut.visit(UserAddForm.create("Joanna"), null));
         assertEquals(R.string.error_details_user_device_add, (long) uut.visit(UserDeviceAddErrorDetails.create("Mobile", create(2), "Joanna"), null));
+        assertEquals(R.string.error_details_recipe_delete, (long) uut.visit(RecipeDeleteErrorDetails.create(2, "Pizza"), null));
     }
 }

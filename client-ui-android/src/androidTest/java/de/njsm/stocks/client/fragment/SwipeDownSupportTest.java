@@ -34,6 +34,7 @@ import de.njsm.stocks.client.fragment.emptyfood.EmptyFoodFragment;
 import de.njsm.stocks.client.fragment.errorlist.ErrorListFragment;
 import de.njsm.stocks.client.fragment.foodinlocation.FoodInLocationFragment;
 import de.njsm.stocks.client.fragment.fooditemtabs.FoodItemTabsFragment;
+import de.njsm.stocks.client.fragment.history.HistoryFragment;
 import de.njsm.stocks.client.fragment.locationlist.LocationListFragment;
 import de.njsm.stocks.client.fragment.outline.OutlineFragment;
 import de.njsm.stocks.client.fragment.recipelist.RecipeListFragment;
@@ -68,7 +69,8 @@ public class SwipeDownSupportTest {
             new TestCaseData(UserDeviceListFragment.class, R.id.template_swipe_list_swipe),
             new TestCaseData(RecipeListFragment.class, R.id.template_swipe_list_swipe),
             new TestCaseData(EanNumberListFragment.class, R.id.template_swipe_list_swipe),
-            new TestCaseData(SearchedFoodFragment .class, R.id.template_swipe_list_swipe)
+            new TestCaseData(SearchedFoodFragment .class, R.id.template_swipe_list_swipe),
+            new TestCaseData(HistoryFragment.class, R.id.template_swipe_list_swipe)
     );
 
     private Synchroniser synchroniser;

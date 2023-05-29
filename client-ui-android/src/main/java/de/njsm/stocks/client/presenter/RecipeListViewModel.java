@@ -23,6 +23,7 @@ package de.njsm.stocks.client.presenter;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModel;
+import de.njsm.stocks.client.business.EntityDeleter;
 import de.njsm.stocks.client.business.RecipeListInteractor;
 import de.njsm.stocks.client.business.Synchroniser;
 import de.njsm.stocks.client.business.entities.Id;
@@ -40,10 +41,13 @@ public class RecipeListViewModel extends ViewModel {
 
     private final ObservableListCache<RecipeForListing> data;
 
-    public RecipeListViewModel(RecipeListInteractor interactor, Synchroniser synchroniser, ObservableListCache<RecipeForListing> data) {
+    private final EntityDeleter<Recipe> deleter;
+
+    public RecipeListViewModel(RecipeListInteractor interactor, Synchroniser synchroniser, ObservableListCache<RecipeForListing> data, EntityDeleter<Recipe> deleter) {
         this.interactor = interactor;
         this.synchroniser = synchroniser;
         this.data = data;
+        this.deleter = deleter;
     }
 
     public LiveData<List<RecipeForListing>> get() {
@@ -51,7 +55,7 @@ public class RecipeListViewModel extends ViewModel {
     }
 
     public void delete(int listItemIndex) {
-        throw new UnsupportedOperationException("TODO");
+        data.performOnListItem(listItemIndex, deleter::delete);
     }
 
     public void synchronise() {

@@ -145,4 +145,9 @@ public class ErrorDetailsHeadlineVisitor implements ErrorDetailsVisitor<Void, In
     public Integer userDeviceAddErrorDetails(UserDeviceAddErrorDetails userDeviceAddErrorDetails, Void input) {
         return R.string.error_details_user_device_add;
     }
+
+    @Override
+    public Integer recipeDeleteErrorDetails(RecipeDeleteErrorDetails recipeDeleteErrorDetails, Void input) {
+        return R.string.error_details_recipe_delete;
+    }
 }

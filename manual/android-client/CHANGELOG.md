@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+### Added
+
+* Recipes can now be deleted again
+  ([#68](https://j.njsm.de/git/veenj/stocks/issues/68)).
+
 ### Fixed
 
 * Adding food items no longer modifies the form still adding more items.

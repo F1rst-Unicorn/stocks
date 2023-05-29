@@ -46,7 +46,7 @@ import java.time.LocalDate;
 public class Matchers {
 
     public static Matcher<View> matchesDate(LocalDate date) {
-        return new BoundedMatcher<View, DatePicker>(DatePicker.class) {
+        return new BoundedMatcher<>(DatePicker.class) {
 
             @Override
             public void describeTo(Description description) {
@@ -84,7 +84,7 @@ public class Matchers {
         }
 
         public Matcher<View> atPositionOnView(final int position, final int targetViewId) {
-            return new TypeSafeMatcher<View>() {
+            return new TypeSafeMatcher<>() {
                 Resources resources = null;
                 View childView;
 

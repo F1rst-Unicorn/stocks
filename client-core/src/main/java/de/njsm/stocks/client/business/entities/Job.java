@@ -264,6 +264,13 @@ public abstract class Job {
             public <I, O> O accept(TypeVisitor<I, O> visitor, I input) {
                 return visitor.addUserDevice(this, input);
             }
+        },
+
+        DELETE_RECIPE {
+            @Override
+            public <I, O> O accept(TypeVisitor<I, O> visitor, I input) {
+                return visitor.deleteRecipe(this, input);
+            }
         };
 
         public abstract <I, O> O accept(TypeVisitor<I, O> visitor, I input);
@@ -340,6 +347,8 @@ public abstract class Job {
         O addUser(Type type, I input);
 
         O addUserDevice(Type type, I input);
+
+        O deleteRecipe(Type type, I input);
     }
 
     public interface DefaultTypeVisitor<I, O> extends TypeVisitor<I, O> {
@@ -508,6 +517,11 @@ public abstract class Job {
 
         @Override
         default O addUserDevice(Type type, I input) {
+            return defaultImpl(type, input);
+        }
+
+        @Override
+        default O deleteRecipe(Type type, I input) {
             return defaultImpl(type, input);
         }
     }

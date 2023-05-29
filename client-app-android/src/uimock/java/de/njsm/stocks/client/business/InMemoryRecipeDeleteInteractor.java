@@ -19,22 +19,20 @@
  *
  */
 
-package de.njsm.stocks.client.database;
+package de.njsm.stocks.client.business;
 
-import androidx.room.Dao;
-import androidx.room.Query;
+import de.njsm.stocks.client.business.entities.Id;
+import de.njsm.stocks.client.business.entities.Recipe;
 
-import java.util.List;
+import javax.inject.Inject;
 
-@Dao
-abstract class RecipeProductDao {
+class InMemoryRecipeDeleteInteractor implements EntityDeleter<Recipe> {
 
-    @Query("select * " +
-            "from current_recipe_product")
-    abstract List<RecipeProductDbEntity> getAll();
+    @Inject
+    InMemoryRecipeDeleteInteractor() {
+    }
 
-    @Query("select id, version " +
-            "from current_recipe_product " +
-            "where recipe = :recipeId")
-    abstract List<VersionedId> getProductsForDeletionOf(int recipeId);
+    @Override
+    public void delete(Id<Recipe> entity) {
+    }
 }

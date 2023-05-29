@@ -25,8 +25,10 @@ import android.os.Bundle;
 import androidx.fragment.app.testing.FragmentScenario;
 import androidx.test.platform.app.InstrumentationRegistry;
 import de.njsm.stocks.client.Application;
+import de.njsm.stocks.client.business.EntityDeleter;
 import de.njsm.stocks.client.business.FakeRecipeListInteractor;
 import de.njsm.stocks.client.business.Synchroniser;
+import de.njsm.stocks.client.business.entities.Recipe;
 import de.njsm.stocks.client.business.entities.RecipeForListing;
 import de.njsm.stocks.client.navigation.RecipeListNavigator;
 import de.njsm.stocks.client.testdata.RecipeTestData;
@@ -40,9 +42,11 @@ import java.util.List;
 
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
+import static androidx.test.espresso.action.ViewActions.swipeRight;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
-import static androidx.test.espresso.contrib.RecyclerViewActions.actionOnItemAtPosition;
-import static androidx.test.espresso.matcher.ViewMatchers.*;
+import static androidx.test.espresso.matcher.ViewMatchers.withId;
+import static androidx.test.espresso.matcher.ViewMatchers.withText;
+import static de.njsm.stocks.client.Matchers.equalBy;
 import static de.njsm.stocks.client.Matchers.recyclerView;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.reset;
@@ -55,6 +59,8 @@ public class RecipeListFragmentTest {
     private FakeRecipeListInteractor recipeListInteractor;
 
     private RecipeListNavigator recipeListNavigator;
+
+    private EntityDeleter<Recipe> deleter;
 
     private Synchroniser synchroniser;
 
@@ -111,18 +117,37 @@ public class RecipeListFragmentTest {
         verify(recipeListNavigator).add();
     }
 
+    @Test
+    public void swipingRightDeletes() {
+        int itemIndex = 1;
+        List<RecipeForListing> data = RecipeTestData.generate();
+        assertTrue("The test wants to access element " + itemIndex, data.size() >= itemIndex + 1);
+        RecipeForListing item = data.get(itemIndex);
+        assertTrue("Make sure the list position is mapped to an ID by having different values", item.id() != itemIndex);
+        recipeListInteractor.setData(data);
+
+        onView(recyclerView(R.id.template_swipe_list_list).atPosition(itemIndex)).perform(swipeRight());
+
+        verify(deleter).delete(equalBy(item));
+    }
+
     @Inject
-    public void setRecipeListInteractor(FakeRecipeListInteractor recipeListInteractor) {
+    void setRecipeListInteractor(FakeRecipeListInteractor recipeListInteractor) {
         this.recipeListInteractor = recipeListInteractor;
     }
 
     @Inject
-    public void setSynchroniser(Synchroniser synchroniser) {
+    void setSynchroniser(Synchroniser synchroniser) {
         this.synchroniser = synchroniser;
     }
 
     @Inject
-    public void setRecipeListNavigator(RecipeListNavigator recipeListNavigator) {
+    void setRecipeListNavigator(RecipeListNavigator recipeListNavigator) {
         this.recipeListNavigator = recipeListNavigator;
+    }
+
+    @Inject
+    void setDeleter(EntityDeleter<Recipe> deleter) {
+        this.deleter = deleter;
     }
 }

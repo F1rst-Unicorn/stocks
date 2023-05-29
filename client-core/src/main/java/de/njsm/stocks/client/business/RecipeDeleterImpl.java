@@ -24,43 +24,42 @@ package de.njsm.stocks.client.business;
 import de.njsm.stocks.client.business.entities.*;
 import de.njsm.stocks.client.execution.Scheduler;
 
-abstract class AbstractDeleterImpl<E extends Entity<E>> implements EntityDeleter<E> {
+import javax.inject.Inject;
 
-    final EntityDeleteService<E> deleteService;
+class RecipeDeleterImpl implements EntityDeleter<Recipe> {
 
-    final EntityDeleteRepository<E> entityDeleteRepository;
+    private final RecipeDeleteService service;
 
-    final Synchroniser synchroniser;
+    private final RecipeDeleteRepository repository;
 
-    final ErrorRecorder errorRecorder;
+    private final Synchroniser synchroniser;
 
-    final Scheduler scheduler;
+    private final ErrorRecorder errorRecorder;
 
-    AbstractDeleterImpl(EntityDeleteService<E> deleteService, EntityDeleteRepository<E> entityDeleteRepository, Synchroniser synchroniser, ErrorRecorder errorRecorder, Scheduler scheduler) {
-        this.deleteService = deleteService;
-        this.entityDeleteRepository = entityDeleteRepository;
+    private final Scheduler scheduler;
+
+    @Inject
+    RecipeDeleterImpl(RecipeDeleteService service, RecipeDeleteRepository repository, Synchroniser synchroniser, ErrorRecorder errorRecorder, Scheduler scheduler) {
+        this.service = service;
+        this.repository = repository;
         this.synchroniser = synchroniser;
         this.errorRecorder = errorRecorder;
         this.scheduler = scheduler;
     }
 
     @Override
-    public void delete(Id<E> id) {
-        scheduler.schedule(Job.create(getJobType(), () -> deleteInBackground(id)));
+    public void delete(Id<Recipe> entity) {
+        scheduler.schedule(Job.create(Job.Type.DELETE_RECIPE, () -> deleteInBackground(entity)));
     }
 
-    void deleteInBackground(Id<E> id) {
-        Versionable<E> data = entityDeleteRepository.getEntityForDeletion(id);
+    private void deleteInBackground(Id<Recipe> id) {
+        RecipeDeleteData data = repository.getData(id);
         try {
-            deleteService.delete(data);
+            service.delete(data);
             synchroniser.synchronise();
         } catch (SubsystemException e) {
-            recordError(e, data);
+            errorRecorder.recordRecipeDeleteError(e, id);
             synchroniser.synchroniseAfterError(e);
         }
     }
-
-    abstract Job.Type getJobType();
-
-    abstract void recordError(SubsystemException e, Versionable<E> data);
 }

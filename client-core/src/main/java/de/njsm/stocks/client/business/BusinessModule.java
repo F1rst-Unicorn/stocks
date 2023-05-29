@@ -217,4 +217,7 @@ public interface BusinessModule {
 
     @Binds
     FoodDetailsInteractor FoodDetailsInteractor(FoodDetailsInteractorImpl impl);
+
+    @Binds
+    EntityDeleter<Recipe> RecipeDeleter(RecipeDeleterImpl impl);
 }

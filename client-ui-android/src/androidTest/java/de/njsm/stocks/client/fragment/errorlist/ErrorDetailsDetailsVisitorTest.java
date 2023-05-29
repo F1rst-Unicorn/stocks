@@ -192,4 +192,10 @@ public class ErrorDetailsDetailsVisitorTest {
         var device = UserDeviceAddErrorDetails.create("Mobile", create(2), "Joanna");
         assertEquals(device.name() + " (" + device.ownerName() + ")", uut.visit(device, null));
     }
+
+    @Test
+    public void recipeDeletingShowsName() {
+        var recipe = RecipeDeleteErrorDetails.create(2, "Pizza");
+        assertEquals(recipe.name(), uut.visit(recipe, null));
+    }
 }

@@ -290,4 +290,11 @@ public class ErrorRepositoryImpl implements ErrorRepository, ErrorEntity.ActionV
         var user = errorDao.getUserByValidOrTransactionTime(userDevice.belongsTo());
         return UserDeviceAddErrorDetails.create(userDevice.name(), user::id, user.name());
     }
+
+    @Override
+    public ErrorDetails deleteRecipe(ErrorEntity.Action action, Long id) {
+        var recipeDelete = errorDao.getRecipeDelete(id);
+        var recipe = errorDao.getRecipeByValidOrTransactionTime(recipeDelete.recipe());
+        return RecipeDeleteErrorDetails.create(recipe.id(), recipe.name());
+    }
 }

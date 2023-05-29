@@ -341,6 +341,15 @@ public class ErrorRecorderImpl implements ErrorRecorder {
         errorDao.insert(ErrorEntity.create(ErrorEntity.Action.ADD_USER_DEVICE, dataId, exceptionData.exceptionType(), exceptionData.exceptionId()));
     }
 
+    @Override
+    public void recordRecipeDeleteError(SubsystemException e, Id<Recipe> data) {
+        ExceptionData exceptionData = new ExceptionInserter().visit(e, null);
+        Instant recipeTransactionTime = errorDao.getTransactionTimeOf(EntityType.RECIPE);
+        RecipeDeleteEntity entity = RecipeDeleteEntity.create(PreservedId.create(data.id(), recipeTransactionTime));
+        long dataId = errorDao.insert(entity);
+        errorDao.insert(ErrorEntity.create(ErrorEntity.Action.DELETE_RECIPE, dataId, exceptionData.exceptionType(), exceptionData.exceptionId()));
+    }
+
     @AutoValue
     abstract static class ExceptionData {
 

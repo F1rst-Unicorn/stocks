@@ -553,6 +553,19 @@ public class ErrorRecorderImplTest extends DbTestCase {
         );
     }
 
+    @Test
+    public void recordingErrorDeletingRecipeWorks() {
+        test(IdImpl.create(42),
+                uut::recordRecipeDeleteError,
+                ErrorEntity.Action.DELETE_RECIPE,
+                stocksDatabase.errorDao()::getRecipeDeletes,
+                (expected, actual) -> {
+                    assertEquals(expected.id(), actual.recipe().id());
+                    assertEquals(stocksDatabase.errorDao().getTransactionTimeOf(EntityType.RECIPE), actual.recipe().transactionTime());
+                }
+        );
+    }
+
     private <T, E> void test(T input,
                              BiConsumer<? super SubsystemException, T> recorder,
                              ErrorEntity.Action action,

@@ -19,22 +19,22 @@
  *
  */
 
-package de.njsm.stocks.client.database;
+package de.njsm.stocks.client.business.entities;
 
-import androidx.room.Dao;
-import androidx.room.Query;
+import com.google.auto.value.AutoValue;
 
 import java.util.List;
 
-@Dao
-abstract class RecipeProductDao {
+@AutoValue
+public abstract class RecipeDeleteData {
 
-    @Query("select * " +
-            "from current_recipe_product")
-    abstract List<RecipeProductDbEntity> getAll();
+    public abstract Versionable<Recipe> recipe();
 
-    @Query("select id, version " +
-            "from current_recipe_product " +
-            "where recipe = :recipeId")
-    abstract List<VersionedId> getProductsForDeletionOf(int recipeId);
+    public abstract List<? extends Versionable<RecipeIngredient>> ingredients();
+
+    public abstract List<? extends Versionable<RecipeProduct>> products();
+
+    public static RecipeDeleteData create(Versionable<Recipe> recipe, List<? extends Versionable<RecipeIngredient>> ingredients, List<? extends Versionable<RecipeProduct>> products) {
+        return new AutoValue_RecipeDeleteData(recipe, ingredients, products);
+    }
 }

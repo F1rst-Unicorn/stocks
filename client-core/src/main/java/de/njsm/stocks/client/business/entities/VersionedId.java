@@ -19,22 +19,14 @@
  *
  */
 
-package de.njsm.stocks.client.database;
+package de.njsm.stocks.client.business.entities;
 
-import androidx.room.Dao;
-import androidx.room.Query;
+import com.google.auto.value.AutoValue;
 
-import java.util.List;
+@AutoValue
+public abstract class VersionedId<E extends Entity<E>> implements Versionable<E> {
 
-@Dao
-abstract class RecipeProductDao {
-
-    @Query("select * " +
-            "from current_recipe_product")
-    abstract List<RecipeProductDbEntity> getAll();
-
-    @Query("select id, version " +
-            "from current_recipe_product " +
-            "where recipe = :recipeId")
-    abstract List<VersionedId> getProductsForDeletionOf(int recipeId);
+    public static <E extends Entity<E>> VersionedId<E> create(int id, int version) {
+        return new AutoValue_VersionedId(id, version);
+    }
 }

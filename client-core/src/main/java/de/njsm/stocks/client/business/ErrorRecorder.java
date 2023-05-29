@@ -72,4 +72,6 @@ public interface ErrorRecorder {
     void recordUserAddError(SubsystemException e, UserAddForm form);
 
     void recordUserDeviceAddError(SubsystemException e, UserDeviceAddForm form);
+
+    void recordRecipeDeleteError(SubsystemException e, Id<Recipe> data);
 }

@@ -258,5 +258,10 @@ public class ErrorDetailsFragment extends InjectableFragment {
         public String userDeviceAddErrorDetails(UserDeviceAddErrorDetails userDeviceAddErrorDetails, Void input) {
             return String.format("%s (%s)", userDeviceAddErrorDetails.name(), userDeviceAddErrorDetails.ownerName());
         }
+
+        @Override
+        public String recipeDeleteErrorDetails(RecipeDeleteErrorDetails recipeDeleteErrorDetails, Void input) {
+            return recipeDeleteErrorDetails.name();
+        }
     }
 }

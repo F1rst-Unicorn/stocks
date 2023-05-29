@@ -183,4 +183,7 @@ public interface ServerApi {
     @PUT("/v2/device")
     Call<DataResponse<NewUserDeviceTicket>> addUserDevice(@Query("name") String name,
                                                           @Query("belongsTo") int id);
+
+    @HTTP(method = "DELETE", path = "/v2/recipe", hasBody = true)
+    Call<Response> deleteRecipe(@Body FullRecipeForDeletion recipe);
 }

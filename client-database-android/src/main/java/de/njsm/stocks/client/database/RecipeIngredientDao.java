@@ -31,4 +31,9 @@ abstract class RecipeIngredientDao {
     @Query("select * " +
             "from current_recipe_ingredient")
     abstract List<RecipeIngredientDbEntity> getAll();
+
+    @Query("select id, version " +
+            "from current_recipe_ingredient " +
+            "where recipe = :recipeId")
+    abstract List<VersionedId> getIngredientsForDeletionOf(int recipeId);
 }

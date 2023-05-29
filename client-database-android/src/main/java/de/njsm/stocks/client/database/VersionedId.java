@@ -21,20 +21,7 @@
 
 package de.njsm.stocks.client.database;
 
-import androidx.room.Dao;
-import androidx.room.Query;
-
-import java.util.List;
-
-@Dao
-abstract class RecipeProductDao {
-
-    @Query("select * " +
-            "from current_recipe_product")
-    abstract List<RecipeProductDbEntity> getAll();
-
-    @Query("select id, version " +
-            "from current_recipe_product " +
-            "where recipe = :recipeId")
-    abstract List<VersionedId> getProductsForDeletionOf(int recipeId);
+class VersionedId {
+    int id;
+    int version;
 }

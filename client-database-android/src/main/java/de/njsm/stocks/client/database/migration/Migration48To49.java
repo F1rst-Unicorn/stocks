@@ -19,22 +19,24 @@
  *
  */
 
-package de.njsm.stocks.client.database;
+package de.njsm.stocks.client.database.migration;
 
-import androidx.room.Dao;
-import androidx.room.Query;
+import androidx.annotation.NonNull;
+import androidx.room.migration.Migration;
+import androidx.sqlite.db.SupportSQLiteDatabase;
 
-import java.util.List;
+public class Migration48To49 extends Migration {
 
-@Dao
-abstract class RecipeProductDao {
+    public Migration48To49() {
+        super(48, 49);
+    }
 
-    @Query("select * " +
-            "from current_recipe_product")
-    abstract List<RecipeProductDbEntity> getAll();
-
-    @Query("select id, version " +
-            "from current_recipe_product " +
-            "where recipe = :recipeId")
-    abstract List<VersionedId> getProductsForDeletionOf(int recipeId);
+    @Override
+    public void migrate(@NonNull SupportSQLiteDatabase db) {
+        var ddlPrimitives = new DdlPrimitives(db);
+        ddlPrimitives.createTable("recipe_to_delete", "id",
+                "id INTEGER not null",
+                "recipe_id INTEGER not null",
+                "recipe_transaction_time TEXT not null");
+    }
 }

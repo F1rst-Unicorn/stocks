@@ -812,4 +812,64 @@ public abstract class ErrorDao {
     @Query("delete from user_device_to_add " +
             "where id = :id")
     abstract void deleteUserDeviceToAdd(long id);
+
+    @Insert
+    abstract long insert(RecipeDeleteEntity entity);
+
+    @Query("select * " +
+            "from recipe_to_delete")
+    abstract List<RecipeDeleteEntity> getRecipeDeletes();
+
+    @Query("select * " +
+            "from recipe_to_delete " +
+            "where id = :id")
+    abstract RecipeDeleteEntity getRecipeDelete(long id);
+
+    @Query("select * " +
+            "from current_recipe " +
+            "where id = :id")
+    abstract RecipeDbEntity getCurrentRecipe(int id);
+
+    @Query("select * " +
+            "from recipe " +
+            "where id = :id " +
+            "and transaction_time_end = " + DATABASE_INFINITY_STRING_SQL +
+            "and valid_time_start = (" +
+            "   select max(valid_time_start) " +
+            "   from recipe " +
+            "   where id = :id" +
+            "   and valid_time_start <= " + NOW +
+            "   and transaction_time_end = " + DATABASE_INFINITY_STRING_SQL +
+            ")")
+    abstract RecipeDbEntity getLatestRecipeAsBestKnown(int id);
+
+    @Query("select * " +
+            "from recipe " +
+            "where id = :id " +
+            "and transaction_time_start <= :transactionTime " +
+            "and :transactionTime < transaction_time_end " +
+            "and valid_time_start = (" +
+            "   select max(valid_time_start) " +
+            "   from recipe " +
+            "   where id = :id" +
+            "   and valid_time_start <= " + NOW +
+            "   and transaction_time_start <= :transactionTime " +
+            "   and :transactionTime < transaction_time_end " +
+            ")")
+    abstract RecipeDbEntity getCurrentRecipeAsKnownAt(int id, Instant transactionTime);
+
+    public RecipeDbEntity getRecipeByValidOrTransactionTime(PreservedId id) {
+        RecipeDbEntity recipe = getCurrentRecipe(id.id());
+        if (recipe == null) {
+            recipe = getLatestRecipeAsBestKnown(id.id());
+        }
+        if (recipe == null) {
+            recipe = getCurrentRecipeAsKnownAt(id.id(), id.transactionTime());
+        }
+        return recipe;
+    }
+
+    @Query("delete from recipe_to_delete " +
+            "where id = :id")
+    abstract void deleteRecipeToAdd(long id);
 }

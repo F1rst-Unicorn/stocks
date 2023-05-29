@@ -69,7 +69,8 @@ public interface DatabaseModule {
                         new Migration44To45(),
                         new Migration45To46(),
                         new Migration46To47(),
-                        new Migration47To48()
+                        new Migration47To48(),
+                        new Migration48To49()
                 )
                 .addCallback(new PerformanceTweaker())
                 .build();
@@ -164,6 +165,16 @@ public interface DatabaseModule {
     @Provides
     static PlotDao PlotDao(StocksDatabase database) {
         return database.plotDao();
+    }
+
+    @Provides
+    static RecipeIngredientDao RecipeIngredientDao(StocksDatabase database) {
+        return database.recipeIngredientDao();
+    }
+
+    @Provides
+    static RecipeProductDao RecipeProductDao(StocksDatabase database) {
+        return database.recipeProductDao();
     }
 
     @Binds
@@ -264,4 +275,7 @@ public interface DatabaseModule {
 
     @Binds
     TicketDisplayRepository TicketDisplayRepository(TicketDisplayRepositoryImpl impl);
+
+    @Binds
+    RecipeDeleteRepository RecipeDeleteRepository(RecipeDeleteRepositoryImpl impl);
 }

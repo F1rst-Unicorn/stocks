@@ -22,10 +22,7 @@ package de.njsm.stocks.client.database;
 
 import androidx.room.Dao;
 import androidx.room.Query;
-import de.njsm.stocks.client.business.entities.PresentRecipeFoodForDetailsBaseData;
-import de.njsm.stocks.client.business.entities.RecipeFoodForDetailsBaseData;
-import de.njsm.stocks.client.business.entities.RecipeForDetailsBaseData;
-import de.njsm.stocks.client.business.entities.RecipeForListingBaseData;
+import de.njsm.stocks.client.business.entities.*;
 import io.reactivex.rxjava3.core.Observable;
 
 import java.util.List;
@@ -110,4 +107,9 @@ abstract class RecipeDao {
             "from current_recipe r " +
             "where r.id = :recipeId")
     abstract Observable<RecipeForDetailsBaseData> getRecipe(int recipeId);
+
+    @Query("select r.id, r.version " +
+            "from current_recipe r " +
+            "where r.id = :recipeId")
+    abstract VersionedId getRecipeForDeletion(int recipeId);
 }
