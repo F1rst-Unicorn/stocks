@@ -94,7 +94,7 @@ public class ErrorDetailsFragmentTest {
 
         scenario.onFragment(f -> f.onOptionsItemSelected(menuItem(f.getContext(), R.id.menu_error_details_retry)));
 
-        verify(errorRetryInteractor).retry(description);
+        verify(errorRetryInteractor, timeout(1000)).retry(description);
         verify(errorDetailsNavigator).back();
     }
 
@@ -106,7 +106,7 @@ public class ErrorDetailsFragmentTest {
 
         scenario.onFragment(f -> f.onOptionsItemSelected(menuItem(f.getContext(), R.id.menu_error_details_delete)));
 
-        verify(errorRetryInteractor).delete(description);
+        verify(errorRetryInteractor, timeout(1000)).delete(description);
         verify(errorDetailsNavigator).back();
     }
 
