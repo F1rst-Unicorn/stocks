@@ -297,4 +297,19 @@ public class ErrorRepositoryImpl implements ErrorRepository, ErrorEntity.ActionV
         var recipe = errorDao.getRecipeByValidOrTransactionTime(recipeDelete.recipe());
         return RecipeDeleteErrorDetails.create(recipe.id(), recipe.name());
     }
+
+    @Override
+    public ErrorDetails editRecipe(ErrorEntity.Action action, Long input) {
+        RecipeEditEntity recipe = errorDao.getRecipeEdit(input);
+        var ingredients = errorDao.getRecipeIngredientEdit(recipe.id());
+        var products = errorDao.getRecipeProductEdit(recipe.id());
+        return RecipeEditForm.create(RecipeEditBaseData.create(recipe.recipe().id(), recipe.name(), recipe.instructions(), recipe.duration()),
+                ingredients.stream()
+                        .map(v -> RecipeIngredientEditFormData.create(v.recipeIngredient().id(), v.amount(), -1, IdImpl.create(v.unit().id()), -1, IdImpl.create(v.ingredient().id())))
+                        .collect(toList()),
+                products.stream()
+                        .map(v -> RecipeProductEditFormData.create(v.recipeProduct().id(), v.amount(), -1, IdImpl.create(v.unit().id()), -1, IdImpl.create(v.product().id())))
+                        .collect(toList())
+        );
+    }
 }

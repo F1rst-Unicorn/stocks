@@ -353,4 +353,11 @@ public class ViewModelModule {
     ViewModel FoodDetailsViewModel(FoodDetailsInteractor interactor, ObservableDataCache<FoodDetails> data) {
         return new FoodDetailsViewModel(interactor, data);
     }
+
+    @Provides
+    @IntoMap
+    @ViewModelKey(RecipeEditViewModel.class)
+    ViewModel RecipeEditViewModel(RecipeEditInteractor interactor) {
+        return new RecipeEditViewModel(interactor);
+    }
 }

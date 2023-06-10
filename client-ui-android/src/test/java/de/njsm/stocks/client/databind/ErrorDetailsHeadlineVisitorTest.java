@@ -30,6 +30,7 @@ import java.math.BigDecimal;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.Period;
+import java.util.List;
 
 import static de.njsm.stocks.client.business.entities.IdImpl.create;
 import static java.util.Collections.emptyList;
@@ -80,5 +81,6 @@ public class ErrorDetailsHeadlineVisitorTest {
         assertEquals(R.string.error_details_user_add, (long) uut.visit(UserAddForm.create("Joanna"), null));
         assertEquals(R.string.error_details_user_device_add, (long) uut.visit(UserDeviceAddErrorDetails.create("Mobile", create(2), "Joanna"), null));
         assertEquals(R.string.error_details_recipe_delete, (long) uut.visit(RecipeDeleteErrorDetails.create(2, "Pizza"), null));
+        assertEquals(R.string.error_details_recipe_edit, (long) uut.visit(RecipeEditForm.create(RecipeEditBaseData.create(1, "Pizza", "just bake", Duration.ofMinutes(2)), List.of(), List.of()), null));
     }
 }

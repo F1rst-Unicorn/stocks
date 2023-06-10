@@ -69,6 +69,4 @@ public interface TestUtility {
                 withClassName(is(TextInputEditText.class.getName()))
         )).check(matches(withText(text)));
     }
-
-
 }

@@ -75,6 +75,12 @@ class ErrorClickedNavigator implements ErrorDetailsVisitor.Default<ErrorDescript
     }
 
     @Override
+    public Void recipeEditErrorDetails(RecipeEditForm recipeEditForm, ErrorDescription input) {
+        resolveEditingConflict(input);
+        return null;
+    }
+
+    @Override
     public Void invalidDataVersion(StatusCode statusCode, ErrorDescription input) {
         conflictNavigator.visit(input.errorDetails(), input);
         return null;

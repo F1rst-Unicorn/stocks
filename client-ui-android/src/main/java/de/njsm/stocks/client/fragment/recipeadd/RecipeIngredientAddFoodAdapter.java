@@ -23,19 +23,21 @@ package de.njsm.stocks.client.fragment.recipeadd;
 
 import androidx.annotation.NonNull;
 import de.njsm.stocks.client.business.entities.*;
+import de.njsm.stocks.client.databind.RecipeFoodAdapter;
+import de.njsm.stocks.client.databind.RecipeFoodViewHolder;
 
 import static de.njsm.stocks.client.business.ListSearcher.findFirstBy;
 
-public class RecipeIngredientFoodAdapter extends RecipeFoodAdapter<RecipeIngredientToAdd> {
+public class RecipeIngredientAddFoodAdapter extends RecipeFoodAdapter<RecipeIngredientToAdd> {
 
-    public RecipeIngredientFoodAdapter(RecipeAddData data) {
-        super(data);
+    public RecipeIngredientAddFoodAdapter(RecipeAddData data) {
+        super(data.availableFood(), data.availableUnits());
     }
 
     public void add() {
         list.add(RecipeIngredientToAdd.create(1,
-                data.availableFood().get(0),
-                data.availableUnits().get(0)));
+                foodForSelection.get(0),
+                unitsForSelection.get(0)));
         notifyItemInserted(list.size() - 1);
     }
 
@@ -43,15 +45,15 @@ public class RecipeIngredientFoodAdapter extends RecipeFoodAdapter<RecipeIngredi
     public void onBindViewHolder(@NonNull RecipeFoodViewHolder holder, int position) {
         RecipeIngredientToAdd data = list.get(position);
         holder.setAmount(data.amount());
-        holder.setSelectedFood(findFirstBy(this.data.availableFood(), data.ingredient(), f -> f));
-        holder.setSelectedUnit(findFirstBy(this.data.availableUnits(), data.unit(), u -> u));
+        holder.setSelectedFood(findFirstBy(foodForSelection, data.ingredient(), f -> f));
+        holder.setSelectedUnit(findFirstBy(unitsForSelection, data.unit(), u -> u));
         holder.setCallback(this::onItemEdit);
     }
 
     public void onItemEdit(int position, int amount, int foodPosition, int unitPosition) {
         RecipeIngredientToAdd current = list.get(position);
-        Id<Food> food = data.availableFood().get(foodPosition);
-        Id<ScaledUnit> unit = data.availableUnits().get(unitPosition);
+        Id<Food> food = foodForSelection.get(foodPosition);
+        Id<ScaledUnit> unit = unitsForSelection.get(unitPosition);
         if (amount != current.amount() || food.id() != current.ingredient().id() ||
                 unit.id() != current.unit().id()) {
             RecipeIngredientToAdd newData = RecipeIngredientToAdd.create(amount, food, unit);

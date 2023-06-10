@@ -183,4 +183,12 @@ class DataDeleter implements ErrorEntity.ActionVisitor<Long, Void> {
         errorDao.deleteRecipeToAdd(input);
         return null;
     }
+
+    @Override
+    public Void editRecipe(ErrorEntity.Action action, Long input) {
+        errorDao.deleteRecipeEdit(input);
+        errorDao.deleteRecipeIngredientEdit(input);
+        errorDao.deleteRecipeProductEdit(input);
+        return null;
+    }
 }

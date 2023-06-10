@@ -23,6 +23,7 @@ package de.njsm.stocks.client.database;
 
 import androidx.room.Dao;
 import androidx.room.Query;
+import io.reactivex.rxjava3.core.Maybe;
 
 import java.util.List;
 
@@ -37,4 +38,16 @@ abstract class RecipeProductDao {
             "from current_recipe_product " +
             "where recipe = :recipeId")
     abstract List<VersionedId> getProductsForDeletionOf(int recipeId);
+
+    @Query("select id, version " +
+            "from current_recipe_product " +
+            "where id = :id")
+    abstract VersionedId getProductVersion(int id);
+
+    @Query("select * " +
+            "from current_recipe_product " +
+            "where recipe = :recipeId " +
+            "order by id")
+    abstract Maybe<List<RecipeProductDbEntity>> getProductsOf(int recipeId);
+
 }

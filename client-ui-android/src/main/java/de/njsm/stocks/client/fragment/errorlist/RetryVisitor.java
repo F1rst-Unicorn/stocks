@@ -71,6 +71,11 @@ class RetryVisitor implements ErrorDetailsVisitor.Default<ErrorDescription, Void
     }
 
     @Override
+    public Void recipeEditErrorDetails(RecipeEditForm recipeEditForm, ErrorDescription input) {
+        return visit(input.statusCode(), input);
+    }
+
+    @Override
     public Void defaultImpl(ErrorDetails errorDetails, ErrorDescription input) {
         retryDirectlyCallback.accept(input);
         return null;

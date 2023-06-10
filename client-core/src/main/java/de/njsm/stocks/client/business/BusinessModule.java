@@ -220,4 +220,7 @@ public interface BusinessModule {
 
     @Binds
     EntityDeleter<Recipe> RecipeDeleter(RecipeDeleterImpl impl);
+
+    @Binds
+    RecipeEditInteractor RecipeEditInteractor(RecipeEditInteractorImpl impl);
 }

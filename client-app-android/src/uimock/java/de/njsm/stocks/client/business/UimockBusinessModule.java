@@ -239,4 +239,7 @@ public interface UimockBusinessModule {
 
     @Binds
     EntityDeleter<Recipe> RecipeDeleteInteractor(InMemoryRecipeDeleteInteractor impl);
+
+    @Binds
+    RecipeEditInteractor RecipeEditInteractor(InMemoryRecipeEditInteractorImpl impl);
 }

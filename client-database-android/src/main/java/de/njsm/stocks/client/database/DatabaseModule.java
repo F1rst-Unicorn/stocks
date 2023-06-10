@@ -70,7 +70,8 @@ public interface DatabaseModule {
                         new Migration45To46(),
                         new Migration46To47(),
                         new Migration47To48(),
-                        new Migration48To49()
+                        new Migration48To49(),
+                        new Migration49To50()
                 )
                 .addCallback(new PerformanceTweaker())
                 .build();
@@ -278,4 +279,7 @@ public interface DatabaseModule {
 
     @Binds
     RecipeDeleteRepository RecipeDeleteRepository(RecipeDeleteRepositoryImpl impl);
+
+    @Binds
+    RecipeEditRepository RecipeEditRepository(RecipeEditRepositoryImpl impl);
 }

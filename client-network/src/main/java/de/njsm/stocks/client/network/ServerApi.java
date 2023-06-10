@@ -186,4 +186,7 @@ public interface ServerApi {
 
     @HTTP(method = "DELETE", path = "/v2/recipe", hasBody = true)
     Call<Response> deleteRecipe(@Body FullRecipeForDeletion recipe);
+
+    @PUT("/v2/recipe/edit")
+    Call<Response> editRecipe(@Body FullRecipeForEditing recipe);
 }

@@ -150,4 +150,9 @@ public class ErrorDetailsHeadlineVisitor implements ErrorDetailsVisitor<Void, In
     public Integer recipeDeleteErrorDetails(RecipeDeleteErrorDetails recipeDeleteErrorDetails, Void input) {
         return R.string.error_details_recipe_delete;
     }
+
+    @Override
+    public Integer recipeEditErrorDetails(RecipeEditForm recipeEditForm, Void input) {
+        return R.string.error_details_recipe_edit;
+    }
 }

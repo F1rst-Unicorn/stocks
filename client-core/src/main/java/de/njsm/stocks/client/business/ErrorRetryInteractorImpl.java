@@ -76,6 +76,8 @@ class ErrorRetryInteractorImpl implements ErrorRetryInteractor, ErrorDetailsVisi
 
     private final EntityDeleter<Recipe> recipeDeleteInteractor;
 
+    private final RecipeEditInteractor recipeEditInteractor;
+
     private final Synchroniser synchroniser;
 
     private final Scheduler scheduler;
@@ -109,6 +111,7 @@ class ErrorRetryInteractorImpl implements ErrorRetryInteractor, ErrorDetailsVisi
                              UserAddInteractor userAddInteractor,
                              UserDeviceAddInteractor userDeviceAddInteractor,
                              EntityDeleter<Recipe> recipeDeleteInteractor,
+                             RecipeEditInteractor recipeEditInteractor,
                              Synchroniser synchroniser,
                              Scheduler scheduler,
                              ErrorRepository errorRepository) {
@@ -136,6 +139,7 @@ class ErrorRetryInteractorImpl implements ErrorRetryInteractor, ErrorDetailsVisi
         this.userAddInteractor = userAddInteractor;
         this.userDeviceAddInteractor = userDeviceAddInteractor;
         this.recipeDeleteInteractor = recipeDeleteInteractor;
+        this.recipeEditInteractor = recipeEditInteractor;
         this.synchroniser = synchroniser;
         this.scheduler = scheduler;
         this.errorRepository = errorRepository;
@@ -346,6 +350,12 @@ class ErrorRetryInteractorImpl implements ErrorRetryInteractor, ErrorDetailsVisi
         return null;
     }
 
+    @Override
+    public Void recipeEditErrorDetails(RecipeEditForm recipeEditForm, Void input) {
+        recipeEditInteractor.edit(recipeEditForm);
+        return null;
+    }
+
     private static final class JobTypeTranslator implements ErrorDetailsVisitor<Void, Job.Type> {
 
         @Override
@@ -471,6 +481,11 @@ class ErrorRetryInteractorImpl implements ErrorRetryInteractor, ErrorDetailsVisi
         @Override
         public Job.Type recipeDeleteErrorDetails(RecipeDeleteErrorDetails recipeDeleteErrorDetails, Void input) {
             return Job.Type.DELETE_RECIPE;
+        }
+
+        @Override
+        public Job.Type recipeEditErrorDetails(RecipeEditForm recipeEditForm, Void input) {
+            return Job.Type.EDIT_RECIPE;
         }
     }
 }

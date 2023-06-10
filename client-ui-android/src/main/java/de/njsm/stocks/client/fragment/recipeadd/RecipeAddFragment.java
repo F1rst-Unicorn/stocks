@@ -28,6 +28,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.ViewModelProvider;
 import de.njsm.stocks.client.business.entities.RecipeAddForm;
+import de.njsm.stocks.client.databind.RecipeForm;
 import de.njsm.stocks.client.fragment.BottomToolbarFragment;
 import de.njsm.stocks.client.navigation.Navigator;
 import de.njsm.stocks.client.presenter.RecipeAddViewModel;
@@ -39,9 +40,9 @@ public class RecipeAddFragment extends BottomToolbarFragment {
 
     private RecipeAddViewModel viewModel;
 
-    private RecipeIngredientFoodAdapter ingredientAdapter;
+    private RecipeIngredientAddFoodAdapter ingredientAdapter;
 
-    private RecipeProductFoodAdapter productAdapter;
+    private RecipeProductFoodAddAdapter productAdapter;
 
     private Navigator navigator;
 
@@ -59,8 +60,8 @@ public class RecipeAddFragment extends BottomToolbarFragment {
             if (data.availableFood().isEmpty() || data.availableUnits().isEmpty())
                 return;
 
-            ingredientAdapter = new RecipeIngredientFoodAdapter(data);
-            productAdapter = new RecipeProductFoodAdapter(data);
+            ingredientAdapter = new RecipeIngredientAddFoodAdapter(data);
+            productAdapter = new RecipeProductFoodAddAdapter(data);
 
             form.setIngredients(ingredientAdapter, ingredientAdapter::delete);
             form.setProducts(productAdapter, productAdapter::delete);

@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+### Added
+
+* Recipes can now be edited again
+  ([#66](https://j.njsm.de/git/veenj/stocks/issues/66)).
+
 ## [4.4.0.0]
 
 ### Added

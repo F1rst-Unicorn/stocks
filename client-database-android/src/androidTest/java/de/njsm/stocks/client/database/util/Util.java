@@ -55,4 +55,8 @@ public class Util {
     public static <T> TestObserver<List<T>> testList(Single<List<T>> input) {
         return test(input.filter(v -> !v.isEmpty()));
     }
+
+    public static <T> TestObserver<List<T>> testList(Maybe<List<T>> input) {
+        return test(input.filter(v -> !v.isEmpty()));
+    }
 }

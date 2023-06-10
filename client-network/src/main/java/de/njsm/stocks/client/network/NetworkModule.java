@@ -129,6 +129,9 @@ public interface NetworkModule {
     @Binds
     RecipeDeleteService RecipeDeleteService(RecipeDeleteServiceImpl impl);
 
+    @Binds
+    RecipeEditService RecipeEditService(RecipeEditServiceImpl impl);
+
     @Provides
     @Singleton
     static ServerApi serverApi(ServerEndpoint serverEndpoint, HostnameInterceptor interceptor) {

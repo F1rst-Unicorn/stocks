@@ -145,14 +145,14 @@ class CallHandler {
         else
             LOG.error("Response was an " + r.code() + " error without body");
 
-        if (r.errorBody() != null)
-            try {
-                LOG.error("Response was an  " + r.code() + " error:\n" +
-                        r.errorBody().string());
-            } catch (IOException e) {
-                LOG.error("Response was an " + r.code() + " error and the body returned an exception");
-            }
-        else
-            LOG.error("Response was an " + r.code() + " error without error body");
+        try (var errorBody = r.errorBody()) {
+            if (errorBody != null && !errorBody.string().isEmpty())
+                LOG.error("Response was an " + r.code() + " error:\n" +
+                        errorBody.string());
+            else
+                LOG.error("Response was an " + r.code() + " error without error body");
+        } catch (IOException e) {
+            LOG.error("Response was an " + r.code() + " error and the body returned an exception");
+        }
     }
 }

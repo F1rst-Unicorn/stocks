@@ -350,6 +350,42 @@ public class ErrorRecorderImpl implements ErrorRecorder {
         errorDao.insert(ErrorEntity.create(ErrorEntity.Action.DELETE_RECIPE, dataId, exceptionData.exceptionType(), exceptionData.exceptionId()));
     }
 
+    @Override
+    public void recordRecipeEditError(SubsystemException e, RecipeEditForm form) {
+        ExceptionData exceptionData = new ExceptionInserter().visit(e, null);
+        Instant recipeTransactionTime = errorDao.getTransactionTimeOf(EntityType.RECIPE);
+        Instant recipeIngredientTransactionTime = errorDao.getTransactionTimeOf(EntityType.RECIPE_INGREDIENT);
+        Instant recipeProductTransactionTime = errorDao.getTransactionTimeOf(EntityType.RECIPE_PRODUCT);
+        Instant foodTransactionTime = errorDao.getTransactionTimeOf(EntityType.FOOD);
+        Instant scaledUnitTransactionTime = errorDao.getTransactionTimeOf(EntityType.UNIT);
+        RecipeEditEntity entity = RecipeEditEntity.create(form.recipe().name(), form.recipe().instructions(), form.recipe().duration(), PreservedId.create(form.recipe().id(), recipeTransactionTime), clock.get());
+        long dataId = errorDao.insert(entity);
+
+        form.ingredients()
+                .stream()
+                .map(v -> RecipeIngredientEditEntity.create(
+                        PreservedId.create(v.id(), recipeIngredientTransactionTime),
+                        v.amount(),
+                        PreservedId.create(v.ingredient().id(), foodTransactionTime),
+                        PreservedId.create(v.unit().id(), scaledUnitTransactionTime),
+                        dataId
+                ))
+                .forEach(errorDao::insert);
+
+        form.products()
+                .stream()
+                .map(v -> RecipeProductEditEntity.create(
+                        PreservedId.create(v.id(), recipeProductTransactionTime),
+                        v.amount(),
+                        PreservedId.create(v.product().id(), foodTransactionTime),
+                        PreservedId.create(v.unit().id(), scaledUnitTransactionTime),
+                        dataId
+                ))
+                .forEach(errorDao::insert);
+
+        errorDao.insert(ErrorEntity.create(ErrorEntity.Action.EDIT_RECIPE, dataId, exceptionData.exceptionType(), exceptionData.exceptionId()));
+    }
+
     @AutoValue
     abstract static class ExceptionData {
 

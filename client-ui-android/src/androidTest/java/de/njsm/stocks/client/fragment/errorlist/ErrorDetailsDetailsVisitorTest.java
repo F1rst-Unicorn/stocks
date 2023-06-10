@@ -32,6 +32,7 @@ import java.math.BigDecimal;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.Period;
+import java.util.List;
 import java.util.function.Function;
 
 import static de.njsm.stocks.client.business.entities.IdImpl.create;
@@ -197,5 +198,14 @@ public class ErrorDetailsDetailsVisitorTest {
     public void recipeDeletingShowsName() {
         var recipe = RecipeDeleteErrorDetails.create(2, "Pizza");
         assertEquals(recipe.name(), uut.visit(recipe, null));
+    }
+
+    @Test
+    public void recipeEditingShowsName() {
+        RecipeEditForm recipe = RecipeEditForm.create(
+                RecipeEditBaseData.create(1, "Pizza", "just bake", Duration.ofMinutes(2)),
+                List.of(),
+                List.of());
+        assertEquals(recipe.recipe().name(), uut.visit(recipe, null));
     }
 }

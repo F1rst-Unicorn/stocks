@@ -499,7 +499,10 @@
     </fragment>
     <fragment
             android:id="@+id/nav_fragment_recipe_edit"
-            android:name="androidx.fragment.app.Fragment">
+            android:name="de.njsm.stocks.client.fragment.recipeedit.RecipeEditFragment">
+        <argument
+                android:name="id"
+                app:argType="integer"/>
     </fragment>
     <fragment
             android:id="@+id/nav_fragment_ean_numbers"

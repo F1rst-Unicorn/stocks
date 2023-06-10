@@ -872,4 +872,52 @@ public abstract class ErrorDao {
     @Query("delete from recipe_to_delete " +
             "where id = :id")
     abstract void deleteRecipeToAdd(long id);
+
+    @Query("select * " +
+            "from recipe_to_edit")
+    abstract List<RecipeEditEntity> getRecipeEdits();
+
+    @Insert
+    abstract long insert(RecipeEditEntity recipeEditEntity);
+
+    @Query("select * " +
+            "from recipe_ingredient_to_edit")
+    abstract List<RecipeIngredientEditEntity> getRecipeIngredientEdits();
+
+    @Insert
+    abstract long insert(RecipeIngredientEditEntity recipeEditEntity);
+
+    @Query("select * " +
+            "from recipe_product_to_edit")
+    abstract List<RecipeProductEditEntity> getRecipeProductEdits();
+
+    @Insert
+    abstract long insert(RecipeProductEditEntity recipeEditEntity);
+
+    @Query("delete from recipe_to_edit " +
+            "where id = :recipeToEdit")
+    abstract void deleteRecipeEdit(long recipeToEdit);
+
+    @Query("delete from recipe_ingredient_to_edit " +
+            "where recipe_to_edit = :recipeToEdit")
+    abstract void deleteRecipeIngredientEdit(long recipeToEdit);
+
+    @Query("delete from recipe_product_to_edit " +
+            "where recipe_to_edit = :recipeToEdit")
+    abstract void deleteRecipeProductEdit(long recipeToEdit);
+
+    @Query("select * " +
+            "from recipe_to_edit " +
+            "where id = :id")
+    abstract RecipeEditEntity getRecipeEdit(long id);
+
+    @Query("select * " +
+            "from recipe_ingredient_to_edit " +
+            "where recipe_to_edit = :recipeId")
+    abstract List<RecipeIngredientEditEntity> getRecipeIngredientEdit(long recipeId);
+
+    @Query("select * " +
+            "from recipe_product_to_edit " +
+            "where recipe_to_edit = :recipeId")
+    abstract List<RecipeProductEditEntity> getRecipeProductEdit(long recipeId);
 }

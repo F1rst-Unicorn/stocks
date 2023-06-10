@@ -19,8 +19,20 @@
  *
  */
 
-package de.njsm.stocks.client.fragment.recipeadd;
+package de.njsm.stocks.client.business.entities;
 
-public interface RecipeFoodDataChanged {
-    void update(int position, int amount, int foodPosition, int unitPosition);
+import com.google.auto.value.AutoValue;
+
+@AutoValue
+public abstract class RecipeIngredientEditNetworkData implements Versionable<RecipeIngredient> {
+
+    public abstract int amount();
+
+    public abstract Id<ScaledUnit> unit();
+
+    public abstract Id<Food> ingredient();
+
+    public static RecipeIngredientEditNetworkData create(int id, int version, int amount, Id<ScaledUnit> unit, Id<Food> ingredient) {
+        return new AutoValue_RecipeIngredientEditNetworkData(id, version, amount, unit, ingredient);
+    }
 }

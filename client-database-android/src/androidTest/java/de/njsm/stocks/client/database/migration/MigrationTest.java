@@ -62,4 +62,10 @@ public class MigrationTest {
         try (var __ = helper.createDatabase(TEST_DB, 48)) {}
         try (var __ = helper.runMigrationsAndValidate(TEST_DB, 49, true, new Migration48To49())) {}
     }
+
+    @Test
+    public void migratingTo50Works() throws IOException {
+        try (var __ = helper.createDatabase(TEST_DB, 49)) {}
+        try (var __ = helper.runMigrationsAndValidate(TEST_DB, 50, true, new Migration49To50())) {}
+    }
 }

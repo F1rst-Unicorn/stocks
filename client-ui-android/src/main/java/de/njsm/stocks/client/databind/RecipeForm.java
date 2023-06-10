@@ -19,7 +19,7 @@
  *
  */
 
-package de.njsm.stocks.client.fragment.recipeadd;
+package de.njsm.stocks.client.databind;
 
 import android.graphics.drawable.ColorDrawable;
 import android.view.View;
@@ -38,9 +38,10 @@ import de.njsm.stocks.client.ui.R;
 import java.time.Duration;
 import java.util.function.Function;
 
+import static de.njsm.stocks.client.fragment.view.ViewUtility.setText;
 import static de.njsm.stocks.client.fragment.view.ViewUtility.stringFromForm;
 
-class RecipeForm {
+public class RecipeForm {
 
     private final View form;
 
@@ -122,11 +123,23 @@ class RecipeForm {
         productAdd.setOnClickListener(v -> callback.run());
     }
 
-    public void setIngredients(RecipeIngredientFoodAdapter ingredientAdapter, Consumer<Integer> swipeCallback) {
+    public void setName(String name) {
+        this.name.setEditorContent(name);
+    }
+
+    public void setInstructions(String instructions) {
+        setText(this.instructions, instructions);
+    }
+
+    public void setDuration(Duration duration) {
+        this.duration.setEditorContent(String.valueOf(duration.toMinutes()));
+    }
+
+    public <T extends RecyclerView.ViewHolder> void setIngredients(RecyclerView.Adapter<T> ingredientAdapter, Consumer<Integer> swipeCallback) {
         configureRecyclerView(ingredientAdapter, swipeCallback, ingredientList);
     }
 
-    public void setProducts(RecipeProductFoodAdapter productAdapter, Consumer<Integer> swipeCallback) {
+    public <T extends RecyclerView.ViewHolder> void setProducts(RecyclerView.Adapter<T> productAdapter, Consumer<Integer> swipeCallback) {
         configureRecyclerView(productAdapter, swipeCallback, productList);
     }
 

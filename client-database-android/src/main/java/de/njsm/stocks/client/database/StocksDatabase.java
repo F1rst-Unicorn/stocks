@@ -74,6 +74,9 @@ import java.time.format.DateTimeFormatter;
                 UserDeviceAddEntity.class,
                 TicketEntity.class,
                 RecipeDeleteEntity.class,
+                RecipeEditEntity.class,
+                RecipeIngredientEditEntity.class,
+                RecipeProductEditEntity.class,
         },
         views = {
                 CurrentLocationDbView.class,
@@ -88,7 +91,7 @@ import java.time.format.DateTimeFormatter;
                 CurrentRecipeIngredientDbView.class,
                 CurrentRecipeProductDbView.class,
         },
-        version = 49)
+        version = 50)
 @androidx.room.TypeConverters(TypeConverters.class)
 @RewriteQueriesToDropUnusedColumns
 public abstract class StocksDatabase extends RoomDatabase {

@@ -19,7 +19,7 @@
  *
  */
 
-package de.njsm.stocks.client.fragment.recipeadd;
+package de.njsm.stocks.client.databind;
 
 import android.text.Editable;
 import android.text.TextWatcher;

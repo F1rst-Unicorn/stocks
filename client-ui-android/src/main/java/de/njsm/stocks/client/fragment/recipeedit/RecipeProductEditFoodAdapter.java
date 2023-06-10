@@ -19,42 +19,53 @@
  *
  */
 
-package de.njsm.stocks.client.fragment.recipeadd;
+package de.njsm.stocks.client.fragment.recipeedit;
 
 import androidx.annotation.NonNull;
 import de.njsm.stocks.client.business.entities.*;
+import de.njsm.stocks.client.databind.RecipeFoodAdapter;
+import de.njsm.stocks.client.databind.RecipeFoodViewHolder;
 
-import static de.njsm.stocks.client.business.ListSearcher.findFirst;
+public class RecipeProductEditFoodAdapter extends RecipeFoodAdapter<RecipeProductEditFormData> {
 
-public class RecipeProductFoodAdapter extends RecipeFoodAdapter<RecipeProductToAdd> {
-
-    public RecipeProductFoodAdapter(RecipeAddData data) {
-        super(data);
+    public RecipeProductEditFoodAdapter(RecipeEditFormData data) {
+        super(data.availableFood(), data.availableUnits());
+        list.addAll(data.products());
+        notifyItemRangeInserted(0, list.size());
     }
 
     public void add() {
-        list.add(RecipeProductToAdd.create(1,
-                data.availableFood().get(0),
-                data.availableUnits().get(0)));
+        list.add(RecipeProductEditFormData.create(-1,
+                1,
+                0,
+                unitsForSelection.get(0),
+                0,
+                foodForSelection.get(0)));
         notifyItemInserted(list.size() - 1);
     }
 
     @Override
     public void onBindViewHolder(@NonNull RecipeFoodViewHolder holder, int position) {
-        RecipeProductToAdd data = list.get(position);
+        RecipeProductEditFormData data = list.get(position);
         holder.setAmount(data.amount());
-        holder.setSelectedFood(findFirst(this.data.availableFood(), data.product()));
-        holder.setSelectedUnit(findFirst(this.data.availableUnits(), data.unit()));
+        holder.setSelectedFood(data.productListItemPosition());
+        holder.setSelectedUnit(data.unitListItemPosition());
         holder.setCallback(this::onItemEdit);
     }
 
     public void onItemEdit(int position, int amount, int foodPosition, int unitPosition) {
-        RecipeProductToAdd current = list.get(position);
-        Id<Food> food = data.availableFood().get(foodPosition);
-        Id<ScaledUnit> unit = data.availableUnits().get(unitPosition);
+        RecipeProductEditFormData current = list.get(position);
+        Id<Food> food = foodForSelection.get(foodPosition);
+        Id<ScaledUnit> unit = unitsForSelection.get(unitPosition);
         if (amount != current.amount() || food.id() != current.product().id() ||
                 unit.id() != current.unit().id()) {
-            RecipeProductToAdd newData = RecipeProductToAdd.create(amount, food, unit);
+            RecipeProductEditFormData newData = RecipeProductEditFormData.create(
+                    current.id(),
+                    amount,
+                    unitPosition,
+                    unit,
+                    foodPosition,
+                    food);
             list.set(position, newData);
         }
     }

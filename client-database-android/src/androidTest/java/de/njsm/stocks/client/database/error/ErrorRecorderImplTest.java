@@ -42,6 +42,7 @@ import java.util.Optional;
 import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
 
+import static de.njsm.stocks.client.business.entities.IdImpl.create;
 import static org.junit.Assert.*;
 
 public class ErrorRecorderImplTest extends DbTestCase {
@@ -541,7 +542,7 @@ public class ErrorRecorderImplTest extends DbTestCase {
 
     @Test
     public void recordingErrorAddingUserDeviceWorks() {
-        test(UserDeviceAddForm.create("Mobile", IdImpl.create(42)),
+        test(UserDeviceAddForm.create("Mobile", create(42)),
                 uut::recordUserDeviceAddError,
                 ErrorEntity.Action.ADD_USER_DEVICE,
                 stocksDatabase.errorDao()::getUserDeviceAdds,
@@ -555,7 +556,7 @@ public class ErrorRecorderImplTest extends DbTestCase {
 
     @Test
     public void recordingErrorDeletingRecipeWorks() {
-        test(IdImpl.create(42),
+        test(create(42),
                 uut::recordRecipeDeleteError,
                 ErrorEntity.Action.DELETE_RECIPE,
                 stocksDatabase.errorDao()::getRecipeDeletes,
@@ -593,8 +594,8 @@ public class ErrorRecorderImplTest extends DbTestCase {
     @Test
     public void recordingErrorAddingRecipeWorks() {
         RecipeAddForm input = RecipeAddForm.create("Pizza", "just bake", Duration.ofMinutes(5),
-                List.of(RecipeIngredientToAdd.create(1, IdImpl.create(2), IdImpl.create(3))),
-                List.of(RecipeProductToAdd.create(4, IdImpl.create(5), IdImpl.create(6))));
+                List.of(RecipeIngredientToAdd.create(1, create(2), create(3))),
+                List.of(RecipeProductToAdd.create(4, create(5), create(6))));
 
         StatusCodeException exception = new StatusCodeException(StatusCode.DATABASE_UNREACHABLE);
 
@@ -639,5 +640,60 @@ public class ErrorRecorderImplTest extends DbTestCase {
         assertEquals(1, errors.get(0).dataId());
         assertEquals(ErrorEntity.ExceptionType.STATUSCODE_EXCEPTION, errors.get(0).exceptionType());
         assertEquals(1, errors.get(0).exceptionId());
+    }
+
+    @Test
+    public void recordingErrorEditingRecipeWorks() {
+        RecipeEditForm input = RecipeEditForm.create(
+                RecipeEditBaseData.create(1, "Pizza", "just bake", Duration.ofMinutes(2)),
+                List.of(RecipeIngredientEditFormData.create(
+                        3, 4, -1, create(5), -1, create(6)
+                )),
+                List.of(RecipeProductEditFormData.create(
+                        7, 8, -1, create(9), -1, create(10)
+                )));
+        StatusCodeException exception = new StatusCodeException(StatusCode.DATABASE_UNREACHABLE);
+
+        uut.recordRecipeEditError(exception, input);
+
+        assertEquals(1, stocksDatabase.errorDao().getStatusCodeErrors().size());
+        StatusCodeExceptionEntity exceptionEntity = stocksDatabase.errorDao().getStatusCodeErrors().get(0);
+        assertEquals(exception.getStatusCode(), exceptionEntity.statusCode());
+
+        List<RecipeEditEntity> recipes = stocksDatabase.errorDao().getRecipeEdits();
+        assertEquals(1, recipes.size());
+        RecipeEditEntity actual = recipes.get(0);
+        assertEquals(input.recipe().id(), actual.recipe().id());
+        assertEquals(stocksDatabase.errorDao().getTransactionTimeOf(EntityType.RECIPE), actual.recipe().transactionTime());
+        assertEquals(input.recipe().name(), actual.name());
+        assertEquals(input.recipe().instructions(), actual.instructions());
+        assertEquals(input.recipe().duration(), actual.duration());
+        assertEquals(getNow(), actual.executionTime());
+
+        List<RecipeIngredientEditEntity> ingredients = stocksDatabase.errorDao().getRecipeIngredientEdits();
+        assertEquals(1, ingredients.size());
+        RecipeIngredientEditEntity actualIngredient = ingredients.get(0);
+        RecipeIngredientEditFormData expectedIngredient = input.ingredients().get(0);
+        assertEquals(expectedIngredient.id(), actualIngredient.recipeIngredient().id());
+        assertEquals(stocksDatabase.errorDao().getTransactionTimeOf(EntityType.RECIPE_INGREDIENT), actualIngredient.recipeIngredient().transactionTime());
+        assertEquals(expectedIngredient.amount(), actualIngredient.amount());
+        assertEquals(expectedIngredient.ingredient().id(), actualIngredient.ingredient().id());
+        assertEquals(stocksDatabase.errorDao().getTransactionTimeOf(EntityType.FOOD), actualIngredient.ingredient().transactionTime());
+        assertEquals(expectedIngredient.unit().id(), actualIngredient.unit().id());
+        assertEquals(stocksDatabase.errorDao().getTransactionTimeOf(EntityType.UNIT), actualIngredient.unit().transactionTime());
+        assertEquals(actual.id(), actualIngredient.recipeToEdit());
+
+        List<RecipeProductEditEntity> products = stocksDatabase.errorDao().getRecipeProductEdits();
+        assertEquals(1, products.size());
+        RecipeProductEditEntity actualProduct = products.get(0);
+        RecipeProductEditFormData expectedProduct = input.products().get(0);
+        assertEquals(expectedProduct.id(), actualProduct.recipeProduct().id());
+        assertEquals(stocksDatabase.errorDao().getTransactionTimeOf(EntityType.RECIPE_PRODUCT), actualProduct.recipeProduct().transactionTime());
+        assertEquals(expectedProduct.amount(), actualProduct.amount());
+        assertEquals(expectedProduct.product().id(), actualProduct.product().id());
+        assertEquals(stocksDatabase.errorDao().getTransactionTimeOf(EntityType.FOOD), actualProduct.product().transactionTime());
+        assertEquals(expectedProduct.unit().id(), actualProduct.unit().id());
+        assertEquals(stocksDatabase.errorDao().getTransactionTimeOf(EntityType.UNIT), actualProduct.unit().transactionTime());
+        assertEquals(actual.id(), actualProduct.recipeToEdit());
     }
 }

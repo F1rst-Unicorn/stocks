@@ -23,10 +23,14 @@ package de.njsm.stocks.client.fragment.errorlist;
 
 import de.njsm.stocks.client.business.entities.*;
 import de.njsm.stocks.client.navigation.ErrorListNavigator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 
 class ConflictNavigator implements ErrorDetailsVisitor.Default<ErrorDescription, Void> {
+
+    private static final Logger LOG = LoggerFactory.getLogger(ConflictNavigator.class);
 
     private final ErrorListNavigator errorListNavigator;
 
@@ -68,6 +72,13 @@ class ConflictNavigator implements ErrorDetailsVisitor.Default<ErrorDescription,
     @Override
     public Void foodForBuying(FoodForBuying foodForBuying, ErrorDescription input) {
         errorListNavigator.resolveFoodEditConflict(input.id());
+        return null;
+    }
+
+    @Override
+    public Void recipeEditErrorDetails(RecipeEditForm recipeEditForm, ErrorDescription input) {
+        // https://j.njsm.de/git/veenj/stocks/issues/19
+        LOG.warn("handling recipe edit conflicts is not supported currently");
         return null;
     }
 

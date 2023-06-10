@@ -45,7 +45,7 @@ class RecipeDeleteRepositoryImpl implements RecipeDeleteRepository {
 
     @Override
     public RecipeDeleteData getData(Id<Recipe> id) {
-        var recipeForDeletion = recipeDao.getRecipeForDeletion(id.id());
+        var recipeForDeletion = recipeDao.getRecipeVersion(id.id());
         var ingredients = recipeIngredientDao.getIngredientsForDeletionOf(id.id());
         var products = recipeProductDao.getProductsForDeletionOf(id.id());
         return RecipeDeleteData.create(

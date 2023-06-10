@@ -111,5 +111,10 @@ abstract class RecipeDao {
     @Query("select r.id, r.version " +
             "from current_recipe r " +
             "where r.id = :recipeId")
-    abstract VersionedId getRecipeForDeletion(int recipeId);
+    abstract VersionedId getRecipeVersion(int recipeId);
+
+    @Query("select * " +
+            "from current_recipe " +
+            "where id = :id")
+    abstract Observable<RecipeDbEntity> getRecipeBy(int id);
 }

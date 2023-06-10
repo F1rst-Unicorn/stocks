@@ -19,14 +19,15 @@
  *
  */
 
-package de.njsm.stocks.client.fragment.recipeadd;
+package de.njsm.stocks.client.databind;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-import de.njsm.stocks.client.business.entities.RecipeAddData;
+import de.njsm.stocks.client.business.entities.FoodForSelection;
+import de.njsm.stocks.client.business.entities.ScaledUnitForSelection;
 import de.njsm.stocks.client.ui.R;
 
 import java.util.ArrayList;
@@ -34,12 +35,15 @@ import java.util.List;
 
 public abstract class RecipeFoodAdapter<T> extends RecyclerView.Adapter<RecipeFoodViewHolder> {
 
-    final RecipeAddData data;
+    protected final List<FoodForSelection> foodForSelection;
 
-    final List<T> list;
+    protected final List<ScaledUnitForSelection> unitsForSelection;
 
-    public RecipeFoodAdapter(RecipeAddData data) {
-        this.data = data;
+    protected final List<T> list;
+
+    public RecipeFoodAdapter(List<FoodForSelection> foodForSelection, List<ScaledUnitForSelection> unitsForSelection) {
+        this.foodForSelection = foodForSelection;
+        this.unitsForSelection = unitsForSelection;
         this.list = new ArrayList<>();
     }
 
@@ -48,7 +52,7 @@ public abstract class RecipeFoodAdapter<T> extends RecyclerView.Adapter<RecipeFo
     public RecipeFoodViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.item_recipe_food, parent, false);
-        return new RecipeFoodViewHolder(v, data.availableFood(), data.availableUnits());
+        return new RecipeFoodViewHolder(v, foodForSelection, unitsForSelection);
     }
 
     public void delete(int listItemPosition) {
