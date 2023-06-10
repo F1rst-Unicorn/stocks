@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## [4.5.0.0]
+
 ### Added
 
 * Recipes can now be edited again
