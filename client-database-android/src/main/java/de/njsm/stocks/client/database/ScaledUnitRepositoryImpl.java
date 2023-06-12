@@ -44,7 +44,8 @@ public class ScaledUnitRepositoryImpl implements ScaledUnitRepository {
     public Observable<List<ScaledUnitForListing>> getScaledUnits() {
         return scaledUnitDao.getCurrentScaledUnits()
                 .map(v -> {
-                    v.sort(Comparator.comparing(ScaledUnitWithAbbreviationRecord::scale));
+                    v.sort(Comparator.comparing(ScaledUnitWithAbbreviationRecord::name)
+                            .thenComparing(ScaledUnitWithAbbreviationRecord::scale));
                     return v;
                 })
                 .map(v -> v.stream().map(w ->
@@ -59,10 +60,11 @@ public class ScaledUnitRepositoryImpl implements ScaledUnitRepository {
 
     @Override
     public Observable<List<ScaledUnitForSelection>> getScaledUnitsForSelection() {
-        return scaledUnitDao.getScaledUnitsForSelection()
+        return scaledUnitDao.getCurrentScaledUnits()
                 .distinctUntilChanged()
                 .map(v -> {
-                    v.sort(Comparator.comparing(ScaledUnitWithAbbreviationRecord::scale));
+                    v.sort(Comparator.comparing(ScaledUnitWithAbbreviationRecord::name)
+                            .thenComparing(ScaledUnitWithAbbreviationRecord::scale));
                     return v;
                 })
                 .map(v -> v.stream().map(w ->

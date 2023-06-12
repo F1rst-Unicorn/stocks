@@ -35,7 +35,7 @@ abstract class ScaledUnitDao {
             "from current_scaled_unit")
     abstract List<ScaledUnitDbEntity> getAll();
 
-    @Query("select scaled_unit.id, unit.abbreviation, scaled_unit.scale " +
+    @Query("select scaled_unit.id, unit.abbreviation, scaled_unit.scale, unit.name as name " +
             "from current_scaled_unit scaled_unit " +
             "join current_unit unit on scaled_unit.unit = unit.id " +
             "order by unit.name, scaled_unit.scale")
@@ -55,10 +55,4 @@ abstract class ScaledUnitDao {
             "from current_scaled_unit " +
             "where id = :id")
     abstract ScaledUnitForDeletion getScaledUnitForDeletion(int id);
-
-    @Query("select scaled_unit.id, unit.abbreviation, scaled_unit.scale " +
-            "from current_scaled_unit scaled_unit " +
-            "join current_unit unit on scaled_unit.unit = unit.id " +
-            "order by unit.name, scaled_unit.scale")
-    abstract Observable<List<ScaledUnitWithAbbreviationRecord>> getScaledUnitsForSelection();
 }

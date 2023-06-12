@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+* Units are grouped by unit name before scale again
+  ([#84](https://j.njsm.de/git/veenj/stocks/issues/84)).
+
 ## [4.5.0.0]
 
 ### Added

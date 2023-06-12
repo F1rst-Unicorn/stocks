@@ -34,8 +34,9 @@ abstract class ScaledUnitWithAbbreviationRecord {
 
     abstract String abbreviation();
 
-    public static ScaledUnitWithAbbreviationRecord create(int id, BigDecimal scale, String abbreviation) {
-        return new AutoValue_ScaledUnitWithAbbreviationRecord(id, scale, abbreviation);
-    }
+    abstract String name();
 
+    public static ScaledUnitWithAbbreviationRecord create(int id, BigDecimal scale, String abbreviation, String name) {
+        return new AutoValue_ScaledUnitWithAbbreviationRecord(id, scale, abbreviation, name);
+    }
 }

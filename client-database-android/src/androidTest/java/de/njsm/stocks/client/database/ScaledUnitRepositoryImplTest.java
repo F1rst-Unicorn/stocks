@@ -36,6 +36,7 @@ import java.util.List;
 import static de.njsm.stocks.client.database.util.Util.test;
 import static de.njsm.stocks.client.database.util.Util.testList;
 import static java.util.Collections.singletonList;
+import static java.util.List.of;
 import static org.junit.Assert.assertEquals;
 
 public class ScaledUnitRepositoryImplTest extends DbTestCase {
@@ -61,25 +62,34 @@ public class ScaledUnitRepositoryImplTest extends DbTestCase {
 
     @Test
     public void gettingScaledUnitsSortsByScale() {
-        UnitDbEntity unit = standardEntities.unitDbEntity();
+        UnitDbEntity first = standardEntities.unitDbEntityBuilder()
+                .name("first")
+                .build();
+        UnitDbEntity second = standardEntities.unitDbEntityBuilder()
+                .name("second")
+                .build();
         ScaledUnitDbEntity scaledUnit1 = standardEntities.scaledUnitDbEntityBuilder()
                 .scale(BigDecimal.ONE)
-                .unit(unit.id()).build();
+                .unit(first.id()).build();
         ScaledUnitDbEntity scaledUnit2 = standardEntities.scaledUnitDbEntityBuilder()
                 .scale(new BigDecimal("2"))
-                .unit(unit.id()).build();
+                .unit(first.id()).build();
         ScaledUnitDbEntity scaledUnit3 = standardEntities.scaledUnitDbEntityBuilder()
-                .scale(new BigDecimal("10"))
-                .unit(unit.id()).build();
-        stocksDatabase.synchronisationDao().synchroniseUnits(singletonList(unit));
-        stocksDatabase.synchronisationDao().synchroniseScaledUnits(List.of(scaledUnit1, scaledUnit2, scaledUnit3));
+                .scale(BigDecimal.ONE)
+                .unit(second.id()).build();
+        ScaledUnitDbEntity scaledUnit4 = standardEntities.scaledUnitDbEntityBuilder()
+                .scale(new BigDecimal("2"))
+                .unit(second.id()).build();
+        stocksDatabase.synchronisationDao().synchroniseUnits(of(first, second));
+        stocksDatabase.synchronisationDao().synchroniseScaledUnits(of(scaledUnit1, scaledUnit2, scaledUnit3, scaledUnit4));
 
         Observable<List<ScaledUnitForListing>> actual = uut.getScaledUnits();
 
-        testList(actual).assertValue(List.of(
-                ScaledUnitForListing.create(scaledUnit1.id(), unit.abbreviation(), scaledUnit1.scale()),
-                ScaledUnitForListing.create(scaledUnit2.id(), unit.abbreviation(), scaledUnit2.scale()),
-                ScaledUnitForListing.create(scaledUnit3.id(), unit.abbreviation(), scaledUnit3.scale())
+        testList(actual).assertValue(of(
+                ScaledUnitForListing.create(scaledUnit1.id(), first.abbreviation(), scaledUnit1.scale()),
+                ScaledUnitForListing.create(scaledUnit2.id(), first.abbreviation(), scaledUnit2.scale()),
+                ScaledUnitForListing.create(scaledUnit3.id(), second.abbreviation(), scaledUnit3.scale()),
+                ScaledUnitForListing.create(scaledUnit4.id(), second.abbreviation(), scaledUnit4.scale())
         ));
     }
 
@@ -110,25 +120,34 @@ public class ScaledUnitRepositoryImplTest extends DbTestCase {
 
     @Test
     public void gettingScaledUnitsForSelectionIsSortedByScale() {
-        UnitDbEntity unit = standardEntities.unitDbEntity();
+        UnitDbEntity first = standardEntities.unitDbEntityBuilder()
+                .name("first")
+                .build();
+        UnitDbEntity second = standardEntities.unitDbEntityBuilder()
+                .name("second")
+                .build();
         ScaledUnitDbEntity scaledUnit1 = standardEntities.scaledUnitDbEntityBuilder()
                 .scale(BigDecimal.ONE)
-                .unit(unit.id()).build();
+                .unit(first.id()).build();
         ScaledUnitDbEntity scaledUnit2 = standardEntities.scaledUnitDbEntityBuilder()
                 .scale(new BigDecimal("2"))
-                .unit(unit.id()).build();
+                .unit(first.id()).build();
         ScaledUnitDbEntity scaledUnit3 = standardEntities.scaledUnitDbEntityBuilder()
-                .scale(new BigDecimal("10"))
-                .unit(unit.id()).build();
-        stocksDatabase.synchronisationDao().synchroniseUnits(singletonList(unit));
-        stocksDatabase.synchronisationDao().synchroniseScaledUnits(List.of(scaledUnit1, scaledUnit2, scaledUnit3));
+                .scale(BigDecimal.ONE)
+                .unit(second.id()).build();
+        ScaledUnitDbEntity scaledUnit4 = standardEntities.scaledUnitDbEntityBuilder()
+                .scale(new BigDecimal("2"))
+                .unit(second.id()).build();
+        stocksDatabase.synchronisationDao().synchroniseUnits(of(first, second));
+        stocksDatabase.synchronisationDao().synchroniseScaledUnits(of(scaledUnit1, scaledUnit2, scaledUnit3, scaledUnit4));
 
         Observable<List<ScaledUnitForSelection>> actual = uut.getScaledUnitsForSelection();
 
-        test(actual).assertValue(List.of(
-                ScaledUnitForSelection.create(scaledUnit1.id(), unit.abbreviation(), scaledUnit1.scale()),
-                ScaledUnitForSelection.create(scaledUnit2.id(), unit.abbreviation(), scaledUnit2.scale()),
-                ScaledUnitForSelection.create(scaledUnit3.id(), unit.abbreviation(), scaledUnit3.scale())
+        test(actual).assertValue(of(
+                ScaledUnitForSelection.create(scaledUnit1.id(), first.abbreviation(), scaledUnit1.scale()),
+                ScaledUnitForSelection.create(scaledUnit2.id(), first.abbreviation(), scaledUnit2.scale()),
+                ScaledUnitForSelection.create(scaledUnit3.id(), second.abbreviation(), scaledUnit3.scale()),
+                ScaledUnitForSelection.create(scaledUnit4.id(), second.abbreviation(), scaledUnit4.scale())
         ));
     }
 }
