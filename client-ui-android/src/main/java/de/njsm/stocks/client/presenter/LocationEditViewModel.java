@@ -49,4 +49,9 @@ public class LocationEditViewModel extends ViewModel {
     public void editLocation(LocationToEdit locationToEdit) {
         locationEditInteractor.edit(locationToEdit);
     }
+
+    @Override
+    protected void onCleared() {
+        data.clear();
+    }
 }

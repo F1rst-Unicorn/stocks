@@ -64,4 +64,9 @@ public class FoodItemListViewModel extends ViewModel {
     public void toggleShoppingFlag(Id<Food> foodId) {
         toBuyInteractor.manageFoodToBuy(FoodToToggleBuy.create(foodId.id()));
     }
+
+    @Override
+    protected void onCleared() {
+        data.clear();
+    }
 }

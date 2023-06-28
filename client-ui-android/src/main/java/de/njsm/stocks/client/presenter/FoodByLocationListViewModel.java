@@ -51,4 +51,10 @@ public class FoodByLocationListViewModel extends AbstractFoodListViewModel {
     public LiveData<LocationName> getLocation(Id<Location> location) {
         return locationData.getLiveData(() -> foodByLocationListInteractor.getLocation(location));
     }
+
+    @Override
+    protected void onCleared() {
+        super.onCleared();
+        locationData.clear();
+    }
 }

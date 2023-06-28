@@ -63,4 +63,9 @@ abstract class AbstractFoodListViewModel extends ViewModel {
     public void synchronise() {
         synchroniser.synchronise();
     }
+
+    @Override
+    protected void onCleared() {
+        data.clear();
+    }
 }

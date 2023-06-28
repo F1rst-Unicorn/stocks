@@ -58,4 +58,9 @@ public class ScaledUnitListViewModel extends ViewModel {
     public void resolveScaledUnitId(int listItemIndex, Consumer<Integer> callback) {
         data.performOnListItem(listItemIndex, t -> callback.accept(t.id()));
     }
+
+    @Override
+    protected void onCleared() {
+        data.clear();
+    }
 }

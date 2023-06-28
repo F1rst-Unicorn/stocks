@@ -62,4 +62,9 @@ public class ShoppingListViewModel extends ViewModel {
     public LiveData<List<FoodWithAmountForListing>> getFood() {
         return data.getLiveData(interactor::getFoodToBuy);
     }
+
+    @Override
+    protected void onCleared() {
+        data.clear();
+    }
 }

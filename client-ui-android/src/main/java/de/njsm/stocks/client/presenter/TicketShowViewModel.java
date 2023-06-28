@@ -42,4 +42,9 @@ public class TicketShowViewModel extends ViewModel {
     public LiveData<RegistrationForm> getData(Id<UserDevice> id) {
         return data.getLiveData(() -> interactor.getRegistrationFormFor(id));
     }
+
+    @Override
+    protected void onCleared() {
+        data.clear();
+    }
 }

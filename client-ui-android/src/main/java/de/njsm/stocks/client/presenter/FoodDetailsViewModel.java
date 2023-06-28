@@ -45,4 +45,9 @@ public class FoodDetailsViewModel extends ViewModel {
     public LiveData<FoodDetails> getData(Id<Food> id) {
         return data.getLiveData(() -> interactor.get(id));
     }
+
+    @Override
+    protected void onCleared() {
+        data.clear();
+    }
 }

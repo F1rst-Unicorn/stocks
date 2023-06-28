@@ -64,4 +64,9 @@ public class FoodEanNumberAssignmentViewModel extends ViewModel {
     public void assignEanNumber(Id<Food> foodId, String eanNumber) {
         interactor.assignEanNumber(foodId, EanNumberForLookup.create(eanNumber));
     }
+
+    @Override
+    protected void onCleared() {
+        data.clear();
+    }
 }

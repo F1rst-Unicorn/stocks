@@ -66,4 +66,9 @@ public class UserListViewModel extends ViewModel {
     public void resolveId(int listItemIndex, Consumer<Integer> callback) {
         data.performOnListItem(listItemIndex, v -> callback.accept(v.id()));
     }
+
+    @Override
+    protected void onCleared() {
+        data.clear();
+    }
 }

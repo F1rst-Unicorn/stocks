@@ -67,4 +67,9 @@ public class ErrorListViewModel extends ViewModel {
     public void delete(int listItemPosition) {
         data.performOnListItem(listItemPosition, errorRetryInteractor::delete);
     }
+
+    @Override
+    protected void onCleared() {
+        data.clear();
+    }
 }

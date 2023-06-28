@@ -50,4 +50,9 @@ public class RecipeDetailViewModel extends ViewModel {
     public LiveData<RecipeForDetails> get(Id<Recipe> recipeId) {
         return data.getLiveData(() -> interactor.get(recipeId));
     }
+
+    @Override
+    protected void onCleared() {
+        data.clear();
+    }
 }

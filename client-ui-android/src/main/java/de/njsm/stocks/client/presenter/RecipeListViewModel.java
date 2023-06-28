@@ -65,4 +65,9 @@ public class RecipeListViewModel extends ViewModel {
     public void resolveId(int listItemIndex, Consumer<Id<Recipe>> callback) {
         data.performOnListItem(listItemIndex, callback::accept);
     }
+
+    @Override
+    protected void onCleared() {
+        data.clear();
+    }
 }

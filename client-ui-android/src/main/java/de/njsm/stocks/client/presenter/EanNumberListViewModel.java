@@ -62,4 +62,9 @@ public class EanNumberListViewModel extends ViewModel {
     public void add(Id<Food> food, String eanCode) {
         interactor.add(EanNumberAddForm.create(food, eanCode));
     }
+
+    @Override
+    protected void onCleared() {
+        data.clear();
+    }
 }

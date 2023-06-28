@@ -51,4 +51,9 @@ public class CrashLogListViewModel extends ViewModel {
     public void resolve(int listItemIndex, Consumer<CrashLog> callback) {
         data.performOnListItem(listItemIndex, callback::accept);
     }
+
+    @Override
+    protected void onCleared() {
+        data.clear();
+    }
 }

@@ -48,4 +48,9 @@ public class RecipeAddViewModel extends ViewModel {
     public void add(RecipeAddForm form) {
         interactor.add(form);
     }
+
+    @Override
+    protected void onCleared() {
+        data.clear();
+    }
 }

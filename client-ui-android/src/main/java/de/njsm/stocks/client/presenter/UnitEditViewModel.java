@@ -49,4 +49,9 @@ public class UnitEditViewModel extends ViewModel {
     public void edit(UnitToEdit data) {
         unitEditInteractor.edit(data);
     }
+
+    @Override
+    protected void onCleared() {
+        data.clear();
+    }
 }

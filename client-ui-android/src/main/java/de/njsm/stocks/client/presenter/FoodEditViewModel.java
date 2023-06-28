@@ -50,4 +50,9 @@ public class FoodEditViewModel extends ViewModel {
     public LiveData<FoodEditingFormData> getFormData(Id<Food> id) {
         return data.getLiveData(() -> interactor.getFormData(id));
     }
+
+    @Override
+    protected void onCleared() {
+        data.clear();
+    }
 }

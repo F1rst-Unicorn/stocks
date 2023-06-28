@@ -50,4 +50,9 @@ public class ScaledUnitEditViewModel extends ViewModel {
     public void edit(ScaledUnitToEdit editedScaledUnit) {
         scaledUnitEditInteractor.edit(editedScaledUnit);
     }
+
+    @Override
+    protected void onCleared() {
+        data.clear();
+    }
 }

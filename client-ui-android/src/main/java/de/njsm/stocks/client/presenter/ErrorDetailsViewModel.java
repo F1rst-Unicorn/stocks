@@ -55,4 +55,9 @@ public class ErrorDetailsViewModel extends ViewModel {
     public void delete() {
         data.performOnCurrentData(errorRetryInteractor::delete);
     }
+
+    @Override
+    protected void onCleared() {
+        data.clear();
+    }
 }

@@ -42,4 +42,9 @@ public class SetupViewModel extends ViewModel {
     public LiveData<SetupState> register(RegistrationForm registrationForm) {
         return currentSetupState.getLiveData(() -> setupInteractor.setupWithForm(registrationForm));
     }
+
+    @Override
+    protected void onCleared() {
+        currentSetupState.clear();
+    }
 }

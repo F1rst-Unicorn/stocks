@@ -65,4 +65,9 @@ public class ScaledUnitConflictViewModel extends ViewModel {
                 errorRetryInteractor.retry(errorToRetry);
         });
     }
+
+    @Override
+    protected void onCleared() {
+        data.clear();
+    }
 }
