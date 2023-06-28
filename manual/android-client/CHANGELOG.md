@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+### Fixed
+
+* Improved performance when navigating back and forth between different views a
+  lot ([#85](https://j.njsm.de/git/veenj/stocks/issues/85)).
+
 * Units are grouped by unit name before scale again
   ([#84](https://j.njsm.de/git/veenj/stocks/issues/84)).
 
