@@ -23,7 +23,6 @@ package de.njsm.stocks.client.presenter;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModel;
-import androidx.lifecycle.ViewModelKt;
 import androidx.paging.Pager;
 import androidx.paging.PagingConfig;
 import androidx.paging.PagingData;
@@ -38,27 +37,26 @@ import de.njsm.stocks.client.business.entities.event.ActivityEvent;
 import de.njsm.stocks.client.business.event.EventInteractor;
 import de.njsm.stocks.client.databind.event.EventPagingSource;
 import io.reactivex.rxjava3.core.Maybe;
-import kotlinx.coroutines.CoroutineScope;
 
 import javax.inject.Inject;
-import java.time.LocalDate;
 
 public class OutlineViewModel extends ViewModel {
 
     private final Synchroniser synchroniser;
 
-    private final Localiser localiser;
-
-    private final EventInteractor interactor;
-
     private final EanNumberLookupInteractor lookupInteractor;
+
+    private final LiveData<PagingData<ActivityEvent>> pagingDataLiveData;
 
     @Inject
     OutlineViewModel(Synchroniser synchroniser, Localiser localiser, EventInteractor interactor, EanNumberLookupInteractor lookupInteractor) {
         this.synchroniser = synchroniser;
-        this.localiser = localiser;
-        this.interactor = interactor;
         this.lookupInteractor = lookupInteractor;
+        var eventPagingSource = new EventPagingSource(interactor, localiser);
+        var pager = new Pager<>(
+                new PagingConfig(20),
+                () -> eventPagingSource);
+        pagingDataLiveData = PagingLiveData.cachedIn(PagingLiveData.getLiveData(pager), this);
     }
 
     public void synchronise() {
@@ -66,11 +64,7 @@ public class OutlineViewModel extends ViewModel {
     }
 
     public LiveData<PagingData<ActivityEvent>> getActivityFeed() {
-        CoroutineScope viewModelScope = ViewModelKt.getViewModelScope(this);
-        Pager<LocalDate, ActivityEvent> pager = new Pager<>(
-                new PagingConfig(20),
-                () -> new EventPagingSource(interactor, localiser));
-        return PagingLiveData.cachedIn(PagingLiveData.getLiveData(pager), viewModelScope);
+        return pagingDataLiveData;
     }
 
     public Maybe<Id<Food>> searchFood(String eanNumber) {

@@ -23,7 +23,6 @@ package de.njsm.stocks.client.presenter;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModel;
-import androidx.lifecycle.ViewModelKt;
 import androidx.paging.Pager;
 import androidx.paging.PagingConfig;
 import androidx.paging.PagingData;
@@ -37,14 +36,11 @@ import de.njsm.stocks.client.business.entities.event.ActivityEvent;
 import de.njsm.stocks.client.business.event.EventInteractor;
 import de.njsm.stocks.client.business.event.EventInteractorFactory;
 import de.njsm.stocks.client.databind.event.EventPagingSource;
-import kotlinx.coroutines.CoroutineScope;
 
 import javax.inject.Inject;
 import java.time.LocalDate;
 
 public class HistoryViewModel extends ViewModel {
-
-    private final Localiser localiser;
 
     private final EventInteractor interactor;
 
@@ -52,12 +48,17 @@ public class HistoryViewModel extends ViewModel {
 
     private final Synchroniser synchroniser;
 
+    private final LiveData<PagingData<ActivityEvent>> pagingDataLiveData;
+
     @Inject
     HistoryViewModel(Localiser localiser, EventInteractor interactor, EventInteractorFactory factory, Synchroniser synchroniser) {
-        this.localiser = localiser;
         this.interactor = interactor;
         this.factory = factory;
         this.synchroniser = synchroniser;
+        Pager<LocalDate, ActivityEvent> pager = new Pager<>(
+                new PagingConfig(20),
+                () -> new EventPagingSource(interactor, localiser));
+        pagingDataLiveData =  PagingLiveData.cachedIn(PagingLiveData.getLiveData(pager), this);
     }
 
     public LiveData<PagingData<ActivityEvent>> getActivityFeed() {
@@ -69,11 +70,7 @@ public class HistoryViewModel extends ViewModel {
     }
 
     private LiveData<PagingData<ActivityEvent>> getPagingDataLiveData(EventInteractor interactor) {
-        CoroutineScope viewModelScope = ViewModelKt.getViewModelScope(this);
-        Pager<LocalDate, ActivityEvent> pager = new Pager<>(
-                new PagingConfig(20),
-                () -> new EventPagingSource(interactor, localiser));
-        return PagingLiveData.cachedIn(PagingLiveData.getLiveData(pager), viewModelScope);
+        return pagingDataLiveData;
     }
 
     public LiveData<PagingData<ActivityEvent>> getActivityFeedForLocation(Id<Location> location) {
