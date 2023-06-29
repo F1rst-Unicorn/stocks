@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## [4.5.0.1]
+
 ### Fixed
 
 * Improved performance when navigating back and forth between different views a
