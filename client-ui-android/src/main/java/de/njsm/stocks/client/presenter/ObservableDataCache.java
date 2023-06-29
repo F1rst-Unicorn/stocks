@@ -67,12 +67,15 @@ class ObservableDataCache<T> {
             dataForLaterGetting = BehaviorSubject.create();
             data = supplier.get();
             disposables.add(data.subscribe(dataForLaterGetting::onNext, dataForLaterGetting::onError));
+        } else if (disposables.isEmpty()) {
+            disposables.add(data.subscribe(dataForLaterGetting::onNext, dataForLaterGetting::onError));
         }
-        return data;
+        return dataForLaterGetting;
     }
 
     void clear() {
         disposables.forEach(Disposable::dispose);
+        disposables.clear();
     }
 
     void performOnCurrentData(Consumer<? super T> consumer) {
