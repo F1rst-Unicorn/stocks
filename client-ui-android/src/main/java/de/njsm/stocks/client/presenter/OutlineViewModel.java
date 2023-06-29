@@ -52,10 +52,9 @@ public class OutlineViewModel extends ViewModel {
     OutlineViewModel(Synchroniser synchroniser, Localiser localiser, EventInteractor interactor, EanNumberLookupInteractor lookupInteractor) {
         this.synchroniser = synchroniser;
         this.lookupInteractor = lookupInteractor;
-        var eventPagingSource = new EventPagingSource(interactor, localiser);
         var pager = new Pager<>(
                 new PagingConfig(20),
-                () -> eventPagingSource);
+                () -> new EventPagingSource(interactor, localiser));
         pagingDataLiveData = PagingLiveData.cachedIn(PagingLiveData.getLiveData(pager), this);
     }
 

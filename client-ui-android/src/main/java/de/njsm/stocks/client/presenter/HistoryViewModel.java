@@ -39,47 +39,55 @@ import de.njsm.stocks.client.databind.event.EventPagingSource;
 
 import javax.inject.Inject;
 import java.time.LocalDate;
+import java.util.Map;
+import java.util.TreeMap;
 
 public class HistoryViewModel extends ViewModel {
 
-    private final EventInteractor interactor;
+    private final Localiser localiser;
 
     private final EventInteractorFactory factory;
 
     private final Synchroniser synchroniser;
 
-    private final LiveData<PagingData<ActivityEvent>> pagingDataLiveData;
+    private final LiveData<PagingData<ActivityEvent>> unitHistoryPager;
+
+    private final Map<Integer, LiveData<PagingData<ActivityEvent>>> locationHistoryPagers;
+
+    private final Map<Integer, LiveData<PagingData<ActivityEvent>>> foodHistoryPagers;
 
     @Inject
     HistoryViewModel(Localiser localiser, EventInteractor interactor, EventInteractorFactory factory, Synchroniser synchroniser) {
-        this.interactor = interactor;
+        this.localiser = localiser;
         this.factory = factory;
         this.synchroniser = synchroniser;
-        Pager<LocalDate, ActivityEvent> pager = new Pager<>(
-                new PagingConfig(20),
-                () -> new EventPagingSource(interactor, localiser));
-        pagingDataLiveData =  PagingLiveData.cachedIn(PagingLiveData.getLiveData(pager), this);
+        this.unitHistoryPager = getPageCache(localiser, interactor);
+        this.locationHistoryPagers = new TreeMap<>();
+        this.foodHistoryPagers = new TreeMap<>();
     }
 
     public LiveData<PagingData<ActivityEvent>> getActivityFeed() {
-        return getPagingDataLiveData(interactor);
+        return unitHistoryPager;
     }
 
     public void synchronise() {
         synchroniser.synchronise();
     }
 
-    private LiveData<PagingData<ActivityEvent>> getPagingDataLiveData(EventInteractor interactor) {
-        return pagingDataLiveData;
-    }
-
     public LiveData<PagingData<ActivityEvent>> getActivityFeedForLocation(Id<Location> location) {
         var interactor = factory.forLocation(location);
-        return getPagingDataLiveData(interactor);
+        return locationHistoryPagers.computeIfAbsent(location.id(), k -> getPageCache(localiser, interactor));
     }
 
     public LiveData<PagingData<ActivityEvent>> getActivityFeedForFood(Id<Food> food) {
         var interactor = factory.forFood(food);
-        return getPagingDataLiveData(interactor);
+        return foodHistoryPagers.computeIfAbsent(food.id(), k -> getPageCache(localiser, interactor));
+    }
+
+    private LiveData<PagingData<ActivityEvent>> getPageCache(Localiser localiser, EventInteractor interactor) {
+        Pager<LocalDate, ActivityEvent> pager = new Pager<>(
+                new PagingConfig(20),
+                () -> new EventPagingSource(interactor, localiser));
+        return PagingLiveData.cachedIn(PagingLiveData.getLiveData(pager), this);
     }
 }
