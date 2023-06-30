@@ -19,15 +19,7 @@
  *
  */
 
-package de.njsm.stocks.client.business.entities;
+package de.njsm.stocks.client.business;
 
-import java.util.List;
-
-public interface RecipeItem {
-
-    String foodName();
-
-    UnitAmount neededAmount();
-
-    List<UnitAmount> storedAmounts();
+public interface RecipeCookRepository {
 }

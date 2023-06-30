@@ -19,15 +19,14 @@
  *
  */
 
-package de.njsm.stocks.client.business.entities;
+package de.njsm.stocks.client.business;
 
-import java.util.List;
+import de.njsm.stocks.client.business.entities.IdImpl;
+import de.njsm.stocks.client.business.entities.Recipe;
+import de.njsm.stocks.client.business.entities.RecipeCookingFormData;
+import io.reactivex.rxjava3.core.Observable;
 
-public interface RecipeItem {
-
-    String foodName();
-
-    UnitAmount neededAmount();
-
-    List<UnitAmount> storedAmounts();
+public interface RecipeCookInteractor {
+    Observable<RecipeCookingFormData> getData(IdImpl<Recipe> recipeId);
+    void cook();
 }

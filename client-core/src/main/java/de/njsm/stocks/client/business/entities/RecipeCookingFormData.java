@@ -21,13 +21,17 @@
 
 package de.njsm.stocks.client.business.entities;
 
+import com.google.auto.value.AutoValue;
+
 import java.util.List;
 
-public interface RecipeItem {
+@AutoValue
+public abstract class RecipeCookingFormData {
 
-    String foodName();
+    public abstract String name();
 
-    UnitAmount neededAmount();
+    public abstract List<RecipeCookingFormDataIngredient> ingredients();
 
-    List<UnitAmount> storedAmounts();
+    public abstract List<RecipeCookingFormDataIngredient> products();
+
 }
