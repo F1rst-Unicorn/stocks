@@ -23,12 +23,11 @@ plugins {
 }
 
 android {
-    compileSdkVersion 32
-
+    compileSdk 33
     defaultConfig {
         applicationId "de.njsm.stocks"
         minSdkVersion 24
-        targetSdkVersion 32
+        targetSdkVersion 33
         versionCode 1
         versionName "4.5.0.1"
         multiDexEnabled true
@@ -157,7 +156,7 @@ dependencies {
         exclude group: "org.checkerframework", module: "checker"
     }
     androidTestImplementation "androidx.test:runner:${androidx_test_version}"
-    androidTestImplementation "androidx.test:rules:${androidx_test_version}"
+    androidTestImplementation "androidx.test:rules:${androidx_test_rules_version}"
     androidTestImplementation "androidx.fragment:fragment-testing:${fragment_testing_version}"
     androidTestImplementation "androidx.test.espresso:espresso-intents:${espresso_version}"
     androidTestImplementation project(":client-fakes")
@@ -167,4 +166,9 @@ dependencies {
     androidTestAnnotationProcessor "com.google.dagger:dagger-compiler:${dagger_version}"
 
     coreLibraryDesugaring "com.android.tools:desugar_jdk_libs:${desugar_jdk_version}"
+
+    constraints{
+        implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.8.0'
+        implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.8.0'
+    }
 }

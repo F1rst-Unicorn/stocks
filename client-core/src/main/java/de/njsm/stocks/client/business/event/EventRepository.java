@@ -21,6 +21,7 @@
 
 package de.njsm.stocks.client.business.event;
 
+import de.njsm.stocks.client.business.entities.EntityType;
 import de.njsm.stocks.client.business.entities.Food;
 import de.njsm.stocks.client.business.entities.Id;
 import de.njsm.stocks.client.business.entities.Location;
@@ -33,7 +34,7 @@ import java.util.List;
 
 public interface EventRepository {
 
-    Observable<Instant> getNewEventNotifier();
+    Observable<Instant> getNewEventNotifier(List<EntityType> relevantEntities);
 
     Single<List<LocationEventFeedItem>> getLocationFeed(Instant day);
 
@@ -61,7 +62,7 @@ public interface EventRepository {
 
     Single<List<FoodItemEventFeedItem>> getFoodItemEventsOf(Id<Food> food, Instant day);
 
-    Maybe<Instant> getPreviousDayContainingEvents(Instant day);
+    Maybe<Instant> getPreviousDayContainingEvents(Instant day, List<EntityType> relevantEntities);
 
-    Maybe<Instant> getNextDayContainingEvents(Instant day);
+    Maybe<Instant> getNextDayContainingEvents(Instant day, List<EntityType> relevantEntities);
 }

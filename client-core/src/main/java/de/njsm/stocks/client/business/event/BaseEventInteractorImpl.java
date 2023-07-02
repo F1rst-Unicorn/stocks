@@ -23,6 +23,7 @@ package de.njsm.stocks.client.business.event;
 
 import de.njsm.stocks.client.business.Localiser;
 import de.njsm.stocks.client.business.entities.Entity;
+import de.njsm.stocks.client.business.entities.EntityType;
 import de.njsm.stocks.client.business.entities.Id;
 import de.njsm.stocks.client.business.entities.event.ActivityEvent;
 import de.njsm.stocks.client.execution.Scheduler;
@@ -58,7 +59,7 @@ abstract class BaseEventInteractorImpl implements EventInteractor {
 
     @Override
     public Observable<LocalDateTime> getNewEventNotifier() {
-        return repository.getNewEventNotifier()
+        return repository.getNewEventNotifier(getRelevantEntities())
                 .map(localiser::toLocalDateTime);
     }
 
@@ -84,15 +85,17 @@ abstract class BaseEventInteractorImpl implements EventInteractor {
         return result;
     }
 
+    abstract List<EntityType> getRelevantEntities();
+
     Single<Optional<Instant>> getPreviousDay(LocalDate day) {
-        return repository.getNextDayContainingEvents(localiser.toInstant(day))
+        return repository.getNextDayContainingEvents(localiser.toInstant(day), Arrays.asList(EntityType.values()))
                 .map(Optional::of)
                 .defaultIfEmpty(Optional.empty())
                 .subscribeOn(scheduler.into());
     }
 
     Single<Optional<Instant>> getNextDay(LocalDate day) {
-        return repository.getPreviousDayContainingEvents(localiser.toInstant(day))
+        return repository.getPreviousDayContainingEvents(localiser.toInstant(day), Arrays.asList(EntityType.values()))
                 .map(Optional::of)
                 .defaultIfEmpty(Optional.empty())
                 .subscribeOn(scheduler.into());

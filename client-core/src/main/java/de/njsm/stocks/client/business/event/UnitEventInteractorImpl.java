@@ -22,6 +22,7 @@
 package de.njsm.stocks.client.business.event;
 
 import de.njsm.stocks.client.business.Localiser;
+import de.njsm.stocks.client.business.entities.EntityType;
 import de.njsm.stocks.client.business.entities.event.ActivityEvent;
 import de.njsm.stocks.client.execution.Scheduler;
 import io.reactivex.rxjava3.core.Single;
@@ -40,13 +41,21 @@ public class UnitEventInteractorImpl extends BaseEventInteractorImpl implements 
     }
 
     @Override
+    List<EntityType> getRelevantEntities() {
+        return List.of(
+                EntityType.UNIT,
+                EntityType.SCALED_UNIT
+        );
+    }
+
+    @Override
     public Single<ActivityEventPage> getEventsOf(LocalDate day) {
         Single<List<ActivityEvent>> events = repository.getUnitFeed(localiser.toInstant(day))
                 .map(v -> transformToEvents(v, eventFactory::getUnitEventFrom))
                 .mergeWith(repository.getScaledUnitFeed(localiser.toInstant(day))
                         .map(v -> transformToEvents(v, eventFactory::getScaledUnitEventFrom)))
 
-                .buffer(2) // align with number of merged feeds above
+                .buffer(getRelevantEntities().size())
                 .map(this::sortEvents)
                 .first(emptyList());
 

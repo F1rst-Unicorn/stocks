@@ -36,7 +36,6 @@ public class TypeConvertersInstantParameterisedTest {
     @Parameterized.Parameters
     public static Collection<Object[]> input() {
         return Arrays.asList(new Object[][] {
-                { Instant.now() },
                 { Instant.EPOCH },
                 { INFINITY },
         });

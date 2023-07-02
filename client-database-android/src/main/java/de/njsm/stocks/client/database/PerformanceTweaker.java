@@ -24,13 +24,24 @@ package de.njsm.stocks.client.database;
 import androidx.annotation.NonNull;
 import androidx.room.RoomDatabase.Callback;
 import androidx.sqlite.db.SupportSQLiteDatabase;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class PerformanceTweaker extends Callback {
+
+    private static final Logger LOG = LoggerFactory.getLogger(PerformanceTweaker.class);
 
     @Override
     public void onOpen(@NonNull SupportSQLiteDatabase db) {
         makeCurrentIndicesSelective(db);
+        db.execSQL("drop table if exists sqlite_stat1");
+        db.execSQL("drop table if exists sqlite_stat4");
+        var cursor = db.query("pragma analysis_limit=0");
+        cursor.close();
+        cursor = db.query("pragma wal_checkpoint(full)");
+        cursor.close();
         db.execSQL("analyze");
+        db.execSQL("pragma optimize");
     }
 
     private void makeCurrentIndicesSelective(SupportSQLiteDatabase db) {
@@ -56,6 +67,7 @@ public class PerformanceTweaker extends Callback {
     private static void recreateCurrentIndex(SupportSQLiteDatabase db, String tableName) {
         String sql = getSqlOf(db, tableName + "_current");
         if (!sql.contains("where")) {
+            LOG.info("recreating selective current index");
             db.execSQL("drop index if exists " + tableName + "_current");
             db.execSQL("create index " + tableName + "_current " +
                     "on " + tableName + " (id, valid_time_start, valid_time_end) " +
@@ -66,6 +78,7 @@ public class PerformanceTweaker extends Callback {
     private void recreateFoodToBuyIndex(SupportSQLiteDatabase db) {
         String sql = getSqlOf(db, "food_current_to_buy");
         if (!sql.contains("where to_buy")) {
+            LOG.info("recreating selective food-to-buy index");
             db.execSQL("drop index if exists food_current_to_buy");
             db.execSQL("create index food_current_to_buy " +
                     "on food (id, valid_time_start, valid_time_end, to_buy) " +
@@ -77,6 +90,7 @@ public class PerformanceTweaker extends Callback {
     private void indexFoodItemByType(SupportSQLiteDatabase db) {
         String sql = getSqlOf(db, "food_item_current_by_of_type");
         if (!sql.contains("where")) {
+            LOG.info("recreating selective food-item-by-type index");
             db.execSQL("drop index if exists food_item_current_by_of_type");
             db.execSQL("create index food_item_current_by_of_type " +
                     "on food_item (of_type, valid_time_start, valid_time_end) " +
@@ -87,6 +101,7 @@ public class PerformanceTweaker extends Callback {
     private void indexRecipeIngredientByRecipe(SupportSQLiteDatabase db) {
         String sql = getSqlOf(db, "recipe_ingredient_current_by_recipe");
         if (!sql.contains("where")) {
+            LOG.info("recreating selective recipe-ingredient-by-recipe index");
             db.execSQL("drop index if exists recipe_ingredient_current_by_recipe");
             db.execSQL("create index recipe_ingredient_current_by_recipe " +
                     "on recipe_ingredient (recipe, valid_time_start, valid_time_end) " +
@@ -97,6 +112,7 @@ public class PerformanceTweaker extends Callback {
     private void indexRecipeProductByRecipe(SupportSQLiteDatabase db) {
         String sql = getSqlOf(db, "recipe_product_current_by_recipe");
         if (!sql.contains("where")) {
+            LOG.info("recreating selective recipe-product-by-recipe index");
             db.execSQL("drop index if exists recipe_product_current_by_recipe");
             db.execSQL("create index recipe_product_current_by_recipe " +
                     "on recipe_product (recipe, valid_time_start, valid_time_end) " +

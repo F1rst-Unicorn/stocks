@@ -28,5 +28,5 @@ import dagger.android.ContributesAndroidInjector;
 public interface TestActivityModule {
 
     @ContributesAndroidInjector
-    androidx.fragment.app.testing.FragmentScenario.EmptyFragmentActivity emptyFragmentActivity();
+    androidx.fragment.app.testing.EmptyFragmentActivity emptyFragmentActivity();
 }

@@ -22,6 +22,7 @@
 package de.njsm.stocks.client.business.event;
 
 import de.njsm.stocks.client.business.Localiser;
+import de.njsm.stocks.client.business.entities.EntityType;
 import de.njsm.stocks.client.business.entities.Id;
 import de.njsm.stocks.client.business.entities.Location;
 import de.njsm.stocks.client.business.entities.event.ActivityEvent;
@@ -51,10 +52,18 @@ public class LocationEventInteractorImpl extends BaseEventInteractorImpl impleme
                 .mergeWith(repository.getFoodItemEventsInvolving(location, localiser.toInstant(day))
                         .map(v -> transformToEvents(v, eventFactory::getFoodItemEventFrom)))
 
-                .buffer(2) // align with number of merged feeds above
+                .buffer(getRelevantEntities().size())
                 .map(this::sortEvents)
                 .first(emptyList());
 
         return toEventPage(day, events);
+    }
+
+    @Override
+    List<EntityType> getRelevantEntities() {
+        return List.of(
+                EntityType.LOCATION,
+                EntityType.FOOD_ITEM
+        );
     }
 }

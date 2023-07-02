@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+### Fixed
+
+* Improved performance of the activity feed.
+
+* Upgraded library dependencies.
+
 ## [4.5.0.1]
 
 ### Fixed

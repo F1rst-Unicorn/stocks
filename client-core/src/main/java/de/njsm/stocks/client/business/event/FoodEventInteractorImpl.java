@@ -22,6 +22,7 @@
 package de.njsm.stocks.client.business.event;
 
 import de.njsm.stocks.client.business.Localiser;
+import de.njsm.stocks.client.business.entities.EntityType;
 import de.njsm.stocks.client.business.entities.Food;
 import de.njsm.stocks.client.business.entities.Id;
 import de.njsm.stocks.client.business.entities.event.ActivityEvent;
@@ -53,10 +54,20 @@ public class FoodEventInteractorImpl extends BaseEventInteractorImpl implements 
                 .mergeWith(repository.getEanNumberEventsOf(food, localiser.toInstant(day))
                         .map(v -> transformToEvents(v, eventFactory::getEanNumberEventFrom)))
 
-                .buffer(3) // align with number of merged feeds above
+                .buffer(getRelevantEntities().size())
                 .map(this::sortEvents)
                 .first(emptyList());
 
         return toEventPage(day, events);
+    }
+
+    @Override
+    List<EntityType> getRelevantEntities() {
+        return List.of(
+                EntityType.FOOD,
+                EntityType.FOOD_ITEM,
+                EntityType.EAN_NUMBER
+        );
+
     }
 }

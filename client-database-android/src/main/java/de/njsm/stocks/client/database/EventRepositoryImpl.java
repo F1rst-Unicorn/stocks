@@ -21,6 +21,7 @@
 
 package de.njsm.stocks.client.database;
 
+import de.njsm.stocks.client.business.entities.EntityType;
 import de.njsm.stocks.client.business.entities.Food;
 import de.njsm.stocks.client.business.entities.Id;
 import de.njsm.stocks.client.business.entities.Location;
@@ -124,18 +125,26 @@ class EventRepositoryImpl implements EventRepository {
     }
 
     @Override
-    public Maybe<Instant> getPreviousDayContainingEvents(Instant day) {
-        return eventDao.getPreviousDayContainingEvents(day);
+    public Maybe<Instant> getPreviousDayContainingEvents(Instant day, List<EntityType> relevantEntities) {
+        return new PreviousDayContainingEventsVisitor(
+                eventDao,
+                relevantEntities,
+                day)
+                .getPreviousDayContainingEvents();
     }
 
     @Override
-    public Maybe<Instant> getNextDayContainingEvents(Instant day) {
-        return eventDao.getNextDayContainingEvents(day.plus(1, ChronoUnit.DAYS));
+    public Maybe<Instant> getNextDayContainingEvents(Instant day, List<EntityType> relevantEntities) {
+        return new NextDayContainingEventsVisitor(
+                eventDao,
+                relevantEntities,
+                day.plus(1, ChronoUnit.DAYS))
+                .getNextDayContainingEvents();
     }
 
     @Override
-    public Observable<Instant> getNewEventNotifier() {
-        return eventDao.getLatestUpdateTimestamp()
+    public Observable<Instant> getNewEventNotifier(List<EntityType> relevantEntities) {
+        return eventDao.getLatestUpdateTimestamp(relevantEntities)
                 .distinctUntilChanged()
                 .skip(1);
     }

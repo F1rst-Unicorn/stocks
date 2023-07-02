@@ -22,6 +22,7 @@
 package de.njsm.stocks.client.business.event;
 
 import de.njsm.stocks.client.business.Localiser;
+import de.njsm.stocks.client.business.entities.EntityType;
 import de.njsm.stocks.client.business.entities.event.ActivityEvent;
 import de.njsm.stocks.client.execution.Scheduler;
 import io.reactivex.rxjava3.core.Single;
@@ -37,6 +38,20 @@ public class EventInteractorImpl extends BaseEventInteractorImpl {
     @Inject
     public EventInteractorImpl(EventRepository repository, ActivityEventFactory eventFactory, Localiser localiser, Scheduler scheduler) {
         super(repository, eventFactory, localiser, scheduler);
+    }
+
+    @Override
+    List<EntityType> getRelevantEntities() {
+        return List.of(
+                EntityType.LOCATION,
+                EntityType.UNIT,
+                EntityType.USER,
+                EntityType.USER_DEVICE,
+                EntityType.SCALED_UNIT,
+                EntityType.FOOD,
+                EntityType.FOOD_ITEM,
+                EntityType.EAN_NUMBER
+        );
     }
 
     @Override
@@ -58,7 +73,7 @@ public class EventInteractorImpl extends BaseEventInteractorImpl {
                 .mergeWith(repository.getEanNumberFeed(localiser.toInstant(day))
                         .map(v -> transformToEvents(v, eventFactory::getEanNumberEventFrom)))
 
-                .buffer(8) // align with number of merged feeds above
+                .buffer(getRelevantEntities().size())
                 .map(this::sortEvents)
                 .first(emptyList());
 

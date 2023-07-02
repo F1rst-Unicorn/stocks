@@ -40,6 +40,7 @@ public class SetupViewModel extends ViewModel {
     }
 
     public LiveData<SetupState> register(RegistrationForm registrationForm) {
+        currentSetupState.clear();
         return currentSetupState.getLiveData(() -> setupInteractor.setupWithForm(registrationForm));
     }
 
