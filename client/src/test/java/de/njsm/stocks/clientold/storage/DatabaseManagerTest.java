@@ -84,7 +84,7 @@ public class DatabaseManagerTest {
 
     @Test
     public void writingUpdatesWorks() throws DatabaseException {
-        Update inputItem = new Update("Location", Instant.now());
+        Update inputItem = new Update("Location", Instant.EPOCH);
         List<Update> input = new LinkedList<>();
         input.add(inputItem);
 
