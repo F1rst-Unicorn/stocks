@@ -304,10 +304,11 @@ abstract class EventDao {
             "where :lower <= main_table.transaction_time_start " +
             "and main_table.transaction_time_start < :upper " +
             "and :locationId in (" +
-                "select stored_in " +
-                "from food_item " +
-                "where transaction_time_start = main_table.transaction_time_start" +
-            ")" +
+                "select item.stored_in " +
+                "from food_item item " +
+                "where item.transaction_time_start = main_table.transaction_time_start " +
+                "and item.id = main_table.id" +
+            ") " +
             "order by main_table.transaction_time_start desc, main_table.valid_time_end")
     abstract Flowable<List<FoodItemEventFeedItem>> getFoodItemEventsInvolving(int locationId, Instant lower, Instant upper);
 
