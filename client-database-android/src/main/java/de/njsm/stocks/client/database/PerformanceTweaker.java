@@ -24,6 +24,7 @@ package de.njsm.stocks.client.database;
 import androidx.annotation.NonNull;
 import androidx.room.RoomDatabase.Callback;
 import androidx.sqlite.db.SupportSQLiteDatabase;
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,12 +35,8 @@ public class PerformanceTweaker extends Callback {
     @Override
     public void onOpen(@NonNull SupportSQLiteDatabase db) {
         makeCurrentIndicesSelective(db);
-        db.execSQL("drop table if exists sqlite_stat1");
-        db.execSQL("drop table if exists sqlite_stat4");
-        var cursor = db.query("pragma analysis_limit=0");
-        cursor.close();
-        cursor = db.query("pragma wal_checkpoint(full)");
-        cursor.close();
+        execSqlAsQuery(db, "pragma analysis_limit=0");
+        execSqlAsQuery(db, "pragma wal_checkpoint(full)");
         db.execSQL("analyze");
         db.execSQL("pragma optimize");
     }
@@ -126,5 +123,10 @@ public class PerformanceTweaker extends Callback {
             cursor.moveToNext();
             return cursor.getString(0);
         }
+    }
+
+    private static void execSqlAsQuery(@NotNull SupportSQLiteDatabase db, String query) {
+        var cursor = db.query(query);
+        cursor.close();
     }
 }

@@ -32,6 +32,7 @@ import java.time.Instant;
                 @Index(value = {"transaction_time_start"}, name = "food_item_transaction_time_start"),
                 @Index(value = {"transaction_time_end"}, name = "food_item_transaction_time_end"),
                 @Index(value = {"of_type", "valid_time_start", "valid_time_end"}, name = "food_item_current_by_of_type"),
+                @Index(value = {"transaction_time_start", "id", "valid_time_end", "eat_by", "of_type", "stored_in", "registers", "buys", "initiates", "unit"}, name = "food_item_event_covering_index"),
         })
 @AutoValue
 public abstract class FoodItemDbEntity extends ServerDbEntity<FoodItemDbEntity> implements FoodItemFields {

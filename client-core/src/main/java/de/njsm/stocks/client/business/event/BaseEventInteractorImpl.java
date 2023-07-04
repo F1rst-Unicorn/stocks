@@ -88,14 +88,14 @@ abstract class BaseEventInteractorImpl implements EventInteractor {
     abstract List<EntityType> getRelevantEntities();
 
     Single<Optional<Instant>> getPreviousDay(LocalDate day) {
-        return repository.getNextDayContainingEvents(localiser.toInstant(day), Arrays.asList(EntityType.values()))
+        return repository.getNextDayContainingEvents(localiser.toInstant(day), getRelevantEntities())
                 .map(Optional::of)
                 .defaultIfEmpty(Optional.empty())
                 .subscribeOn(scheduler.into());
     }
 
     Single<Optional<Instant>> getNextDay(LocalDate day) {
-        return repository.getPreviousDayContainingEvents(localiser.toInstant(day), Arrays.asList(EntityType.values()))
+        return repository.getPreviousDayContainingEvents(localiser.toInstant(day), getRelevantEntities())
                 .map(Optional::of)
                 .defaultIfEmpty(Optional.empty())
                 .subscribeOn(scheduler.into());
