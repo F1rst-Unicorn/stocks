@@ -24,6 +24,7 @@ import de.njsm.stocks.common.api.Identifiable;
 import de.njsm.stocks.common.api.StatusCode;
 import de.njsm.stocks.common.api.Versionable;
 import org.jooq.*;
+import org.jooq.Record;
 import org.jooq.impl.DSL;
 
 import java.time.OffsetDateTime;
