@@ -2,6 +2,14 @@
 
 ## Unreleased
 
+## [4.5.0.3]
+
+### Fixed
+
+* Retrying registration after an initial failed attempt works again.
+
+* Improved performance of the activity feed.
+
 ## [4.5.0.2]
 
 ### Fixed
@@ -9,9 +17,6 @@
 * Improved performance of the activity feed.
 
 * Upgraded library dependencies.
-
-* Retrying registration after an initial failed attempt works again.
-
 ## [4.5.0.1]
 
 ### Fixed
