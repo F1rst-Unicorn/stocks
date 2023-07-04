@@ -62,7 +62,7 @@ public interface EventRepository {
 
     Single<List<FoodItemEventFeedItem>> getFoodItemEventsOf(Id<Food> food, Instant day);
 
-    Maybe<Instant> getPreviousDayContainingEvents(Instant day, List<EntityType> relevantEntities);
+    Maybe<Instant> getPreviousDayContainingEvents(Instant day, List<EntityType> relevantEntities, EventKeyHint hint);
 
-    Maybe<Instant> getNextDayContainingEvents(Instant day, List<EntityType> relevantEntities);
+    Maybe<Instant> getNextDayContainingEvents(Instant day, List<EntityType> relevantEntities, EventKeyHint hint);
 }

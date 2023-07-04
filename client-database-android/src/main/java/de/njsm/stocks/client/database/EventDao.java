@@ -355,6 +355,12 @@ abstract class EventDao {
     abstract Maybe<Instant> getNextDayContainingLocationEvents(Instant day);
 
     @Query("select min(transaction_time_start) " +
+            "from location " +
+            "where transaction_time_start >= :day " +
+            "and id = :location")
+    abstract Maybe<Instant> getNextDayContainingLocationEvents(Instant day, int location);
+
+    @Query("select min(transaction_time_start) " +
             "from unit " +
             "where transaction_time_start >= :day")
     abstract Maybe<Instant> getNextDayContainingUnitEvents(Instant day);
@@ -370,14 +376,38 @@ abstract class EventDao {
     abstract Maybe<Instant> getNextDayContainingFoodEvents(Instant day);
 
     @Query("select min(transaction_time_start) " +
+            "from food " +
+            "where transaction_time_start >= :day " +
+            "and id = :food")
+    abstract Maybe<Instant> getNextDayContainingFoodEvents(Instant day, int food);
+
+    @Query("select min(transaction_time_start) " +
             "from food_item " +
             "where transaction_time_start >= :day")
     abstract Maybe<Instant> getNextDayContainingFoodItemEvents(Instant day);
 
     @Query("select min(transaction_time_start) " +
+            "from food_item " +
+            "where transaction_time_start >= :day " +
+            "and stored_in = :location")
+    abstract Maybe<Instant> getNextDayContainingFoodItemEventsOfLocation(Instant day, int location);
+
+    @Query("select min(transaction_time_start) " +
+            "from food_item " +
+            "where transaction_time_start >= :day " +
+            "and of_type = :food")
+    abstract Maybe<Instant> getNextDayContainingFoodItemEventsOfFood(Instant day, int food);
+
+    @Query("select min(transaction_time_start) " +
             "from ean_number " +
             "where transaction_time_start >= :day")
     abstract Maybe<Instant> getNextDayContainingEanNumberEvents(Instant day);
+
+    @Query("select min(transaction_time_start) " +
+            "from ean_number " +
+            "where transaction_time_start >= :day " +
+            "and identifies = :food")
+    abstract Maybe<Instant> getNextDayContainingEanNumberEvents(Instant day, int food);
 
     @Query("select min(transaction_time_start) " +
             "from recipe " +
@@ -410,6 +440,12 @@ abstract class EventDao {
     abstract Maybe<Instant> getPreviousDayContainingLocationEvents(Instant day);
 
     @Query("select max(transaction_time_start) " +
+            "from location " +
+            "where transaction_time_start < :day " +
+            "and id = :locationId")
+    abstract Maybe<Instant> getPreviousDayContainingLocationEvents(Instant day, int locationId);
+
+    @Query("select max(transaction_time_start) " +
             "from unit " +
             "where transaction_time_start < :day")
     abstract Maybe<Instant> getPreviousDayContainingUnitEvents(Instant day);
@@ -425,14 +461,38 @@ abstract class EventDao {
     abstract Maybe<Instant> getPreviousDayContainingFoodEvents(Instant day);
 
     @Query("select max(transaction_time_start) " +
+            "from food " +
+            "where transaction_time_start < :day " +
+            "and id = :food")
+    abstract Maybe<Instant> getPreviousDayContainingFoodEvents(Instant day, int food);
+
+    @Query("select max(transaction_time_start) " +
             "from food_item " +
             "where transaction_time_start < :day")
     abstract Maybe<Instant> getPreviousDayContainingFoodItemEvents(Instant day);
 
     @Query("select max(transaction_time_start) " +
+            "from food_item " +
+            "where transaction_time_start < :day " +
+            "and stored_in = :location")
+    abstract Maybe<Instant> getPreviousDayContainingFoodItemEventsOfLocation(Instant day, int location);
+
+    @Query("select max(transaction_time_start) " +
+            "from food_item " +
+            "where transaction_time_start < :day " +
+            "and of_type = :food")
+    abstract Maybe<Instant> getPreviousDayContainingFoodItemEventsOfFood(Instant day, int food);
+
+    @Query("select max(transaction_time_start) " +
             "from ean_number " +
             "where transaction_time_start < :day")
     abstract Maybe<Instant> getPreviousDayContainingEanNumberEvents(Instant day);
+
+    @Query("select max(transaction_time_start) " +
+            "from ean_number " +
+            "where transaction_time_start < :day " +
+            "and identifies = :food")
+    abstract Maybe<Instant> getPreviousDayContainingEanNumberEvents(Instant day, int food);
 
     @Query("select max(transaction_time_start) " +
             "from recipe " +

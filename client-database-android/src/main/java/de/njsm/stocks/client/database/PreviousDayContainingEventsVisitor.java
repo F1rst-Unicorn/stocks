@@ -30,11 +30,11 @@ import java.util.List;
 
 class PreviousDayContainingEventsVisitor implements EntityType.Visitor<Void, Maybe<Instant>> {
 
-    private final EventDao eventDao;
+    final EventDao eventDao;
 
     private final List<EntityType> queriedEntities;
 
-    private final Instant day;
+    final Instant day;
 
     PreviousDayContainingEventsVisitor(EventDao eventDao, List<EntityType> queriedEntities, Instant day) {
         this.eventDao = eventDao;

@@ -60,6 +60,11 @@ public class LocationEventInteractorImpl extends BaseEventInteractorImpl impleme
     }
 
     @Override
+    EventKeyHint getHint() {
+        return EventKeyHint.Location.of(location);
+    }
+
+    @Override
     List<EntityType> getRelevantEntities() {
         return List.of(
                 EntityType.LOCATION,

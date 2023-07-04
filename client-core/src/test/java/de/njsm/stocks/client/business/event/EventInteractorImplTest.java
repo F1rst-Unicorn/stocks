@@ -83,8 +83,8 @@ public class EventInteractorImplTest {
         when(repository.getFoodFeed(any())).thenReturn(Single.just(emptyList()));
         when(repository.getFoodItemFeed(any())).thenReturn(Single.just(emptyList()));
         when(repository.getEanNumberFeed(any())).thenReturn(Single.just(emptyList()));
-        when(repository.getPreviousDayContainingEvents(any(), any())).thenReturn(Maybe.empty());
-        when(repository.getNextDayContainingEvents(any(), any())).thenReturn(Maybe.empty());
+        when(repository.getPreviousDayContainingEvents(any(), any(), getHint())).thenReturn(Maybe.empty());
+        when(repository.getNextDayContainingEvents(any(), any(), getHint())).thenReturn(Maybe.empty());
     }
 
     @AfterEach

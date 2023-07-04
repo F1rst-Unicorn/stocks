@@ -41,9 +41,15 @@ class EventRepositoryImpl implements EventRepository {
 
     private final EventDao eventDao;
 
+    private final NextDayVisitorFactory nextDayVisitorFactory;
+
+    private final PreviousDayVisitorFactory previousDayVisitorFactory;
+
     @Inject
     EventRepositoryImpl(EventDao eventDao) {
         this.eventDao = eventDao;
+        nextDayVisitorFactory = new NextDayVisitorFactory();
+        previousDayVisitorFactory = new PreviousDayVisitorFactory();
     }
 
     @Override
@@ -125,20 +131,14 @@ class EventRepositoryImpl implements EventRepository {
     }
 
     @Override
-    public Maybe<Instant> getPreviousDayContainingEvents(Instant day, List<EntityType> relevantEntities) {
-        return new PreviousDayContainingEventsVisitor(
-                eventDao,
-                relevantEntities,
-                day)
+    public Maybe<Instant> getPreviousDayContainingEvents(Instant day, List<EntityType> relevantEntities, EventKeyHint hint) {
+        return previousDayVisitorFactory.visit(hint, new Args(day, relevantEntities))
                 .getPreviousDayContainingEvents();
     }
 
     @Override
-    public Maybe<Instant> getNextDayContainingEvents(Instant day, List<EntityType> relevantEntities) {
-        return new NextDayContainingEventsVisitor(
-                eventDao,
-                relevantEntities,
-                day.plus(1, ChronoUnit.DAYS))
+    public Maybe<Instant> getNextDayContainingEvents(Instant day, List<EntityType> relevantEntities, EventKeyHint hint) {
+        return nextDayVisitorFactory.visit(hint, new Args(day.plus(1, ChronoUnit.DAYS), relevantEntities))
                 .getNextDayContainingEvents();
     }
 
@@ -147,5 +147,48 @@ class EventRepositoryImpl implements EventRepository {
         return eventDao.getLatestUpdateTimestamp(relevantEntities)
                 .distinctUntilChanged()
                 .skip(1);
+    }
+
+    private static class Args {
+        private final Instant day;
+        private final List<EntityType> relevantEntities;
+        Args(Instant day, List<EntityType> relevantEntities) {
+            this.day = day;
+            this.relevantEntities = relevantEntities;
+        }
+    }
+
+    private final class NextDayVisitorFactory implements EventKeyHint.Visitor<Args, NextDayContainingEventsVisitor> {
+        @Override
+        public NextDayContainingEventsVisitor none(EventKeyHint.None none, Args input) {
+            return new NextDayContainingEventsVisitor(eventDao, input.relevantEntities, input.day);
+        }
+
+        @Override
+        public NextDayContainingEventsVisitor location(EventKeyHint.Location location, Args input) {
+            return new NextDayContainingEventsWithLocationVisitor(eventDao, input.relevantEntities, input.day, location.id());
+        }
+
+        @Override
+        public NextDayContainingEventsVisitor food(EventKeyHint.Food food, Args input) {
+            return new NextDayContainingEventsWithFoodVisitor(eventDao, input.relevantEntities, input.day, food.id());
+        }
+    }
+
+    private final class PreviousDayVisitorFactory implements EventKeyHint.Visitor<Args, PreviousDayContainingEventsVisitor> {
+        @Override
+        public PreviousDayContainingEventsVisitor none(EventKeyHint.None none, Args input) {
+            return new PreviousDayContainingEventsVisitor(eventDao, input.relevantEntities, input.day);
+        }
+
+        @Override
+        public PreviousDayContainingEventsVisitor location(EventKeyHint.Location location, Args input) {
+            return new PreviousDayContainingEventsWithLocationVisitor(eventDao, input.relevantEntities, input.day, location.id());
+        }
+
+        @Override
+        public PreviousDayContainingEventsVisitor food(EventKeyHint.Food food, Args input) {
+            return new PreviousDayContainingEventsWithFoodVisitor(eventDao, input.relevantEntities, input.day, food.id());
+        }
     }
 }

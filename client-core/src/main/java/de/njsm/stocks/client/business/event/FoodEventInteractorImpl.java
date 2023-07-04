@@ -62,12 +62,16 @@ public class FoodEventInteractorImpl extends BaseEventInteractorImpl implements 
     }
 
     @Override
+    EventKeyHint getHint() {
+        return EventKeyHint.Food.of(food);
+    }
+
+    @Override
     List<EntityType> getRelevantEntities() {
         return List.of(
                 EntityType.FOOD,
                 EntityType.FOOD_ITEM,
                 EntityType.EAN_NUMBER
         );
-
     }
 }
