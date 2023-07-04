@@ -91,14 +91,14 @@ abstract class BaseEventInteractorImpl implements EventInteractor {
         return new EventKeyHint.None();
     }
 
-    Single<Optional<Instant>> getPreviousDay(LocalDate day) {
+    Single<Optional<Instant>> getNextDay(LocalDate day) {
         return repository.getNextDayContainingEvents(localiser.toInstant(day), getRelevantEntities(), getHint())
                 .map(Optional::of)
                 .defaultIfEmpty(Optional.empty())
                 .subscribeOn(scheduler.into());
     }
 
-    Single<Optional<Instant>> getNextDay(LocalDate day) {
+    Single<Optional<Instant>> getPreviousDay(LocalDate day) {
         return repository.getPreviousDayContainingEvents(localiser.toInstant(day), getRelevantEntities(), getHint())
                 .map(Optional::of)
                 .defaultIfEmpty(Optional.empty())
@@ -108,8 +108,8 @@ abstract class BaseEventInteractorImpl implements EventInteractor {
     Single<ActivityEventPage> toEventPage(LocalDate day, Single<List<ActivityEvent>> events) {
         return Single.zip(
                 events,
-                getNextDay(day),
-                getPreviousDay(day), (e, p, n) ->
+                getPreviousDay(day),
+                getNextDay(day), (e, p, n) ->
                         ActivityEventPage.create(e, p.map(localiser::toLocalDate), n.map(localiser::toLocalDate)));
     }
 }
