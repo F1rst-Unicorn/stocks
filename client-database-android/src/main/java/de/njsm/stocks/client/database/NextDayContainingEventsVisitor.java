@@ -23,6 +23,7 @@ package de.njsm.stocks.client.database;
 
 import com.google.common.collect.Comparators;
 import de.njsm.stocks.client.business.entities.EntityType;
+import io.reactivex.rxjava3.core.Flowable;
 import io.reactivex.rxjava3.core.Maybe;
 
 import java.time.Instant;
@@ -45,7 +46,9 @@ class NextDayContainingEventsVisitor implements EntityType.Visitor<Void, Maybe<I
     Maybe<Instant> getNextDayContainingEvents() {
         return queriedEntities.stream()
                 .map(v -> visit(v, null))
-                .reduce(Maybe.just(Instant.MAX), (a, b) -> Maybe.zip(a, b, Comparators::min));
+                .map(Maybe::toFlowable)
+                .reduce(Flowable.empty(), Flowable::concat)
+                .reduce(Comparators::min);
     }
 
     @Override
