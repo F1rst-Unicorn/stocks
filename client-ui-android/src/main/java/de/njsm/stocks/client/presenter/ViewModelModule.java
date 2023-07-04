@@ -56,8 +56,8 @@ public class ViewModelModule {
     @Provides
     @IntoMap
     @ViewModelKey(SetupViewModel.class)
-    ViewModel setupViewModel(SetupInteractor setupInteractor, ObservableDataCache<SetupState> currentSetupState) {
-        return new SetupViewModel(setupInteractor, currentSetupState);
+    ViewModel setupViewModel(SetupInteractor setupInteractor) {
+        return new SetupViewModel(setupInteractor);
     }
 
     @Provides
