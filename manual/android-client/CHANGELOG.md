@@ -10,6 +10,8 @@
 
 * Upgraded library dependencies.
 
+* Retrying registration after an initial failed attempt works again.
+
 ## [4.5.0.1]
 
 ### Fixed
