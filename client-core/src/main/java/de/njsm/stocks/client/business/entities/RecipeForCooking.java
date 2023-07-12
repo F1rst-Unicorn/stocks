@@ -23,18 +23,14 @@ package de.njsm.stocks.client.business.entities;
 
 import com.google.auto.value.AutoValue;
 
-import java.util.List;
-
 @AutoValue
-public abstract class RecipeCookingFormData {
+public abstract class RecipeForCooking {
+
+    public abstract IdImpl<Recipe> id();
 
     public abstract String name();
 
-    public abstract List<RecipeCookingFormDataIngredient> ingredients();
-
-    public abstract List<RecipeCookingFormDataProduct> products();
-
-    public static RecipeCookingFormData create(String name, List<RecipeCookingFormDataIngredient> ingredients, List<RecipeCookingFormDataProduct> products) {
-        return new AutoValue_RecipeCookingFormData(name, ingredients, products);
+    public static RecipeForCooking create(IdImpl<Recipe> id, String name) {
+        return new AutoValue_RecipeForCooking(id, name);
     }
 }

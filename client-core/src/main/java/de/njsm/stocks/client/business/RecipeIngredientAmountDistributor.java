@@ -22,7 +22,6 @@
 package de.njsm.stocks.client.business;
 
 import com.google.auto.value.AutoValue;
-import de.njsm.stocks.client.business.entities.Id;
 import de.njsm.stocks.client.business.entities.IdImpl;
 import de.njsm.stocks.client.business.entities.ScaledUnit;
 import de.njsm.stocks.client.business.entities.Unit;
@@ -30,14 +29,29 @@ import de.njsm.stocks.client.business.entities.Unit;
 import javax.inject.Inject;
 import java.math.BigDecimal;
 import java.util.*;
+import java.util.stream.Collectors;
 
-import static de.njsm.stocks.client.business.entities.IdImpl.from;
 import static java.math.BigDecimal.valueOf;
 
-class RecipeIngredientAmountDistributor {
+public class RecipeIngredientAmountDistributor {
 
     @Inject
     RecipeIngredientAmountDistributor() {
+    }
+
+    Map<IdImpl<ScaledUnit>, Integer> distribute(List<RequiredAmount> requiredAmounts, List<PresentAmount> presentAmounts) {
+        var distributedAmounts = requiredAmounts.stream()
+                .map(v -> distribute(v, presentAmounts))
+                .collect(Collectors.toList());
+
+        Map<IdImpl<ScaledUnit>, Integer> result = new TreeMap<>(Comparator.comparing(IdImpl::id));
+        for (PresentAmount presentAmount : presentAmounts) {
+            result.put(presentAmount.scaledUnit(), distributedAmounts.stream()
+                    .mapToInt(v -> v.get(presentAmount.scaledUnit()))
+                    .max()
+                    .orElse(0));
+        }
+        return result;
     }
 
     Map<IdImpl<ScaledUnit>, Integer> distribute(RequiredAmount requiredAmount, List<PresentAmount> presentAmounts) {
@@ -70,8 +84,8 @@ class RecipeIngredientAmountDistributor {
     public abstract static class RequiredAmount {
         public abstract IdImpl<Unit> unit();
         public abstract BigDecimal scale();
-        public static RequiredAmount create(Id<Unit> unit, BigDecimal scale) {
-            return new AutoValue_RecipeIngredientAmountDistributor_RequiredAmount(from(unit), scale);
+        public static RequiredAmount create(IdImpl<Unit> unit, BigDecimal scale) {
+            return new AutoValue_RecipeIngredientAmountDistributor_RequiredAmount(unit, scale);
         }
     }
 
@@ -82,8 +96,8 @@ class RecipeIngredientAmountDistributor {
         public abstract BigDecimal scale();
         public abstract int presentItemCount();
 
-        public static PresentAmount create(Id<Unit> unit, Id<ScaledUnit> scaledUnit, BigDecimal scale, int presentCount) {
-            return new AutoValue_RecipeIngredientAmountDistributor_PresentAmount(from(unit), from(scaledUnit), scale, presentCount);
+        public static PresentAmount create(IdImpl<Unit> unit, IdImpl<ScaledUnit> scaledUnit, BigDecimal scale, int presentCount) {
+            return new AutoValue_RecipeIngredientAmountDistributor_PresentAmount(unit, scaledUnit, scale, presentCount);
         }
     }
 }

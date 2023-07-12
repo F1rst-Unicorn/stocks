@@ -38,11 +38,11 @@ public abstract class RecipeCookingFormDataIngredient {
 
     public abstract boolean toBuy();
 
-    public abstract Amount requiredAmount();
+    public abstract List<Amount> requiredAmount();
 
     public abstract List<PresentAmount> presentAmount();
 
-    public static RecipeCookingFormDataIngredient create(Id<Food> id, String name, boolean toBuy, Amount requiredAmount, List<PresentAmount> presentAmount) {
+    public static RecipeCookingFormDataIngredient create(Id<Food> id, String name, boolean toBuy, List<Amount> requiredAmount, List<PresentAmount> presentAmount) {
         return new AutoValue_RecipeCookingFormDataIngredient(from(id), name, toBuy, requiredAmount, presentAmount);
     }
 
@@ -76,7 +76,7 @@ public abstract class RecipeCookingFormDataIngredient {
                 return create(amount(), presentCount(), selectedCount() - 1);
         }
 
-        private static PresentAmount create(Amount amount, int presentCount, int selectedCount) {
+        static PresentAmount create(Amount amount, int presentCount, int selectedCount) {
             return new AutoValue_RecipeCookingFormDataIngredient_PresentAmount(amount, presentCount, selectedCount);
         }
     }
@@ -84,10 +84,8 @@ public abstract class RecipeCookingFormDataIngredient {
     @AutoValue
     public static abstract class Amount implements UnitAmount {
 
-        public abstract IdImpl<ScaledUnit> id();
-
-        public static Amount create(Id<ScaledUnit> id, BigDecimal amount, String abbreviation) {
-            return new AutoValue_RecipeCookingFormDataIngredient_Amount(amount, abbreviation, from(id));
+        public static Amount create(BigDecimal amount, String abbreviation) {
+            return new AutoValue_RecipeCookingFormDataIngredient_Amount(amount, abbreviation);
         }
     }
 }

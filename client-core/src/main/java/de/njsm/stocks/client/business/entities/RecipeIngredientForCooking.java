@@ -22,19 +22,30 @@
 package de.njsm.stocks.client.business.entities;
 
 import com.google.auto.value.AutoValue;
+import de.njsm.stocks.client.business.RecipeIngredientAmountDistributor;
 
-import java.util.List;
+import java.math.BigDecimal;
 
 @AutoValue
-public abstract class RecipeCookingFormData {
+public abstract class RecipeIngredientForCooking {
 
-    public abstract String name();
+    public abstract IdImpl<Food> food();
 
-    public abstract List<RecipeCookingFormDataIngredient> ingredients();
+    public abstract String foodName();
 
-    public abstract List<RecipeCookingFormDataProduct> products();
+    public abstract boolean toBuy();
 
-    public static RecipeCookingFormData create(String name, List<RecipeCookingFormDataIngredient> ingredients, List<RecipeCookingFormDataProduct> products) {
-        return new AutoValue_RecipeCookingFormData(name, ingredients, products);
+    public abstract IdImpl<Unit> unit();
+
+    public abstract String abbreviation();
+
+    public abstract BigDecimal scale();
+
+    public RecipeIngredientAmountDistributor.RequiredAmount toRequiredAmount() {
+        return RecipeIngredientAmountDistributor.RequiredAmount.create(unit(), scale());
+    }
+
+    public RecipeCookingFormDataIngredient.Amount toFormDataRequiredAmount() {
+        return RecipeCookingFormDataIngredient.Amount.create(scale(), abbreviation());
     }
 }
