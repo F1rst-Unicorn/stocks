@@ -76,7 +76,7 @@ public abstract class RecipeCookingFormDataIngredient {
                 return create(amount(), presentCount(), selectedCount() - 1);
         }
 
-        static PresentAmount create(Amount amount, int presentCount, int selectedCount) {
+        public static PresentAmount create(Amount amount, int presentCount, int selectedCount) {
             return new AutoValue_RecipeCookingFormDataIngredient_PresentAmount(amount, presentCount, selectedCount);
         }
     }

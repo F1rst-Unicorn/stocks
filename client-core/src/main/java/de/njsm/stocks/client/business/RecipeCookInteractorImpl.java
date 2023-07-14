@@ -50,12 +50,13 @@ class RecipeCookInteractorImpl implements RecipeCookInteractor {
         Observable<List<RecipeIngredientForCooking>> requiredIngredients = repository.getRequiredIngredients(recipeId);
         Observable<List<FoodItemForCooking>> presentIngredients = repository.getPresentIngredients(recipeId);
         var products = repository.getProducts(recipeId);
-        return Observable.combineLatest(recipe, requiredIngredients, presentIngredients, this::combine);
+        return Observable.combineLatest(recipe, requiredIngredients, presentIngredients, products, this::combine);
     }
 
     private RecipeCookingFormData combine(RecipeForCooking recipe,
                                           List<RecipeIngredientForCooking> requiredIngredients,
-                                          List<FoodItemForCooking> presentIngredients) {
+                                          List<FoodItemForCooking> presentIngredients,
+                                          List<RecipeCookingFormDataProduct> products) {
         var presentIngredientsByFood = presentIngredients.stream()
                 .collect(groupingBy(FoodItemForCooking::ofType));
         var requiredIngredientsByFood = requiredIngredients.stream()
@@ -66,7 +67,7 @@ class RecipeCookInteractorImpl implements RecipeCookInteractor {
                 .map(v -> toFormDataIngredient(presentIngredientsByFood.getOrDefault(v.get(0).food(), emptyList()), v))
                 .collect(toList());
 
-        return RecipeCookingFormData.create(recipe.name(), formDataIngredients, null);
+        return RecipeCookingFormData.create(recipe.name(), formDataIngredients, products);
     }
 
     private RecipeCookingFormDataIngredient toFormDataIngredient(List<FoodItemForCooking> presentFoodItemsOfThisIngredient, List<RecipeIngredientForCooking> ingredientAmounts) {

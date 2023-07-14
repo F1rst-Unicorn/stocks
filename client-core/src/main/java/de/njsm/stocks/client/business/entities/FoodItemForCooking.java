@@ -51,4 +51,13 @@ public abstract class FoodItemForCooking {
                 presentCount(),
                 selectedCount);
     }
+
+    public static FoodItemForCooking create(IdImpl<Food> ofType,
+                                            IdImpl<Unit> unit,
+                                            String abbreviation,
+                                            IdImpl<ScaledUnit> scaledUnit,
+                                            BigDecimal scale,
+                                            int presentCount) {
+        return new AutoValue_FoodItemForCooking(ofType, unit, abbreviation, scaledUnit, scale, presentCount);
+    }
 }

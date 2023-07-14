@@ -39,13 +39,22 @@ public abstract class RecipeIngredientForCooking {
 
     public abstract String abbreviation();
 
-    public abstract BigDecimal scale();
+    public abstract BigDecimal amount();
 
     public RecipeIngredientAmountDistributor.RequiredAmount toRequiredAmount() {
-        return RecipeIngredientAmountDistributor.RequiredAmount.create(unit(), scale());
+        return RecipeIngredientAmountDistributor.RequiredAmount.create(unit(), amount());
     }
 
     public RecipeCookingFormDataIngredient.Amount toFormDataRequiredAmount() {
-        return RecipeCookingFormDataIngredient.Amount.create(scale(), abbreviation());
+        return RecipeCookingFormDataIngredient.Amount.create(amount(), abbreviation());
+    }
+
+    public static RecipeIngredientForCooking create(IdImpl<Food> food,
+                                                    String foodName,
+                                                    boolean toBuy,
+                                                    IdImpl<Unit> unit,
+                                                    String abbreviation,
+                                                    BigDecimal amount) {
+        return new AutoValue_RecipeIngredientForCooking(food, foodName, toBuy, unit, abbreviation, amount);
     }
 }
