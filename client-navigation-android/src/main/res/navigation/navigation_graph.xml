@@ -472,8 +472,8 @@
                 android:name="id"
                 app:argType="integer"/>
         <action
-                android:id="@+id/action_nav_fragment_recipe_detail_to_nav_fragment_recipe_prepare"
-                app:destination="@id/nav_fragment_recipe_prepare">
+                android:id="@+id/action_nav_fragment_recipe_detail_to_nav_fragment_recipe_cook"
+                app:destination="@id/nav_fragment_recipe_cook">
             <argument
                     android:name="id"
                     app:argType="integer"/>
@@ -487,8 +487,11 @@
         </action>
     </fragment>
     <fragment
-            android:id="@+id/nav_fragment_recipe_prepare"
-            android:name="androidx.fragment.app.Fragment">
+            android:id="@+id/nav_fragment_recipe_cook"
+            android:name="de.njsm.stocks.client.fragment.recipecook.RecipeCookFragment">
+        <argument
+                android:name="id"
+                app:argType="integer"/>
     </fragment>
     <fragment
             android:id="@+id/nav_fragment_show_ticket"
