@@ -283,4 +283,7 @@ public interface DatabaseModule {
 
     @Binds
     RecipeEditRepository RecipeEditRepository(RecipeEditRepositoryImpl impl);
+
+    @Binds
+    RecipeCookRepository RecipeCookRepository(RecipeCookRepositoryImpl impl);
 }
