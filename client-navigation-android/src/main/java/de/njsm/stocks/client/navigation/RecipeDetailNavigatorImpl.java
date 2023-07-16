@@ -48,6 +48,6 @@ class RecipeDetailNavigatorImpl extends BaseNavigator implements RecipeDetailNav
 
     @Override
     public void prepare(Id<Recipe> recipeId) {
-        getNavigationArgConsumer().navigate(RecipeDetailFragmentDirections.actionNavFragmentRecipeDetailToNavFragmentRecipePrepare(recipeId.id()));
+        getNavigationArgConsumer().navigate(RecipeDetailFragmentDirections.actionNavFragmentRecipeDetailToNavFragmentRecipeCook(recipeId.id()));
     }
 }

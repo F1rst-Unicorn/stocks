@@ -223,4 +223,7 @@ public interface BusinessModule {
 
     @Binds
     RecipeEditInteractor RecipeEditInteractor(RecipeEditInteractorImpl impl);
+
+    @Binds
+    RecipeCookInteractor RecipeCookInteractor(RecipeCookInteractorImpl impl);
 }

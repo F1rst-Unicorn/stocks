@@ -56,7 +56,7 @@ public class RecipeDetailNavigatorImplTest extends NavigationTest {
 
         uut.prepare(() -> expected);
 
-        var actual = navigationArgConsumer.getLastArgument(RecipeDetailFragmentDirections.ActionNavFragmentRecipeDetailToNavFragmentRecipePrepare.class);
+        var actual = navigationArgConsumer.getLastArgument(RecipeDetailFragmentDirections.ActionNavFragmentRecipeDetailToNavFragmentRecipeCook.class);
         assertEquals(actual.getId(), expected);
     }
 

@@ -242,4 +242,7 @@ public interface UimockBusinessModule {
 
     @Binds
     RecipeEditInteractor RecipeEditInteractor(InMemoryRecipeEditInteractorImpl impl);
+
+    @Binds
+    RecipeCookInteractor RecipeCookInteractor(InMemoryRecipeCookInteractorImpl impl);
 }
