@@ -51,6 +51,15 @@ public class UnitAmountRenderStrategy {
                     + scaledUnit.abbreviation();
     }
 
+    public String renderUnitSymbol(UnitAmount scaledUnit) {
+        if (scaledUnit.decimalPrefix().getSymbol().isEmpty())
+            return scaledUnit.abbreviation();
+        else
+            return scaledUnit.decimalPrefix().getSymbol()
+                    + spaceForFullWordAbbreviation(scaledUnit.abbreviation())
+                    + scaledUnit.abbreviation();
+    }
+
     public String render(FullScaledUnitSummaryFields scaledUnit) {
         return String.format("%s (%s)", render((ScaledUnitSummaryFields) scaledUnit), scaledUnit.name());
     }

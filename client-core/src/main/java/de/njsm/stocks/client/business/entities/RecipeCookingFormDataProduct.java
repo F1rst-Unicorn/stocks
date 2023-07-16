@@ -47,6 +47,10 @@ public abstract class RecipeCookingFormDataProduct {
 
         public abstract int defaultProducedAmount();
 
+        public BigDecimal scaledDefaultProductedAmount() {
+            return prefixedAmount().multiply(new BigDecimal(defaultProducedAmount()));
+        }
+
         public static Amount create(Id<ScaledUnit> id, BigDecimal amount, String abbreviation, int defaultProducedAmount) {
             return new AutoValue_RecipeCookingFormDataProduct_Amount(amount, abbreviation, from(id), defaultProducedAmount);
         }

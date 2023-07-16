@@ -50,6 +50,7 @@ import de.njsm.stocks.client.fragment.locationedit.LocationEditFragmentTest;
 import de.njsm.stocks.client.fragment.locationlist.LocationListFragmentTest;
 import de.njsm.stocks.client.fragment.outline.OutlineFragmentTest;
 import de.njsm.stocks.client.fragment.recipeadd.RecipeAddFragmentTest;
+import de.njsm.stocks.client.fragment.recipecook.RecipeCookFragmentTest;
 import de.njsm.stocks.client.fragment.recipedetail.RecipeDetailFragmentTest;
 import de.njsm.stocks.client.fragment.recipeedit.RecipeEditFragmentTest;
 import de.njsm.stocks.client.fragment.recipelist.RecipeListFragmentTest;
@@ -177,6 +178,8 @@ public interface TestComponent {
     void inject(FoodItemAddFragmentEmptyLocationsTest test);
 
     void inject(RecipeEditFragmentTest test);
+
+    void inject(RecipeCookFragmentTest test);
 
     @Component.Builder
     interface Builder {

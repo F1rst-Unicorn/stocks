@@ -360,4 +360,11 @@ public class ViewModelModule {
     ViewModel RecipeEditViewModel(RecipeEditInteractor interactor) {
         return new RecipeEditViewModel(interactor);
     }
+
+    @Provides
+    @IntoMap
+    @ViewModelKey(RecipeCookViewModel.class)
+    ViewModel RecipeCookViewModel(RecipeCookInteractor interactor, ObservableDataCache<RecipeCookingFormData> data) {
+        return new RecipeCookViewModel(interactor, data);
+    }
 }

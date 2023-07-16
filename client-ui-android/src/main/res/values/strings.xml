@@ -72,7 +72,7 @@
     <string name="title_edit_recipe">Edit Recipe</string>
     <string name="title_products">Products</string>
     <string name="title_duration">Time</string>
-    <string name="title_checkout">Prepare Recipe</string>
+    <string name="title_cook_recipe">Prepare Recipe</string>
     <string name="title_add_location">Add Location</string>
     <string name="title_edit_location">Edit Location</string>
     <string name="title_conflict">Solve Conflict</string>

@@ -24,6 +24,7 @@ package de.njsm.stocks.client.fragment.util;
 import androidx.recyclerview.widget.DiffUtil;
 import de.njsm.stocks.client.business.entities.Entity;
 import de.njsm.stocks.client.business.entities.Id;
+import de.njsm.stocks.client.business.entities.IdImpl;
 
 import java.util.Collections;
 import java.util.List;
@@ -37,6 +38,10 @@ public class ListDiffer<T> extends DiffUtil.Callback {
 
     public static <T> ListDiffer<T> byId(List<T> oldList, List<T> newList, Function<T, Long> idMapper) {
         return new ListDiffer<>(oldList, newList, idMapper);
+    }
+
+    public static <T, I extends Entity<I>> ListDiffer<T> byNestedId(List<T> oldList, List<T> newList, Function<T, IdImpl<I>> idMapper) {
+        return new ListDiffer<>(oldList, newList, idMapper.andThen(IdImpl::longId));
     }
 
     private final List<T> oldList;

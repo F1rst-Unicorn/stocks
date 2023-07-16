@@ -499,4 +499,10 @@ public interface FakeBusinessModule {
     static RecipeEditInteractor RecipeEditInteractor() {
         return mock(RecipeEditInteractor.class);
     }
+
+    @Provides
+    @Singleton
+    static RecipeCookInteractor RecipeCookInteractor() {
+        return mock(RecipeCookInteractor.class);
+    }
 }

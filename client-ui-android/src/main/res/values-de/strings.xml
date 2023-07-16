@@ -71,7 +71,7 @@
     <string name="title_edit_recipe">Rezept bearbeiten</string>
     <string name="title_products">Produkte</string>
     <string name="title_duration">Zubereitungsdauer</string>
-    <string name="title_checkout">Rezept zubereiten</string>
+    <string name="title_cook_recipe">Rezept zubereiten</string>
     <string name="title_add_location">Ort hinzufügen</string>
     <string name="title_edit_location">Ort bearbeiten</string>
     <string name="title_conflict">Konflikt lösen</string>

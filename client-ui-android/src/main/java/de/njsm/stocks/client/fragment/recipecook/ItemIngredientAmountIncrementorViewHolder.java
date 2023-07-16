@@ -19,22 +19,24 @@
  *
  */
 
-package de.njsm.stocks.client.business.entities;
+package de.njsm.stocks.client.fragment.recipecook;
 
-import com.google.auto.value.AutoValue;
+import android.view.View;
+import android.widget.TextView;
+import androidx.annotation.NonNull;
+import de.njsm.stocks.client.ui.R;
+import org.jetbrains.annotations.NotNull;
 
-@AutoValue
-public abstract class IdImpl<T extends Entity<T>> implements Id<T> {
+class ItemIngredientAmountIncrementorViewHolder extends ItemAmountIncrementorViewHolder {
 
-    public long longId() {
-        return id();
+    private final TextView maxAmount;
+
+    ItemIngredientAmountIncrementorViewHolder(@NonNull @NotNull View itemView) {
+        super(itemView);
+        maxAmount = itemView.findViewById(R.id.item_amount_incrementor_max_counter);
     }
 
-    public static <T extends Entity<T>> IdImpl<T> create(int id) {
-        return new AutoValue_IdImpl<>(id);
-    }
-
-    public static <T extends Entity<T>> IdImpl<T> from(Id<T> id) {
-        return new AutoValue_IdImpl<>(id.id());
+    void setMaxAmount(String maxAmount) {
+        this.maxAmount.setText(maxAmount);
     }
 }

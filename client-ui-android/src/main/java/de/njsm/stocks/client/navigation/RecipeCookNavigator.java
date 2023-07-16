@@ -19,22 +19,13 @@
  *
  */
 
-package de.njsm.stocks.client.business.entities;
+package de.njsm.stocks.client.navigation;
 
-import com.google.auto.value.AutoValue;
+import android.os.Bundle;
+import de.njsm.stocks.client.business.entities.IdImpl;
+import de.njsm.stocks.client.business.entities.Recipe;
 
-@AutoValue
-public abstract class IdImpl<T extends Entity<T>> implements Id<T> {
+public interface RecipeCookNavigator extends Navigator {
 
-    public long longId() {
-        return id();
-    }
-
-    public static <T extends Entity<T>> IdImpl<T> create(int id) {
-        return new AutoValue_IdImpl<>(id);
-    }
-
-    public static <T extends Entity<T>> IdImpl<T> from(Id<T> id) {
-        return new AutoValue_IdImpl<>(id.id());
-    }
+    IdImpl<Recipe> getRecipe(Bundle args);
 }

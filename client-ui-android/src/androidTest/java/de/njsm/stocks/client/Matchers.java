@@ -33,6 +33,7 @@ import android.widget.DatePicker;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
+import androidx.annotation.IdRes;
 import androidx.core.widget.NestedScrollView;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.test.espresso.PerformException;
@@ -84,17 +85,18 @@ public class Matchers {
 
     public static final class RecyclerViewMatcher {
 
+        @IdRes
         private final int recyclerViewId;
 
-        private RecyclerViewMatcher(int recyclerViewId) {
+        private RecyclerViewMatcher(@IdRes int recyclerViewId) {
             this.recyclerViewId = recyclerViewId;
         }
 
-        public Matcher<View> atPosition(final int position) {
+        public Matcher<View> atPosition(int position) {
             return atPositionOnView(position, -1);
         }
 
-        public Matcher<View> atPositionOnView(final int position, final int targetViewId) {
+        public Matcher<View> atPositionOnView(int position, @IdRes int targetViewId) {
             return new TypeSafeMatcher<>() {
                 Resources resources = null;
                 View childView;
@@ -109,16 +111,20 @@ public class Matchers {
                         }
                     }
 
-                    description.appendText("with id: " + idDescription);
+                    description.appendText("with id: " + idDescription + " at position " + position);
                 }
 
                 public boolean matchesSafely(View view) {
                     this.resources = view.getResources();
 
                     if (childView == null) {
-                        RecyclerView recyclerView = view.getRootView().findViewById(recyclerViewId);
+                        RecyclerView recyclerView = view.findViewById(recyclerViewId);
                         if (recyclerView != null && recyclerView.getId() == recyclerViewId) {
-                            childView = recyclerView.findViewHolderForAdapterPosition(position).itemView;
+                            RecyclerView.ViewHolder listItem = recyclerView.findViewHolderForAdapterPosition(position);
+                            if (listItem == null) {
+                                return false;
+                            }
+                            childView = listItem.itemView;
                         } else {
                             return false;
                         }
@@ -135,7 +141,7 @@ public class Matchers {
         }
     }
 
-    public static Matcher<View> withBackground(final int resourceId) {
+    public static Matcher<View> withBackground(int resourceId) {
         return new TypeSafeMatcher<>() {
 
             @Override
@@ -150,7 +156,7 @@ public class Matchers {
         };
     }
 
-    public static Matcher<View> withCompoundDrawable(final int resourceId) {
+    public static Matcher<View> withCompoundDrawable(int resourceId) {
         return new BoundedMatcher<>(TextView.class) {
             @Override
             public void describeTo(Description description) {
@@ -169,7 +175,7 @@ public class Matchers {
         };
     }
 
-    public static Matcher<View> withImageDrawable(final int resourceId) {
+    public static Matcher<View> withImageDrawable(int resourceId) {
         return new BoundedMatcher<>(ImageView.class) {
             @Override
             public void describeTo(Description description) {

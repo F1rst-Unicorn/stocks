@@ -21,7 +21,71 @@
 
 package de.njsm.stocks.client.fragment.recipecook;
 
+import android.os.Bundle;
+import android.view.*;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.view.MenuProvider;
+import androidx.lifecycle.ViewModelProvider;
+import de.njsm.stocks.client.business.entities.IdImpl;
+import de.njsm.stocks.client.business.entities.Recipe;
 import de.njsm.stocks.client.fragment.BottomToolbarFragment;
+import de.njsm.stocks.client.navigation.RecipeCookNavigator;
+import de.njsm.stocks.client.presenter.RecipeCookViewModel;
+import de.njsm.stocks.client.ui.R;
+import org.jetbrains.annotations.NotNull;
 
-public class RecipeCookFragment extends BottomToolbarFragment {
+import javax.inject.Inject;
+
+public class RecipeCookFragment extends BottomToolbarFragment implements MenuProvider {
+
+    private RecipeCookViewModel viewModel;
+
+    private RecipeCookNavigator navigator;
+
+    private RecipeCookForm form;
+
+    @Override
+    @NonNull
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View root = super.onCreateView(inflater, container, savedInstanceState);
+
+        View view = insertContent(inflater, root, R.layout.fragment_recipe_cook);
+        form = new RecipeCookForm(view);
+        IdImpl<Recipe> recipeId = navigator.getRecipe(requireArguments());
+        requireActivity().setTitle(R.string.title_cook_recipe);
+
+        viewModel.get(recipeId).observe(getViewLifecycleOwner(), data -> {
+            form.setIngredients(data.ingredients());
+            form.setProducts(data.products());
+        });
+
+        requireActivity().addMenuProvider(this, getViewLifecycleOwner());
+        return root;
+    }
+
+
+    @Override
+    public void onCreateMenu(@NonNull @NotNull Menu menu, @NonNull @NotNull MenuInflater inflater) {
+        inflater.inflate(R.menu.check, menu);
+    }
+
+    @Override
+    public boolean onMenuItemSelected(@NonNull @NotNull MenuItem menuItem) {
+        navigator.back();
+        return true;
+    }
+
+    @Inject
+    @Override
+    protected void setViewModelFactory(ViewModelProvider.Factory viewModelFactory) {
+        super.setViewModelFactory(viewModelFactory);
+        ViewModelProvider viewModelProvider = new ViewModelProvider(this, viewModelFactory);
+        viewModel = viewModelProvider.get(RecipeCookViewModel.class);
+    }
+
+    @Inject
+    void setNavigator(RecipeCookNavigator navigator) {
+        this.navigator = navigator;
+    }
 }
