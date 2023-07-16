@@ -49,11 +49,19 @@ public class RecipeCookForm {
 
     }
 
-    public void setIngredients(List<RecipeCookingFormDataIngredient> ingredients) {
+    void setIngredients(List<RecipeCookingFormDataIngredient> ingredients) {
         ingredientAdapter.setData(ingredients);
     }
 
-    public void setProducts(List<RecipeCookingFormDataProduct> products) {
+    void setProducts(List<RecipeCookingFormDataProduct> products) {
         productAdapter.setData(products);
+    }
+
+    List<RecipeCookingFormDataIngredient> getCurrentIngredients() {
+        return ingredientAdapter.getData();
+    }
+
+    List<RecipeCookingFormDataProduct> getCurrentProducts() {
+        return productAdapter.getData();
     }
 }

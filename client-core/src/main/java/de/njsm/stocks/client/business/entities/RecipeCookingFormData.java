@@ -24,6 +24,9 @@ package de.njsm.stocks.client.business.entities;
 import com.google.auto.value.AutoValue;
 
 import java.util.List;
+import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.toMap;
 
 @AutoValue
 public abstract class RecipeCookingFormData {
@@ -36,5 +39,20 @@ public abstract class RecipeCookingFormData {
 
     public static RecipeCookingFormData create(String name, List<RecipeCookingFormDataIngredient> ingredients, List<RecipeCookingFormDataProduct> products) {
         return new AutoValue_RecipeCookingFormData(name, ingredients, products);
+    }
+
+    /**
+     * Merge the selected counts from the parameters into the bounding present
+     * counts of this.
+     */
+    public RecipeCookingFormData mergeFrom(List<RecipeCookingFormDataIngredient> ingredients, List<RecipeCookingFormDataProduct> products) {
+        var ingredientsByFood = ingredients.stream()
+                .collect(toMap(RecipeCookingFormDataIngredient::id, v -> v));
+        var productsByFood = products.stream()
+                .collect(toMap(RecipeCookingFormDataProduct::id, v -> v));
+
+        return create(name(),
+                ingredients().stream().map(v -> v.mergeFrom(ingredientsByFood.get(v.id()))).collect(Collectors.toList()),
+                products().stream().map(v -> v.mergeFrom(productsByFood.get(v.id()))).collect(Collectors.toList()));
     }
 }

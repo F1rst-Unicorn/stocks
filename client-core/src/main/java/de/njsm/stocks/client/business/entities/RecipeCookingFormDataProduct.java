@@ -40,6 +40,16 @@ public abstract class RecipeCookingFormDataProduct {
         return new AutoValue_RecipeCookingFormDataProduct(from(id), name, producedAmount);
     }
 
+    public RecipeCookingFormDataProduct mergeFrom(RecipeCookingFormDataProduct presentProduct) {
+        if (presentProduct == null)
+            return this;
+
+        if (presentProduct.producedAmount().id().equals(producedAmount().id()))
+            return create(id(), name(), presentProduct.producedAmount());
+        else
+            return this;
+    }
+
     @AutoValue
     public static abstract class Amount implements UnitAmount {
 

@@ -56,8 +56,9 @@ public class RecipeCookFragment extends BottomToolbarFragment implements MenuPro
         requireActivity().setTitle(R.string.title_cook_recipe);
 
         viewModel.get(recipeId).observe(getViewLifecycleOwner(), data -> {
-            form.setIngredients(data.ingredients());
-            form.setProducts(data.products());
+            var mergedRecipe = data.mergeFrom(form.getCurrentIngredients(), form.getCurrentProducts());
+            form.setIngredients(mergedRecipe.ingredients());
+            form.setProducts(mergedRecipe.products());
         });
 
         requireActivity().addMenuProvider(this, getViewLifecycleOwner());

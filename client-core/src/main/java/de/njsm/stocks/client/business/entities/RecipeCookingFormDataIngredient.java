@@ -25,9 +25,11 @@ import com.google.auto.value.AutoValue;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static de.njsm.stocks.client.business.entities.IdImpl.from;
 import static java.math.BigDecimal.valueOf;
+import static java.util.stream.Collectors.toMap;
 
 @AutoValue
 public abstract class RecipeCookingFormDataIngredient {
@@ -44,6 +46,24 @@ public abstract class RecipeCookingFormDataIngredient {
 
     public static RecipeCookingFormDataIngredient create(Id<Food> id, String name, boolean toBuy, List<Amount> requiredAmount, List<PresentAmount> presentAmount) {
         return new AutoValue_RecipeCookingFormDataIngredient(from(id), name, toBuy, requiredAmount, presentAmount);
+    }
+
+    RecipeCookingFormDataIngredient mergeFrom(RecipeCookingFormDataIngredient presentIngredient) {
+        if (presentIngredient == null)
+            return this;
+
+        var amountsByScaledUnit = presentIngredient.presentAmount().stream()
+                .collect(toMap(RecipeCookingFormDataIngredient.PresentAmount::scaledUnit, v -> v));
+
+        return create(id(), name(), toBuy(), requiredAmount(), presentAmount().stream()
+                .map(v -> {
+                    var presentAmount = amountsByScaledUnit.get(v.scaledUnit());
+                    if (presentAmount == null)
+                        return v;
+
+                    return PresentAmount.create(v.amount(), v.scaledUnit(), v.presentCount(), Math.min(v.presentCount(), presentAmount.selectedCount()));
+                })
+                .collect(Collectors.toList()));
     }
 
     @AutoValue

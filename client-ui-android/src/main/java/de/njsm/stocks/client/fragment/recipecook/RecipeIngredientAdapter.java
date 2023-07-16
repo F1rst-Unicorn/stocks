@@ -37,10 +37,11 @@ import java.util.function.Function;
 
 import static com.google.common.collect.Lists.newArrayList;
 import static de.njsm.stocks.client.fragment.util.ListDiffer.byNestedId;
+import static java.util.Collections.emptyList;
 
 class RecipeIngredientAdapter extends RecyclerView.Adapter<RecipeIngredientViewHolder> {
 
-    private List<RecipeCookingFormDataIngredient> data;
+    private List<RecipeCookingFormDataIngredient> data = emptyList();
 
     private final UnitAmountRenderStrategy unitAmountRenderStrategy;
 
@@ -52,6 +53,10 @@ class RecipeIngredientAdapter extends RecyclerView.Adapter<RecipeIngredientViewH
         var oldList = data;
         DiffUtil.calculateDiff(byNestedId(oldList, newList, RecipeCookingFormDataIngredient::id), true).dispatchUpdatesTo(this);
         this.data = new ArrayList<>(newList);
+    }
+
+    List<RecipeCookingFormDataIngredient> getData() {
+        return data;
     }
 
     @NonNull
@@ -94,10 +99,6 @@ class RecipeIngredientAdapter extends RecyclerView.Adapter<RecipeIngredientViewH
 
     @Override
     public int getItemCount() {
-        if (data == null) {
-            return 0;
-        } else {
-            return data.size();
-        }
+        return data.size();
     }
 }

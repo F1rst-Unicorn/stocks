@@ -36,10 +36,11 @@ import java.util.List;
 import java.util.function.Function;
 
 import static de.njsm.stocks.client.fragment.util.ListDiffer.byNestedId;
+import static java.util.Collections.emptyList;
 
 class RecipeProductAdapter extends RecyclerView.Adapter<RecipeProductViewHolder> {
 
-    private List<RecipeCookingFormDataProduct> data;
+    private List<RecipeCookingFormDataProduct> data = emptyList();
 
     private final UnitAmountRenderStrategy unitAmountRenderStrategy;
 
@@ -51,6 +52,10 @@ class RecipeProductAdapter extends RecyclerView.Adapter<RecipeProductViewHolder>
         var oldList = data;
         DiffUtil.calculateDiff(byNestedId(oldList, newList, RecipeCookingFormDataProduct::id), true).dispatchUpdatesTo(this);
         this.data = Lists.newArrayList(newList);
+    }
+
+    List<RecipeCookingFormDataProduct> getData() {
+        return data;
     }
 
     @NonNull
@@ -87,10 +92,6 @@ class RecipeProductAdapter extends RecyclerView.Adapter<RecipeProductViewHolder>
 
     @Override
     public int getItemCount() {
-        if (data == null) {
-            return 0;
-        } else {
-            return data.size();
-        }
+        return data.size();
     }
 }
