@@ -23,10 +23,9 @@ package de.njsm.stocks.client.presenter;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModel;
+import de.njsm.stocks.client.business.FoodToBuyInteractor;
 import de.njsm.stocks.client.business.RecipeCookInteractor;
-import de.njsm.stocks.client.business.entities.IdImpl;
-import de.njsm.stocks.client.business.entities.Recipe;
-import de.njsm.stocks.client.business.entities.RecipeCookingFormData;
+import de.njsm.stocks.client.business.entities.*;
 
 import javax.inject.Inject;
 
@@ -34,15 +33,22 @@ public class RecipeCookViewModel extends ViewModel {
 
     private final RecipeCookInteractor interactor;
 
+    private final FoodToBuyInteractor foodToBuyInteractor;
+
     private final ObservableDataCache<RecipeCookingFormData> data;
 
     @Inject
-    RecipeCookViewModel(RecipeCookInteractor interactor, ObservableDataCache<RecipeCookingFormData> data) {
+    RecipeCookViewModel(RecipeCookInteractor interactor, FoodToBuyInteractor foodToBuyInteractor, ObservableDataCache<RecipeCookingFormData> data) {
         this.interactor = interactor;
+        this.foodToBuyInteractor = foodToBuyInteractor;
         this.data = data;
     }
 
     public LiveData<RecipeCookingFormData> get(IdImpl<Recipe> recipeId) {
         return data.getLiveData(() -> interactor.getData(recipeId));
+    }
+
+    public void putFoodToBuy(IdImpl<Food> foodId) {
+        foodToBuyInteractor.manageFoodToBuy(FoodToToggleBuy.create(foodId));
     }
 }

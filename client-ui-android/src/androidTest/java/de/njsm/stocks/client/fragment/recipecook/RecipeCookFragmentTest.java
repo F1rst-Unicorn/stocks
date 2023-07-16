@@ -26,6 +26,7 @@ import androidx.fragment.app.testing.FragmentScenario;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.platform.app.InstrumentationRegistry;
 import de.njsm.stocks.client.Application;
+import de.njsm.stocks.client.business.FoodToBuyInteractor;
 import de.njsm.stocks.client.business.RecipeCookInteractor;
 import de.njsm.stocks.client.business.entities.*;
 import de.njsm.stocks.client.navigation.RecipeCookNavigator;
@@ -59,6 +60,8 @@ public class RecipeCookFragmentTest {
     private FragmentScenario<RecipeCookFragment> scenario;
 
     private RecipeCookInteractor recipeCookInteractor;
+
+    private FoodToBuyInteractor foodToBuyInteractor;
 
     private RecipeCookNavigator navigator;
 
@@ -192,6 +195,17 @@ public class RecipeCookFragmentTest {
     }
 
     @Test
+    public void pressingToBuyIsPropagated() {
+        var recipe = getInputData();
+        var ingredient = recipe.ingredients().get(1);
+
+        onView(recyclerView(R.id.fragment_recipe_cook_ingredients).atPositionOnView(1, R.id.item_recipe_item_shopping_cart))
+                .perform(click());
+
+        verify(foodToBuyInteractor).manageFoodToBuy(FoodToToggleBuy.create(ingredient.id()));
+    }
+
+    @Test
     public void checkingOutNavigatesBack() {
         scenario.onFragment(f -> f.onMenuItemSelected(menuItem(f.getContext(), R.id.menu_check)));
 
@@ -206,6 +220,11 @@ public class RecipeCookFragmentTest {
     @Inject
     public void setNavigator(RecipeCookNavigator navigator) {
         this.navigator = navigator;
+    }
+
+    @Inject
+    public void setFoodToBuyInteractor(FoodToBuyInteractor foodToBuyInteractor) {
+        this.foodToBuyInteractor = foodToBuyInteractor;
     }
 
     @NotNull

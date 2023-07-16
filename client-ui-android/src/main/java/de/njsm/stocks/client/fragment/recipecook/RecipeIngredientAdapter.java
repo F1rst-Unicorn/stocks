@@ -27,12 +27,15 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
+import de.njsm.stocks.client.business.entities.Food;
+import de.njsm.stocks.client.business.entities.IdImpl;
 import de.njsm.stocks.client.business.entities.RecipeCookingFormDataIngredient;
 import de.njsm.stocks.client.presenter.UnitAmountRenderStrategy;
 import de.njsm.stocks.client.ui.R;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 import static com.google.common.collect.Lists.newArrayList;
@@ -45,7 +48,10 @@ class RecipeIngredientAdapter extends RecyclerView.Adapter<RecipeIngredientViewH
 
     private final UnitAmountRenderStrategy unitAmountRenderStrategy;
 
-    RecipeIngredientAdapter() {
+    private final Consumer<IdImpl<Food>> toBuyCallback;
+
+    RecipeIngredientAdapter(Consumer<IdImpl<Food>> toBuyCallback) {
+        this.toBuyCallback = toBuyCallback;
         unitAmountRenderStrategy = new UnitAmountRenderStrategy();
     }
 
@@ -95,6 +101,7 @@ class RecipeIngredientAdapter extends RecyclerView.Adapter<RecipeIngredientViewH
         holder.setRecipeAmounts(unitAmountRenderStrategy.render(item.requiredAmount()));
         holder.setToBuy(item.toBuy());
         holder.setAmounts(item.presentAmount());
+        holder.setToBuyCallback(__ -> toBuyCallback.accept(item.id()));
     }
 
     @Override

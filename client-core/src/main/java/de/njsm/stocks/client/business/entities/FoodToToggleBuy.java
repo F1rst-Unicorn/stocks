@@ -31,6 +31,10 @@ public abstract class FoodToToggleBuy implements Id<Food>, ShoppingFlagModifying
         return true;
     }
 
+    public static FoodToToggleBuy create(IdImpl<Food> foodId) {
+        return create(foodId.id());
+    }
+
     public static FoodToToggleBuy create(int food) {
         return new AutoValue_FoodToToggleBuy(food);
     }

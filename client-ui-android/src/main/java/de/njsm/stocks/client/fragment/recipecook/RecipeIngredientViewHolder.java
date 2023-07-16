@@ -79,6 +79,10 @@ class RecipeIngredientViewHolder extends RecyclerView.ViewHolder {
         this.toBuy.setImageDrawable(drawable);
     }
 
+    public void setToBuyCallback(View.OnClickListener callback) {
+        this.toBuy.setOnClickListener(callback);
+    }
+
     interface ButtonCallback {
         void onClicked(RecipeIngredientViewHolder viewHolder, ItemIngredientAmountIncrementorViewHolder amountViewHolder);
     }

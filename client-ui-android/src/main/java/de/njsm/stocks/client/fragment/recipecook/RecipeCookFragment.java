@@ -51,7 +51,7 @@ public class RecipeCookFragment extends BottomToolbarFragment implements MenuPro
         View root = super.onCreateView(inflater, container, savedInstanceState);
 
         View view = insertContent(inflater, root, R.layout.fragment_recipe_cook);
-        form = new RecipeCookForm(view);
+        form = new RecipeCookForm(view, viewModel::putFoodToBuy);
         IdImpl<Recipe> recipeId = navigator.getRecipe(requireArguments());
         requireActivity().setTitle(R.string.title_cook_recipe);
 

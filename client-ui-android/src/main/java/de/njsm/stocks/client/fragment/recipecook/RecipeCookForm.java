@@ -24,21 +24,24 @@ package de.njsm.stocks.client.fragment.recipecook;
 import android.view.View;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import de.njsm.stocks.client.business.entities.Food;
+import de.njsm.stocks.client.business.entities.IdImpl;
 import de.njsm.stocks.client.business.entities.RecipeCookingFormDataIngredient;
 import de.njsm.stocks.client.business.entities.RecipeCookingFormDataProduct;
 import de.njsm.stocks.client.ui.R;
 
 import java.util.List;
+import java.util.function.Consumer;
 
-public class RecipeCookForm {
+class RecipeCookForm {
 
     private final RecipeIngredientAdapter ingredientAdapter;
 
     private final RecipeProductAdapter productAdapter;
 
-    public RecipeCookForm(View root) {
+    RecipeCookForm(View root, Consumer<IdImpl<Food>> toBuyCallback) {
         RecyclerView ingredients = root.findViewById(R.id.fragment_recipe_cook_ingredients);
-        ingredientAdapter = new RecipeIngredientAdapter();
+        ingredientAdapter = new RecipeIngredientAdapter(toBuyCallback);
         ingredients.setLayoutManager(new LinearLayoutManager(root.getContext()));
         ingredients.setAdapter(ingredientAdapter);
 

@@ -364,7 +364,7 @@ public class ViewModelModule {
     @Provides
     @IntoMap
     @ViewModelKey(RecipeCookViewModel.class)
-    ViewModel RecipeCookViewModel(RecipeCookInteractor interactor, ObservableDataCache<RecipeCookingFormData> data) {
-        return new RecipeCookViewModel(interactor, data);
+    ViewModel RecipeCookViewModel(RecipeCookInteractor interactor, ObservableDataCache<RecipeCookingFormData> data, FoodToBuyInteractor foodToBuyInteractor) {
+        return new RecipeCookViewModel(interactor, foodToBuyInteractor, data);
     }
 }
