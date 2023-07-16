@@ -48,6 +48,7 @@ public abstract class FoodItemForCooking {
     public RecipeCookingFormDataIngredient.PresentAmount toFormDataPresentAmount(int selectedCount) {
         return RecipeCookingFormDataIngredient.PresentAmount.create(
                 RecipeCookingFormDataIngredient.Amount.create(scale(), abbreviation()),
+                scaledUnit(),
                 presentCount(),
                 selectedCount);
     }

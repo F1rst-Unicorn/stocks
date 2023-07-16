@@ -94,6 +94,7 @@ class RecipeCookInteractorImplTest {
                         List.of(RecipeCookingFormDataIngredient.Amount.create(requiredIngredient.amount(), requiredIngredient.abbreviation())),
                         List.of(RecipeCookingFormDataIngredient.PresentAmount.create(
                                 RecipeCookingFormDataIngredient.Amount.create(presentIngredient.scale(), presentIngredient.abbreviation()),
+                                presentIngredient.scaledUnit(),
                                 5, 1))
                 )),
                 emptyList()

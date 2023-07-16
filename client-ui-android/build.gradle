@@ -94,6 +94,7 @@ dependencies {
     implementation "com.google.zxing:core:${zxing_version}"
     implementation "com.journeyapps:zxing-android-embedded:${zxing_android_version}"
     implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
+    implementation "com.google.guava:guava:${guava_version}"
 
     annotationProcessor "com.google.auto.value:auto-value:${autovalue_version}"
     annotationProcessor "com.google.dagger:dagger-compiler:${dagger_version}"

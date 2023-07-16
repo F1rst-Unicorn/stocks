@@ -25,6 +25,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 import de.njsm.stocks.client.business.entities.RecipeCookingFormDataProduct;
 import de.njsm.stocks.client.presenter.UnitAmountRenderStrategy;
@@ -32,19 +33,28 @@ import de.njsm.stocks.client.ui.R;
 
 import java.util.List;
 
+import static de.njsm.stocks.client.fragment.util.ListDiffer.byNestedId;
+
 public class ProductAmountAdapter extends RecyclerView.Adapter<ItemAmountIncrementorViewHolder> {
 
     private List<RecipeCookingFormDataProduct.Amount> data;
 
+    private final ButtonCallback addCallback;
+
+    private final ButtonCallback removeCallback;
+
     private final UnitAmountRenderStrategy unitAmountRenderStrategy;
 
-    public ProductAmountAdapter() {
+    public ProductAmountAdapter(ButtonCallback addCallback, ButtonCallback removeCallback) {
+        this.addCallback = addCallback;
+        this.removeCallback = removeCallback;
         unitAmountRenderStrategy = new UnitAmountRenderStrategy();
     }
 
-    public void setData(List<RecipeCookingFormDataProduct.Amount> data) {
-        this.data = data;
-        notifyDataSetChanged();
+    public void setData(List<RecipeCookingFormDataProduct.Amount> newList) {
+        var oldList = data;
+        DiffUtil.calculateDiff(byNestedId(oldList, newList, RecipeCookingFormDataProduct.Amount::id), true).dispatchUpdatesTo(this);
+        this.data = newList;
     }
 
     @NonNull
@@ -52,13 +62,13 @@ public class ProductAmountAdapter extends RecyclerView.Adapter<ItemAmountIncreme
     public ItemAmountIncrementorViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.item_amount_incrementor_product, parent, false);
-        return new ItemAmountIncrementorViewHolder(v);
+        return new ItemAmountIncrementorViewHolder(v, __ -> addCallback.onClicked(), __ -> removeCallback.onClicked());
     }
 
     @Override
     public void onBindViewHolder(@NonNull ItemAmountIncrementorViewHolder holder, int position) {
         var item = data.get(position);
-        holder.setCurrentAmount(unitAmountRenderStrategy.render(item.scaledDefaultProductedAmount()));
+        holder.setCurrentAmount(unitAmountRenderStrategy.render(item.scaledProductedAmount()));
         holder.setUnitAbbreviation(unitAmountRenderStrategy.renderUnitSymbol(item));
     }
 
@@ -69,5 +79,9 @@ public class ProductAmountAdapter extends RecyclerView.Adapter<ItemAmountIncreme
         } else {
             return data.size();
         }
+    }
+
+    interface ButtonCallback {
+        void onClicked();
     }
 }

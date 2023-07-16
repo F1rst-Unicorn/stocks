@@ -45,14 +45,14 @@ class RecipeIngredientViewHolder extends RecyclerView.ViewHolder {
 
     private final PresentAmountAdapter adapter;
 
-    RecipeIngredientViewHolder(@NonNull @NotNull View itemView) {
+    RecipeIngredientViewHolder(@NonNull @NotNull View itemView, ButtonCallback addCallback, ButtonCallback removeCallback) {
         super(itemView);
         foodName = itemView.findViewById(R.id.item_recipe_item_food_name);
         recipeAmounts = itemView.findViewById(R.id.item_recipe_item_scaled_unit);
         toBuy = itemView.findViewById(R.id.item_recipe_item_shopping_cart);
         RecyclerView amounts = itemView.findViewById(R.id.item_recipe_item_amounts);
 
-        adapter = new PresentAmountAdapter();
+        adapter = new PresentAmountAdapter(v -> addCallback.onClicked(this, v), v -> removeCallback.onClicked(this, v));
         amounts.setAdapter(adapter);
         amounts.setLayoutManager(new LinearLayoutManager(itemView.getContext()));
     }
@@ -77,5 +77,9 @@ class RecipeIngredientViewHolder extends RecyclerView.ViewHolder {
             drawable = ContextCompat.getDrawable(this.toBuy.getContext(), R.drawable.baseline_add_shopping_cart_black_24);
         }
         this.toBuy.setImageDrawable(drawable);
+    }
+
+    interface ButtonCallback {
+        void onClicked(RecipeIngredientViewHolder viewHolder, ItemIngredientAmountIncrementorViewHolder amountViewHolder);
     }
 }

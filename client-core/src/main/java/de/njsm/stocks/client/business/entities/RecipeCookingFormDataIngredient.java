@@ -48,7 +48,10 @@ public abstract class RecipeCookingFormDataIngredient {
 
     @AutoValue
     public static abstract class PresentAmount {
+
         public abstract Amount amount();
+
+        public abstract IdImpl<ScaledUnit> scaledUnit();
 
         public abstract int presentCount();
 
@@ -66,18 +69,18 @@ public abstract class RecipeCookingFormDataIngredient {
             if (selectedCount() >= presentCount())
                 return this;
             else
-                return create(amount(), presentCount(), selectedCount() + 1);
+                return create(amount(), scaledUnit(), presentCount(), selectedCount() + 1);
         }
 
         public PresentAmount decrease() {
             if (selectedCount() <= 0)
                 return this;
             else
-                return create(amount(), presentCount(), selectedCount() - 1);
+                return create(amount(), scaledUnit(), presentCount(), selectedCount() - 1);
         }
 
-        public static PresentAmount create(Amount amount, int presentCount, int selectedCount) {
-            return new AutoValue_RecipeCookingFormDataIngredient_PresentAmount(amount, presentCount, selectedCount);
+        public static PresentAmount create(Amount amount, IdImpl<ScaledUnit> scaledUnit, int presentCount, int selectedCount) {
+            return new AutoValue_RecipeCookingFormDataIngredient_PresentAmount(amount, scaledUnit, presentCount, selectedCount);
         }
     }
 

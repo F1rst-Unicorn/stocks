@@ -43,6 +43,7 @@ import java.math.BigDecimal;
 import java.util.List;
 
 import static androidx.test.espresso.Espresso.onView;
+import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.isDescendantOfA;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
@@ -135,6 +136,62 @@ public class RecipeCookFragmentTest {
     }
 
     @Test
+    public void pressingIngredientAmountAddButtonWorks() {
+        var recipe = getInputData();
+        var ingredient = recipe.ingredients().get(0);
+
+        onView(allOf(isDescendantOfA(recyclerView(R.id.fragment_recipe_cook_ingredients).atPosition(0)),
+                recyclerView(R.id.item_recipe_item_amounts).atPositionOnView(0, R.id.item_amount_incrementor_plus)))
+                .perform(click());
+
+        onView(allOf(isDescendantOfA(recyclerView(R.id.fragment_recipe_cook_ingredients).atPosition(0)),
+                recyclerView(R.id.item_recipe_item_amounts).atPositionOnView(0, R.id.item_amount_incrementor_stock_counter)))
+                .check(matches(withText(unitRenderStrategy.render(ingredient.presentAmount().get(0).increase().scaleSelected()))));
+    }
+
+    @Test
+    public void pressingIngredientAmountRemoveButtonWorks() {
+        var recipe = getInputData();
+        var ingredient = recipe.ingredients().get(0);
+
+        onView(allOf(isDescendantOfA(recyclerView(R.id.fragment_recipe_cook_ingredients).atPosition(0)),
+                recyclerView(R.id.item_recipe_item_amounts).atPositionOnView(0, R.id.item_amount_incrementor_minus)))
+                .perform(click());
+
+        onView(allOf(isDescendantOfA(recyclerView(R.id.fragment_recipe_cook_ingredients).atPosition(0)),
+                recyclerView(R.id.item_recipe_item_amounts).atPositionOnView(0, R.id.item_amount_incrementor_stock_counter)))
+                .check(matches(withText(unitRenderStrategy.render(ingredient.presentAmount().get(0).decrease().scaleSelected()))));
+    }
+
+    @Test
+    public void pressingProductAmountAddButtonWorks() {
+        var recipe = getInputData();
+        var product = recipe.products().get(0);
+
+        onView(allOf(isDescendantOfA(recyclerView(R.id.fragment_recipe_cook_products).atPosition(0)),
+                recyclerView(R.id.item_recipe_item_amounts).atPositionOnView(0, R.id.item_amount_incrementor_plus)))
+                .perform(click());
+
+        onView(allOf(isDescendantOfA(recyclerView(R.id.fragment_recipe_cook_products).atPosition(0)),
+                recyclerView(R.id.item_recipe_item_amounts).atPositionOnView(0, R.id.item_amount_incrementor_stock_counter)))
+                .check(matches(withText(unitRenderStrategy.render(product.producedAmount().increase().scaledProductedAmount()))));
+    }
+
+    @Test
+    public void pressingProductAmountRemoveButtonWorks() {
+        var recipe = getInputData();
+        var product = recipe.products().get(0);
+
+        onView(allOf(isDescendantOfA(recyclerView(R.id.fragment_recipe_cook_products).atPosition(0)),
+                recyclerView(R.id.item_recipe_item_amounts).atPositionOnView(0, R.id.item_amount_incrementor_minus)))
+                .perform(click());
+
+        onView(allOf(isDescendantOfA(recyclerView(R.id.fragment_recipe_cook_products).atPosition(0)),
+                recyclerView(R.id.item_recipe_item_amounts).atPositionOnView(0, R.id.item_amount_incrementor_stock_counter)))
+                .check(matches(withText(unitRenderStrategy.render(product.producedAmount().decrease().scaledProductedAmount()))));
+    }
+
+    @Test
     public void checkingOutNavigatesBack() {
         scenario.onFragment(f -> f.onMenuItemSelected(menuItem(f.getContext(), R.id.menu_check)));
 
@@ -172,6 +229,7 @@ public class RecipeCookFragmentTest {
                                                         BigDecimal.valueOf(100),
                                                         "g"
                                                 ),
+                                                create(1),
                                                 10,
                                                 1
                                         )
@@ -193,6 +251,7 @@ public class RecipeCookFragmentTest {
                                                         BigDecimal.valueOf(0.1),
                                                         "l"
                                                 ),
+                                                create(2),
                                                 5,
                                                 1
                                         ),
@@ -201,6 +260,7 @@ public class RecipeCookFragmentTest {
                                                         BigDecimal.valueOf(1),
                                                         "piece"
                                                 ),
+                                                create(3),
                                                 5,
                                                 0
                                         )

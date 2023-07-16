@@ -31,8 +31,11 @@ import de.njsm.stocks.client.business.entities.RecipeCookingFormDataIngredient;
 import de.njsm.stocks.client.presenter.UnitAmountRenderStrategy;
 import de.njsm.stocks.client.ui.R;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
 
+import static com.google.common.collect.Lists.newArrayList;
 import static de.njsm.stocks.client.fragment.util.ListDiffer.byNestedId;
 
 class RecipeIngredientAdapter extends RecyclerView.Adapter<RecipeIngredientViewHolder> {
@@ -48,7 +51,7 @@ class RecipeIngredientAdapter extends RecyclerView.Adapter<RecipeIngredientViewH
     public void setData(List<RecipeCookingFormDataIngredient> newList) {
         var oldList = data;
         DiffUtil.calculateDiff(byNestedId(oldList, newList, RecipeCookingFormDataIngredient::id), true).dispatchUpdatesTo(this);
-        this.data = newList;
+        this.data = new ArrayList<>(newList);
     }
 
     @NonNull
@@ -56,7 +59,28 @@ class RecipeIngredientAdapter extends RecyclerView.Adapter<RecipeIngredientViewH
     public RecipeIngredientViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.item_recipe_item, parent, false);
-        return new RecipeIngredientViewHolder(v);
+        return new RecipeIngredientViewHolder(v, this::onAddButtonPressed, this::onRemoveButtonPressed);
+    }
+
+    private void onAddButtonPressed(RecipeIngredientViewHolder viewHolder, ItemIngredientAmountIncrementorViewHolder amountViewHolder) {
+        onModifyButtonPressed(viewHolder, amountViewHolder, RecipeCookingFormDataIngredient.PresentAmount::increase);
+    }
+
+    private void onRemoveButtonPressed(RecipeIngredientViewHolder viewHolder, ItemIngredientAmountIncrementorViewHolder amountViewHolder) {
+        onModifyButtonPressed(viewHolder, amountViewHolder, RecipeCookingFormDataIngredient.PresentAmount::decrease);
+    }
+
+    private void onModifyButtonPressed(RecipeIngredientViewHolder viewHolder,
+                                       ItemIngredientAmountIncrementorViewHolder amountViewHolder,
+                                       Function<RecipeCookingFormDataIngredient.PresentAmount, RecipeCookingFormDataIngredient.PresentAmount> modifier) {
+        int position = viewHolder.getAbsoluteAdapterPosition();
+        int amountPosition = amountViewHolder.getAbsoluteAdapterPosition();
+        var item = data.remove(position);
+        var newAmounts = newArrayList(item.presentAmount());
+        var increasedAmount = modifier.apply(newAmounts.remove(amountPosition));
+        newAmounts.add(amountPosition, increasedAmount);
+        data.add(position, RecipeCookingFormDataIngredient.create(item.id(), item.name(), item.toBuy(), item.requiredAmount(), newAmounts));
+        notifyItemChanged(position);
     }
 
     @Override

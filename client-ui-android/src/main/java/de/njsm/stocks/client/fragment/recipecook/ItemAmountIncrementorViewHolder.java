@@ -34,10 +34,12 @@ class ItemAmountIncrementorViewHolder extends RecyclerView.ViewHolder {
 
     private final TextView amount;
 
-    ItemAmountIncrementorViewHolder(@NonNull @NotNull View itemView) {
+    ItemAmountIncrementorViewHolder(@NonNull @NotNull View itemView, View.OnClickListener addCallback, View.OnClickListener removeCallback) {
         super(itemView);
         abbreviation = itemView.findViewById(R.id.item_amount_incrementor_unit);
         amount = itemView.findViewById(R.id.item_amount_incrementor_stock_counter);
+        itemView.findViewById(R.id.item_amount_incrementor_plus).setOnClickListener(addCallback);
+        itemView.findViewById(R.id.item_amount_incrementor_minus).setOnClickListener(removeCallback);
     }
 
     void setCurrentAmount(String amount) {

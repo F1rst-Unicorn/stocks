@@ -31,12 +31,18 @@ class ItemIngredientAmountIncrementorViewHolder extends ItemAmountIncrementorVie
 
     private final TextView maxAmount;
 
-    ItemIngredientAmountIncrementorViewHolder(@NonNull @NotNull View itemView) {
-        super(itemView);
+    ItemIngredientAmountIncrementorViewHolder(@NonNull @NotNull View itemView, ButtonCallback addBallback, ButtonCallback removeCallback) {
+        super(itemView, null, null);
         maxAmount = itemView.findViewById(R.id.item_amount_incrementor_max_counter);
+        itemView.findViewById(R.id.item_amount_incrementor_plus).setOnClickListener(v -> addBallback.onClicked(this));
+        itemView.findViewById(R.id.item_amount_incrementor_minus).setOnClickListener(v -> removeCallback.onClicked(this));
     }
 
     void setMaxAmount(String maxAmount) {
         this.maxAmount.setText(maxAmount);
+    }
+
+    interface ButtonCallback {
+        void onClicked(ItemIngredientAmountIncrementorViewHolder amountViewHolder);
     }
 }

@@ -27,11 +27,13 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
+import com.google.common.collect.Lists;
 import de.njsm.stocks.client.business.entities.RecipeCookingFormDataProduct;
 import de.njsm.stocks.client.presenter.UnitAmountRenderStrategy;
 import de.njsm.stocks.client.ui.R;
 
 import java.util.List;
+import java.util.function.Function;
 
 import static de.njsm.stocks.client.fragment.util.ListDiffer.byNestedId;
 
@@ -48,7 +50,7 @@ class RecipeProductAdapter extends RecyclerView.Adapter<RecipeProductViewHolder>
     public void setData(List<RecipeCookingFormDataProduct> newList) {
         var oldList = data;
         DiffUtil.calculateDiff(byNestedId(oldList, newList, RecipeCookingFormDataProduct::id), true).dispatchUpdatesTo(this);
-        this.data = newList;
+        this.data = Lists.newArrayList(newList);
     }
 
     @NonNull
@@ -56,7 +58,23 @@ class RecipeProductAdapter extends RecyclerView.Adapter<RecipeProductViewHolder>
     public RecipeProductViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.item_recipe_item, parent, false);
-        return new RecipeProductViewHolder(v);
+        return new RecipeProductViewHolder(v, this::onAddButtonPressed, this::onRemoveButtonPressed);
+    }
+
+    private void onAddButtonPressed(RecipeProductViewHolder viewHolder) {
+        onModifyButtonPressed(viewHolder, v -> v.producedAmount().increase());
+    }
+
+    private void onRemoveButtonPressed(RecipeProductViewHolder viewHolder) {
+        onModifyButtonPressed(viewHolder, v -> v.producedAmount().decrease());
+    }
+
+    private void onModifyButtonPressed(RecipeProductViewHolder viewHolder, Function<RecipeCookingFormDataProduct, RecipeCookingFormDataProduct.Amount> modifier) {
+        int position = viewHolder.getAbsoluteAdapterPosition();
+        var item = data.remove(position);
+        var increasedAmount = modifier.apply(item);
+        data.add(position, RecipeCookingFormDataProduct.create(item.id(), item.name(), increasedAmount));
+        notifyItemChanged(position);
     }
 
     @Override

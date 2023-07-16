@@ -40,14 +40,14 @@ class RecipeProductViewHolder extends RecyclerView.ViewHolder {
 
     private final ProductAmountAdapter adapter;
 
-    RecipeProductViewHolder(@NonNull @NotNull View itemView) {
+    RecipeProductViewHolder(@NonNull @NotNull View itemView, ButtonCallback addCallback, ButtonCallback removeCallback) {
         super(itemView);
         foodName = itemView.findViewById(R.id.item_recipe_item_food_name);
         recipeAmounts = itemView.findViewById(R.id.item_recipe_item_scaled_unit);
         itemView.findViewById(R.id.item_recipe_item_shopping_cart).setVisibility(View.GONE);
         RecyclerView amounts = itemView.findViewById(R.id.item_recipe_item_amounts);
 
-        adapter = new ProductAmountAdapter();
+        adapter = new ProductAmountAdapter(() -> addCallback.onClicked(this), () -> removeCallback.onClicked(this));
         amounts.setAdapter(adapter);
         amounts.setLayoutManager(new LinearLayoutManager(itemView.getContext()));
     }
@@ -62,5 +62,9 @@ class RecipeProductViewHolder extends RecyclerView.ViewHolder {
 
     void setAmounts(List<RecipeCookingFormDataProduct.Amount> amounts) {
         this.adapter.setData(amounts);
+    }
+
+    interface ButtonCallback {
+        void onClicked(RecipeProductViewHolder viewHolder);
     }
 }

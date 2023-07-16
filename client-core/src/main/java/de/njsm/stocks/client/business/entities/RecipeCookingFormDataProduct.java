@@ -45,14 +45,25 @@ public abstract class RecipeCookingFormDataProduct {
 
         public abstract IdImpl<ScaledUnit> id();
 
-        public abstract int defaultProducedAmount();
+        public abstract int producedAmount();
 
-        public BigDecimal scaledDefaultProductedAmount() {
-            return prefixedAmount().multiply(new BigDecimal(defaultProducedAmount()));
+        public Amount increase() {
+            return create(id(), amount(), abbreviation(), producedAmount() + 1);
         }
 
-        public static Amount create(Id<ScaledUnit> id, BigDecimal amount, String abbreviation, int defaultProducedAmount) {
-            return new AutoValue_RecipeCookingFormDataProduct_Amount(amount, abbreviation, from(id), defaultProducedAmount);
+        public Amount decrease() {
+            if (producedAmount() <= 0) {
+                return this;
+            }
+            return create(id(), amount(), abbreviation(), producedAmount() - 1);
+        }
+
+        public BigDecimal scaledProductedAmount() {
+            return prefixedAmount().multiply(new BigDecimal(producedAmount()));
+        }
+
+        public static Amount create(Id<ScaledUnit> id, BigDecimal amount, String abbreviation, int producedAmount) {
+            return new AutoValue_RecipeCookingFormDataProduct_Amount(amount, abbreviation, from(id), producedAmount);
         }
     }
 }

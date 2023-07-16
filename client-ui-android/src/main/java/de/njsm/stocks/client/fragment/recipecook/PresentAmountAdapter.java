@@ -25,6 +25,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 import de.njsm.stocks.client.business.entities.RecipeCookingFormDataIngredient;
 import de.njsm.stocks.client.presenter.UnitAmountRenderStrategy;
@@ -32,19 +33,29 @@ import de.njsm.stocks.client.ui.R;
 
 import java.util.List;
 
+import static de.njsm.stocks.client.fragment.util.ListDiffer.byNestedId;
+
 public class PresentAmountAdapter extends RecyclerView.Adapter<ItemIngredientAmountIncrementorViewHolder> {
 
     private List<RecipeCookingFormDataIngredient.PresentAmount> data;
 
+    private final ItemIngredientAmountIncrementorViewHolder.ButtonCallback addCallback;
+
+    private final ItemIngredientAmountIncrementorViewHolder.ButtonCallback removeCallback;
+
     private final UnitAmountRenderStrategy unitAmountRenderStrategy;
 
-    public PresentAmountAdapter() {
+    public PresentAmountAdapter(ItemIngredientAmountIncrementorViewHolder.ButtonCallback addCallback,
+                                ItemIngredientAmountIncrementorViewHolder.ButtonCallback removeCallback) {
+        this.addCallback = addCallback;
+        this.removeCallback = removeCallback;
         unitAmountRenderStrategy = new UnitAmountRenderStrategy();
     }
 
-    public void setData(List<RecipeCookingFormDataIngredient.PresentAmount> data) {
-        this.data = data;
-        notifyDataSetChanged();
+    public void setData(List<RecipeCookingFormDataIngredient.PresentAmount> newList) {
+        var oldList = data;
+        DiffUtil.calculateDiff(byNestedId(oldList, newList, RecipeCookingFormDataIngredient.PresentAmount::scaledUnit), true).dispatchUpdatesTo(this);
+        this.data = newList;
     }
 
     @NonNull
@@ -52,7 +63,7 @@ public class PresentAmountAdapter extends RecyclerView.Adapter<ItemIngredientAmo
     public ItemIngredientAmountIncrementorViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.item_amount_incrementor, parent, false);
-        return new ItemIngredientAmountIncrementorViewHolder(v);
+        return new ItemIngredientAmountIncrementorViewHolder(v, addCallback, removeCallback);
     }
 
     @Override
