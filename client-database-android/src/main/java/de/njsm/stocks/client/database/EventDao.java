@@ -49,6 +49,12 @@ abstract class EventDao {
             "join user initiator_user on initiator_user.id = initiator_device.belongs_to " +
             "and initiator_user.valid_time_end = " + DATABASE_INFINITY_STRING_SQL + " ";
 
+    private static final String CROSS_JOIN_INITIATOR =
+            "cross join user_device initiator_device on main_table.initiates = initiator_device.id " +
+            "and initiator_device.valid_time_end = " + DATABASE_INFINITY_STRING_SQL + " " +
+            "cross join user initiator_user on initiator_user.id = initiator_device.belongs_to " +
+            "and initiator_user.valid_time_end = " + DATABASE_INFINITY_STRING_SQL + " ";
+
     @Query("select " +
             EVENT_COLUMNS +
             "main_table.name as name, " +
@@ -193,31 +199,31 @@ abstract class EventDao {
             "user_device.name as registerer, " +
             "location.name as locationName " +
             "from food_item main_table " +
-            "join food on food.id = main_table.of_type " +
+            "cross join food on food.id = main_table.of_type " +
                 "and food.valid_time_start <= main_table.transaction_time_start " +
                 "and main_table.transaction_time_start < food.valid_time_end " +
                 "and food.transaction_time_end = " + DATABASE_INFINITY_STRING_SQL +
-            "join scaled_unit on scaled_unit.id = main_table.unit " +
+            "cross join scaled_unit on scaled_unit.id = main_table.unit " +
                 "and scaled_unit.valid_time_start <= main_table.transaction_time_start " +
                 "and main_table.transaction_time_start < scaled_unit.valid_time_end " +
                 "and scaled_unit.transaction_time_end = " + DATABASE_INFINITY_STRING_SQL +
-            "join unit on unit.id = scaled_unit.unit " +
+            "cross join unit on unit.id = scaled_unit.unit " +
                 "and unit.valid_time_start <= main_table.transaction_time_start " +
                 "and main_table.transaction_time_start < unit.valid_time_end " +
                 "and unit.transaction_time_end = " + DATABASE_INFINITY_STRING_SQL +
-            "join location on location.id = main_table.stored_in " +
+            "cross join location on location.id = main_table.stored_in " +
                 "and location.valid_time_start <= main_table.transaction_time_start " +
                 "and main_table.transaction_time_start < location.valid_time_end " +
                 "and location.transaction_time_end = " + DATABASE_INFINITY_STRING_SQL +
-            "join user on user.id = main_table.buys " +
+            "cross join user on user.id = main_table.buys " +
                 "and user.valid_time_start <= main_table.transaction_time_start " +
                 "and main_table.transaction_time_start < user.valid_time_end " +
                 "and user.transaction_time_end = " + DATABASE_INFINITY_STRING_SQL +
-            "join user_device on user_device.id = main_table.registers " +
+            "cross join user_device on user_device.id = main_table.registers " +
                 "and user_device.valid_time_start <= main_table.transaction_time_start " +
                 "and main_table.transaction_time_start < user_device.valid_time_end " +
                 "and user_device.transaction_time_end = " + DATABASE_INFINITY_STRING_SQL +
-            JOIN_INITIATOR +
+            CROSS_JOIN_INITIATOR +
             "where :lower <= main_table.transaction_time_start " +
             "and main_table.transaction_time_start < :upper " +
             "order by main_table.transaction_time_start desc, main_table.valid_time_end")
@@ -234,31 +240,31 @@ abstract class EventDao {
             "user_device.name as registerer, " +
             "location.name as locationName " +
             "from food_item main_table " +
-            "join food on food.id = main_table.of_type " +
+            "cross join food on food.id = main_table.of_type " +
                 "and food.valid_time_start <= main_table.transaction_time_start " +
                 "and main_table.transaction_time_start < food.valid_time_end " +
                 "and food.transaction_time_end = " + DATABASE_INFINITY_STRING_SQL +
-            "join scaled_unit on scaled_unit.id = main_table.unit " +
+            "cross join scaled_unit on scaled_unit.id = main_table.unit " +
                 "and scaled_unit.valid_time_start <= main_table.transaction_time_start " +
                 "and main_table.transaction_time_start < scaled_unit.valid_time_end " +
                 "and scaled_unit.transaction_time_end = " + DATABASE_INFINITY_STRING_SQL +
-            "join unit on unit.id = scaled_unit.unit " +
+            "cross join unit on unit.id = scaled_unit.unit " +
                 "and unit.valid_time_start <= main_table.transaction_time_start " +
                 "and main_table.transaction_time_start < unit.valid_time_end " +
                 "and unit.transaction_time_end = " + DATABASE_INFINITY_STRING_SQL +
-            "join location on location.id = main_table.stored_in " +
+            "cross join location on location.id = main_table.stored_in " +
                 "and location.valid_time_start <= main_table.transaction_time_start " +
                 "and main_table.transaction_time_start < location.valid_time_end " +
                 "and location.transaction_time_end = " + DATABASE_INFINITY_STRING_SQL +
-            "join user on user.id = main_table.buys " +
+            "cross join user on user.id = main_table.buys " +
                 "and user.valid_time_start <= main_table.transaction_time_start " +
                 "and main_table.transaction_time_start < user.valid_time_end " +
                 "and user.transaction_time_end = " + DATABASE_INFINITY_STRING_SQL +
-            "join user_device on user_device.id = main_table.registers " +
+            "cross join user_device on user_device.id = main_table.registers " +
                 "and user_device.valid_time_start <= main_table.transaction_time_start " +
                 "and main_table.transaction_time_start < user_device.valid_time_end " +
                 "and user_device.transaction_time_end = " + DATABASE_INFINITY_STRING_SQL +
-            JOIN_INITIATOR +
+            CROSS_JOIN_INITIATOR +
             "where :lower <= main_table.transaction_time_start " +
             "and main_table.transaction_time_start < :upper " +
             "and main_table.of_type = :foodId " +
@@ -276,31 +282,31 @@ abstract class EventDao {
             "user_device.name as registerer, " +
             "location.name as locationName " +
             "from food_item main_table " +
-            "join food on food.id = main_table.of_type " +
+            "cross join food on food.id = main_table.of_type " +
                 "and food.valid_time_start <= main_table.transaction_time_start " +
                 "and main_table.transaction_time_start < food.valid_time_end " +
                 "and food.transaction_time_end = " + DATABASE_INFINITY_STRING_SQL +
-            "join scaled_unit on scaled_unit.id = main_table.unit " +
+            "cross join scaled_unit on scaled_unit.id = main_table.unit " +
                 "and scaled_unit.valid_time_start <= main_table.transaction_time_start " +
                 "and main_table.transaction_time_start < scaled_unit.valid_time_end " +
                 "and scaled_unit.transaction_time_end = " + DATABASE_INFINITY_STRING_SQL +
-            "join unit on unit.id = scaled_unit.unit " +
+            "cross join unit on unit.id = scaled_unit.unit " +
                 "and unit.valid_time_start <= main_table.transaction_time_start " +
                 "and main_table.transaction_time_start < unit.valid_time_end " +
                 "and unit.transaction_time_end = " + DATABASE_INFINITY_STRING_SQL +
-            "join location on location.id = main_table.stored_in " +
+            "cross join location on location.id = main_table.stored_in " +
                 "and location.valid_time_start <= main_table.transaction_time_start " +
                 "and main_table.transaction_time_start < location.valid_time_end " +
                 "and location.transaction_time_end = " + DATABASE_INFINITY_STRING_SQL +
-            "join user on user.id = main_table.buys " +
+            "cross join user on user.id = main_table.buys " +
                 "and user.valid_time_start <= main_table.transaction_time_start " +
                 "and main_table.transaction_time_start < user.valid_time_end " +
                 "and user.transaction_time_end = " + DATABASE_INFINITY_STRING_SQL +
-            "join user_device on user_device.id = main_table.registers " +
+            "cross join user_device on user_device.id = main_table.registers " +
                 "and user_device.valid_time_start <= main_table.transaction_time_start " +
                 "and main_table.transaction_time_start < user_device.valid_time_end " +
                 "and user_device.transaction_time_end = " + DATABASE_INFINITY_STRING_SQL +
-            JOIN_INITIATOR +
+            CROSS_JOIN_INITIATOR +
             "where :lower <= main_table.transaction_time_start " +
             "and main_table.transaction_time_start < :upper " +
             "and :locationId in (" +
