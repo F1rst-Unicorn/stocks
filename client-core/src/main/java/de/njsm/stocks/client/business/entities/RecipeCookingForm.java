@@ -19,17 +19,23 @@
  *
  */
 
-package de.njsm.stocks.client.business;
+package de.njsm.stocks.client.business.entities;
 
-import de.njsm.stocks.client.business.entities.IdImpl;
-import de.njsm.stocks.client.business.entities.Recipe;
-import de.njsm.stocks.client.business.entities.RecipeCookingForm;
-import de.njsm.stocks.client.business.entities.RecipeCookingFormData;
-import io.reactivex.rxjava3.core.Observable;
+import com.google.auto.value.AutoValue;
 
-public interface RecipeCookInteractor {
+import java.util.List;
 
-    Observable<RecipeCookingFormData> getData(IdImpl<Recipe> recipeId);
+@AutoValue
+public abstract class RecipeCookingForm {
 
-    void cook(RecipeCookingForm recipeCookingForm);
+    public abstract List<RecipeCookingIngredientToConsume> ingredients();
+
+    public abstract List<RecipeCookingProductToProduce> products();
+
+    public static RecipeCookingForm create(
+            List<RecipeCookingIngredientToConsume> ingredients,
+            List<RecipeCookingProductToProduce> products) {
+
+        return new AutoValue_RecipeCookingForm(ingredients, products);
+    }
 }

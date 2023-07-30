@@ -66,6 +66,13 @@ public abstract class RecipeCookingFormDataIngredient {
                 .collect(Collectors.toList()));
     }
 
+    public List<RecipeCookingIngredientToConsume> toConsumptions() {
+        return presentAmount().stream()
+                .filter(v -> v.selectedCount() > 0)
+                .map(v -> RecipeCookingIngredientToConsume.create(id(), v.scaledUnit(), v.selectedCount()))
+                .collect(Collectors.toList());
+    }
+
     @AutoValue
     public static abstract class PresentAmount {
 

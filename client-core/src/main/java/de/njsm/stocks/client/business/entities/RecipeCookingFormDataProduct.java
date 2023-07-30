@@ -50,6 +50,13 @@ public abstract class RecipeCookingFormDataProduct {
             return this;
     }
 
+    public RecipeCookingProductToProduce toProductions() {
+        return RecipeCookingProductToProduce.create(
+                id(),
+                producedAmount().id(),
+                producedAmount().producedAmount());
+    }
+
     @AutoValue
     public static abstract class Amount implements UnitAmount {
 

@@ -27,15 +27,15 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.view.MenuProvider;
 import androidx.lifecycle.ViewModelProvider;
-import de.njsm.stocks.client.business.entities.IdImpl;
-import de.njsm.stocks.client.business.entities.Recipe;
+import de.njsm.stocks.client.business.entities.*;
 import de.njsm.stocks.client.fragment.BottomToolbarFragment;
 import de.njsm.stocks.client.navigation.RecipeCookNavigator;
 import de.njsm.stocks.client.presenter.RecipeCookViewModel;
 import de.njsm.stocks.client.ui.R;
-import org.jetbrains.annotations.NotNull;
 
 import javax.inject.Inject;
+import java.util.Collection;
+import java.util.stream.Collectors;
 
 public class RecipeCookFragment extends BottomToolbarFragment implements MenuProvider {
 
@@ -67,12 +67,23 @@ public class RecipeCookFragment extends BottomToolbarFragment implements MenuPro
 
 
     @Override
-    public void onCreateMenu(@NonNull @NotNull Menu menu, @NonNull @NotNull MenuInflater inflater) {
+    public void onCreateMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
         inflater.inflate(R.menu.check, menu);
     }
 
     @Override
-    public boolean onMenuItemSelected(@NonNull @NotNull MenuItem menuItem) {
+    public boolean onMenuItemSelected(@NonNull MenuItem menuItem) {
+        var ingredientsToConsume = form.getCurrentIngredients()
+                .stream()
+                .map(RecipeCookingFormDataIngredient::toConsumptions)
+                .flatMap(Collection::stream)
+                .collect(Collectors.toList());
+        var productsToProduce = form.getCurrentProducts()
+                .stream()
+                .map(RecipeCookingFormDataProduct::toProductions)
+                .collect(Collectors.toList());
+        viewModel.cookRecipe(RecipeCookingForm.create(ingredientsToConsume, productsToProduce));
+
         navigator.back();
         return true;
     }

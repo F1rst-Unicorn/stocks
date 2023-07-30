@@ -41,7 +41,9 @@ import org.junit.runner.RunWith;
 
 import javax.inject.Inject;
 import java.math.BigDecimal;
+import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
@@ -206,10 +208,23 @@ public class RecipeCookFragmentTest {
     }
 
     @Test
-    public void checkingOutNavigatesBack() {
+    public void checkingOutSubmitsForm() {
+        var recipe = getInputData();
+
         scenario.onFragment(f -> f.onMenuItemSelected(menuItem(f.getContext(), R.id.menu_check)));
 
         verify(navigator).back();
+        verify(recipeCookInteractor).cook(RecipeCookingForm.create(
+                recipe.ingredients()
+                        .stream()
+                        .map(RecipeCookingFormDataIngredient::toConsumptions)
+                        .flatMap(Collection::stream)
+                        .collect(Collectors.toList()),
+                recipe.products()
+                        .stream()
+                        .map(RecipeCookingFormDataProduct::toProductions)
+                        .collect(Collectors.toList())
+        ));
     }
 
     @Inject

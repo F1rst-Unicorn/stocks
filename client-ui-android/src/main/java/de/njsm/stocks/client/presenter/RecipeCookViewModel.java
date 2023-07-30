@@ -51,4 +51,8 @@ public class RecipeCookViewModel extends ViewModel {
     public void putFoodToBuy(IdImpl<Food> foodId) {
         foodToBuyInteractor.manageFoodToBuy(FoodToToggleBuy.create(foodId));
     }
+
+    public void cookRecipe(RecipeCookingForm recipeCookingForm) {
+        interactor.cook(recipeCookingForm);
+    }
 }

@@ -104,7 +104,7 @@ class RecipeCookInteractorImpl implements RecipeCookInteractor {
     }
 
     @Override
-    public void cook() {
-        throw new UnsupportedOperationException("TODO");
+    public void cook(RecipeCookingForm recipeCookingForm) {
+
     }
 }
