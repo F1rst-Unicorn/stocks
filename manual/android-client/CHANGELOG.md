@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+### Added
+
+* Recipe ingredients and products can now be checked out in bulk again
+  ([#69](https://j.njsm.de/git/veenj/stocks/issues/69)).
+
 ## [4.5.0.4]
 
 ### Fixed
@@ -23,6 +28,7 @@
 * Improved performance of the activity feed.
 
 * Upgraded library dependencies.
+
 ## [4.5.0.1]
 
 ### Fixed
