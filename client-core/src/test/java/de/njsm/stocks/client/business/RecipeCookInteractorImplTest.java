@@ -22,6 +22,7 @@
 package de.njsm.stocks.client.business;
 
 import de.njsm.stocks.client.business.entities.*;
+import de.njsm.stocks.client.execution.Scheduler;
 import io.reactivex.rxjava3.core.Observable;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -30,6 +31,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
+import java.time.Instant;
 import java.util.List;
 
 import static de.njsm.stocks.client.business.entities.IdImpl.create;
@@ -44,13 +46,35 @@ class RecipeCookInteractorImplTest {
     @Mock
     private RecipeCookRepository repository;
 
+    @Mock
+    private FoodItemAddRepository foodItemAddRepository;
+
+    @Mock
+    private Scheduler scheduler;
+
+    @Mock
+    private EntityDeleteService<FoodItem> foodItemDeleteService;
+
+    @Mock
+    private Localiser localiser;
+
+    @Mock
+    private Synchroniser synchroniser;
+
+    @Mock
+    private ErrorRecorder errorRecorder;
+
+    @Mock
+    private FoodItemAddService foodItemAddService;
+
     private final IdImpl<Recipe> recipeId = create(1);
 
     private final RecipeForCooking recipe = RecipeForCooking.create(recipeId, "Pizza");
 
     @BeforeEach
     void setUp() {
-        uut = new RecipeCookInteractorImpl(new RecipeIngredientAmountDistributor(), repository);
+        uut = new RecipeCookInteractorImpl(new RecipeIngredientAmountDistributor(), repository, scheduler, foodItemDeleteService, foodItemAddService, errorRecorder, synchroniser, localiser,
+                new FoodItemFieldPredictor(foodItemAddRepository, localiser, () -> Instant.EPOCH));
         when(repository.getRecipe(recipeId)).thenReturn(Observable.just(recipe));
         when(repository.getProducts(recipeId)).thenReturn(Observable.just(emptyList()));
     }

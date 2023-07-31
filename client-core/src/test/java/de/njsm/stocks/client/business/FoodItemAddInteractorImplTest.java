@@ -42,6 +42,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static de.njsm.stocks.client.business.Matchers.equalBy;
+import static de.njsm.stocks.client.business.entities.IdImpl.create;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
@@ -73,7 +74,8 @@ class FoodItemAddInteractorImplTest {
     void setUp() {
         localiser = new Localiser(clock);
         clock = () -> Instant.EPOCH;
-        uut = new FoodItemAddInteractorImpl(service, repository, scheduler, synchroniser, errorRecorder, localiser, clock);
+        uut = new FoodItemAddInteractorImpl(service, repository, scheduler, synchroniser, errorRecorder, localiser, clock,
+                new FoodItemFieldPredictor(repository, localiser, clock));
     }
 
     @AfterEach
@@ -85,7 +87,7 @@ class FoodItemAddInteractorImplTest {
 
     @Test
     void basicFormDataIsComputed() {
-        FoodForItemCreation food = FoodForItemCreation.create(1, "Banana", Period.ofDays(10), Optional.of(() -> 3), () -> 4);
+        FoodForItemCreation food = FoodForItemCreation.create(1, "Banana", Period.ofDays(10), Optional.of(create(3)), () -> 4);
         List<LocationForSelection> locations = getLocations();
         List<ScaledUnitForSelection> units = getUnits();
         when(repository.getFood(equalBy(food))).thenReturn(Maybe.just(food));
@@ -109,7 +111,7 @@ class FoodItemAddInteractorImplTest {
         when(repository.getFood(equalBy(food))).thenReturn(Maybe.just(food));
         when(repository.getLocations()).thenReturn(Maybe.just(locations));
         when(repository.getUnits()).thenReturn(Maybe.just(units));
-        when(repository.getLocationWithMostItemsOfType(food)).thenReturn(Maybe.just(() -> 3));
+        when(repository.getLocationWithMostItemsOfType(food)).thenReturn(Maybe.just(IdImpl.create(3)));
 
         Maybe<FoodItemAddData> actual = uut.getFormData(food);
 
@@ -141,7 +143,7 @@ class FoodItemAddInteractorImplTest {
 
     @Test
     void existingFoodIsQueriedForEatByDate() {
-        FoodForItemCreation food = FoodForItemCreation.create(1, "Banana", Period.ZERO, Optional.of(() -> 3), () -> 4);
+        FoodForItemCreation food = FoodForItemCreation.create(1, "Banana", Period.ZERO, Optional.of(create(3)), () -> 4);
         List<LocationForSelection> locations = getLocations();
         List<ScaledUnitForSelection> units = getUnits();
         when(repository.getFood(equalBy(food))).thenReturn(Maybe.just(food));
@@ -161,7 +163,7 @@ class FoodItemAddInteractorImplTest {
 
     @Test
     void everExistedFoodIsQueriedForEatByDate() {
-        FoodForItemCreation food = FoodForItemCreation.create(1, "Banana", Period.ZERO, Optional.of(() -> 3), () -> 4);
+        FoodForItemCreation food = FoodForItemCreation.create(1, "Banana", Period.ZERO, Optional.of(create(3)), () -> 4);
         List<LocationForSelection> locations = getLocations();
         List<ScaledUnitForSelection> units = getUnits();
         when(repository.getFood(equalBy(food))).thenReturn(Maybe.just(food));
@@ -181,7 +183,7 @@ class FoodItemAddInteractorImplTest {
 
     @Test
     void noPredictorResortsToNow() {
-        FoodForItemCreation food = FoodForItemCreation.create(1, "Banana", Period.ZERO, Optional.of(() -> 3), () -> 4);
+        FoodForItemCreation food = FoodForItemCreation.create(1, "Banana", Period.ZERO, Optional.of(create(3)), () -> 4);
         List<LocationForSelection> locations = getLocations();
         List<ScaledUnitForSelection> units = getUnits();
         when(repository.getFood(equalBy(food))).thenReturn(Maybe.just(food));

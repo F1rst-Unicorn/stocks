@@ -23,6 +23,7 @@ package de.njsm.stocks.client.database;
 
 import de.njsm.stocks.client.business.entities.FoodForItemCreation;
 import de.njsm.stocks.client.business.entities.Id;
+import de.njsm.stocks.client.business.entities.IdImpl;
 import de.njsm.stocks.client.business.entities.Location;
 import io.reactivex.rxjava3.core.Maybe;
 import org.junit.Before;
@@ -214,7 +215,7 @@ public class FoodItemAddRepositoryImplTest extends DbTestCase {
         FoodDbEntity food = standardEntities.foodDbEntity();
         stocksDatabase.synchronisationDao().writeFood(singletonList(food));
 
-        Maybe<Id<Location>> actual = uut.getLocationWithMostItemsOfType(food::id);
+        var actual = uut.getLocationWithMostItemsOfType(food::id);
 
         actual.test().assertComplete().assertNoValues();
     }
@@ -238,7 +239,7 @@ public class FoodItemAddRepositoryImplTest extends DbTestCase {
                 .build();
         stocksDatabase.synchronisationDao().writeFoodItems(asList(item1, item2, itemInDifferentLocation));
 
-        Maybe<Id<Location>> actual = uut.getLocationWithMostItemsOfType(food::id);
+        Maybe<IdImpl<Location>> actual = uut.getLocationWithMostItemsOfType(food::id);
 
         test(actual).assertValue(v -> v.id() == location.id());
     }

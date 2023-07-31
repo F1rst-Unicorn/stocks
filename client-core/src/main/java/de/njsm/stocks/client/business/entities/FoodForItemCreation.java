@@ -34,11 +34,11 @@ public abstract class FoodForItemCreation implements Id<Food> {
 
     public abstract Period expirationOffset();
 
-    public abstract Optional<Id<Location>> location();
+    public abstract Optional<IdImpl<Location>> location();
 
     public abstract Id<ScaledUnit> unit();
 
-    public static FoodForItemCreation create(int id, String name, Period expirationOffset, Optional<Id<Location>> location, Id<ScaledUnit> unit) {
+    public static FoodForItemCreation create(int id, String name, Period expirationOffset, Optional<IdImpl<Location>> location, Id<ScaledUnit> unit) {
         return new AutoValue_FoodForItemCreation(id, name, expirationOffset, location, unit);
     }
 

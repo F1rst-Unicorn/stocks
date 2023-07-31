@@ -39,5 +39,5 @@ public interface FoodItemAddRepository {
 
     Maybe<Instant> getMaxEatByEverOf(Id<Food> food);
 
-    Maybe<Id<Location>> getLocationWithMostItemsOfType(Id<Food> food);
+    Maybe<IdImpl<Location>> getLocationWithMostItemsOfType(Id<Food> food);
 }

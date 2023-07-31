@@ -22,6 +22,7 @@
 package de.njsm.stocks.client.business;
 
 import de.njsm.stocks.client.business.entities.*;
+import de.njsm.stocks.client.execution.Scheduler;
 import io.reactivex.rxjava3.core.Observable;
 
 import javax.inject.Inject;
@@ -38,10 +39,31 @@ class RecipeCookInteractorImpl implements RecipeCookInteractor {
 
     private final RecipeCookRepository repository;
 
+    private final Scheduler scheduler;
+
+    private final EntityDeleteService<FoodItem> foodItemDeleteService;
+
+    private final FoodItemAddService foodItemAddService;
+
+    private final ErrorRecorder errorRecorder;
+
+    private final Synchroniser synchroniser;
+
+    private final Localiser localiser;
+
+    private final FoodItemFieldPredictor predictor;
+
     @Inject
-    RecipeCookInteractorImpl(RecipeIngredientAmountDistributor distributor, RecipeCookRepository repository) {
+    RecipeCookInteractorImpl(RecipeIngredientAmountDistributor distributor, RecipeCookRepository repository, Scheduler scheduler, EntityDeleteService<FoodItem> foodItemDeleteService, FoodItemAddService foodItemAddService, ErrorRecorder errorRecorder, Synchroniser synchroniser, Localiser localiser, FoodItemFieldPredictor predictor) {
         this.distributor = distributor;
         this.repository = repository;
+        this.scheduler = scheduler;
+        this.foodItemDeleteService = foodItemDeleteService;
+        this.foodItemAddService = foodItemAddService;
+        this.errorRecorder = errorRecorder;
+        this.synchroniser = synchroniser;
+        this.localiser = localiser;
+        this.predictor = predictor;
     }
 
     @Override
@@ -105,6 +127,44 @@ class RecipeCookInteractorImpl implements RecipeCookInteractor {
 
     @Override
     public void cook(RecipeCookingForm recipeCookingForm) {
+        scheduler.schedule(Job.create(Job.Type.COOK_RECIPE, () -> doInBackground(recipeCookingForm)));
+    }
 
+    private void doInBackground(RecipeCookingForm recipeCookingForm) {
+        var foodItemsToDelete = repository.getFoodItemsForCooking(recipeCookingForm.ingredients());
+        checkout(foodItemsToDelete);
+        recipeCookingForm.products()
+                .forEach(this::add);
+        synchroniser.synchronise();
+    }
+
+    private FoodItemForm toFoodItem(RecipeCookingProductToProduce product) {
+        var prediction = predictor.predictFor(product.food());
+        return FoodItemForm.create(
+                prediction.predictEatBy(),
+                product.food().id(),
+                prediction.predictLocation().id(),
+                product.scaledUnit().id());
+    }
+
+    private void add(RecipeCookingProductToProduce product) {
+        FoodItemForm item = toFoodItem(product);
+        FoodItemToAdd networkItem = item.toNetwork(localiser);
+        for (int i = 0; i < product.count(); i++)
+            try {
+                foodItemAddService.add(networkItem);
+            } catch (SubsystemException e) {
+                errorRecorder.recordFoodItemAddError(e, item.toErrorRecording(localiser));
+            }
+    }
+
+    private void checkout(List<FoodItemForDeletion> foodItemsToDelete) {
+        for (var item : foodItemsToDelete) {
+            try {
+                foodItemDeleteService.delete(item);
+            } catch (SubsystemException e) {
+                errorRecorder.recordFoodItemDeleteError(e, item);
+            }
+        }
     }
 }

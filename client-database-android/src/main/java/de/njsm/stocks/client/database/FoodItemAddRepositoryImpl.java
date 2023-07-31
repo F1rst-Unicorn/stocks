@@ -57,7 +57,7 @@ class FoodItemAddRepositoryImpl implements FoodItemAddRepository {
                         f.id(),
                         f.name(),
                         f.expirationOffset(),
-                        Optional.ofNullable(f.location()).map(v -> () -> v),
+                        Optional.ofNullable(f.location()).map(IdImpl::create),
                         f::storeUnit
                 )).firstElement();
     }
@@ -83,7 +83,7 @@ class FoodItemAddRepositoryImpl implements FoodItemAddRepository {
     }
 
     @Override
-    public Maybe<Id<Location>> getLocationWithMostItemsOfType(Id<Food> food) {
-        return foodItemDao.getLocationWithMostItemsOfType(food.id()).map(v -> () -> v);
+    public Maybe<IdImpl<Location>> getLocationWithMostItemsOfType(Id<Food> food) {
+        return foodItemDao.getLocationWithMostItemsOfType(food.id()).map(IdImpl::create);
     }
 }

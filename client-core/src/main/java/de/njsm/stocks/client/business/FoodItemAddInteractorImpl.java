@@ -28,8 +28,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
-import java.time.Instant;
-import java.time.Period;
+import java.time.LocalDate;
 import java.util.List;
 
 class FoodItemAddInteractorImpl implements FoodItemAddInteractor {
@@ -48,45 +47,32 @@ class FoodItemAddInteractorImpl implements FoodItemAddInteractor {
 
     private final Localiser localiser;
 
-    private final Clock clock;
+    private final FoodItemFieldPredictor predictor;
 
     @Inject
-    FoodItemAddInteractorImpl(FoodItemAddService service, FoodItemAddRepository repository, Scheduler scheduler, Synchroniser synchroniser, ErrorRecorder errorRecorder, Localiser localiser, Clock clock) {
+    FoodItemAddInteractorImpl(FoodItemAddService service, FoodItemAddRepository repository, Scheduler scheduler, Synchroniser synchroniser, ErrorRecorder errorRecorder, Localiser localiser, Clock clock, FoodItemFieldPredictor predictor) {
         this.service = service;
         this.repository = repository;
         this.scheduler = scheduler;
         this.synchroniser = synchroniser;
         this.errorRecorder = errorRecorder;
         this.localiser = localiser;
-        this.clock = clock;
+        this.predictor = predictor;
     }
 
     @Override
     public Maybe<FoodItemAddData> getFormData(Id<Food> id) {
         Maybe<FoodForItemCreation> foodObservable = repository.getFood(id);
-        Maybe<Instant> predictedEatBy = foodObservable.flatMap(food -> {
-            if (food.expirationOffset().equals(Period.ZERO)) {
-                return Maybe.concat(repository.getMaxEatByOfPresentItemsOf(food),
-                                repository.getMaxEatByEverOf(food),
-                                Maybe.fromCallable(clock::get))
-                        .firstElement();
-            } else {
-                return Maybe.just(clock.get().plus(food.expirationOffset()));
-            }
-        });
-        Maybe<Id<Location>> predictedLocation = foodObservable.flatMap(food -> food.location().map(Maybe::just)
-                .orElseGet(() -> repository.getLocationWithMostItemsOfType(food)).defaultIfEmpty(() -> -1).toMaybe());
-
+        var prediction = predictor.predictFor(foodObservable);
         Maybe<List<LocationForSelection>> locations = repository.getLocations();
         Maybe<List<ScaledUnitForSelection>> units = repository.getUnits();
-
-        return Maybe.zip(foodObservable, locations, units, predictedEatBy, predictedLocation, this::fdsa);
+        return Maybe.zip(foodObservable, locations, units, prediction.predictEatByDateAsync(), prediction.predictLocationAsync(), this::combine);
     }
 
-    private FoodItemAddData fdsa(FoodForItemCreation f, List<LocationForSelection> l, List<ScaledUnitForSelection> u, Instant eatBy, Id<Location> location) {
+    private FoodItemAddData combine(FoodForItemCreation f, List<LocationForSelection> l, List<ScaledUnitForSelection> u, LocalDate eatBy, Id<Location> location) {
         ListWithSuggestion<LocationForSelection> locationWithSuggestion = ListSearcher.searchFirstSuggested(l, location);
         ListWithSuggestion<ScaledUnitForSelection> unitWithSuggestion = ListSearcher.findFirstSuggestion(u, f.unit());
-        return FoodItemAddData.create(f.toSelection(), localiser.toLocalDate(eatBy), locationWithSuggestion, unitWithSuggestion);
+        return FoodItemAddData.create(f.toSelection(), eatBy, locationWithSuggestion, unitWithSuggestion);
     }
 
     @Override
