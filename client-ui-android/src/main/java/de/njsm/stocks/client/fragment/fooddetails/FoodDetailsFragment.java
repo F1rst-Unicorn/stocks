@@ -80,6 +80,7 @@ public class FoodDetailsFragment extends InjectableFragment {
         view.setLocation(foodDetails.locationName());
         view.setDefaultExpiration(foodDetails.expirationOffset());
         view.setUnit(foodDetails.storeUnit());
+        view.setDescription(foodDetails.description());
         view.setDiagramData(foodDetails.amountOverTime(), new int[]{
                 ResourcesCompat.getColor(getResources(), R.color.colorPrimary, requireContext().getTheme()),
                 ResourcesCompat.getColor(getResources(), R.color.colorPrimaryDark, requireContext().getTheme()),

@@ -54,6 +54,8 @@ class FoodDetailsView {
 
     private final TextView storeUnit;
 
+    private final TextView description;
+
     private final UnitAmountRenderStrategy strategy;
 
     private final DateRenderStrategy dateRenderStrategy;
@@ -69,6 +71,7 @@ class FoodDetailsView {
         location = root.findViewById(R.id.fragment_food_details_location);
         expirationOffset = root.findViewById(R.id.fragment_food_details_expiration_offset);
         storeUnit = root.findViewById(R.id.fragment_food_details_store_unit);
+        description = root.findViewById(R.id.fragment_food_details_description);
         lineChart = root.findViewById(R.id.fragment_food_details_chart);
         barChart = root.findViewById(R.id.fragment_food_details_histogram);
 
@@ -97,6 +100,10 @@ class FoodDetailsView {
 
     public void setUnit(ScaledUnitForSelection scaledUnitForSelection) {
         storeUnit.setText(strategy.render(scaledUnitForSelection));
+    }
+
+    public void setDescription(String description) {
+        this.description.setText(description);
     }
 
     private void setupChart(DateRenderStrategy dateRenderStrategy) {
