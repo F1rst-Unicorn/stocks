@@ -7,7 +7,7 @@
 
     <ImageButton
             android:id="@+id/item_amount_incrementor_minus"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/outline_remove_black_24"
             android:background="?android:selectableItemBackground"
@@ -16,71 +16,71 @@
             app:layout_constraintEnd_toStartOf="@id/item_amount_incrementor_stock_counter"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintWidth_default="wrap"
+            app:layout_constrainedWidth="true"
             app:layout_constraintHorizontal_chainStyle="spread_inside"
     />
 
     <TextView
             android:id="@+id/item_amount_incrementor_stock_counter"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:layout_constraintStart_toEndOf="@id/item_amount_incrementor_minus"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/item_amount_incrementor_fraction_sign"
-            app:layout_constraintWidth_default="wrap"
+            app:layout_constrainedWidth="true"
             android:paddingStart="4dp"
             android:paddingEnd="4dp"
             android:text="5"/>
 
     <TextView
             android:id="@+id/item_amount_incrementor_fraction_sign"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:layout_constraintStart_toEndOf="@id/item_amount_incrementor_stock_counter"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/item_amount_incrementor_max_counter"
-            app:layout_constraintWidth_default="wrap"
+            app:layout_constrainedWidth="true"
             android:paddingStart="4dp"
             android:paddingEnd="4dp"
             android:text="/"/>
 
     <TextView
             android:id="@+id/item_amount_incrementor_max_counter"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:layout_constraintStart_toEndOf="@id/item_amount_incrementor_fraction_sign"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/item_amount_incrementor_unit"
-            app:layout_constraintWidth_default="wrap"
+            app:layout_constrainedWidth="true"
             android:paddingStart="4dp"
             android:paddingEnd="4dp"
             android:text="7"/>
 
     <TextView
             android:id="@+id/item_amount_incrementor_unit"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:layout_constraintStart_toEndOf="@id/item_amount_incrementor_max_counter"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/item_amount_incrementor_plus"
-            app:layout_constraintWidth_default="wrap"
+            app:layout_constrainedWidth="true"
             android:paddingStart="4dp"
             android:paddingEnd="4dp"
             android:text="g"/>
 
     <ImageButton
             android:id="@+id/item_amount_incrementor_plus"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/baseline_add_black_24"
             android:background="?android:selectableItemBackground"
             android:scaleType="center"
             android:padding="4dp"
-            app:layout_constraintWidth_default="wrap"
+            app:layout_constrainedWidth="true"
             app:layout_constraintStart_toEndOf="@id/item_amount_incrementor_unit"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"

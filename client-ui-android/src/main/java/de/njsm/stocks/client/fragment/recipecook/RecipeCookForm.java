@@ -22,6 +22,7 @@
 package de.njsm.stocks.client.fragment.recipecook;
 
 import android.view.View;
+import android.widget.TextView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import de.njsm.stocks.client.business.entities.Food;
@@ -39,7 +40,13 @@ class RecipeCookForm {
 
     private final RecipeProductAdapter productAdapter;
 
+    private final TextView ingredientHeadline;
+
+    private final TextView productsHeadline;
+
     RecipeCookForm(View root, Consumer<IdImpl<Food>> toBuyCallback) {
+        ingredientHeadline = root.findViewById(R.id.fragment_recipe_cook_label_ingredients);
+        productsHeadline = root.findViewById(R.id.fragment_recipe_cook_label_products);
         RecyclerView ingredients = root.findViewById(R.id.fragment_recipe_cook_ingredients);
         ingredientAdapter = new RecipeIngredientAdapter(toBuyCallback);
         ingredients.setLayoutManager(new LinearLayoutManager(root.getContext()));
@@ -54,10 +61,20 @@ class RecipeCookForm {
 
     void setIngredients(List<RecipeCookingFormDataIngredient> ingredients) {
         ingredientAdapter.setData(ingredients);
+        if (ingredients.isEmpty()) {
+            ingredientHeadline.setVisibility(View.GONE);
+        } else {
+            ingredientHeadline.setVisibility(View.VISIBLE);
+        }
     }
 
     void setProducts(List<RecipeCookingFormDataProduct> products) {
         productAdapter.setData(products);
+        if (products.isEmpty()) {
+            productsHeadline.setVisibility(View.GONE);
+        } else {
+            productsHeadline.setVisibility(View.VISIBLE);
+        }
     }
 
     List<RecipeCookingFormDataIngredient> getCurrentIngredients() {
