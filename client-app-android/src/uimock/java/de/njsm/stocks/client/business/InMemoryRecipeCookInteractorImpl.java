@@ -23,6 +23,7 @@ package de.njsm.stocks.client.business;
 
 import de.njsm.stocks.client.business.entities.IdImpl;
 import de.njsm.stocks.client.business.entities.Recipe;
+import de.njsm.stocks.client.business.entities.RecipeCookingForm;
 import de.njsm.stocks.client.business.entities.RecipeCookingFormData;
 import io.reactivex.rxjava3.core.Observable;
 
@@ -40,7 +41,7 @@ class InMemoryRecipeCookInteractorImpl implements RecipeCookInteractor {
     }
 
     @Override
-    public void cook() {
+    public void cook(RecipeCookingForm recipeCookingForm) {
 
     }
 }

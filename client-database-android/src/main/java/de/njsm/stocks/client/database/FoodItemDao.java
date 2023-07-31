@@ -23,8 +23,7 @@ package de.njsm.stocks.client.database;
 
 import androidx.room.Dao;
 import androidx.room.Query;
-import de.njsm.stocks.client.business.entities.FoodItemForDeletion;
-import de.njsm.stocks.client.business.entities.FoodItemForEditing;
+import de.njsm.stocks.client.business.entities.*;
 import io.reactivex.rxjava3.core.Maybe;
 import io.reactivex.rxjava3.core.Observable;
 
@@ -77,4 +76,12 @@ abstract class FoodItemDao {
             "from current_food_item " +
             "where id = :id")
     abstract FoodItemForEditing getCurrentItemForEditing(int id);
+
+    @Query("select * " +
+            "from current_food_item " +
+            "where of_type = :food " +
+            "and unit = :scaledUnit " +
+            "order by eat_by " +
+            "limit :count")
+    abstract List<FoodItemDbEntity> getItemsMatching(int food, int scaledUnit, int count);
 }

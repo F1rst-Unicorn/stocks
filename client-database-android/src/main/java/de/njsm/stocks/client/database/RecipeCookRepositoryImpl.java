@@ -27,6 +27,7 @@ import io.reactivex.rxjava3.core.Observable;
 
 import javax.inject.Inject;
 import java.math.BigDecimal;
+import java.util.Collection;
 import java.util.List;
 
 import static de.njsm.stocks.client.business.entities.IdImpl.create;
@@ -40,11 +41,14 @@ class RecipeCookRepositoryImpl implements RecipeCookRepository {
 
     private final RecipeProductDao recipeProductDao;
 
+    private final FoodItemDao foodItemDao;
+
     @Inject
-    RecipeCookRepositoryImpl(RecipeDao recipeDao, RecipeIngredientDao recipeIngredientDao, RecipeProductDao recipeProductDao) {
+    RecipeCookRepositoryImpl(RecipeDao recipeDao, RecipeIngredientDao recipeIngredientDao, RecipeProductDao recipeProductDao, FoodItemDao foodItemDao) {
         this.recipeDao = recipeDao;
         this.recipeIngredientDao = recipeIngredientDao;
         this.recipeProductDao = recipeProductDao;
+        this.foodItemDao = foodItemDao;
     }
 
     @Override
@@ -92,5 +96,14 @@ class RecipeCookRepositoryImpl implements RecipeCookRepository {
                                 v.amount
                         )
                 )).collect(toList()));
+    }
+
+    @Override
+    public List<FoodItemForDeletion> getFoodItemsForCooking(List<RecipeCookingIngredientToConsume> ingredients) {
+        return ingredients.stream()
+                .map(v -> foodItemDao.getItemsMatching(v.food().id(), v.scaledUnit().id(), v.count()))
+                .flatMap(Collection::stream)
+                .map(v -> FoodItemForDeletion.create(v.id(), v.version()))
+                .collect(toList());
     }
 }

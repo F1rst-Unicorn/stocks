@@ -35,4 +35,6 @@ public interface RecipeCookRepository {
     Observable<List<FoodItemForCooking>> getPresentIngredients(IdImpl<Recipe> recipeId);
 
     Observable<List<RecipeCookingFormDataProduct>> getProducts(IdImpl<Recipe> recipeId);
+
+    List<FoodItemForDeletion> getFoodItemsForCooking(List<RecipeCookingIngredientToConsume> ingredients);
 }

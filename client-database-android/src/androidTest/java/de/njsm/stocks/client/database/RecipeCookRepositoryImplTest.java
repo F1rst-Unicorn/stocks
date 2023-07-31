@@ -59,7 +59,8 @@ public class RecipeCookRepositoryImplTest extends DbTestCase {
         uut = new RecipeCookRepositoryImpl(
                 stocksDatabase.recipeDao(),
                 stocksDatabase.recipeIngredientDao(),
-                stocksDatabase.recipeProductDao());
+                stocksDatabase.recipeProductDao(),
+                stocksDatabase.foodItemDao());
 
         unit = standardEntities.unitDbEntity();
         unit2 = standardEntities.unitDbEntity();
