@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## [4.6.0.0]
+
 ### Added
 
 * Recipe ingredients and products can now be checked out in bulk again
