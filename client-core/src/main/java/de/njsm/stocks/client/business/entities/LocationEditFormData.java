@@ -24,30 +24,21 @@ package de.njsm.stocks.client.business.entities;
 import com.google.auto.value.AutoValue;
 
 @AutoValue
-public abstract class LocationToEdit implements Id<Location>, LocationFields {
+public abstract class LocationEditFormData {
 
-    public LocationForEditing addVersion(int version) {
-        return LocationForEditing.builder()
-                .id(id())
-                .version(version)
-                .name(name())
-                .description(description())
-                .build();
+    public abstract IdImpl<Location> id();
+
+    public abstract int version();
+
+    public abstract String name();
+
+    public abstract String description();
+
+    public static LocationEditFormData create(IdImpl<Location> id, int version, String name, String description) {
+        return new AutoValue_LocationEditFormData(id, version, name, description);
     }
 
-    public static Builder builder() {
-        return new AutoValue_LocationToEdit.Builder();
-    }
-
-    public boolean isContainedIn(LocationForEditing currentState) {
-        return id() == id() &&
-                name().equals(currentState.name()) &&
-                description().equals(currentState.description());
-    }
-
-    @AutoValue.Builder
-    public abstract static class Builder
-            implements Id.Builder<Builder>, LocationFields.Builder<Builder> {
-        public abstract LocationToEdit build();
+    public LocationForEditing into() {
+        return LocationForEditing.create(id(), version(), name(), description());
     }
 }

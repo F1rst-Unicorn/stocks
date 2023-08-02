@@ -25,19 +25,23 @@ import android.os.Bundle;
 import android.view.*;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.view.MenuProvider;
 import androidx.lifecycle.ViewModelProvider;
-import de.njsm.stocks.client.business.entities.Id;
+import de.njsm.stocks.client.business.entities.IdImpl;
 import de.njsm.stocks.client.business.entities.Location;
-import de.njsm.stocks.client.business.entities.LocationToEdit;
+import de.njsm.stocks.client.business.entities.LocationEditFormData;
 import de.njsm.stocks.client.fragment.BottomToolbarFragment;
 import de.njsm.stocks.client.fragment.view.LocationForm;
 import de.njsm.stocks.client.navigation.LocationConflictNavigator;
 import de.njsm.stocks.client.presenter.LocationConflictViewModel;
 import de.njsm.stocks.client.ui.R;
+import org.jetbrains.annotations.NotNull;
 
 import javax.inject.Inject;
 
-public class LocationConflictFragment extends BottomToolbarFragment {
+import static de.njsm.stocks.client.business.entities.Versionable.INVALID_VERSION;
+
+public class LocationConflictFragment extends BottomToolbarFragment implements MenuProvider {
 
     private LocationConflictViewModel locationViewModel;
 
@@ -45,7 +49,9 @@ public class LocationConflictFragment extends BottomToolbarFragment {
 
     private LocationForm form;
 
-    private Id<Location> id;
+    private IdImpl<Location> id;
+
+    private int version = INVALID_VERSION;
 
     @NonNull
     @Override
@@ -55,7 +61,8 @@ public class LocationConflictFragment extends BottomToolbarFragment {
 
         long errorId = locationConflictNavigator.getErrorId(requireArguments());
         locationViewModel.getLocationEditConflict(errorId).observe(getViewLifecycleOwner(), v -> {
-            id = v;
+            id = v.id();
+            version = v.remoteVersion();
             form.setName(v.name().suggestedValue());
             form.setDescription(String.format(v.description().suggestedValue(),
                     getString(R.string.hint_original),
@@ -79,17 +86,17 @@ public class LocationConflictFragment extends BottomToolbarFragment {
             }
         });
 
-        setHasOptionsMenu(true);
+        requireActivity().addMenuProvider(this, getViewLifecycleOwner());
         return root;
     }
 
     @Override
-    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+    public void onCreateMenu(@NonNull @NotNull Menu menu, @NonNull @NotNull MenuInflater inflater) {
         inflater.inflate(R.menu.check, menu);
     }
 
     @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+    public boolean onMenuItemSelected(@NonNull @NotNull MenuItem item) {
         submit();
         return true;
     }
@@ -100,11 +107,11 @@ public class LocationConflictFragment extends BottomToolbarFragment {
             return;
         }
 
-        LocationToEdit data = LocationToEdit.builder()
-                .id(id.id())
-                .name(form.getName())
-                .description(form.getDescription())
-                .build();
+        LocationEditFormData data = LocationEditFormData.create(
+                id,
+                version,
+                form.getName(),
+                form.getDescription());
         locationViewModel.editLocation(data);
         locationConflictNavigator.back();
     }

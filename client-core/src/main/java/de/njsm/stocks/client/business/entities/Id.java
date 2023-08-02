@@ -21,6 +21,10 @@
 
 package de.njsm.stocks.client.business.entities;
 
+/**
+ * @deprecated Use IdImpl instead
+ */
+@Deprecated
 public interface Id<T extends Entity<T>> {
 
     int id();

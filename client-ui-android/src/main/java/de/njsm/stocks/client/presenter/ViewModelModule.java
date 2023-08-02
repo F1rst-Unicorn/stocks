@@ -91,7 +91,7 @@ public class ViewModelModule {
     @Provides
     @IntoMap
     @ViewModelKey(LocationEditViewModel.class)
-    ViewModel locationEditViewModel(LocationEditInteractor locationEditInteractor, ObservableDataCache<LocationToEdit> data) {
+    ViewModel locationEditViewModel(LocationEditInteractor locationEditInteractor, ObservableDataCache<LocationEditFormData> data) {
         return new LocationEditViewModel(locationEditInteractor, data);
     }
 

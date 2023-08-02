@@ -24,16 +24,26 @@ package de.njsm.stocks.client.business.entities;
 import com.google.auto.value.AutoValue;
 
 @AutoValue
-public abstract class LocationEditErrorDetails implements ErrorDetails, LocationFields {
+public abstract class LocationEditErrorDetails implements ErrorDetails {
 
-    public abstract int id();
+    public abstract IdImpl<Location> id();
 
-    public static LocationEditErrorDetails create(int id, String name, String description) {
-        return new AutoValue_LocationEditErrorDetails(name, description, id);
+    public abstract int version();
+
+    public abstract String name();
+
+    public abstract String description();
+
+    public static LocationEditErrorDetails create(IdImpl<Location> id, int version, String name, String description) {
+        return new AutoValue_LocationEditErrorDetails(id, version, name, description);
     }
 
     @Override
     public <I, O> O accept(ErrorDetailsVisitor<I, O> visitor, I input) {
         return visitor.locationEditErrorDetails(this, input);
+    }
+
+    public LocationForEditing into() {
+        return LocationForEditing.create(id(), version(), name(), description());
     }
 }

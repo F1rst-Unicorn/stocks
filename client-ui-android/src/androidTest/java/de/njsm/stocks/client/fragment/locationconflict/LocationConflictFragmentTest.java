@@ -91,7 +91,7 @@ public class LocationConflictFragmentTest implements TestUtility {
         locationConflictInteractor.setData(data);
         waitForUi(data);
 
-        scenario.onFragment(v -> v.onOptionsItemSelected(menuItem(v.requireContext(), R.id.menu_check)));
+        scenario.onFragment(v -> v.onMenuItemSelected(menuItem(v.requireContext(), R.id.menu_check)));
 
         ArgumentCaptor<ErrorDescription> captor = ArgumentCaptor.forClass(ErrorDescription.class);
         verify(errorRetryInteractor, timeout(1000)).retry(captor.capture());

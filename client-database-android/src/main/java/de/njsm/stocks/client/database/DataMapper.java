@@ -219,21 +219,12 @@ public class DataMapper {
         return LocationAddEntity.create(input.name(), input.description());
     }
 
-    public static LocationToEdit mapToEdit(LocationDbEntity location) {
-        return LocationToEdit.builder()
-                .id(location.id())
-                .name(location.name())
-                .description(location.description())
-                .build();
-    }
-
-    public static LocationForEditing mapForEditing(LocationDbEntity location) {
-        return LocationForEditing.builder()
-                .id(location.id())
-                .version(location.version())
-                .name(location.name())
-                .description(location.description())
-                .build();
+    public static LocationEditFormData mapToEdit(LocationDbEntity location) {
+        return LocationEditFormData.create(
+                IdImpl.create(location.id()),
+                location.version(),
+                location.name(),
+                location.description());
     }
 
     public static UnitForListing map(UnitDbEntity unitDbEntity) {

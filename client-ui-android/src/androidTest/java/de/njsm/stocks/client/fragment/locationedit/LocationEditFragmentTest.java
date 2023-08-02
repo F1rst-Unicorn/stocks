@@ -27,7 +27,8 @@ import androidx.test.platform.app.InstrumentationRegistry;
 import com.google.android.material.textfield.TextInputEditText;
 import de.njsm.stocks.client.Application;
 import de.njsm.stocks.client.business.FakeLocationEditInteractor;
-import de.njsm.stocks.client.business.entities.LocationToEdit;
+import de.njsm.stocks.client.business.entities.LocationEditFormData;
+import de.njsm.stocks.client.business.entities.LocationForEditing;
 import de.njsm.stocks.client.navigation.LocationEditNavigator;
 import de.njsm.stocks.client.testdata.LocationsToEdit;
 import de.njsm.stocks.client.ui.R;
@@ -68,7 +69,7 @@ public class LocationEditFragmentTest {
 
     @Test
     public void uiIsShown() {
-        LocationToEdit location = LocationsToEdit.generate();
+        LocationEditFormData location = LocationsToEdit.generate();
 
         locationEditInteractor.setData(location);
 
@@ -84,14 +85,14 @@ public class LocationEditFragmentTest {
 
     @Test
     public void submittingWithoutNameShowsError() {
-        LocationToEdit location = LocationsToEdit.generate();
+        LocationEditFormData location = LocationsToEdit.generate();
         locationEditInteractor.setData(location);
         onView(allOf(
                 isDescendantOfA(withId(R.id.fragment_location_form_name)),
                 withClassName(is(TextInputEditText.class.getName()))
         )).perform(clearText());
 
-        scenario.onFragment(v -> v.onOptionsItemSelected(menuItem(v.requireContext(), R.id.menu_check)));
+        scenario.onFragment(v -> v.onMenuItemSelected(menuItem(v.requireContext(), R.id.menu_check)));
 
         onView(withId(R.id.fragment_location_form_name))
                 .check(matches(hasDescendant(withText(R.string.error_may_not_be_empty))));
@@ -100,7 +101,7 @@ public class LocationEditFragmentTest {
 
     @Test
     public void submittingWorks() {
-        LocationToEdit location = LocationsToEdit.generate();
+        LocationEditFormData location = LocationsToEdit.generate();
         locationEditInteractor.setData(location);
         String newName = "new name";
         String newDescription = "new description";
@@ -113,13 +114,13 @@ public class LocationEditFragmentTest {
                 withClassName(is(TextInputEditText.class.getName()))
         )).perform(replaceText(newDescription));
 
-        scenario.onFragment(v -> v.onOptionsItemSelected(menuItem(v.requireContext(), R.id.menu_check)));
+        scenario.onFragment(v -> v.onMenuItemSelected(menuItem(v.requireContext(), R.id.menu_check)));
 
-        assertEquals(LocationToEdit.builder()
-                .id(location.id())
-                .name(newName)
-                .description(newDescription)
-                .build(),
+        assertEquals(LocationForEditing.create(
+                location.id(),
+                location.version(),
+                newName,
+                newDescription),
                 locationEditInteractor.getFormData().get()
         );
         verify(navigator).back();

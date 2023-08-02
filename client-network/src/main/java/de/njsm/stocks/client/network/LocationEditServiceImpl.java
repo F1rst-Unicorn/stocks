@@ -28,8 +28,6 @@ import retrofit2.Call;
 
 import javax.inject.Inject;
 
-import static de.njsm.stocks.client.network.DataMapper.map;
-
 class LocationEditServiceImpl extends ServiceBase<LocationForEditing> implements LocationEditService {
 
     @Inject
@@ -39,7 +37,12 @@ class LocationEditServiceImpl extends ServiceBase<LocationForEditing> implements
 
     @Override
     Call<Response> buildCall(LocationForEditing location) {
-        return api.editLocation(map(location));
+        return api.editLocation(de.njsm.stocks.common.api.LocationForEditing.builder()
+                .id(location.id().id())
+                .version(location.version())
+                .name(location.name())
+                .description(location.description())
+                .build());
     }
 
     @Override

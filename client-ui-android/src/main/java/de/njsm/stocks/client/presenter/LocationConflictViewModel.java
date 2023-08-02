@@ -27,7 +27,7 @@ import de.njsm.stocks.client.business.ErrorRetryInteractor;
 import de.njsm.stocks.client.business.LocationConflictInteractor;
 import de.njsm.stocks.client.business.entities.ErrorDescription;
 import de.njsm.stocks.client.business.entities.LocationEditErrorDetails;
-import de.njsm.stocks.client.business.entities.LocationToEdit;
+import de.njsm.stocks.client.business.entities.LocationEditFormData;
 import de.njsm.stocks.client.business.entities.conflict.LocationEditConflictData;
 
 
@@ -49,11 +49,11 @@ public class LocationConflictViewModel extends ViewModel {
         return data.getLiveData(() -> locationConflictInteractor.getLocationEditConflict(errorId));
     }
 
-    public void editLocation(LocationToEdit data) {
+    public void editLocation(LocationEditFormData data) {
         this.data.performOnCurrentData(v -> {
                 ErrorDescription errorToRetry = ErrorDescription.minimal(
                         v.errorId(),
-                        LocationEditErrorDetails.create(data.id(), data.name(), data.description())
+                        LocationEditErrorDetails.create(data.id(), data.version(), data.name(), data.description())
                 );
                 errorRetryInteractor.retry(errorToRetry);
         });

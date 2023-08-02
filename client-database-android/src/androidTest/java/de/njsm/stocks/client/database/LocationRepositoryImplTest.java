@@ -21,10 +21,10 @@
 
 package de.njsm.stocks.client.database;
 
+import de.njsm.stocks.client.business.entities.LocationEditFormData;
 import de.njsm.stocks.client.business.entities.LocationForDeletion;
 import de.njsm.stocks.client.business.entities.LocationForEditing;
 import de.njsm.stocks.client.business.entities.LocationForListing;
-import de.njsm.stocks.client.business.entities.LocationToEdit;
 import io.reactivex.rxjava3.core.Observable;
 import org.junit.Before;
 import org.junit.Test;
@@ -71,9 +71,9 @@ public class LocationRepositoryImplTest extends DbTestCase {
     public void gettingLocationForEditingWorks() {
         LocationDbEntity location = standardEntities.locationDbEntity();
         stocksDatabase.synchronisationDao().synchroniseLocations(Collections.singletonList(location));
-        LocationToEdit expected = DataMapper.mapToEdit(location);
+        LocationEditFormData expected = DataMapper.mapToEdit(location);
 
-        Observable<LocationToEdit> actual = uut.getLocationForEditing(location::id);
+        Observable<LocationEditFormData> actual = uut.getLocationForEditing(location::id);
 
         actual.test().awaitCount(1).assertValue(expected);
     }
@@ -82,7 +82,7 @@ public class LocationRepositoryImplTest extends DbTestCase {
     public void gettingLocationInBackgroundForEditingWorks() {
         LocationDbEntity entity = standardEntities.locationDbEntity();
         stocksDatabase.synchronisationDao().synchroniseLocations(Collections.singletonList(entity));
-        LocationToEdit expected = DataMapper.mapToEdit(entity);
+        LocationEditFormData expected = DataMapper.mapToEdit(entity);
 
         LocationForEditing actual = uut.getCurrentLocationBeforeEditing(entity::id);
 

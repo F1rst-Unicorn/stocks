@@ -22,15 +22,12 @@
 package de.njsm.stocks.client.testdata;
 
 
-import de.njsm.stocks.client.business.entities.LocationToEdit;
+import de.njsm.stocks.client.business.entities.IdImpl;
+import de.njsm.stocks.client.business.entities.LocationEditFormData;
 
 public class LocationsToEdit {
 
-    public static LocationToEdit generate() {
-        return LocationToEdit.builder()
-                        .id(2)
-                        .name("Fridge")
-                        .description("The cold one")
-                        .build();
+    public static LocationEditFormData generate() {
+        return LocationEditFormData.create(IdImpl.create(2), 3, "Fridge", "The cold one");
     }
 }

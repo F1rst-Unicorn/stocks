@@ -57,7 +57,7 @@ public class ConflictRepositoryImpl implements ConflictRepository {
             LocationDbEntity original = errorDao.getCurrentLocationAsKnownAt(locationEditEntity.location().id(), locationEditEntity.location().transactionTime());
             LocationDbEntity remote = errorDao.getCurrentLocationAsKnownAt(locationEditEntity.location().id(), locationEditEntity.executionTime());
 
-            return LocationEditConflictData.create(error.id(), locationEditEntity.location().id(), locationEditEntity.version(),
+            return LocationEditConflictData.create(error.id(), locationEditEntity.location().id(), remote.version(),
                     original.name(), remote.name(), locationEditEntity.name(),
                     original.description(), remote.description(), locationEditEntity.description());
         });

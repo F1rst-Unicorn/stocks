@@ -23,14 +23,17 @@ package de.njsm.stocks.client.business.entities.conflict;
 
 import com.google.auto.value.AutoValue;
 import de.njsm.stocks.client.business.entities.Id;
+import de.njsm.stocks.client.business.entities.IdImpl;
 import de.njsm.stocks.client.business.entities.Location;
 
 @AutoValue
-public abstract class LocationEditConflictData implements Id<Location> {
+public abstract class LocationEditConflictData {
+
+    public abstract IdImpl<Location> id();
 
     public abstract int errorId();
 
-    public abstract int originalVersion();
+    public abstract int remoteVersion();
 
     public abstract ConflictData<String> name();
 
@@ -47,14 +50,14 @@ public abstract class LocationEditConflictData implements Id<Location> {
     public static LocationEditConflictData create(
             int errorId,
             int id,
-            int originalVersion,
+            int remoteVersion,
             String originalName,
             String remoteName,
             String localName,
             String originalDescription,
             String remoteDescription,
             String localDescription) {
-        return new AutoValue_LocationEditConflictData(id, errorId, originalVersion,
+        return new AutoValue_LocationEditConflictData(IdImpl.create(id), errorId, remoteVersion,
                 ConflictData.create(originalName, remoteName, localName),
                 ConflictData.createMerging(originalDescription, remoteDescription, localDescription));
     }

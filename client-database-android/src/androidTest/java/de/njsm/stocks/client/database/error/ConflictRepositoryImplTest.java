@@ -80,17 +80,16 @@ public class ConflictRepositoryImplTest extends DbTestCase {
         Instant editTime = Instant.EPOCH.plusSeconds(5);
         LocationDbEntity original = standardEntities.locationDbEntity();
         stocksDatabase.synchronisationDao().writeLocations(singletonList(original));
-        LocationForEditing localEdit = LocationForEditing.builder()
-                .id(original.id())
-                .version(original.version())
-                .name("Fridge")
-                .description("The cold one")
-                .build();
-        LocationToEdit remoteEdit = LocationToEdit.builder()
-                .id(original.id())
-                .name("remote name")
-                .description("remote description")
-                .build();
+        LocationForEditing localEdit = LocationForEditing.create(
+                IdImpl.create(original.id()),
+                original.version(),
+                "Fridge",
+                "The cold one");
+        LocationEditFormData remoteEdit = LocationEditFormData.create(
+                IdImpl.create(original.id()),
+                original.version() + 1,
+                "remote name",
+                "remote description");
         stocksDatabase.synchronisationDao().writeLocations(currentUpdate(original,
                 (BitemporalOperations.EntityEditor<LocationDbEntity, LocationDbEntity.Builder>) builder ->
                         builder.name(remoteEdit.name())
@@ -106,7 +105,7 @@ public class ConflictRepositoryImplTest extends DbTestCase {
         LocationEditConflictData actual = observable.values().get(0);
         assertEquals(error.id(), actual.errorId());
         assertEquals(localEdit.id(), actual.id());
-        assertEquals(localEdit.version(), actual.originalVersion());
+        assertEquals(remoteEdit.version(), actual.remoteVersion());
         assertEquals(localEdit.name(), actual.name().local());
         assertEquals(localEdit.description(), actual.description().local());
         assertEquals(original.name(), actual.name().original());
@@ -122,17 +121,16 @@ public class ConflictRepositoryImplTest extends DbTestCase {
         StatusCode statusCode = StatusCode.DATABASE_UNREACHABLE;
         StatusCodeException exception = new StatusCodeException(statusCode);
         LocationDbEntity original = standardEntities.locationDbEntity();
-        LocationForEditing localEdit = LocationForEditing.builder()
-                .id(original.id())
-                .version(original.version())
-                .name("Fridge")
-                .description("The cold one")
-                .build();
-        LocationToEdit remoteEdit = LocationToEdit.builder()
-                .id(original.id())
-                .name("remote name")
-                .description("remote description")
-                .build();
+        LocationForEditing localEdit = LocationForEditing.create(
+                IdImpl.create(original.id()),
+                original.version(),
+                "Fridge",
+                "The cold one");
+        LocationEditFormData remoteEdit = LocationEditFormData.create(
+                IdImpl.create(original.id()),
+                original.version() + 1,
+                "remote name",
+                "remote description");
         stocksDatabase.synchronisationDao().writeLocations(singletonList(original));
         stocksDatabase.synchronisationDao().writeLocations(currentUpdate(original,
                 (BitemporalOperations.EntityEditor<LocationDbEntity, LocationDbEntity.Builder>) v ->
@@ -150,7 +148,7 @@ public class ConflictRepositoryImplTest extends DbTestCase {
         LocationEditConflictData actual = observable.values().get(0);
         assertEquals(error.id(), actual.errorId());
         assertEquals(localEdit.id(), actual.id());
-        assertEquals(localEdit.version(), actual.originalVersion());
+        assertEquals(remoteEdit.version(), actual.remoteVersion());
         assertEquals(localEdit.name(), actual.name().local());
         assertEquals(localEdit.description(), actual.description().local());
         assertEquals(original.name(), actual.name().original());

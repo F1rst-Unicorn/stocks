@@ -21,9 +21,7 @@
 
 package de.njsm.stocks.client.business;
 
-import de.njsm.stocks.client.business.entities.Id;
-import de.njsm.stocks.client.business.entities.Location;
-import de.njsm.stocks.client.business.entities.LocationToEdit;
+import de.njsm.stocks.client.business.entities.*;
 import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.subjects.BehaviorSubject;
 
@@ -31,29 +29,29 @@ import java.util.Optional;
 
 public class FakeLocationEditInteractor implements LocationEditInteractor {
 
-    private final BehaviorSubject<LocationToEdit> data;
+    private final BehaviorSubject<LocationEditFormData> data;
 
-    private Optional<LocationToEdit> formData = Optional.empty();
+    private Optional<LocationForEditing> formData = Optional.empty();
 
     public FakeLocationEditInteractor() {
         this.data = BehaviorSubject.create();
     }
 
     @Override
-    public Observable<LocationToEdit> getLocation(Id<Location> id) {
+    public Observable<LocationEditFormData> getLocation(IdImpl<Location> id) {
         return data;
     }
 
-    public void setData(LocationToEdit data) {
+    public void setData(LocationEditFormData data) {
         this.data.onNext(data);
     }
 
     @Override
-    public void edit(LocationToEdit formData) {
+    public void edit(LocationForEditing formData) {
         this.formData = Optional.of(formData);
     }
 
-    public Optional<LocationToEdit> getFormData() {
+    public Optional<LocationForEditing> getFormData() {
         return formData;
     }
 

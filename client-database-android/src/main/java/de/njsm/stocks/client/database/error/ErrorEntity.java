@@ -54,8 +54,8 @@ public abstract class ErrorEntity implements IdFields {
     @AutoValue.CopyAnnotations
     abstract long exceptionId();
 
-    enum Action {
-        SYNCHRONISATION{
+    public enum Action {
+        SYNCHRONISATION {
             @Override
             <I, O> O accept(ActionVisitor<I, O> visitor, I input) {
                 return visitor.synchronisation(this, input);

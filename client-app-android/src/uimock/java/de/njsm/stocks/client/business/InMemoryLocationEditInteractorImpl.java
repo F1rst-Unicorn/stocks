@@ -21,10 +21,7 @@
 
 package de.njsm.stocks.client.business;
 
-import de.njsm.stocks.client.business.entities.Id;
-import de.njsm.stocks.client.business.entities.Location;
-import de.njsm.stocks.client.business.entities.LocationForListing;
-import de.njsm.stocks.client.business.entities.LocationToEdit;
+import de.njsm.stocks.client.business.entities.*;
 import de.njsm.stocks.client.testdata.LocationsForListing;
 import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.subjects.BehaviorSubject;
@@ -42,19 +39,19 @@ class InMemoryLocationEditInteractorImpl implements LocationEditInteractor {
     }
 
     @Override
-    public Observable<LocationToEdit> getLocation(Id<Location> id) {
+    public Observable<LocationEditFormData> getLocation(IdImpl<Location> id) {
         return data.firstElement().map(list -> {
             LocationForListing item = list.stream().filter(v -> v.id() == id.id()).findAny().get();
-            return LocationToEdit.builder()
-                    .id(item.id())
-                    .name(item.name())
-                    .description("Lorem ipsum")
-                    .build();
+            return LocationEditFormData.create(
+                    IdImpl.create(item.id()),
+                    2,
+                    item.name(),
+                    "Lorem ipsum");
         }).toObservable();
     }
 
     @Override
-    public void edit(LocationToEdit formData) {
+    public void edit(LocationForEditing formData) {
 
     }
 }

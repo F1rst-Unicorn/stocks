@@ -104,7 +104,11 @@ public class ErrorRepositoryImpl implements ErrorRepository, ErrorEntity.ActionV
     @Override
     public ErrorDetails editLocation(ErrorEntity.Action action, Long input) {
         LocationEditEntity locationEditEntity = errorDao.getLocationEdit(input);
-        return LocationEditErrorDetails.create(locationEditEntity.location().id(), locationEditEntity.name(), locationEditEntity.description());
+        return LocationEditErrorDetails.create(
+                IdImpl.create(locationEditEntity.location().id()),
+                locationEditEntity.version(),
+                locationEditEntity.name(),
+                locationEditEntity.description());
     }
 
     @Override

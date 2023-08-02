@@ -26,7 +26,6 @@ import de.njsm.stocks.client.business.entities.StatusCode;
 import de.njsm.stocks.client.business.entities.Update;
 import de.njsm.stocks.client.business.entities.*;
 import de.njsm.stocks.common.api.Entity;
-import de.njsm.stocks.common.api.LocationForEditing;
 import de.njsm.stocks.common.api.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -177,14 +176,5 @@ public class DataMapper {
             return StatusCode.values()[ordinal];
         LOG.warn("Unknown status code " + input + " mapped to " + StatusCode.GENERAL_ERROR);
         return StatusCode.GENERAL_ERROR;
-    }
-
-    static LocationForEditing map(de.njsm.stocks.client.business.entities.LocationForEditing location) {
-        return LocationForEditing.builder()
-                .id(location.id())
-                .version(location.version())
-                .name(location.name())
-                .description(location.description())
-                .build();
     }
 }

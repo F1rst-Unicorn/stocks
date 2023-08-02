@@ -31,7 +31,6 @@ import javax.inject.Inject;
 import java.util.List;
 
 import static de.njsm.stocks.client.database.DataMapper.mapForDeletion;
-import static de.njsm.stocks.client.database.DataMapper.mapForEditing;
 
 class LocationRepositoryImpl implements LocationRepository {
 
@@ -57,13 +56,8 @@ class LocationRepositoryImpl implements LocationRepository {
     }
 
     @Override
-    public Observable<LocationToEdit> getLocationForEditing(Id<Location> location) {
+    public Observable<LocationEditFormData> getLocationForEditing(IdImpl<Location> location) {
         return locationDao.getCurrentLocation(location.id()).map(DataMapper::mapToEdit);
-    }
-
-    @Override
-    public LocationForEditing getCurrentLocationBeforeEditing(Id<Location> location) {
-        return mapForEditing(locationDao.getLocation(location.id()));
     }
 
     @Override

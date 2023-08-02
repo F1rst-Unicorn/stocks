@@ -186,12 +186,7 @@ class ErrorRetryInteractorImpl implements ErrorRetryInteractor, ErrorDetailsVisi
 
     @Override
     public Void locationEditErrorDetails(LocationEditErrorDetails locationEditErrorDetails, Void input) {
-        LocationToEdit data = LocationToEdit.builder()
-                .id(locationEditErrorDetails.id())
-                .name(locationEditErrorDetails.name())
-                .description(locationEditErrorDetails.description())
-                .build();
-        locationEditInteractor.edit(data);
+        locationEditInteractor.edit(locationEditErrorDetails.into());
         return null;
     }
 

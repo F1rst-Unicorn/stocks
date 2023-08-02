@@ -24,8 +24,7 @@ package de.njsm.stocks.client.navigation;
 import android.os.Bundle;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
-import static org.hamcrest.CoreMatchers.*;
+import static org.junit.Assert.assertEquals;
 
 public class LocationEditNavigatorImplTest extends NavigationTest {
 
@@ -36,7 +35,7 @@ public class LocationEditNavigatorImplTest extends NavigationTest {
         int expected = 42;
         input.putInt("id", expected);
 
-        int actual = uut.getLocationId(input);
+        int actual = uut.getLocationId(input).id();
 
         assertEquals(expected, actual);
     }

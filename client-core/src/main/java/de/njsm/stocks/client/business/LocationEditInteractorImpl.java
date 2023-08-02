@@ -49,27 +49,26 @@ class LocationEditInteractorImpl implements LocationEditInteractor {
     }
 
     @Override
-    public Observable<LocationToEdit> getLocation(Id<Location> location) {
+    public Observable<LocationEditFormData> getLocation(IdImpl<Location> location) {
         return locationRepository.getLocationForEditing(location);
     }
 
     @Override
-    public void edit(LocationToEdit formData) {
+    public void edit(LocationForEditing formData) {
         scheduler.schedule(Job.create(Job.Type.EDIT_LOCATION, () -> editInBackground(formData)));
     }
 
-    void editInBackground(LocationToEdit formData) {
-        LocationForEditing currentState = locationRepository.getCurrentLocationBeforeEditing(formData);
-        if (formData.isContainedIn(currentState)) {
+    void editInBackground(LocationForEditing formData) {
+        LocationEditFormData currentState = locationRepository.getLocationForEditing(formData.id()).blockingFirst();
+        if (formData.equals(currentState.into())) {
             return;
         }
-        LocationForEditing dataToNetwork = formData.addVersion(currentState.version());
 
         try {
-            locationEditService.editLocation(dataToNetwork);
+            locationEditService.editLocation(formData);
             synchroniser.synchronise();
         } catch (SubsystemException e) {
-            errorRecorder.recordLocationEditError(e, dataToNetwork);
+            errorRecorder.recordLocationEditError(e, formData);
             synchroniser.synchroniseAfterError(e);
         }
     }

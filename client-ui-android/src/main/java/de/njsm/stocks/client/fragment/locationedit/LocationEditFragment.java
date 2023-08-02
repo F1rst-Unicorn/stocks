@@ -25,19 +25,23 @@ import android.os.Bundle;
 import android.view.*;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.view.MenuProvider;
 import androidx.lifecycle.ViewModelProvider;
-import de.njsm.stocks.client.business.entities.Id;
+import de.njsm.stocks.client.business.entities.IdImpl;
 import de.njsm.stocks.client.business.entities.Location;
-import de.njsm.stocks.client.business.entities.LocationToEdit;
+import de.njsm.stocks.client.business.entities.LocationForEditing;
 import de.njsm.stocks.client.fragment.BottomToolbarFragment;
 import de.njsm.stocks.client.fragment.view.LocationForm;
 import de.njsm.stocks.client.navigation.LocationEditNavigator;
 import de.njsm.stocks.client.presenter.LocationEditViewModel;
 import de.njsm.stocks.client.ui.R;
+import org.jetbrains.annotations.NotNull;
 
 import javax.inject.Inject;
 
-public class LocationEditFragment extends BottomToolbarFragment {
+import static de.njsm.stocks.client.business.entities.Versionable.INVALID_VERSION;
+
+public class LocationEditFragment extends BottomToolbarFragment implements MenuProvider {
 
     private LocationEditViewModel locationViewModel;
 
@@ -45,43 +49,43 @@ public class LocationEditFragment extends BottomToolbarFragment {
 
     private LocationForm form;
 
-    private Id<Location> id;
+    private IdImpl<Location> id;
 
-    @Nullable
+    private int version = INVALID_VERSION;
+
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View root = super.onCreateView(inflater, container, savedInstanceState);
 
         this.form = new LocationForm(insertContent(inflater, root, R.layout.fragment_location_form), this::getString);
 
-        int rawId = locationEditNavigator.getLocationId(requireArguments());
-        this.id = () -> rawId;
+        this.id = locationEditNavigator.getLocationId(requireArguments());
         locationViewModel.get(id).observe(getViewLifecycleOwner(), v -> {
+            version = v.version();
             form.setName(v.name());
             form.setDescription(v.description());
         });
 
-        setHasOptionsMenu(true);
+        requireActivity().addMenuProvider(this, getViewLifecycleOwner());
         return root;
     }
 
     @Override
-    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+    public void onCreateMenu(@NonNull @NotNull Menu menu, @NonNull @NotNull MenuInflater inflater) {
         inflater.inflate(R.menu.check, menu);
     }
 
     @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+    public boolean onMenuItemSelected(@NonNull @NotNull MenuItem item) {
         if (!form.maySubmit()) {
             form.setNameError(R.string.error_may_not_be_empty);
             return true;
         }
 
-        LocationToEdit data = LocationToEdit.builder()
-                .id(id.id())
-                .name(form.getName())
-                .description(form.getDescription())
-                .build();
+        LocationForEditing data = LocationForEditing.create(id,
+                version,
+                form.getName(),
+                form.getDescription());
         locationViewModel.editLocation(data);
         locationEditNavigator.back();
         return true;

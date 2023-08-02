@@ -22,6 +22,8 @@
 package de.njsm.stocks.client.navigation;
 
 import android.os.Bundle;
+import de.njsm.stocks.client.business.entities.IdImpl;
+import de.njsm.stocks.client.business.entities.Location;
 import de.njsm.stocks.client.fragment.locationedit.LocationEditFragmentArgs;
 
 import javax.inject.Inject;
@@ -34,7 +36,7 @@ class LocationEditNavigatorImpl extends NavigatorImpl implements LocationEditNav
     }
 
     @Override
-    public int getLocationId(Bundle arguments) {
-        return LocationEditFragmentArgs.fromBundle(arguments).getId();
+    public IdImpl<Location> getLocationId(Bundle arguments) {
+        return IdImpl.create(LocationEditFragmentArgs.fromBundle(arguments).getId());
     }
 }

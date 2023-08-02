@@ -239,7 +239,7 @@ public class ErrorRetryInteractorImplTest {
     @Test
     void retryingLocationEditingDispatches() {
         LocationEditErrorDetails locationEditErrorDetails = LocationEditErrorDetails.create(1, "Fridge", "The cold one");
-        LocationToEdit expected = LocationToEdit.builder()
+        LocationEditFormData expected = LocationEditFormData.builder()
                 .id(locationEditErrorDetails.id())
                 .name(locationEditErrorDetails.name())
                 .description(locationEditErrorDetails.description())

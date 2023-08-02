@@ -1,0 +1,67 @@
+@startuml
+
+' Terminology for use cases where data is written (added, edited, deleted)
+
+package business {
+    interface Interactor {
+        FormData getFormData(Id)
+        void write(DataForWriting)
+    }
+
+    class InteractorImpl {
+    }
+
+    interface Repository {
+        BaseData getBaseData(Id)
+    }
+
+    interface Service {
+        void write(NetworkData)
+    }
+
+    InteractorImpl --|> Interactor
+    InteractorImpl --> Repository
+    InteractorImpl --> Service
+
+    package entities {
+        class Id {
+        }
+        class FormData {
+        }
+        class DataForWriting {
+        }
+        class BaseData {
+        }
+        class NetworkData {
+        }
+    }
+}
+
+package ui {
+    class ViewModel {
+        LiveData<FormData> getData()
+    }
+
+    class Fragment {
+
+    }
+
+    ViewModel --> Interactor
+    Fragment --> ViewModel
+}
+
+package network {
+    class ServiceImpl {
+    }
+
+    ServiceImpl --|> Service
+}
+
+package db {
+    class RepositoryImpl {
+    }
+
+    RepositoryImpl --|> Repository
+}
+
+@enduml

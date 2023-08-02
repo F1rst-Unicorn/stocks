@@ -24,16 +24,17 @@ package de.njsm.stocks.client.business.entities;
 import com.google.auto.value.AutoValue;
 
 @AutoValue
-public abstract class LocationForEditing implements Location {
+public abstract class LocationForEditing {
 
-    public static Builder builder() {
-        return new AutoValue_LocationForEditing.Builder();
-    }
+    public abstract IdImpl<Location> id();
 
-    @AutoValue.Builder
-    public abstract static class Builder
-            extends BaseBuilder<LocationForEditing>
-            implements Versionable.Builder<Builder>, LocationFields.Builder<Builder> {
+    public abstract int version();
 
+    public abstract String name();
+
+    public abstract String description();
+
+    public static LocationForEditing create(IdImpl<Location> id, int version, String name, String description) {
+        return new AutoValue_LocationForEditing(id, version, name, description);
     }
 }

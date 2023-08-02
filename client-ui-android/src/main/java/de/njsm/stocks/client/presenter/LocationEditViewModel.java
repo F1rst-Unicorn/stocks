@@ -24,9 +24,7 @@ package de.njsm.stocks.client.presenter;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModel;
 import de.njsm.stocks.client.business.LocationEditInteractor;
-import de.njsm.stocks.client.business.entities.Id;
-import de.njsm.stocks.client.business.entities.Location;
-import de.njsm.stocks.client.business.entities.LocationToEdit;
+import de.njsm.stocks.client.business.entities.*;
 
 import javax.inject.Inject;
 
@@ -34,20 +32,20 @@ public class LocationEditViewModel extends ViewModel {
 
     private final LocationEditInteractor locationEditInteractor;
 
-    private final ObservableDataCache<LocationToEdit> data;
+    private final ObservableDataCache<LocationEditFormData> data;
 
     @Inject
-    LocationEditViewModel(LocationEditInteractor locationEditInteractor, ObservableDataCache<LocationToEdit> data) {
+    LocationEditViewModel(LocationEditInteractor locationEditInteractor, ObservableDataCache<LocationEditFormData> data) {
         this.locationEditInteractor = locationEditInteractor;
         this.data = data;
     }
 
-    public LiveData<LocationToEdit> get(Id<Location> id) {
+    public LiveData<LocationEditFormData> get(IdImpl<Location> id) {
         return data.getLiveData(() -> locationEditInteractor.getLocation(id));
     }
 
-    public void editLocation(LocationToEdit locationToEdit) {
-        locationEditInteractor.edit(locationToEdit);
+    public void editLocation(LocationForEditing locationEditFormData) {
+        locationEditInteractor.edit(locationEditFormData);
     }
 
     @Override

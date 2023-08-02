@@ -22,8 +22,10 @@
 package de.njsm.stocks.client.navigation;
 
 import android.os.Bundle;
+import de.njsm.stocks.client.business.entities.IdImpl;
+import de.njsm.stocks.client.business.entities.Location;
 
 public interface LocationEditNavigator extends Navigator {
 
-    int getLocationId(Bundle arguments);
+    IdImpl<Location> getLocationId(Bundle arguments);
 }

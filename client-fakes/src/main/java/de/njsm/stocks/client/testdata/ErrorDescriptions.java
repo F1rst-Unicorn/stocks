@@ -41,7 +41,7 @@ public class ErrorDescriptions {
         return new ArrayList<>(Arrays.asList(
                 ErrorDescription.create(1, StatusCode.DATABASE_UNREACHABLE, "", "", LocationAddForm.create("Fridge", "the cold one")),
                 ErrorDescription.create(2, StatusCode.GENERAL_ERROR, "", "", SynchronisationErrorDetails.create()),
-                ErrorDescription.create(3, StatusCode.INVALID_DATA_VERSION, "", "", LocationEditErrorDetails.create(3, "name", "description")),
+                ErrorDescription.create(3, StatusCode.INVALID_DATA_VERSION, "", "", LocationEditErrorDetails.create(IdImpl.create(3), 4, "name", "description")),
                 ErrorDescription.create(3, StatusCode.INVALID_DATA_VERSION, "", "", UnitEditErrorDetails.create(3, "name", "abbreviation"))
         ));
     }
