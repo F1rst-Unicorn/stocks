@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## [4.6.0.1]
+
 ### Fixed
 
 * Adding food items via recipe where the food type has no default location set
