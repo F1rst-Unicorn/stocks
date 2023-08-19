@@ -72,7 +72,8 @@ public interface DatabaseModule {
                         new Migration47To48(),
                         new Migration48To49(),
                         new Migration49To50(),
-                        new Migration50To51()
+                        new Migration50To51(),
+                        new Migration51To52()
                 )
                 .addCallback(new PerformanceTweaker())
                 .build();

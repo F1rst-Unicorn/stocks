@@ -91,7 +91,7 @@ import java.time.format.DateTimeFormatter;
                 CurrentRecipeIngredientDbView.class,
                 CurrentRecipeProductDbView.class,
         },
-        version = 51)
+        version = 52)
 @androidx.room.TypeConverters(TypeConverters.class)
 @RewriteQueriesToDropUnusedColumns
 public abstract class StocksDatabase extends RoomDatabase {
