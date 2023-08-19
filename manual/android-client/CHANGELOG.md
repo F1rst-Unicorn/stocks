@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+### Fixed
+
+* Adding food items via recipe where the food type has no default location set
+  works now ([#89](https://j.njsm.de/git/veenj/stocks/issues/89)).
+
 ## [4.6.0.0]
 
 ### Added
