@@ -45,7 +45,7 @@ class RecipeDetailInteractorImpl implements RecipeDetailInteractor {
 
     @Override
     public Observable<RecipeForDetails> get(Id<Recipe> recipeId) {
-        return Observable.zip(
+        return Observable.combineLatest(
                 repository.get(recipeId),
                 getIngredientsOf(recipeId),
                 getProductsOf(recipeId), (r, i, p) ->
@@ -53,8 +53,9 @@ class RecipeDetailInteractorImpl implements RecipeDetailInteractor {
     }
 
     private Observable<List<RecipeIngredientForDetails>> getIngredientsOf(Id<Recipe> recipeId) {
-        return repository.getIngredientsRequiredAmountOf(recipeId)
-                .zipWith(repository.getIngredientsPresentAmountsOf(recipeId), (required, present) -> {
+        return Observable.combineLatest(
+                repository.getIngredientsRequiredAmountOf(recipeId),
+                repository.getIngredientsPresentAmountsOf(recipeId), (required, present) -> {
                     List<RecipeIngredientForDetails> result = new ArrayList<>();
                     var regrouper = new ListRegrouper<>(
                             new ListRegrouper.Group<>(required.iterator(), RecipeFoodForDetailsBaseData::id),
@@ -73,8 +74,9 @@ class RecipeDetailInteractorImpl implements RecipeDetailInteractor {
     }
 
     private Observable<List<RecipeProductForDetails>> getProductsOf(Id<Recipe> recipeId) {
-        return repository.getProductsProducedAmountOf(recipeId)
-                .zipWith(repository.getProductsPresentAmountsOf(recipeId), (required, present) -> {
+        return Observable.combineLatest(
+                repository.getProductsProducedAmountOf(recipeId),
+                repository.getProductsPresentAmountsOf(recipeId), (required, present) -> {
                     List<RecipeProductForDetails> result = new ArrayList<>();
                     var regrouper = new ListRegrouper<>(
                             new ListRegrouper.Group<>(required.iterator(), RecipeFoodForDetailsBaseData::id),

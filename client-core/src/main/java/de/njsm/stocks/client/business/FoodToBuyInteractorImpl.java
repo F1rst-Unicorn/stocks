@@ -73,7 +73,7 @@ class FoodToBuyInteractorImpl implements FoodToBuyInteractor {
                 (u, v) -> Stream.concat(u.stream(), v.stream())
                         .collect(toList()));
 
-        return Observable.zip(
+        return Observable.combineLatest(
                 repository.getFoodToBuy(),
                 allAmounts,
                 (v, u) -> foodRegrouper.regroup(v, u, FoodWithAmountForListing::create, FoodWithAmountForListing::name)

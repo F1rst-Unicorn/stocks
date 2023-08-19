@@ -65,5 +65,4 @@ public class SwipeCallback extends BackgroundDrawingSwipeCallback {
         else if (direction == ItemTouchHelper.START)
             leftCallback.accept(position);
     }
-
 }

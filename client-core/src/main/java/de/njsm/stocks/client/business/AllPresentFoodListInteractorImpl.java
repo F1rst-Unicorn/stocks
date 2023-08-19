@@ -41,7 +41,7 @@ class AllPresentFoodListInteractorImpl implements AllPresentFoodListInteractor {
 
     @Override
     public Observable<List<FoodForListing>> getFood() {
-        return Observable.zip(
+        return Observable.combineLatest(
                 repository.getFood(),
                 repository.getFoodAmounts(),
                 (v, u) -> foodRegrouper.regroup(v, u, FoodForListing::create, FoodForListing::nextEatByDate)

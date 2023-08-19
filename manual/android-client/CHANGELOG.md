@@ -7,6 +7,14 @@
 * Adding food items via recipe where the food type has no default location set
   works now ([#89](https://j.njsm.de/git/veenj/stocks/issues/89)).
 
+* A problem where a food list is not updated if a food is put on the shopping
+  list via swiping was fixed
+  ([#90](https://j.njsm.de/git/veenj/stocks/issues/90)).
+
+* A problem where the food item numbers of a recipe are not updated after recipe
+  cooking was fixed
+  ([#90](https://j.njsm.de/git/veenj/stocks/issues/90)).
+
 ## [4.6.0.0]
 
 ### Added

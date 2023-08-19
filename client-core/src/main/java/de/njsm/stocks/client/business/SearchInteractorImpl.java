@@ -64,7 +64,7 @@ class SearchInteractorImpl implements SearchInteractor {
                 (u, v) -> Stream.concat(u.stream(), v.stream())
                         .collect(toList()));
 
-        return Observable.zip(
+        return Observable.combineLatest(
                 repository.getFoodBy(query),
                 allAmounts,
                 (v, u) -> foodRegrouper.regroup(v, u, SearchedFoodForListing::create, SearchedFoodForListing::name)

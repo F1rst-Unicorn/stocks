@@ -27,18 +27,6 @@ import io.reactivex.rxjava3.core.Observable;
 import java.time.Instant;
 import java.util.List;
 
-/**
- * At every consistent state of the client database it must hold that
- * for each {@link FoodForListingBaseData} b in the result list of {@link #getFood()}}
- * there exists a {@link StoredFoodAmount} a in the result list of {@link #getFoodAmounts()}
- * such that {@code b.id() == a.foodId()} and
- * for each {@link FoodForListingBaseData} b in the result list of {@link #getFood(Id)}}
- * there exists a {@link StoredFoodAmount} a in the result list of {@link #getFoodAmounts(Id)}
- * such that {@code b.id() == a.foodId()} and
- * for each {@link FoodForListingBaseData} b in the result list of {@link #getFoodBy(Id)}}
- * there exists a {@link StoredFoodAmount} a in the result list of {@link #getFoodAmountsIn(Id)}
- * such that {@code b.id() == a.foodId()}
- */
 public interface FoodListRepository {
 
     Observable<List<FoodForListingBaseData>> getFood();
