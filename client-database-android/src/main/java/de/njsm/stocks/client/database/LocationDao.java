@@ -25,6 +25,7 @@ import androidx.room.Dao;
 import androidx.room.Query;
 import de.njsm.stocks.client.business.entities.LocationForListing;
 import de.njsm.stocks.client.business.entities.LocationForSelection;
+import io.reactivex.rxjava3.core.Maybe;
 import io.reactivex.rxjava3.core.Observable;
 
 import java.util.List;
@@ -51,4 +52,10 @@ abstract class LocationDao {
             "from current_location " +
             "order by name")
     abstract Observable<List<LocationForSelection>> getLocationsForSelection();
+
+    @Query("select id " +
+            "from current_location " +
+            "order by name " +
+            "limit 1")
+    abstract Maybe<Integer> getAnyLocation();
 }

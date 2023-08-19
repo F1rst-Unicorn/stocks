@@ -46,7 +46,7 @@ public class FoodItemAddRepositoryImplTest extends DbTestCase {
 
     @Before
     public void setup() {
-        uut = new FoodItemAddRepositoryImpl(null, null, stocksDatabase.foodItemDao(), stocksDatabase.foodDao());
+        uut = new FoodItemAddRepositoryImpl(null, null, stocksDatabase.foodItemDao(), stocksDatabase.foodDao(), stocksDatabase.locationDao());
     }
 
     @Test
@@ -242,5 +242,68 @@ public class FoodItemAddRepositoryImplTest extends DbTestCase {
         Maybe<IdImpl<Location>> actual = uut.getLocationWithMostItemsOfType(food::id);
 
         test(actual).assertValue(v -> v.id() == location.id());
+    }
+
+    @Test
+    public void locationOfRemovedItemIsStillSuggested() {
+        FoodDbEntity food = standardEntities.foodDbEntity();
+        stocksDatabase.synchronisationDao().writeFood(singletonList(food));
+        LocationDbEntity location = standardEntities.locationDbEntity();
+        stocksDatabase.synchronisationDao().writeLocations(singletonList(location));
+        FoodItemDbEntity item = standardEntities.foodItemDbEntityBuilder()
+                .ofType(food.id())
+                .storedIn(location.id())
+                .build();
+        stocksDatabase.synchronisationDao().writeFoodItems(List.of(item));
+        var deletion = BitemporalOperations.currentDelete(item, EPOCH.plusSeconds(1));
+        stocksDatabase.synchronisationDao().writeFoodItems(deletion);
+
+        Maybe<IdImpl<Location>> actual = uut.getLocationMostItemsHaveBeenAddedTo(food::id);
+
+        test(actual).assertValue(v -> v.id() == location.id());
+    }
+
+    @Test
+    public void movedItemCausesFirstLocationToBeSuggested() {
+        FoodDbEntity food = standardEntities.foodDbEntity();
+        stocksDatabase.synchronisationDao().writeFood(singletonList(food));
+        LocationDbEntity location = standardEntities.locationDbEntity();
+        LocationDbEntity movedLocation = standardEntities.locationDbEntity();
+        stocksDatabase.synchronisationDao().writeLocations(List.of(location, movedLocation));
+        FoodItemDbEntity item = standardEntities.foodItemDbEntityBuilder()
+                .ofType(food.id())
+                .storedIn(location.id())
+                .build();
+        stocksDatabase.synchronisationDao().writeFoodItems(List.of(item));
+        var update = BitemporalOperations.currentUpdate(item, (BitemporalOperations.EntityEditor<FoodItemDbEntity, FoodItemDbEntity.Builder>) editor ->
+                editor.storedIn(movedLocation.id()), EPOCH.plusSeconds(1));
+        stocksDatabase.synchronisationDao().writeFoodItems(update);
+        var deletion = BitemporalOperations.currentDelete(update.get(2), EPOCH.plusSeconds(2));
+        stocksDatabase.synchronisationDao().writeFoodItems(deletion);
+
+        Maybe<IdImpl<Location>> actual = uut.getLocationMostItemsHaveBeenAddedTo(food::id);
+
+        test(actual).assertValue(v -> v.id() == location.id());
+    }
+
+    @Test
+    public void deletedLocationOfRemovedItemIsNotSuggested() {
+        FoodDbEntity food = standardEntities.foodDbEntity();
+        stocksDatabase.synchronisationDao().writeFood(singletonList(food));
+        LocationDbEntity location = standardEntities.locationDbEntity();
+        stocksDatabase.synchronisationDao().writeLocations(singletonList(location));
+        FoodItemDbEntity item = standardEntities.foodItemDbEntityBuilder()
+                .ofType(food.id())
+                .storedIn(location.id())
+                .build();
+        stocksDatabase.synchronisationDao().writeFoodItems(List.of(item));
+        var deletion = BitemporalOperations.currentDelete(item, EPOCH.plusSeconds(1));
+        stocksDatabase.synchronisationDao().writeFoodItems(deletion);
+        var locationDeletion = BitemporalOperations.currentDelete(location, EPOCH.plusSeconds(2));
+        stocksDatabase.synchronisationDao().writeLocations(locationDeletion);
+
+        Maybe<IdImpl<Location>> actual = uut.getLocationMostItemsHaveBeenAddedTo(food::id);
+
+        test(actual).assertNoValues();
     }
 }

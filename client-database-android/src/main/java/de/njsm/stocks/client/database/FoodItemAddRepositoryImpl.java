@@ -42,12 +42,15 @@ class FoodItemAddRepositoryImpl implements FoodItemAddRepository {
 
     private final FoodDao foodDao;
 
+    private final LocationDao locationDao;
+
     @Inject
-    FoodItemAddRepositoryImpl(ScaledUnitRepository scaledUnitRepository, LocationRepository locationRepository, FoodItemDao foodItemDao, FoodDao foodDao) {
+    FoodItemAddRepositoryImpl(ScaledUnitRepository scaledUnitRepository, LocationRepository locationRepository, FoodItemDao foodItemDao, FoodDao foodDao, LocationDao locationDao) {
         this.scaledUnitRepository = scaledUnitRepository;
         this.locationRepository = locationRepository;
         this.foodItemDao = foodItemDao;
         this.foodDao = foodDao;
+        this.locationDao = locationDao;
     }
 
     @Override
@@ -85,5 +88,15 @@ class FoodItemAddRepositoryImpl implements FoodItemAddRepository {
     @Override
     public Maybe<IdImpl<Location>> getLocationWithMostItemsOfType(Id<Food> food) {
         return foodItemDao.getLocationWithMostItemsOfType(food.id()).map(IdImpl::create);
+    }
+
+    @Override
+    public Maybe<IdImpl<Location>> getLocationMostItemsHaveBeenAddedTo(Id<Food> food) {
+        return foodItemDao.getLocationMostItemsHaveBeenAddedTo(food.id()).map(IdImpl::create);
+    }
+
+    @Override
+    public Maybe<IdImpl<Location>> getAnyLocation() {
+        return locationDao.getAnyLocation().map(IdImpl::create);
     }
 }

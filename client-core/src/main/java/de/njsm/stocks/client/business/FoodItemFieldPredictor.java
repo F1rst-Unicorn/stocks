@@ -93,7 +93,10 @@ class FoodItemFieldPredictor {
 
         Maybe<IdImpl<Location>> predictLocationAsync() {
             return foodObservable.flatMap(food1 -> food1.location().map(Maybe::just)
-                    .orElseGet(() -> repository.getLocationWithMostItemsOfType(food1)).defaultIfEmpty(create(-1)).toMaybe());
+                    .orElseGet(() -> repository.getLocationWithMostItemsOfType(food1)
+                            .switchIfEmpty(repository.getLocationMostItemsHaveBeenAddedTo(food1))
+                            .switchIfEmpty(repository.getAnyLocation())
+                            .switchIfEmpty(Maybe.just(create(-1)))));
         }
     }
 }

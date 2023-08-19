@@ -112,6 +112,8 @@ class FoodItemAddInteractorImplTest {
         when(repository.getLocations()).thenReturn(Maybe.just(locations));
         when(repository.getUnits()).thenReturn(Maybe.just(units));
         when(repository.getLocationWithMostItemsOfType(food)).thenReturn(Maybe.just(IdImpl.create(3)));
+        when(repository.getLocationMostItemsHaveBeenAddedTo(food)).thenReturn(Maybe.empty());
+        when(repository.getAnyLocation()).thenReturn(Maybe.empty());
 
         Maybe<FoodItemAddData> actual = uut.getFormData(food);
 
@@ -131,6 +133,8 @@ class FoodItemAddInteractorImplTest {
         when(repository.getLocations()).thenReturn(Maybe.just(locations));
         when(repository.getUnits()).thenReturn(Maybe.just(units));
         when(repository.getLocationWithMostItemsOfType(food)).thenReturn(Maybe.empty());
+        when(repository.getLocationMostItemsHaveBeenAddedTo(food)).thenReturn(Maybe.empty());
+        when(repository.getAnyLocation()).thenReturn(Maybe.empty());
 
         Maybe<FoodItemAddData> actual = uut.getFormData(food);
 

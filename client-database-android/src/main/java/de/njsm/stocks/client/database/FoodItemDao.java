@@ -61,6 +61,21 @@ abstract class FoodItemDao {
             "limit 1")
     abstract Maybe<Integer> getLocationWithMostItemsOfType(int foodId);
 
+    @Query("select " +
+            "l.id " +
+            "from current_location l " +
+            "join food_item i on i.stored_in = l.id " +
+            "where i.of_type = :foodId " +
+            "and i.transaction_time_start = (" +
+                "select min(nested.transaction_time_start) " +
+                "from food_item nested " +
+                "where nested.id = i.id" +
+            ")" +
+            "group by l.id " +
+            "order by count(*) desc " +
+            "limit 1")
+    abstract Maybe<Integer> getLocationMostItemsHaveBeenAddedTo(int foodId);
+
     @Query("select * " +
             "from current_food_item " +
             "where id = :id")
