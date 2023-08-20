@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## [4.7.0.0]
+
 ### Added
 
 * Recipes can now be sorted by their cookability indicators
