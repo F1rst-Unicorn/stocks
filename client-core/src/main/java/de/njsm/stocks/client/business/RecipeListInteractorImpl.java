@@ -23,12 +23,15 @@ package de.njsm.stocks.client.business;
 
 import de.njsm.stocks.client.business.entities.RecipeForListing;
 import de.njsm.stocks.client.business.entities.RecipeIngredientAmount;
+import de.njsm.stocks.client.business.entities.RecipesForListing;
 import io.reactivex.rxjava3.core.Observable;
 
 import javax.inject.Inject;
+import java.util.ArrayList;
 import java.util.List;
 
 import static java.util.Collections.emptyList;
+import static java.util.Comparator.comparing;
 import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.toList;
 
@@ -42,7 +45,7 @@ class RecipeListInteractorImpl implements RecipeListInteractor {
     }
 
     @Override
-    public Observable<List<RecipeForListing>> get() {
+    public Observable<RecipesForListing> get() {
         var recipes = repository.get();
         var recipeIngredients = repository.getIngredients();
 
@@ -50,20 +53,28 @@ class RecipeListInteractorImpl implements RecipeListInteractor {
             var ingredientsByRecipe = i.stream()
                     .collect(groupingBy(RecipeIngredientAmount::recipe));
 
-            return r.stream().map(recipe -> {
-                    var ingredients = ingredientsByRecipe.getOrDefault(recipe.id(), emptyList());
-                    // optional ingredients with no required amount are considered too
-                    var necessaryIngredients = normalise(ingredients.stream().filter(RecipeIngredientAmount::isNecessaryAmountPresent).count(), ingredients.size());
-                    var sufficientIngredients = normalise(ingredients.stream().filter(RecipeIngredientAmount::isSufficientAmountPresent).count(), ingredients.size());
+            List<RecipeForListing> recipesByName = r.stream().map(recipe -> {
+                        var ingredients = ingredientsByRecipe.getOrDefault(recipe.id(), emptyList());
+                        // optional ingredients with no required amount are considered too
+                        var necessaryIngredients = normalise(ingredients.stream().filter(RecipeIngredientAmount::isNecessaryAmountPresent).count(), ingredients.size());
+                        var sufficientIngredients = normalise(ingredients.stream().filter(RecipeIngredientAmount::isSufficientAmountPresent).count(), ingredients.size());
 
-                    return RecipeForListing.create(
-                            recipe.id(),
-                            recipe.name(),
-                            necessaryIngredients,
-                            sufficientIngredients
-                    );
-                })
-                .collect(toList());
+                        return RecipeForListing.create(
+                                recipe.id(),
+                                recipe.name(),
+                                necessaryIngredients,
+                                sufficientIngredients
+                        );
+                    })
+                    .collect(toList());
+
+            List<RecipeForListing> recipesByCookability = new ArrayList<>(recipesByName);
+            recipesByCookability.sort(
+                    comparing(RecipeForListing::necessaryIngredientIndex)
+                            .thenComparing(RecipeForListing::sufficientIngredientIndex).reversed()
+            );
+
+            return RecipesForListing.create(recipesByName, recipesByCookability);
         });
     }
 

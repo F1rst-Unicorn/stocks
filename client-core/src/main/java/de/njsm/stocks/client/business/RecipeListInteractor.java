@@ -21,12 +21,10 @@
 
 package de.njsm.stocks.client.business;
 
-import de.njsm.stocks.client.business.entities.RecipeForListing;
+import de.njsm.stocks.client.business.entities.RecipesForListing;
 import io.reactivex.rxjava3.core.Observable;
-
-import java.util.List;
 
 public interface RecipeListInteractor {
 
-    Observable<List<RecipeForListing>> get();
+    Observable<RecipesForListing> get();
 }

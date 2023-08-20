@@ -19,26 +19,20 @@
  *
  */
 
-package de.njsm.stocks.client.business;
+package de.njsm.stocks.client.business.entities;
 
-import de.njsm.stocks.client.business.entities.RecipesForListing;
-import de.njsm.stocks.client.testdata.RecipeTestData;
-import io.reactivex.rxjava3.core.Observable;
-import io.reactivex.rxjava3.subjects.BehaviorSubject;
+import com.google.auto.value.AutoValue;
 
-import javax.inject.Inject;
+import java.util.List;
 
-class InMemoryRecipeListInteractorImpl implements RecipeListInteractor {
+@AutoValue
+public abstract class RecipesForListing {
 
-    private final BehaviorSubject<RecipesForListing> data;
+    public abstract List<RecipeForListing> byName();
 
-    @Inject
-    InMemoryRecipeListInteractorImpl(RecipeTestData RecipesForListing) {
-        this.data = RecipesForListing.getData();
-    }
+    public abstract List<RecipeForListing> byCookability();
 
-    @Override
-    public Observable<RecipesForListing> get() {
-        return data;
+    public static RecipesForListing create(List<RecipeForListing> byName, List<RecipeForListing> byCookability) {
+        return new AutoValue_RecipesForListing(byName, byCookability);
     }
 }

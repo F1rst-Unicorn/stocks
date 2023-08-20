@@ -259,7 +259,7 @@ public class ViewModelModule {
     @Provides
     @IntoMap
     @ViewModelKey(RecipeListViewModel.class)
-    ViewModel RecipeListViewModel(RecipeListInteractor interactor, Synchroniser errorRetryInteractor, ObservableListCache<RecipeForListing> data, EntityDeleter<Recipe> deleter) {
+    ViewModel RecipeListViewModel(RecipeListInteractor interactor, Synchroniser errorRetryInteractor, ObservableDataCache<RecipesForListing> data, EntityDeleter<Recipe> deleter) {
         return new RecipeListViewModel(interactor, errorRetryInteractor, data, deleter);
     }
 

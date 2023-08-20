@@ -24,14 +24,13 @@ package de.njsm.stocks.client.fragment.recipelist;
 
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
+import android.view.*;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
+import androidx.core.view.MenuProvider;
 import androidx.lifecycle.ViewModelProvider;
-import de.njsm.stocks.client.business.entities.RecipeForListing;
+import de.njsm.stocks.client.business.entities.RecipesForListing;
 import de.njsm.stocks.client.fragment.BottomToolbarFragment;
 import de.njsm.stocks.client.fragment.listswipe.SwipeCallback;
 import de.njsm.stocks.client.fragment.view.TemplateSwipeList;
@@ -40,9 +39,8 @@ import de.njsm.stocks.client.presenter.RecipeListViewModel;
 import de.njsm.stocks.client.ui.R;
 
 import javax.inject.Inject;
-import java.util.List;
 
-public class RecipeListFragment extends BottomToolbarFragment {
+public class RecipeListFragment extends BottomToolbarFragment implements MenuProvider {
 
     private RecipeListViewModel recipeListViewModel;
 
@@ -73,22 +71,34 @@ public class RecipeListFragment extends BottomToolbarFragment {
         templateSwipeList.initialiseListWithSwiper(requireContext(), recipeAdapter, callback);
         templateSwipeList.bindFloatingActionButton(this::onAddItem);
         templateSwipeList.bindSwipeDown(this::onSwipeDown);
+        requireActivity().addMenuProvider(this, getViewLifecycleOwner());
 
         return root;
     }
 
-    private void onListDataReceived(List<RecipeForListing> data) {
+    private void onListDataReceived(RecipesForListing data) {
         templateSwipeList.setList();
         recipeAdapter.setData(data);
     }
 
     private void onItemSwipedRight(int listItemIndex) {
-        recipeListViewModel.delete(listItemIndex);
+        recipeListViewModel.delete(listItemIndex, recipeAdapter.sortedByName());
+    }
+
+    @Override
+    public void onCreateMenu(@NonNull Menu menu, @NonNull MenuInflater menuInflater) {
+        menuInflater.inflate(R.menu.recipe_sort, menu);
+    }
+
+    @Override
+    public boolean onMenuItemSelected(@NonNull MenuItem menuItem) {
+        recipeAdapter.swap();
+        return true;
     }
 
     private void onItemClicked(View listItem) {
         int listItemIndex = ((RecipeViewHolder) listItem.getTag()).getBindingAdapterPosition();
-        recipeListViewModel.resolveId(listItemIndex, recipeListNavigator::show);
+        recipeListViewModel.resolveId(listItemIndex, recipeAdapter.sortedByName(), recipeListNavigator::show);
     }
 
     private void onAddItem(View button) {

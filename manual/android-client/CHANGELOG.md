@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+### Added
+
+* Recipes can now be sorted by their cookability indicators
+  ([#73](https://j.njsm.de/git/veenj/stocks/issues/73)).
+
 ## [4.6.0.1]
 
 ### Fixed

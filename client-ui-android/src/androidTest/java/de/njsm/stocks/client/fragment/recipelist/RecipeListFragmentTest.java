@@ -30,6 +30,7 @@ import de.njsm.stocks.client.business.FakeRecipeListInteractor;
 import de.njsm.stocks.client.business.Synchroniser;
 import de.njsm.stocks.client.business.entities.Recipe;
 import de.njsm.stocks.client.business.entities.RecipeForListing;
+import de.njsm.stocks.client.business.entities.RecipesForListing;
 import de.njsm.stocks.client.navigation.RecipeListNavigator;
 import de.njsm.stocks.client.testdata.RecipeTestData;
 import de.njsm.stocks.client.ui.R;
@@ -38,7 +39,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import javax.inject.Inject;
-import java.util.List;
 
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
@@ -81,7 +81,7 @@ public class RecipeListFragmentTest {
         recipeListInteractor.setData(RecipeTestData.generate());
 
         int position = 0;
-        for (RecipeForListing item : RecipeTestData.generate()) {
+        for (RecipeForListing item : RecipeTestData.generate().byName()) {
             onView(recyclerView(R.id.template_swipe_list_list)
                     .atPositionOnView(position, R.id.item_recipe_name))
                     .check(matches(withText(item.name())));
@@ -98,9 +98,9 @@ public class RecipeListFragmentTest {
     @Test
     public void clickingNavigates() {
         int itemIndex = 1;
-        List<RecipeForListing> data = RecipeTestData.generate();
-        assertTrue("The test wants to access element " + itemIndex, data.size() >= itemIndex + 1);
-        RecipeForListing item = data.get(itemIndex);
+        RecipesForListing data = RecipeTestData.generate();
+        assertTrue("The test wants to access element " + itemIndex, data.byName().size() >= itemIndex + 1);
+        RecipeForListing item = data.byName().get(itemIndex);
         assertTrue("Make sure the list position is mapped to an ID by having different values", item.id() != itemIndex);
         recipeListInteractor.setData(data);
 
@@ -120,9 +120,9 @@ public class RecipeListFragmentTest {
     @Test
     public void swipingRightDeletes() {
         int itemIndex = 1;
-        List<RecipeForListing> data = RecipeTestData.generate();
-        assertTrue("The test wants to access element " + itemIndex, data.size() >= itemIndex + 1);
-        RecipeForListing item = data.get(itemIndex);
+        RecipesForListing data = RecipeTestData.generate();
+        assertTrue("The test wants to access element " + itemIndex, data.byName().size() >= itemIndex + 1);
+        RecipeForListing item = data.byName().get(itemIndex);
         assertTrue("Make sure the list position is mapped to an ID by having different values", item.id() != itemIndex);
         recipeListInteractor.setData(data);
 

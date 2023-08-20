@@ -23,29 +23,38 @@ package de.njsm.stocks.client.testdata;
 
 
 import de.njsm.stocks.client.business.entities.RecipeForListing;
+import de.njsm.stocks.client.business.entities.RecipesForListing;
 import io.reactivex.rxjava3.subjects.BehaviorSubject;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
+
+import static java.util.Comparator.comparing;
 
 public class RecipeTestData {
 
-    private final BehaviorSubject<List<RecipeForListing>> data;
+    private final BehaviorSubject<RecipesForListing> data;
 
-    public RecipeTestData(List<RecipeForListing> data) {
+    public RecipeTestData(RecipesForListing data) {
         this.data = BehaviorSubject.createDefault(data);
     }
 
-    public static List<RecipeForListing> generate() {
-        return new ArrayList<>(Arrays.asList(
-                RecipeForListing.create(1, "Pizza", 7, 0),
+    public static RecipesForListing generate() {
+        var recipesByName = List.of(
+                RecipeForListing.create(4, "Burger", 5, 4),
                 RecipeForListing.create(2, "Pasta", 6, 6),
-                RecipeForListing.create(4, "Burger", 5, 4)
-        ));
+                RecipeForListing.create(1, "Pizza", 7, 0)
+        );
+        List<RecipeForListing> recipesByCookability = new ArrayList<>(recipesByName);
+        recipesByCookability.sort(
+                comparing(RecipeForListing::necessaryIngredientIndex)
+                        .thenComparing(RecipeForListing::sufficientIngredientIndex)
+        );
+
+        return RecipesForListing.create(recipesByName, recipesByCookability);
     }
 
-    public BehaviorSubject<List<RecipeForListing>> getData() {
+    public BehaviorSubject<RecipesForListing> getData() {
         return data;
     }
 }

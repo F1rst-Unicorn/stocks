@@ -21,28 +21,27 @@
 
 package de.njsm.stocks.client.business;
 
-import de.njsm.stocks.client.business.entities.RecipeForListing;
+import de.njsm.stocks.client.business.entities.RecipesForListing;
 import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.subjects.BehaviorSubject;
 
 import javax.inject.Inject;
-import java.util.List;
 
 public class FakeRecipeListInteractor implements RecipeListInteractor {
 
-    private final BehaviorSubject<List<RecipeForListing>> data;
+    private final BehaviorSubject<RecipesForListing> data;
 
     @Inject
     FakeRecipeListInteractor() {
         this.data = BehaviorSubject.create();
     }
 
-    public void setData(List<RecipeForListing> data) {
+    public void setData(RecipesForListing data) {
         this.data.onNext(data);
     }
 
     @Override
-    public Observable<List<RecipeForListing>> get() {
+    public Observable<RecipesForListing> get() {
         return data;
     }
 }

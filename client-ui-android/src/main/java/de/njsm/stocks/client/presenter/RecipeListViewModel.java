@@ -29,9 +29,11 @@ import de.njsm.stocks.client.business.Synchroniser;
 import de.njsm.stocks.client.business.entities.Id;
 import de.njsm.stocks.client.business.entities.Recipe;
 import de.njsm.stocks.client.business.entities.RecipeForListing;
+import de.njsm.stocks.client.business.entities.RecipesForListing;
 
 import java.util.List;
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 public class RecipeListViewModel extends ViewModel {
 
@@ -39,31 +41,41 @@ public class RecipeListViewModel extends ViewModel {
 
     private final Synchroniser synchroniser;
 
-    private final ObservableListCache<RecipeForListing> data;
+    private final ObservableDataCache<RecipesForListing> data;
 
     private final EntityDeleter<Recipe> deleter;
 
-    public RecipeListViewModel(RecipeListInteractor interactor, Synchroniser synchroniser, ObservableListCache<RecipeForListing> data, EntityDeleter<Recipe> deleter) {
+    public RecipeListViewModel(RecipeListInteractor interactor, Synchroniser synchroniser, ObservableDataCache<RecipesForListing> data, EntityDeleter<Recipe> deleter) {
         this.interactor = interactor;
         this.synchroniser = synchroniser;
         this.data = data;
         this.deleter = deleter;
     }
 
-    public LiveData<List<RecipeForListing>> get() {
+    public LiveData<RecipesForListing> get() {
         return data.getLiveData(interactor::get);
     }
 
-    public void delete(int listItemIndex) {
-        data.performOnListItem(listItemIndex, deleter::delete);
+    public void delete(int listItemIndex, boolean sortedByName) {
+        Function<RecipesForListing, List<RecipeForListing>> listSelector;
+        if (sortedByName)
+            listSelector = RecipesForListing::byName;
+        else
+            listSelector = RecipesForListing::byCookability;
+        data.performOnNestedList(listItemIndex, listSelector, deleter::delete);
     }
 
     public void synchronise() {
         synchroniser.synchronise();
     }
 
-    public void resolveId(int listItemIndex, Consumer<Id<Recipe>> callback) {
-        data.performOnListItem(listItemIndex, callback::accept);
+    public void resolveId(int listItemIndex, boolean sortedByName, Consumer<Id<Recipe>> callback) {
+        Function<RecipesForListing, List<RecipeForListing>> listSelector;
+        if (sortedByName)
+            listSelector = RecipesForListing::byName;
+        else
+            listSelector = RecipesForListing::byCookability;
+        data.performOnNestedList(listItemIndex, listSelector, callback::accept);
     }
 
     @Override

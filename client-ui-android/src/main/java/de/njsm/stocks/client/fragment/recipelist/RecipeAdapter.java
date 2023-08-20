@@ -28,6 +28,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 import de.njsm.stocks.client.business.entities.RecipeForListing;
+import de.njsm.stocks.client.business.entities.RecipesForListing;
 import de.njsm.stocks.client.ui.R;
 
 import java.util.List;
@@ -38,16 +39,34 @@ class RecipeAdapter extends RecyclerView.Adapter<RecipeViewHolder> {
 
     private List<RecipeForListing> recipes;
 
+    private List<RecipeForListing> otherRecipes;
+
+    private boolean byName = true;
+
     private final View.OnClickListener onClickListener;
 
     RecipeAdapter(View.OnClickListener onClickListener) {
         this.onClickListener = onClickListener;
     }
 
-    public void setData(List<RecipeForListing> newList) {
+    void setData(RecipesForListing newList) {
         List<RecipeForListing> oldList = recipes;
-        recipes = newList;
-        DiffUtil.calculateDiff(byId(oldList, newList), true).dispatchUpdatesTo(this);
+        if (byName) {
+            recipes = newList.byName();
+            otherRecipes = newList.byCookability();
+        } else {
+            otherRecipes = newList.byName();
+            recipes = newList.byCookability();
+        }
+        DiffUtil.calculateDiff(byId(oldList, recipes), true).dispatchUpdatesTo(this);
+    }
+
+    void swap() {
+        List<RecipeForListing> tmp = recipes;
+        recipes = otherRecipes;
+        otherRecipes = tmp;
+        byName = !byName;
+        DiffUtil.calculateDiff(byId(otherRecipes, recipes), true).dispatchUpdatesTo(this);
     }
 
     @NonNull
@@ -74,5 +93,9 @@ class RecipeAdapter extends RecyclerView.Adapter<RecipeViewHolder> {
         } else {
             return recipes.size();
         }
+    }
+
+    public boolean sortedByName() {
+        return byName;
     }
 }

@@ -24,6 +24,7 @@ package de.njsm.stocks.client.business;
 import de.njsm.stocks.client.business.entities.RecipeForListing;
 import de.njsm.stocks.client.business.entities.RecipeForListingBaseData;
 import de.njsm.stocks.client.business.entities.RecipeIngredientAmount;
+import de.njsm.stocks.client.business.entities.RecipesForListing;
 import io.reactivex.rxjava3.core.Observable;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -96,7 +97,7 @@ class RecipeListInteractorImplTest {
         actual.test()
                 .awaitCount(1)
                 .assertNoErrors()
-                .assertValue(emptyList());
+                .assertValue(RecipesForListing.create(emptyList(), emptyList()));
     }
 
     public RecipeIngredientAmount sufficientAmount() {
@@ -125,8 +126,10 @@ class RecipeListInteractorImplTest {
         actual.test()
                 .awaitCount(1)
                 .assertNoErrors()
-                .assertValue(List.of(
-                RecipeForListing.create(1, "Pizza", expectedNecessaryIndex, expectedSufficientIndex)
+                .assertValue(RecipesForListing.create(
+                        List.of(RecipeForListing.create(1, "Pizza", expectedNecessaryIndex, expectedSufficientIndex)),
+                        List.of(RecipeForListing.create(1, "Pizza", expectedNecessaryIndex, expectedSufficientIndex))
+
         ));
     }
 }
