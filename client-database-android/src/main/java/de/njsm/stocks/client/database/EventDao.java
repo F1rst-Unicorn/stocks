@@ -351,9 +351,13 @@ abstract class EventDao {
             "order by main_table.transaction_time_start desc, main_table.valid_time_end")
     abstract Observable<List<EanNumberEventFeedItem>> getEanNumberEventsOf(int foodId, Instant lower, Instant upper);
 
-    @Query("select max(last_update) " +
+    @Query("select max(last_update) x " +
             "from updates " +
-            "where name in (:relevantEntities)")
+            "where name in (:relevantEntities) " +
+            "union " +
+            "select '1970-01-01 00:00:00.000000' x " +
+            "order by x desc " +
+            "limit 1")
     abstract Observable<Instant> getLatestUpdateTimestamp(List<EntityType> relevantEntities);
 
     @Query("select min(transaction_time_start) " +

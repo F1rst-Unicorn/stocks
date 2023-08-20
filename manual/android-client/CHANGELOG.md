@@ -7,6 +7,11 @@
 * Recipes can now be sorted by their cookability indicators
   ([#73](https://j.njsm.de/git/veenj/stocks/issues/73)).
 
+### Fixed
+
+* After the initial synchronisation the activicy view is no longer empty
+  ([#91](https://j.njsm.de/git/veenj/stocks/issues/91)).
+
 ## [4.6.0.1]
 
 ### Fixed
