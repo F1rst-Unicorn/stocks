@@ -40,13 +40,12 @@ public class LocationDeleteErrorRepositoryImplTest extends AbstractErrorReposito
 
     ErrorDetails recordError(StatusCodeException e) {
         LocationDbEntity location = standardEntities.locationDbEntity();
-        LocationForDeletion locationForDeletion = LocationForDeletion.builder()
-                .id(location.id())
-                .version(location.version())
-                .build();
+        LocationForDeletion locationForDeletion = LocationForDeletion.create(
+                IdImpl.create(location.id()),
+                location.version());
         stocksDatabase.synchronisationDao().writeLocations(singletonList(location));
         errorRecorder.recordLocationDeleteError(e, locationForDeletion);
-        return LocationDeleteErrorDetails.create(location.id(), location.name());
+        return LocationDeleteErrorDetails.create(IdImpl.create(location.id()), 2, location.name());
     }
 
     @Override
@@ -60,14 +59,13 @@ public class LocationDeleteErrorRepositoryImplTest extends AbstractErrorReposito
         StatusCode statusCode = StatusCode.DATABASE_UNREACHABLE;
         StatusCodeException exception = new StatusCodeException(statusCode);
         LocationDbEntity location = standardEntities.locationDbEntity();
-        LocationForDeletion locationForDeletion = LocationForDeletion.builder()
-                .id(location.id())
-                .version(location.version())
-                .build();
+        LocationForDeletion locationForDeletion = LocationForDeletion.create(
+                IdImpl.create(location.id()),
+                location.version());
         stocksDatabase.synchronisationDao().writeLocations(singletonList(location));
         stocksDatabase.synchronisationDao().writeLocations(currentDelete(location, editTime));
         errorRecorder.recordLocationDeleteError(exception, locationForDeletion);
-        ErrorDetails data = LocationDeleteErrorDetails.create(location.id(), location.name());
+        ErrorDetails data = LocationDeleteErrorDetails.create(IdImpl.create(location.id()), location.version(), location.name());
 
         test(uut.getNumberOfErrors()).assertValue(1);
         testList(uut.getErrors()).assertValue(v -> v.get(0).statusCode() == statusCode);
@@ -81,15 +79,14 @@ public class LocationDeleteErrorRepositoryImplTest extends AbstractErrorReposito
         StatusCode statusCode = StatusCode.DATABASE_UNREACHABLE;
         StatusCodeException exception = new StatusCodeException(statusCode);
         LocationDbEntity location = standardEntities.locationDbEntity();
-        LocationForDeletion locationForDeletion = LocationForDeletion.builder()
-                .id(location.id())
-                .version(location.version())
-                .build();
+        LocationForDeletion locationForDeletion = LocationForDeletion.create(
+                IdImpl.create(location.id()),
+                location.version());
         stocksDatabase.synchronisationDao().writeLocations(singletonList(location));
         stocksDatabase.synchronisationDao().writeLocations(sequencedDeleteOfEntireTime(location, editTime));
         stocksDatabase.synchronisationDao().insert(singletonList(UpdateDbEntity.create(EntityType.LOCATION, Instant.EPOCH)));
         errorRecorder.recordLocationDeleteError(exception, locationForDeletion);
-        ErrorDetails data = LocationDeleteErrorDetails.create(location.id(), location.name());
+        ErrorDetails data = LocationDeleteErrorDetails.create(IdImpl.create(location.id()), location.version(), location.name());
 
         test(uut.getNumberOfErrors()).assertValue(1);
         testList(uut.getErrors()).assertValue(v -> v.get(0).statusCode() == statusCode);

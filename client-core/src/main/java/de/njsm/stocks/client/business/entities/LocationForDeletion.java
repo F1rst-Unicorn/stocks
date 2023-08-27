@@ -24,15 +24,13 @@ package de.njsm.stocks.client.business.entities;
 import com.google.auto.value.AutoValue;
 
 @AutoValue
-public abstract class LocationForDeletion implements Versionable<Location> {
+public abstract class LocationForDeletion {
 
-    public static LocationForDeletion.Builder builder() {
-        return new AutoValue_LocationForDeletion.Builder();
-    }
+    public abstract IdImpl<Location> id();
 
-    @AutoValue.Builder
-    public abstract static class Builder
-            extends BaseBuilder<LocationForDeletion>
-            implements Versionable.Builder<Builder> {
+    public abstract int version();
+
+    public static LocationForDeletion create(IdImpl<Location> id, int version) {
+        return new AutoValue_LocationForDeletion(id, version);
     }
 }

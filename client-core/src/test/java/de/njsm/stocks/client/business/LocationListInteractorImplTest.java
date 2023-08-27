@@ -35,7 +35,7 @@ class LocationListInteractorImplTest {
 
     @Test
     void gettingLocationsFetchesFromRepository() {
-        List<LocationForListing> expected = singletonList(LocationForListing.create(1, "Cheese"));
+        List<LocationForListing> expected = singletonList(LocationForListing.create(1, 2, "Cheese"));
         LocationRepository repository = mock(LocationRepository.class);
         when(repository.getLocations()).thenReturn(Observable.just(expected));
         LocationListInteractorImpl uut = new LocationListInteractorImpl(repository);

@@ -43,7 +43,7 @@ class InMemoryLocationAddInteractorImpl implements LocationAddInteractor {
     public void addLocation(LocationAddForm locationAddForm) {
         data.firstElement().subscribe(list -> {
             int id = list.stream().mapToInt(LocationForListing::id).max().orElse(0) + 1;
-            LocationForListing newItem = LocationForListing.create(id, locationAddForm.name());
+            LocationForListing newItem = LocationForListing.create(id, 1, locationAddForm.name());
             List<LocationForListing> newList = new ArrayList<>(list);
             newList.add(newItem);
             data.onNext(newList);

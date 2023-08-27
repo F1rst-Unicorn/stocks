@@ -26,7 +26,7 @@ import io.reactivex.rxjava3.core.Observable;
 
 import java.util.List;
 
-public interface LocationRepository extends EntityDeleteRepository<Location> {
+public interface LocationRepository {
 
     Observable<List<LocationForListing>> getLocations();
 

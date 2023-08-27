@@ -31,6 +31,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import static io.reactivex.rxjava3.core.Observable.just;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
@@ -62,9 +63,9 @@ class LocationEditInteractorImplTest {
     @Test
     void gettingLocationIsForwarded() {
         int id = 42;
-        Id<Location> input = () -> id;
+        IdImpl<Location> input = IdImpl.create(id);
         LocationEditFormData expected = getLocationToEdit(id);
-        when(locationRepository.getLocationForEditing(input)).thenReturn(Observable.just(expected));
+        when(locationRepository.getLocationForEditing(input)).thenReturn(just(expected));
 
         Observable<LocationEditFormData> actual = uut.getLocation(input);
 
@@ -75,7 +76,7 @@ class LocationEditInteractorImplTest {
     void editingDispatchesToBackend() {
         LocationEditFormData expected = getLocationToEdit(42);
 
-        uut.edit(expected);
+        uut.edit(expected.into());
 
         ArgumentCaptor<Job> captor = ArgumentCaptor.forClass(Job.class);
         verify(scheduler).schedule(captor.capture());
@@ -86,9 +87,9 @@ class LocationEditInteractorImplTest {
     void editingWithoutChangeDoesNothing() {
         int id = 42;
         LocationEditFormData sameData = getLocationToEdit(id);
-        when(locationRepository.getCurrentLocationBeforeEditing(sameData)).thenReturn(sameData.addVersion(2));
+        when(locationRepository.getLocationForEditing(sameData.id())).thenReturn(just(sameData));
 
-        uut.editInBackground(sameData);
+        uut.editInBackground(sameData.into());
 
         verifyNoInteractions(locationEditService);
     }
@@ -96,68 +97,62 @@ class LocationEditInteractorImplTest {
     @Test
     void differentInputDataCausesEditing() {
         int id = 42;
-        int version = 2;
         LocationEditFormData localData = getLocationToEdit(id);
-        LocationEditFormData editedForm = LocationEditFormData.builder()
-                .id(id)
-                .name("edited name")
-                .description("edited description")
-                .build();
-        LocationForEditing dataToNetwork = editedForm.addVersion(version);
-        when(locationRepository.getCurrentLocationBeforeEditing(editedForm)).thenReturn(localData.addVersion(version));
+        LocationEditFormData editedForm = LocationEditFormData.create(
+                IdImpl.create(id),
+                3,
+                "edited name",
+                "edited description");
+        when(locationRepository.getLocationForEditing(editedForm.id())).thenReturn(just(localData));
 
-        uut.editInBackground(editedForm);
+        uut.editInBackground(editedForm.into());
 
-        verify(locationEditService).editLocation(dataToNetwork);
+        verify(locationEditService).editLocation(editedForm.into());
         verify(synchroniser).synchronise();
     }
 
     @Test
     void differentDescriptionCausesEditing() {
         int id = 42;
-        int version = 2;
         LocationEditFormData localData = getLocationToEdit(id);
-        LocationEditFormData editedForm = LocationEditFormData.builder()
-                .id(id)
-                .name(localData.name())
-                .description("edited description")
-                .build();
-        LocationForEditing dataToNetwork = editedForm.addVersion(version);
-        when(locationRepository.getCurrentLocationBeforeEditing(editedForm)).thenReturn(localData.addVersion(version));
+        LocationEditFormData editedForm = LocationEditFormData.create(
+                IdImpl.create(id),
+                3,
+                "current name",
+                "edited description");
+        when(locationRepository.getLocationForEditing(editedForm.id())).thenReturn(just(localData));
 
-        uut.editInBackground(editedForm);
+        uut.editInBackground(editedForm.into());
 
-        verify(locationEditService).editLocation(dataToNetwork);
+        verify(locationEditService).editLocation(editedForm.into());
         verify(synchroniser).synchronise();
     }
 
     @Test
     void failingEditingErrorIsRecorded() {
         int id = 42;
-        int version = 2;
         LocationEditFormData localData = getLocationToEdit(id);
-        LocationEditFormData editedForm = LocationEditFormData.builder()
-                .id(id)
-                .name(localData.name())
-                .description("edited description")
-                .build();
-        LocationForEditing dataToNetwork = editedForm.addVersion(version);
-        when(locationRepository.getCurrentLocationBeforeEditing(editedForm)).thenReturn(localData.addVersion(version));
+        LocationEditFormData editedForm = LocationEditFormData.create(
+                IdImpl.create(id),
+                3,
+                "current name",
+                "edited description");
         SubsystemException exception = new SubsystemException("test");
-        doThrow(exception).when(locationEditService).editLocation(dataToNetwork);
+        when(locationRepository.getLocationForEditing(editedForm.id())).thenReturn(just(localData));
+        doThrow(exception).when(locationEditService).editLocation(editedForm.into());
 
-        uut.editInBackground(editedForm);
+        uut.editInBackground(editedForm.into());
 
-        verify(locationEditService).editLocation(dataToNetwork);
-        verify(errorRecorder).recordLocationEditError(exception, dataToNetwork);
+        verify(locationEditService).editLocation(editedForm.into());
+        verify(errorRecorder).recordLocationEditError(exception, editedForm.into());
         verify(synchroniser).synchroniseAfterError(exception);
     }
 
     private LocationEditFormData getLocationToEdit(int id) {
-        return LocationEditFormData.builder()
-                .id(id)
-                .name("current name")
-                .description("current description")
-                .build();
+        return LocationEditFormData.create(
+                IdImpl.create(id),
+                3,
+                "current name",
+                "current description");
     }
 }

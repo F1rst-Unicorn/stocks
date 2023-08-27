@@ -21,9 +21,8 @@
 
 package de.njsm.stocks.client.database;
 
+import de.njsm.stocks.client.business.entities.IdImpl;
 import de.njsm.stocks.client.business.entities.LocationEditFormData;
-import de.njsm.stocks.client.business.entities.LocationForDeletion;
-import de.njsm.stocks.client.business.entities.LocationForEditing;
 import de.njsm.stocks.client.business.entities.LocationForListing;
 import io.reactivex.rxjava3.core.Observable;
 import org.junit.Before;
@@ -32,9 +31,6 @@ import org.junit.Test;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 public class LocationRepositoryImplTest extends DbTestCase {
 
@@ -57,36 +53,13 @@ public class LocationRepositoryImplTest extends DbTestCase {
     }
 
     @Test
-    public void gettingSingleLocationWorks() {
-        LocationDbEntity location = standardEntities.locationDbEntity();
-        stocksDatabase.synchronisationDao().synchroniseLocations(Collections.singletonList(location));
-
-        LocationForDeletion actual = uut.getEntityForDeletion(location::id);
-
-        assertEquals(location.id(), actual.id());
-        assertEquals(location.version(), actual.version());
-    }
-
-    @Test
     public void gettingLocationForEditingWorks() {
         LocationDbEntity location = standardEntities.locationDbEntity();
         stocksDatabase.synchronisationDao().synchroniseLocations(Collections.singletonList(location));
         LocationEditFormData expected = DataMapper.mapToEdit(location);
 
-        Observable<LocationEditFormData> actual = uut.getLocationForEditing(location::id);
+        Observable<LocationEditFormData> actual = uut.getLocationForEditing(IdImpl.create(location.id()));
 
         actual.test().awaitCount(1).assertValue(expected);
-    }
-
-    @Test
-    public void gettingLocationInBackgroundForEditingWorks() {
-        LocationDbEntity entity = standardEntities.locationDbEntity();
-        stocksDatabase.synchronisationDao().synchroniseLocations(Collections.singletonList(entity));
-        LocationEditFormData expected = DataMapper.mapToEdit(entity);
-
-        LocationForEditing actual = uut.getCurrentLocationBeforeEditing(entity::id);
-
-        assertTrue(expected.isContainedIn(actual));
-        assertEquals(entity.version(), actual.version());
     }
 }

@@ -37,7 +37,7 @@ public interface UimockBusinessModule {
     LocationListInteractor locationListInteractor(InMemoryLocationListInteractorImpl implementation);
 
     @Binds
-    EntityDeleter<Location> locationDeleter(InMemoryLocationDeleterImpl implementation);
+    EntityDeleteInteractor<LocationForDeletion> locationDeleter(InMemoryLocationDeleterImpl implementation);
 
     @Binds
     LocationAddInteractor locationAddInteractor(InMemoryLocationAddInteractorImpl implementation);

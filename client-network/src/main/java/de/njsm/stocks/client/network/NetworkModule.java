@@ -58,7 +58,7 @@ public interface NetworkModule {
     LocationAddService locationAddService(LocationAddServiceImpl impl);
 
     @Binds
-    EntityDeleteService<Location> locationDeleteService(LocationDeleteServiceImpl impl);
+    NewEntityDeleteService<LocationForDeletion> locationDeleteService(LocationDeleteServiceImpl impl);
 
     @Binds
     LocationEditService locationEditService(LocationEditServiceImpl impl);

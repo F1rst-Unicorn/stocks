@@ -60,7 +60,7 @@ public interface BusinessModule {
     SynchroniseInteractor synchroniseInteractor(SynchroniseInteractorImpl impl);
 
     @Binds
-    EntityDeleter<Location> locationDeleter(LocationDeleterImpl impl);
+    EntityDeleteInteractor<LocationForDeletion> locationDeleter(LocationDeleterImpl impl);
 
     @Binds
     LocationListInteractor locationListInteractor(LocationListInteractorImpl impl);

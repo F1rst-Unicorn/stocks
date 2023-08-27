@@ -24,16 +24,24 @@ package de.njsm.stocks.client.business.entities;
 import com.google.auto.value.AutoValue;
 
 @AutoValue
-public abstract class LocationDeleteErrorDetails implements ErrorDetails, Id<Location> {
+public abstract class LocationDeleteErrorDetails implements ErrorDetails {
+
+    public abstract IdImpl<Location> id();
+
+    public abstract int version();
 
     public abstract String name();
 
-    public static LocationDeleteErrorDetails create(int id, String name) {
-        return new AutoValue_LocationDeleteErrorDetails(id, name);
+    public static LocationDeleteErrorDetails create(IdImpl<Location> id, int version, String name) {
+        return new AutoValue_LocationDeleteErrorDetails(id, version, name);
     }
 
     @Override
     public <I, O> O accept(ErrorDetailsVisitor<I, O> visitor, I input) {
         return visitor.locationDeleteErrorDetails(this, input);
+    }
+
+    public LocationForDeletion toDeletion() {
+        return LocationForDeletion.create(id(), version());
     }
 }

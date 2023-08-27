@@ -23,7 +23,7 @@ package de.njsm.stocks.client.business.entities;
 
 public interface Versionable<T extends Entity<T>> extends Id<T> {
 
-    public static final int INVALID_VERSION = -1;
+    int INVALID_VERSION = -1;
 
     int version();
 

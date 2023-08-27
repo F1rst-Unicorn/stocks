@@ -21,18 +21,16 @@
 
 package de.njsm.stocks.client.business;
 
-import de.njsm.stocks.client.business.entities.Job;
-import de.njsm.stocks.client.business.entities.Location;
-import de.njsm.stocks.client.business.entities.Versionable;
+import de.njsm.stocks.client.business.entities.*;
 import org.junit.jupiter.api.BeforeEach;
 
 import static org.mockito.Mockito.verify;
 
-class LocationDeleterImplTest extends DeleterImplTest<Location> {
+class LocationDeleterImplTest extends DeleteInteractorImplTest<LocationForDeletion> {
 
     @BeforeEach
     void setUp() {
-        uut = new LocationDeleterImpl(deleteService, deleteRepository, synchroniser, errorRecorder, scheduler);
+        uut = new LocationDeleterImpl(deleteService, synchroniser, errorRecorder, scheduler);
     }
 
     @Override
@@ -41,7 +39,12 @@ class LocationDeleterImplTest extends DeleterImplTest<Location> {
     }
 
     @Override
-    void verifyRecorder(SubsystemException exception, Versionable<Location> outputToService) {
+    LocationForDeletion getNetworkData(int id, int version) {
+        return LocationForDeletion.create(IdImpl.create(id), version);
+    }
+
+    @Override
+    void verifyRecorder(SubsystemException exception, LocationForDeletion outputToService) {
         verify(errorRecorder).recordLocationDeleteError(exception, outputToService);
     }
 }

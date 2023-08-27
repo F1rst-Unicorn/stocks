@@ -29,7 +29,7 @@ public interface ErrorRecorder {
 
     void recordLocationAddError(SubsystemException exception, LocationAddForm form);
 
-    void recordLocationDeleteError(SubsystemException exception, Versionable<Location> locationForDeletion);
+    void recordLocationDeleteError(SubsystemException exception, LocationForDeletion locationForDeletion);
 
     void recordLocationEditError(SubsystemException exception, LocationForEditing locationForEditing);
 

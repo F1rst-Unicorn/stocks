@@ -24,6 +24,10 @@ package de.njsm.stocks.client.business;
 import de.njsm.stocks.client.business.entities.Entity;
 import de.njsm.stocks.client.business.entities.Id;
 
+/**
+ * @deprecated Use {@link EntityDeleteInteractor} instead
+ */
+@Deprecated
 public interface EntityDeleter<E extends Entity<E>> {
 
     void delete(Id<E> entity);

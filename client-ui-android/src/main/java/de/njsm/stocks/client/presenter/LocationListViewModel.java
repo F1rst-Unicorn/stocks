@@ -21,10 +21,10 @@ package de.njsm.stocks.client.presenter;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModel;
-import de.njsm.stocks.client.business.EntityDeleter;
+import de.njsm.stocks.client.business.EntityDeleteInteractor;
 import de.njsm.stocks.client.business.LocationListInteractor;
 import de.njsm.stocks.client.business.Synchroniser;
-import de.njsm.stocks.client.business.entities.Location;
+import de.njsm.stocks.client.business.entities.LocationForDeletion;
 import de.njsm.stocks.client.business.entities.LocationForListing;
 
 import javax.inject.Inject;
@@ -35,14 +35,14 @@ public class LocationListViewModel extends ViewModel {
 
     private final LocationListInteractor locationListInteractor;
 
-    private final EntityDeleter<Location> locationDeleter;
+    private final EntityDeleteInteractor<LocationForDeletion> locationDeleter;
 
     private final Synchroniser synchroniser;
 
     private final ObservableListCache<LocationForListing> data;
 
     @Inject
-    public LocationListViewModel(LocationListInteractor locationListInteractor, EntityDeleter<Location> locationDeleter, Synchroniser synchroniser, ObservableListCache<LocationForListing> data) {
+    public LocationListViewModel(LocationListInteractor locationListInteractor, EntityDeleteInteractor<LocationForDeletion> locationDeleter, Synchroniser synchroniser, ObservableListCache<LocationForListing> data) {
         this.locationListInteractor = locationListInteractor;
         this.locationDeleter = locationDeleter;
         this.synchroniser = synchroniser;
@@ -54,7 +54,7 @@ public class LocationListViewModel extends ViewModel {
     }
 
     public void deleteLocation(int listItemIndex) {
-        data.performOnListItem(listItemIndex, locationDeleter::delete);
+        data.performOnListItem(listItemIndex, v -> locationDeleter.delete(v.toDeletion()));
     }
 
     public void resolveLocationId(int listItemIndex, Consumer<Integer> callback) {

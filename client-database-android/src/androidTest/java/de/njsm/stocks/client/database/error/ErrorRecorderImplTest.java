@@ -120,10 +120,7 @@ public class ErrorRecorderImplTest extends DbTestCase {
 
     @Test
     public void recordingErrorDeletingLocationWorks() {
-        LocationForDeletion locationForDeletion = LocationForDeletion.builder()
-                .id(2)
-                .version(3)
-                .build();
+        LocationForDeletion locationForDeletion = LocationForDeletion.create(IdImpl.create(2), 3);
         StatusCodeException exception = new StatusCodeException(StatusCode.DATABASE_UNREACHABLE);
 
         uut.recordLocationDeleteError(exception, locationForDeletion);
@@ -135,7 +132,7 @@ public class ErrorRecorderImplTest extends DbTestCase {
         assertEquals(1, locationDeleteEntities.size());
         LocationDeleteEntity locationDelete = locationDeleteEntities.get(0);
         assertEquals(1, locationDelete.id());
-        assertEquals(locationForDeletion.id(), locationDelete.location().id());
+        assertEquals(locationForDeletion.id().id(), locationDelete.location().id());
         assertEquals(locationForDeletion.version(), locationDelete.version());
         assertEquals(stocksDatabase.errorDao().getTransactionTimeOf(EntityType.LOCATION), locationDelete.location().transactionTime());
         List<ErrorEntity> errors = stocksDatabase.errorDao().getErrors();
@@ -148,12 +145,11 @@ public class ErrorRecorderImplTest extends DbTestCase {
 
     @Test
     public void recordingErrorEditingLocationWorks() {
-        LocationForEditing locationForEditing = LocationForEditing.builder()
-                .id(2)
-                .version(3)
-                .name("name")
-                .description("description")
-                .build();
+        LocationForEditing locationForEditing = LocationForEditing.create(
+                IdImpl.create(2),
+                3,
+                "name",
+                "description");
         StatusCodeException exception = new StatusCodeException(StatusCode.DATABASE_UNREACHABLE);
 
         uut.recordLocationEditError(exception, locationForEditing);
@@ -165,7 +161,7 @@ public class ErrorRecorderImplTest extends DbTestCase {
         assertEquals(1, locationEditEntities.size());
         LocationEditEntity locationEditEntity = locationEditEntities.get(0);
         assertEquals(1, locationEditEntity.id());
-        assertEquals(locationForEditing.id(), locationEditEntity.location().id());
+        assertEquals(locationForEditing.id().id(), locationEditEntity.location().id());
         assertEquals(locationForEditing.version(), locationEditEntity.version());
         assertEquals(stocksDatabase.errorDao().getTransactionTimeOf(EntityType.LOCATION), locationEditEntity.location().transactionTime());
         assertEquals(locationForEditing.name(), locationEditEntity.name());

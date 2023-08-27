@@ -30,7 +30,7 @@ class ErrorRetryInteractorImpl implements ErrorRetryInteractor, ErrorDetailsVisi
 
     private final LocationAddInteractor locationAddInteractor;
 
-    private final EntityDeleter<Location> locationDeleter;
+    private final EntityDeleteInteractor<LocationForDeletion> locationDeleter;
 
     private final LocationEditInteractor locationEditInteractor;
 
@@ -88,7 +88,7 @@ class ErrorRetryInteractorImpl implements ErrorRetryInteractor, ErrorDetailsVisi
 
     @Inject
     ErrorRetryInteractorImpl(LocationAddInteractor locationAddInteractor,
-                             EntityDeleter<Location> locationDeleter,
+                             EntityDeleteInteractor<LocationForDeletion> locationDeleter,
                              LocationEditInteractor locationEditInteractor,
                              UnitAddInteractor unitAddInteractor,
                              EntityDeleter<Unit> unitDeleter,
@@ -180,7 +180,7 @@ class ErrorRetryInteractorImpl implements ErrorRetryInteractor, ErrorDetailsVisi
 
     @Override
     public Void locationDeleteErrorDetails(LocationDeleteErrorDetails locationDeleteErrorDetails, Void input) {
-        locationDeleter.delete(locationDeleteErrorDetails);
+        locationDeleter.delete(locationDeleteErrorDetails.toDeletion());
         return null;
     }
 

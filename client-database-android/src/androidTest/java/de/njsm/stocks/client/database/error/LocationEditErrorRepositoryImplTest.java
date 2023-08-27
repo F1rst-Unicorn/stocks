@@ -23,10 +23,10 @@ package de.njsm.stocks.client.database.error;
 
 import de.njsm.stocks.client.business.StatusCodeException;
 import de.njsm.stocks.client.business.entities.ErrorDetails;
+import de.njsm.stocks.client.business.entities.IdImpl;
 import de.njsm.stocks.client.business.entities.LocationEditErrorDetails;
 import de.njsm.stocks.client.business.entities.LocationForEditing;
 import de.njsm.stocks.client.database.LocationDbEntity;
-import de.njsm.stocks.client.database.StandardEntities;
 
 import java.util.List;
 
@@ -36,15 +36,14 @@ public class LocationEditErrorRepositoryImplTest extends AbstractErrorRepository
 
     ErrorDetails recordError(StatusCodeException e) {
         LocationDbEntity location = standardEntities.locationDbEntity();
-        LocationForEditing locationForEditing = LocationForEditing.builder()
-                .id(location.id())
-                .version(location.version())
-                .name(location.name())
-                .description(location.description())
-                .build();
+        LocationForEditing locationForEditing = LocationForEditing.create(
+                IdImpl.create(location.id()),
+                location.version(),
+                location.name(),
+                location.description());
         stocksDatabase.synchronisationDao().writeLocations(singletonList(location));
         errorRecorder.recordLocationEditError(e, locationForEditing);
-        return LocationEditErrorDetails.create(location.id(), location.name(), location.description());
+        return LocationEditErrorDetails.create(IdImpl.create(location.id()), 2, location.name(), location.description());
     }
 
     @Override

@@ -25,6 +25,10 @@ import de.njsm.stocks.client.business.entities.Entity;
 import de.njsm.stocks.client.business.entities.Id;
 import de.njsm.stocks.client.business.entities.Versionable;
 
+/**
+ * @deprecated not needed any more if version comes from UI
+ */
+@Deprecated
 public interface EntityDeleteRepository<E extends Entity<E>> {
 
     Versionable<E> getEntityForDeletion(Id<E> id);

@@ -59,9 +59,9 @@ class FoodItemConflictInteractorImplTest {
         long input = 42;
         FoodItemEditConflictData data = FoodItemEditConflictData.create(1, 2, 3, "Banana",
                 LocalDate.ofEpochDay(4), LocalDate.ofEpochDay(5), LocalDate.ofEpochDay(6),
-                LocationForListing.create(7, "original location"),
-                LocationForListing.create(8, "remote location"),
-                LocationForListing.create(9, "locallocation"),
+                LocationForListing.create(7, 45, "original location"),
+                LocationForListing.create(8, 46, "remote location"),
+                LocationForListing.create(9, 47, "locallocation"),
                 ScaledUnitForListing.create(10, "original", BigDecimal.valueOf(11)),
                 ScaledUnitForListing.create(12, "original", BigDecimal.valueOf(13)),
                 ScaledUnitForListing.create(14, "original", BigDecimal.valueOf(15)));

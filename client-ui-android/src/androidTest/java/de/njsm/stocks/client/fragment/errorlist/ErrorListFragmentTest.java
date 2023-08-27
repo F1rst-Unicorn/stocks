@@ -28,10 +28,7 @@ import androidx.test.platform.app.InstrumentationRegistry;
 import de.njsm.stocks.client.Application;
 import de.njsm.stocks.client.business.ErrorRetryInteractor;
 import de.njsm.stocks.client.business.FakeErrorListInteractor;
-import de.njsm.stocks.client.business.entities.ErrorDescription;
-import de.njsm.stocks.client.business.entities.LocationAddForm;
-import de.njsm.stocks.client.business.entities.LocationEditErrorDetails;
-import de.njsm.stocks.client.business.entities.StatusCode;
+import de.njsm.stocks.client.business.entities.*;
 import de.njsm.stocks.client.navigation.ErrorListNavigator;
 import de.njsm.stocks.client.ui.R;
 import org.junit.After;
@@ -134,7 +131,7 @@ public class ErrorListFragmentTest {
 
     @Test
     public void clickingLocationEditConflictNavigatesToConflictFragment() {
-        LocationEditErrorDetails details = LocationEditErrorDetails.create(3, "name", "description");
+        LocationEditErrorDetails details = LocationEditErrorDetails.create(IdImpl.create(3), 4, "name", "description");
         ErrorDescription errorDescription = ErrorDescription.create(1, StatusCode.INVALID_DATA_VERSION, "", "", details);
         errorListInteractor.setData(List.of(errorDescription));
 
@@ -146,7 +143,7 @@ public class ErrorListFragmentTest {
 
     @Test
     public void retryingLocationEditConflictNavigatesToConflictFragment() {
-        LocationEditErrorDetails details = LocationEditErrorDetails.create(3, "name", "description");
+        LocationEditErrorDetails details = LocationEditErrorDetails.create(IdImpl.create(3), 4, "name", "description");
         ErrorDescription errorDescription = ErrorDescription.create(1, StatusCode.INVALID_DATA_VERSION, "", "", details);
         errorListInteractor.setData(List.of(errorDescription));
 

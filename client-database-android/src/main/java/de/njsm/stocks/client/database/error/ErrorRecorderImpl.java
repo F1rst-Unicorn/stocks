@@ -67,7 +67,7 @@ public class ErrorRecorderImpl implements ErrorRecorder {
     }
 
     @Override
-    public void recordLocationDeleteError(SubsystemException exception, Versionable<Location> locationForDeletion) {
+    public void recordLocationDeleteError(SubsystemException exception, LocationForDeletion locationForDeletion) {
         ExceptionData exceptionData = new ExceptionInserter().visit(exception, null);
 
         Instant currentTransactionTime = errorDao.getTransactionTimeOf(EntityType.LOCATION);

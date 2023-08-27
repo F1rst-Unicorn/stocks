@@ -67,14 +67,14 @@ public class ErrorDetailsDetailsVisitorTest {
 
     @Test
     public void locationDeletionShowsName() {
-        LocationDeleteErrorDetails data = LocationDeleteErrorDetails.create(1, "name");
+        LocationDeleteErrorDetails data = LocationDeleteErrorDetails.create(IdImpl.create(1), 2, "name");
 
         assertEquals(data.name(), uut.visit(data, null));
     }
 
     @Test
     public void locationEditingShowsNameAndDescription() {
-        LocationEditErrorDetails data = LocationEditErrorDetails.create(1, "name", "description");
+        LocationEditErrorDetails data = LocationEditErrorDetails.create(IdImpl.create(1), 2, "name", "description");
         assertEquals(data.name() + "\n" + data.description(), uut.visit(data, null));
     }
 

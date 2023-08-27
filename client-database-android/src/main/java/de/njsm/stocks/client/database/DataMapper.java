@@ -201,14 +201,7 @@ public class DataMapper {
     }
 
     static LocationForListing map(LocationDbEntity input) {
-        return LocationForListing.create(input.id(), input.name());
-    }
-
-    static LocationForDeletion mapForDeletion(LocationDbEntity input) {
-        return LocationForDeletion.builder()
-                .id(input.id())
-                .version(input.version())
-                .build();
+        return LocationForListing.create(input.id(), input.version(), input.name());
     }
 
     public static LocationAddForm map(LocationAddEntity input) {

@@ -24,6 +24,10 @@ package de.njsm.stocks.client.business;
 import de.njsm.stocks.client.business.entities.Entity;
 import de.njsm.stocks.client.business.entities.Versionable;
 
+/**
+ * @deprecated Use {@link NewEntityDeleteService} instead
+ */
+@Deprecated
 public interface EntityDeleteService<E extends Entity<E>> {
 
     void delete(Versionable<E> data);

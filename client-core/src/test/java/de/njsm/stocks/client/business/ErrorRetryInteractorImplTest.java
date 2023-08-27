@@ -52,7 +52,7 @@ public class ErrorRetryInteractorImplTest {
     private LocationAddInteractor locationAddInteractor;
 
     @Mock
-    private EntityDeleter<Location> locationDeleter;
+    private EntityDeleteInteractor<LocationForDeletion> locationDeleter;
 
     @Mock
     private LocationEditInteractor locationEditInteractor;
@@ -224,13 +224,12 @@ public class ErrorRetryInteractorImplTest {
 
     @Test
     void retryingLocationDeletingDispatches() {
-        LocationDeleteErrorDetails locationDeleteErrorDetails = LocationDeleteErrorDetails.create(1, "Fridge");
+        LocationDeleteErrorDetails locationDeleteErrorDetails = LocationDeleteErrorDetails.create(IdImpl.create(1), 2, "Fridge");
         ErrorDescription input = ErrorDescription.create(1, StatusCode.DATABASE_UNREACHABLE, "", "test", locationDeleteErrorDetails);
 
         uut.retryInBackground(input);
 
-        @SuppressWarnings("unchecked")
-        ArgumentCaptor<Id<Location>> captor = ArgumentCaptor.forClass(Id.class);
+        ArgumentCaptor<LocationForDeletion> captor = ArgumentCaptor.forClass(LocationForDeletion.class);
         verify(locationDeleter).delete(captor.capture());
         assertEquals(locationDeleteErrorDetails.id(), captor.getValue().id());
         verify(errorRepository).deleteError(input);
@@ -238,12 +237,13 @@ public class ErrorRetryInteractorImplTest {
 
     @Test
     void retryingLocationEditingDispatches() {
-        LocationEditErrorDetails locationEditErrorDetails = LocationEditErrorDetails.create(1, "Fridge", "The cold one");
-        LocationEditFormData expected = LocationEditFormData.builder()
-                .id(locationEditErrorDetails.id())
-                .name(locationEditErrorDetails.name())
-                .description(locationEditErrorDetails.description())
-                .build();
+        LocationEditErrorDetails locationEditErrorDetails = LocationEditErrorDetails.create(IdImpl.create(1), 2, "Fridge", "The cold one");
+        LocationForEditing expected = LocationEditFormData.create(
+                locationEditErrorDetails.id(),
+                locationEditErrorDetails.version(),
+                locationEditErrorDetails.name(),
+                locationEditErrorDetails.description())
+                .into();
         ErrorDescription input = ErrorDescription.create(1, StatusCode.DATABASE_UNREACHABLE, "", "test", locationEditErrorDetails);
 
         uut.retryInBackground(input);

@@ -59,8 +59,8 @@ public interface FakeBusinessModule {
     @Provides
     @Singleton
     @SuppressWarnings("unchecked")
-    static EntityDeleter<Location> locationDeleter() {
-        return mock(EntityDeleter.class);
+    static EntityDeleteInteractor<LocationForDeletion> locationDeleter() {
+        return mock(EntityDeleteInteractor.class);
     }
 
     @Provides

@@ -21,8 +21,7 @@
 
 package de.njsm.stocks.client.business;
 
-import de.njsm.stocks.client.business.entities.Id;
-import de.njsm.stocks.client.business.entities.Location;
+import de.njsm.stocks.client.business.entities.LocationForDeletion;
 import de.njsm.stocks.client.business.entities.LocationForListing;
 import de.njsm.stocks.client.testdata.LocationsForListing;
 import io.reactivex.rxjava3.subjects.BehaviorSubject;
@@ -31,7 +30,7 @@ import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
 
-class InMemoryLocationDeleterImpl implements EntityDeleter<Location> {
+class InMemoryLocationDeleterImpl implements EntityDeleteInteractor<LocationForDeletion> {
 
     private final BehaviorSubject<List<LocationForListing>> data;
 
@@ -41,10 +40,10 @@ class InMemoryLocationDeleterImpl implements EntityDeleter<Location> {
     }
 
     @Override
-    public void delete(Id<Location> location) {
+    public void delete(LocationForDeletion location) {
         data.firstElement().subscribe(list -> {
             List<LocationForListing> newList = new ArrayList<>(list);
-            newList.removeIf(v -> v.id() == location.id());
+            newList.removeIf(v -> v.id() == location.id().id());
             data.onNext(newList);
         });
     }

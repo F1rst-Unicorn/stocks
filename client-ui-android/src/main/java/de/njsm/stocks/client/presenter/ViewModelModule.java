@@ -49,7 +49,7 @@ public class ViewModelModule {
     @Provides
     @IntoMap
     @ViewModelKey(LocationListViewModel.class)
-    ViewModel locationViewModel(LocationListInteractor locationListInteractor, EntityDeleter<Location> locationDeleter, Synchroniser synchroniser, ObservableListCache<LocationForListing> data) {
+    ViewModel locationViewModel(LocationListInteractor locationListInteractor, EntityDeleteInteractor<LocationForDeletion> locationDeleter, Synchroniser synchroniser, ObservableListCache<LocationForListing> data) {
         return new LocationListViewModel(locationListInteractor, locationDeleter, synchroniser, data);
     }
 

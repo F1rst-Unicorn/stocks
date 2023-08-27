@@ -110,11 +110,11 @@ public class ConflictRepositoryImpl implements ConflictRepository {
             local.setRemote(remote);
 
             Optional<LocationForListing> originalLocation = ofNullable(original.location()).map(v -> errorDao.getCurrentLocationAsKnownAt(v, local.location().transactionTime()))
-                    .map(v -> LocationForListing.create(v.id(), v.name()));
+                    .map(v -> LocationForListing.create(v.id(), v.version(), v.name()));
             Optional<LocationForListing> remoteLocation = ofNullable(remote.location()).map(v -> errorDao.getCurrentLocationAsKnownAt(v, local.executionTime()))
-                    .map(v -> LocationForListing.create(v.id(), v.name()));
+                    .map(v -> LocationForListing.create(v.id(), v.version(), v.name()));
             Optional<LocationForListing> localLocation = local.location().maybe().map(v -> errorDao.getCurrentLocationAsKnownAt(v.id(), v.transactionTime()))
-                    .map(v -> LocationForListing.create(v.id(), v.name()));
+                    .map(v -> LocationForListing.create(v.id(), v.version(), v.name()));
 
             ScaledUnitDbEntity originalScaledUnit = errorDao.getCurrentScaledUnitAsKnownAt(original.storeUnit(), local.storeUnit().transactionTime());
             ScaledUnitDbEntity remoteScaledUnit = errorDao.getCurrentScaledUnitAsKnownAt(remote.storeUnit(), local.executionTime());
@@ -175,9 +175,9 @@ public class ConflictRepositoryImpl implements ConflictRepository {
                     localiser.toLocalDate(original.eatBy()),
                     localiser.toLocalDate(remote.eatBy()),
                     localiser.toLocalDate(local.eatBy()),
-                    LocationForListing.create(originalLocation.id(), originalLocation.name()),
-                    LocationForListing.create(remoteLocation.id(), remoteLocation.name()),
-                    LocationForListing.create(localLocation.id(), localLocation.name()),
+                    LocationForListing.create(originalLocation.id(), originalLocation.version(), originalLocation.name()),
+                    LocationForListing.create(remoteLocation.id(), remoteLocation.version(), remoteLocation.name()),
+                    LocationForListing.create(localLocation.id(), localLocation.version(), localLocation.name()),
                     ScaledUnitForListing.create(originalScaledUnit.id(), originalUnit.abbreviation(), originalScaledUnit.scale()),
                     ScaledUnitForListing.create(remoteScaledUnit.id(), remoteUnit.abbreviation(), remoteScaledUnit.scale()),
                     ScaledUnitForListing.create(localScaledUnit.id(), localUnit.abbreviation(), localScaledUnit.scale()));

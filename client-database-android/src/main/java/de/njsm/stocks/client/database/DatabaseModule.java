@@ -87,9 +87,6 @@ public interface DatabaseModule {
     LocationRepository locationRepository(LocationRepositoryImpl impl);
 
     @Binds
-    EntityDeleteRepository<Location> locationDeleterRepository(LocationRepository impl);
-
-    @Binds
     SynchronisationRepository synchronisationRepository(SynchronisationRepositoryImpl impl);
 
     @Binds

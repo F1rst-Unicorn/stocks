@@ -26,10 +26,10 @@ import androidx.fragment.app.testing.FragmentScenario;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.platform.app.InstrumentationRegistry;
 import de.njsm.stocks.client.Application;
-import de.njsm.stocks.client.business.EntityDeleter;
+import de.njsm.stocks.client.business.EntityDeleteInteractor;
 import de.njsm.stocks.client.business.FakeLocationListInteractor;
 import de.njsm.stocks.client.business.Synchroniser;
-import de.njsm.stocks.client.business.entities.Location;
+import de.njsm.stocks.client.business.entities.LocationForDeletion;
 import de.njsm.stocks.client.business.entities.LocationForListing;
 import de.njsm.stocks.client.navigation.LocationListNavigator;
 import de.njsm.stocks.client.testdata.LocationsForListing;
@@ -65,7 +65,7 @@ public class LocationListFragmentTest {
 
     private Synchroniser synchroniser;
 
-    private EntityDeleter<Location> locationDeleter;
+    private EntityDeleteInteractor<LocationForDeletion> locationDeleter;
 
     @Before
     public void setUp() {
@@ -138,7 +138,7 @@ public class LocationListFragmentTest {
         onView(withId(R.id.template_swipe_list_list))
                 .perform(actionOnItemAtPosition(itemIndex, swipeRight()));
 
-        verify(locationDeleter).delete(data.get(itemIndex));
+        verify(locationDeleter).delete(data.get(itemIndex).toDeletion());
     }
 
     @Test
@@ -165,7 +165,7 @@ public class LocationListFragmentTest {
     }
 
     @Inject
-    public void setLocationDeleter(EntityDeleter<Location> locationDeleter) {
+    public void setLocationDeleter(EntityDeleteInteractor<LocationForDeletion> locationDeleter) {
         this.locationDeleter = locationDeleter;
     }
 }

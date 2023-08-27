@@ -22,15 +22,14 @@
 package de.njsm.stocks.client.network;
 
 
-import de.njsm.stocks.client.business.EntityDeleteService;
-import de.njsm.stocks.client.business.entities.Location;
-import de.njsm.stocks.client.business.entities.Versionable;
+import de.njsm.stocks.client.business.NewEntityDeleteService;
+import de.njsm.stocks.client.business.entities.LocationForDeletion;
 import de.njsm.stocks.common.api.Response;
 import retrofit2.Call;
 
 import javax.inject.Inject;
 
-public class LocationDeleteServiceImpl extends ServiceBase<Versionable<Location>> implements EntityDeleteService<Location> {
+public class LocationDeleteServiceImpl extends ServiceBase<LocationForDeletion> implements NewEntityDeleteService<LocationForDeletion> {
 
     @Inject
     LocationDeleteServiceImpl(ServerApi api, CallHandler callHandler) {
@@ -38,12 +37,12 @@ public class LocationDeleteServiceImpl extends ServiceBase<Versionable<Location>
     }
 
     @Override
-    Call<Response> buildCall(Versionable<Location> locationForDeletion) {
-        return api.deleteLocation(locationForDeletion.id(), locationForDeletion.version(), 0);
+    Call<Response> buildCall(LocationForDeletion locationForDeletion) {
+        return api.deleteLocation(locationForDeletion.id().id(), locationForDeletion.version(), 0);
     }
 
     @Override
-    public void delete(Versionable<Location> locationForDeletion) {
+    public void delete(LocationForDeletion locationForDeletion) {
         perform(locationForDeletion);
     }
 }

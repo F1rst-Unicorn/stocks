@@ -21,25 +21,7 @@
 
 package de.njsm.stocks.client.business;
 
-import de.njsm.stocks.client.business.entities.*;
-import de.njsm.stocks.client.execution.Scheduler;
+public interface NewEntityDeleteService<E> {
 
-import javax.inject.Inject;
-
-class LocationDeleterImpl extends NewAbstractDeleterImpl<LocationForDeletion> {
-
-    @Inject
-    LocationDeleterImpl(NewEntityDeleteService<LocationForDeletion> locationDeleteService, Synchroniser synchroniser, ErrorRecorder errorRecorder, Scheduler scheduler) {
-        super(locationDeleteService, synchroniser, errorRecorder, scheduler);
-    }
-
-    @Override
-    Job.Type getJobType() {
-        return Job.Type.DELETE_LOCATION;
-    }
-
-    @Override
-    void recordError(SubsystemException e, LocationForDeletion data) {
-        errorRecorder.recordLocationDeleteError(e, data);
-    }
+    void delete(E data);
 }

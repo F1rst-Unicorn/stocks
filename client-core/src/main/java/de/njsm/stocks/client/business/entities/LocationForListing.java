@@ -26,9 +26,15 @@ import com.google.auto.value.AutoValue;
 @AutoValue
 public abstract class LocationForListing implements Id<Location> {
 
-    public static LocationForListing create(int id, String name) {
-        return new AutoValue_LocationForListing(id, name);
-    }
+    public abstract int version();
 
     public abstract String name();
+
+    public LocationForDeletion toDeletion() {
+        return LocationForDeletion.create(IdImpl.create(id()), version());
+    }
+
+    public static LocationForListing create(int id, int version, String name) {
+        return new AutoValue_LocationForListing(id, version, name);
+    }
 }

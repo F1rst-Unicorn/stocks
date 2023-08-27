@@ -20,6 +20,7 @@
 
 package de.njsm.stocks.client.fragment;
 
+import de.njsm.stocks.client.business.entities.IdImpl;
 import de.njsm.stocks.client.business.entities.LocationForDeletion;
 import de.njsm.stocks.client.fragment.util.ListDiffer;
 import org.junit.Before;
@@ -38,12 +39,12 @@ public class ListDifferTest {
 
     @Before
     public void setup() {
-        uut = byId(getOldList(), getNewList());
+        uut = byId(getOldList(), getNewList(), v -> (long) v.id().id());
     }
 
     @Test
     public void passingNullIsAllowed() {
-        uut = byId(null, null);
+        uut = byId(null, null, v -> (long) v.id().id());
 
         assertThat(uut.getOldListSize(), is(0));
         assertThat(uut.getNewListSize(), is(0));
@@ -78,14 +79,14 @@ public class ListDifferTest {
 
     private List<LocationForDeletion> getOldList() {
         return Arrays.asList(
-                LocationForDeletion.builder().id(2).version(0).build(),
-                LocationForDeletion.builder().id(3).version(0).build()
+                LocationForDeletion.create(IdImpl.create(2), 0),
+                LocationForDeletion.create(IdImpl.create(3), 0)
         );
     }
 
     private List<LocationForDeletion> getNewList() {
-        return Arrays.asList(
-                LocationForDeletion.builder().id(3).version(1).build()
+        return List.of(
+                LocationForDeletion.create(IdImpl.create(3), 1)
         );
     }
 }
