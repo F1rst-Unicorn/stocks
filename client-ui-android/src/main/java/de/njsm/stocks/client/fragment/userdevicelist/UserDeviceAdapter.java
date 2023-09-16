@@ -59,7 +59,6 @@ public class UserDeviceAdapter extends RecyclerView.Adapter<TextWithPrefixIconVi
     public TextWithPrefixIconViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.item_text_with_prefix_icon, parent, false);
-        v.setOnClickListener(onClickListener);
         v.setOnLongClickListener(onLongClickListener);
         return new TextWithPrefixIconViewHolder(v, R.drawable.baseline_phone_android_black_24);
     }
@@ -71,11 +70,9 @@ public class UserDeviceAdapter extends RecyclerView.Adapter<TextWithPrefixIconVi
 
         if (item.ticketPresent()) {
             holder.itemView.setOnClickListener(onClickListener);
-            holder.itemView.setOnLongClickListener(onLongClickListener);
             holder.setIconAtEnd(R.drawable.baseline_qr_code_black_24);
         } else {
             holder.itemView.setOnClickListener(null);
-            holder.itemView.setOnLongClickListener(null);
             holder.removeIconAtEnd();
         }
     }
