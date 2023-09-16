@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+### Fixed
+
+* Fix that first scan of QR code on setup doesn't move to final form
+  ([#92](https://j.njsm.de/git/veenj/stocks/issues/92)).
+
+
 ## [4.8.0.1]
 
 ### Fixed
