@@ -22,9 +22,7 @@
 package de.njsm.stocks.client.business.event;
 
 import de.njsm.stocks.client.business.Localiser;
-import de.njsm.stocks.client.business.entities.Food;
-import de.njsm.stocks.client.business.entities.Id;
-import de.njsm.stocks.client.business.entities.Location;
+import de.njsm.stocks.client.business.entities.*;
 
 import javax.inject.Inject;
 
@@ -44,6 +42,16 @@ public class InMemoryEventInteractorFactoryImpl implements EventInteractorFactor
 
     @Override
     public EventInteractor forFood(Id<Food> food) {
+        return new InMemoryEventInteractorImpl(localiser);
+    }
+
+    @Override
+    public EventInteractor forUser(Id<User> user) {
+        return new InMemoryEventInteractorImpl(localiser);
+    }
+
+    @Override
+    public EventInteractor forUserDevice(Id<UserDevice> userDevice) {
         return new InMemoryEventInteractorImpl(localiser);
     }
 }

@@ -67,7 +67,7 @@ public class EventRepositoryEventLoadingTest extends DbTestCase {
         Instant deleteTime = Instant.EPOCH.plusSeconds(2);
         stocksDatabase.synchronisationDao().writeLocations(currentDelete(updated.get(2), deleteTime));
 
-        var actual = uut.getLocationFeed(Instant.EPOCH);
+        var actual = uut.getLocationFeed(new EventKeyHint.None(), Instant.EPOCH);
 
         testList(actual).assertValue(List.of(
                         LocationEventFeedItem.create(location.id(), deleteTime, deleteTime, initiatorOwner.name(), updated.get(2).name(), location.description()),
@@ -85,7 +85,7 @@ public class EventRepositoryEventLoadingTest extends DbTestCase {
         stocksDatabase.synchronisationDao().writeLocations(List.of(location));
         stocksDatabase.synchronisationDao().writeUserDevices(currentDelete(initiator, Instant.EPOCH.plusSeconds(3)));
 
-        var actual = uut.getLocationFeed(Instant.EPOCH);
+        var actual = uut.getLocationFeed(new EventKeyHint.None(), Instant.EPOCH);
 
         testList(actual).assertValue(List.of(
                         LocationEventFeedItem.create(location.id(), INFINITY, Instant.EPOCH, initiatorOwner.name(), location.name(), location.description()))
@@ -100,7 +100,7 @@ public class EventRepositoryEventLoadingTest extends DbTestCase {
         stocksDatabase.synchronisationDao().writeLocations(List.of(location));
         stocksDatabase.synchronisationDao().writeUserDevices(sequencedDeleteOfEntireTime(initiator, Instant.EPOCH.plusSeconds(3)));
 
-        var actual = uut.getLocationFeed(Instant.EPOCH);
+        var actual = uut.getLocationFeed(new EventKeyHint.None(), Instant.EPOCH);
 
         testList(actual).assertValue(List.of(
                         LocationEventFeedItem.create(location.id(), INFINITY, Instant.EPOCH, initiatorOwner.name(), location.name(), location.description()))
@@ -120,7 +120,7 @@ public class EventRepositoryEventLoadingTest extends DbTestCase {
         Instant deleteTime = Instant.EPOCH.plusSeconds(2);
         stocksDatabase.synchronisationDao().writeUnits(currentDelete(updated.get(2), deleteTime));
 
-        var actual = uut.getUnitFeed(Instant.EPOCH);
+        var actual = uut.getUnitFeed(new EventKeyHint.None(), Instant.EPOCH);
 
         testList(actual).assertValue(List.of(
                         UnitEventFeedItem.create(unit.id(), deleteTime, deleteTime, initiatorOwner.name(), updated.get(2).name(), unit.abbreviation()),
@@ -139,7 +139,7 @@ public class EventRepositoryEventLoadingTest extends DbTestCase {
         Instant deleteTime = Instant.EPOCH.plusSeconds(2);
         stocksDatabase.synchronisationDao().writeUsers(currentDelete(user, deleteTime));
 
-        var actual = uut.getUserFeed(Instant.EPOCH);
+        var actual = uut.getUserFeed(new EventKeyHint.None(), Instant.EPOCH);
 
         testList(actual).assertValue(List.of(
                         UserEventFeedItem.create(user.id(), deleteTime, deleteTime, initiatorOwner.name(), user.name()),
@@ -163,7 +163,7 @@ public class EventRepositoryEventLoadingTest extends DbTestCase {
         Instant deleteTime = inputDay.plusSeconds(2);
         stocksDatabase.synchronisationDao().writeUserDevices(currentDelete(newDevice, deleteTime));
 
-        var actual = uut.getUserDeviceFeed(inputDay);
+        var actual = uut.getUserDeviceFeed(new EventKeyHint.None(), inputDay);
 
         testList(actual).assertValue(List.of(
                 UserDeviceEventFeedItem.create(newDevice.id(),
@@ -200,7 +200,7 @@ public class EventRepositoryEventLoadingTest extends DbTestCase {
         Instant deleteTime = Instant.EPOCH.plusSeconds(2);
         stocksDatabase.synchronisationDao().writeScaledUnits(currentDelete(updated.get(2), deleteTime));
 
-        var actual = uut.getScaledUnitFeed(Instant.EPOCH);
+        var actual = uut.getScaledUnitFeed(new EventKeyHint.None(), Instant.EPOCH);
 
         testList(actual).assertValue(List.of(
                 ScaledUnitEventFeedItem.create(scaledUnit.id(), deleteTime, deleteTime, initiatorOwner.name(), updatedScale, unit.name(), unit.abbreviation()),
@@ -235,7 +235,7 @@ public class EventRepositoryEventLoadingTest extends DbTestCase {
         Instant deleteTime = Instant.EPOCH.plusSeconds(2);
         stocksDatabase.synchronisationDao().writeFood(currentDelete(updatedFood, deleteTime));
 
-        var actual = uut.getFoodFeed(Instant.EPOCH);
+        var actual = uut.getFoodFeed(new EventKeyHint.None(), Instant.EPOCH);
 
         testList(actual).assertValue(List.of(
                 FoodEventFeedItem.create(food.id(), deleteTime, deleteTime, initiatorOwner.name(), updatedFood.name(), food.toBuy(), food.expirationOffset(), scaledUnit.scale(), unit.abbreviation(), location.name(), food.description()),
@@ -275,7 +275,7 @@ public class EventRepositoryEventLoadingTest extends DbTestCase {
         Instant deleteTime = Instant.EPOCH.plusSeconds(2);
         stocksDatabase.synchronisationDao().writeFoodItems(currentDelete(updatedFoodItem, deleteTime));
 
-        var actual = uut.getFoodItemFeed(Instant.EPOCH);
+        var actual = uut.getFoodItemFeed(new EventKeyHint.None(), Instant.EPOCH);
 
         testList(actual).assertValue(List.of(
                 FoodItemEventFeedItem.create(foodItem.id(), deleteTime, deleteTime, initiatorOwner.name(), food.name(), updatedFoodItem.eatBy(), scaledUnit.scale(), unit.abbreviation(), location.name(), initiatorOwner.name(), initiator.name(), food.id()),
@@ -298,7 +298,7 @@ public class EventRepositoryEventLoadingTest extends DbTestCase {
         Instant deleteTime = Instant.EPOCH.plusSeconds(2);
         stocksDatabase.synchronisationDao().writeEanNumbers(currentDelete(eanNumber, deleteTime));
 
-        var actual = uut.getEanNumberFeed(Instant.EPOCH);
+        var actual = uut.getEanNumberFeed(new EventKeyHint.None(), Instant.EPOCH);
 
         testList(actual).assertValue(List.of(
                 EanNumberEventFeedItem.create(eanNumber.id(), deleteTime, deleteTime, initiatorOwner.name(), food.name(), eanNumber.number(), food.id()),

@@ -33,4 +33,8 @@ public interface UserDeviceListNavigator {
     Id<User> getUserId(Bundle arguments);
 
     void showTicket(Id<UserDevice> integer);
+
+    void showHistory(Id<User> userId);
+
+    void showDeviceHistory(Id<UserDevice> userDeviceId);
 }

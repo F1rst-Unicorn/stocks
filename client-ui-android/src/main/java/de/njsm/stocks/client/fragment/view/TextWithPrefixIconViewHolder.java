@@ -60,8 +60,4 @@ public class TextWithPrefixIconViewHolder extends RecyclerView.ViewHolder {
     public void removeIconAtEnd() {
         text.setCompoundDrawablesRelativeWithIntrinsicBounds(startIcon, 0, 0, 0);
     }
-
-    public void setClickable(boolean clickable) {
-        text.setClickable(clickable);
-    }
 }

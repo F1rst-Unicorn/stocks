@@ -33,23 +33,31 @@ public class NextDayContainingEventsWithFoodVisitor extends NextDayContainingEve
 
     private final IdImpl<Food> food;
 
-    NextDayContainingEventsWithFoodVisitor(EventDao eventDao, List<EntityType> queriedEntities, Instant day, IdImpl<Food> food) {
-        super(eventDao, queriedEntities, day);
+    static NextDayContainingEventsVisitor intoFuture(EventDao eventDao, List<EntityType> queriedEntities, Instant day, IdImpl<Food> food) {
+        return new NextDayContainingEventsWithFoodVisitor(eventDao, queriedEntities, day, false, food);
+    }
+
+    static NextDayContainingEventsVisitor intoPast(EventDao eventDao, List<EntityType> queriedEntities, Instant day, IdImpl<Food> food) {
+        return new NextDayContainingEventsWithFoodVisitor(eventDao, queriedEntities, day, true, food);
+    }
+
+    NextDayContainingEventsWithFoodVisitor(EventDao eventDao, List<EntityType> queriedEntities, Instant day, boolean previous, IdImpl<Food> food) {
+        super(eventDao, queriedEntities, day, previous);
         this.food = food;
     }
 
     @Override
     public Maybe<Instant> food(Void input) {
-        return eventDao.getNextDayContainingFoodEvents(day, food.id());
+        return eventDao.getNextDayContainingFoodEvents(day, food.id(), previous);
     }
 
     @Override
     public Maybe<Instant> foodItem(Void input) {
-        return eventDao.getNextDayContainingFoodItemEventsOfFood(day, food.id());
+        return eventDao.getNextDayContainingFoodItemEventsOfFood(day, food.id(), previous);
     }
 
     @Override
     public Maybe<Instant> eanNumber(Void input) {
-        return eventDao.getNextDayContainingEanNumberEvents(day, food.id());
+        return eventDao.getNextDayContainingEanNumberEvents(day, food.id(), previous);
     }
 }

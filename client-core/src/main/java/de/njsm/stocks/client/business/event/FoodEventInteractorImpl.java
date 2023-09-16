@@ -47,11 +47,11 @@ public class FoodEventInteractorImpl extends BaseEventInteractorImpl implements 
 
     @Override
     public Single<ActivityEventPage> getEventsOf(LocalDate day) {
-        Single<List<ActivityEvent>> events = repository.getFoodEventsOf(food, localiser.toInstant(day))
+        Single<List<ActivityEvent>> events = repository.getFoodFeed(getHint(), localiser.toInstant(day))
                 .map(v -> transformToEvents(v, eventFactory::getFoodEventFrom))
-                .mergeWith(repository.getFoodItemEventsOf(food, localiser.toInstant(day))
+                .mergeWith(repository.getFoodItemFeed(getHint(), localiser.toInstant(day))
                         .map(v -> transformToEvents(v, eventFactory::getFoodItemEventFrom)))
-                .mergeWith(repository.getEanNumberEventsOf(food, localiser.toInstant(day))
+                .mergeWith(repository.getEanNumberFeed(getHint(), localiser.toInstant(day))
                         .map(v -> transformToEvents(v, eventFactory::getEanNumberEventFrom)))
 
                 .buffer(getRelevantEntities().size())

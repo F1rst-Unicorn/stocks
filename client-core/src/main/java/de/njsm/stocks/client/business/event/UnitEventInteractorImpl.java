@@ -50,9 +50,9 @@ public class UnitEventInteractorImpl extends BaseEventInteractorImpl implements 
 
     @Override
     public Single<ActivityEventPage> getEventsOf(LocalDate day) {
-        Single<List<ActivityEvent>> events = repository.getUnitFeed(localiser.toInstant(day))
+        Single<List<ActivityEvent>> events = repository.getUnitFeed(getHint(), localiser.toInstant(day))
                 .map(v -> transformToEvents(v, eventFactory::getUnitEventFrom))
-                .mergeWith(repository.getScaledUnitFeed(localiser.toInstant(day))
+                .mergeWith(repository.getScaledUnitFeed(getHint(), localiser.toInstant(day))
                         .map(v -> transformToEvents(v, eventFactory::getScaledUnitEventFrom)))
 
                 .buffer(getRelevantEntities().size())

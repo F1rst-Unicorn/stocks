@@ -53,4 +53,16 @@ class UserDeviceListNavigatorImpl extends BaseNavigator implements UserDeviceLis
         var direction = UserDeviceListFragmentDirections.actionNavFragmentDeviceListToNavFragmentShowTicket(id.id());
         getNavigationArgConsumer().navigate(direction);
     }
+
+    @Override
+    public void showHistory(Id<User> id) {
+        var direction = UserDeviceListFragmentDirections.actionNavFragmentDeviceListToNavFragmentUserHistory(id.id());
+        getNavigationArgConsumer().navigate(direction);
+    }
+
+    @Override
+    public void showDeviceHistory(Id<UserDevice> id) {
+        var direction = UserDeviceListFragmentDirections.actionNavFragmentDeviceListToNavFragmentUserDeviceHistory(id.id());
+        getNavigationArgConsumer().navigate(direction);
+    }
 }

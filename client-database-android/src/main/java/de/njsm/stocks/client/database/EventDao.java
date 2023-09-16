@@ -55,51 +55,106 @@ abstract class EventDao {
             "cross join user initiator_user on initiator_user.id = initiator_device.belongs_to " +
             "and initiator_user.valid_time_end = " + DATABASE_INFINITY_STRING_SQL + " ";
 
-    @Query("select " +
+    private static final String WHERE_TIME_INTERVAL =
+            "where :lower <= main_table.transaction_time_start " +
+            "and main_table.transaction_time_start < :upper ";
+
+    private static final String FILTER_INITIATES_USER =
+            "and main_table.initiates in (" +
+                "select d.id " +
+                "from user_device d " +
+                "where d.belongs_to = :initiatorUser " +
+                "and d.valid_time_start <= main_table.transaction_time_start " +
+                "and main_table.transaction_time_start < d.valid_time_end " +
+                "and d.transaction_time_end = " + DATABASE_INFINITY_STRING_SQL +
+            ") ";
+
+    public static final String SELECT_LOCATION =
+            "select " +
             EVENT_COLUMNS +
             "main_table.name as name, " +
             "main_table.description as description " +
-            "from location main_table " +
+            "from location main_table ";
+
+    @Query(SELECT_LOCATION +
             JOIN_INITIATOR +
-            "where :lower <= main_table.transaction_time_start " +
-            "and main_table.transaction_time_start < :upper " +
+            WHERE_TIME_INTERVAL +
             "order by main_table.transaction_time_start desc, main_table.valid_time_end")
     abstract Flowable<List<LocationEventFeedItem>> getLocationEvents(Instant lower, Instant upper);
 
-    @Query("select " +
-            EVENT_COLUMNS +
-            "main_table.name as name, " +
-            "main_table.description as description " +
-            "from location main_table " +
+    @Query(SELECT_LOCATION +
             JOIN_INITIATOR +
-            "where :lower <= main_table.transaction_time_start " +
-            "and main_table.transaction_time_start < :upper " +
+            WHERE_TIME_INTERVAL +
             "and main_table.id = :locationId " +
             "order by main_table.transaction_time_start desc, main_table.valid_time_end")
     abstract Flowable<List<LocationEventFeedItem>> getLocationEventsOf(int locationId, Instant lower, Instant upper);
 
-    @Query("select " +
+    @Query(SELECT_LOCATION +
+            JOIN_INITIATOR +
+            WHERE_TIME_INTERVAL +
+            "and main_table.initiates = :initiator " +
+            "order by main_table.transaction_time_start desc, main_table.valid_time_end")
+    abstract Flowable<List<LocationEventFeedItem>> getLocationEventsOfInitiator(int initiator, Instant lower, Instant upper);
+
+    @Query(SELECT_LOCATION +
+            JOIN_INITIATOR +
+            WHERE_TIME_INTERVAL +
+            FILTER_INITIATES_USER +
+            "order by main_table.transaction_time_start desc, main_table.valid_time_end")
+    abstract Flowable<List<LocationEventFeedItem>> getLocationEventsOfInitiatorUser(int initiatorUser, Instant lower, Instant upper);
+
+    private static final String SELECT_UNIT = "select " +
             EVENT_COLUMNS +
             "main_table.name as name, " +
             "main_table.abbreviation as abbreviation " +
-            "from unit main_table " +
+            "from unit main_table ";
+
+    @Query(SELECT_UNIT +
             JOIN_INITIATOR +
-            "where :lower <= main_table.transaction_time_start " +
-            "and main_table.transaction_time_start < :upper " +
+            WHERE_TIME_INTERVAL +
             "order by main_table.transaction_time_start desc, main_table.valid_time_end")
     abstract Flowable<List<UnitEventFeedItem>> getUnitEvents(Instant lower, Instant upper);
 
-    @Query("select " +
+    @Query(SELECT_UNIT +
+            JOIN_INITIATOR +
+            WHERE_TIME_INTERVAL +
+            "and main_table.initiates = :initiator " +
+            "order by main_table.transaction_time_start desc, main_table.valid_time_end")
+    abstract Flowable<List<UnitEventFeedItem>> getUnitEventsOfInitiator(int initiator, Instant lower, Instant upper);
+
+    @Query(SELECT_UNIT +
+            JOIN_INITIATOR +
+            WHERE_TIME_INTERVAL +
+            "and main_table.initiates = :initiator " +
+            "order by main_table.transaction_time_start desc, main_table.valid_time_end")
+    abstract Flowable<List<UnitEventFeedItem>> getUnitEventsOfInitiatorUser(int initiator, Instant lower, Instant upper);
+
+    private static final String SELECT_USER = "select " +
             EVENT_COLUMNS +
             "main_table.name as name " +
-            "from user main_table " +
+            "from user main_table ";
+
+    @Query(SELECT_USER +
             JOIN_INITIATOR +
-            "where :lower <= main_table.transaction_time_start " +
-            "and main_table.transaction_time_start < :upper " +
+            WHERE_TIME_INTERVAL +
             "order by main_table.transaction_time_start desc, main_table.valid_time_end")
     abstract Flowable<List<UserEventFeedItem>> getUserEvents(Instant lower, Instant upper);
 
-    @Query("select " +
+    @Query(SELECT_USER +
+            JOIN_INITIATOR +
+            WHERE_TIME_INTERVAL +
+            "and main_table.initiates = :initiator " +
+            "order by main_table.transaction_time_start desc, main_table.valid_time_end")
+    abstract Flowable<List<UserEventFeedItem>> getUserEventsOfInitiator(int initiator, Instant lower, Instant upper);
+
+    @Query(SELECT_USER +
+            JOIN_INITIATOR +
+            WHERE_TIME_INTERVAL +
+            FILTER_INITIATES_USER +
+            "order by main_table.transaction_time_start desc, main_table.valid_time_end")
+    abstract Flowable<List<UserEventFeedItem>> getUserEventsOfInitiatorUser(int initiatorUser, Instant lower, Instant upper);
+
+    private static final String SELECT_USER_DEVICE = "select " +
             EVENT_COLUMNS +
             "main_table.name as name, " +
             "owner.name as ownerName," +
@@ -108,14 +163,29 @@ abstract class EventDao {
             "join user owner on owner.id = main_table.belongs_to " +
                 "and owner.valid_time_start <= main_table.transaction_time_start " +
                 "and main_table.transaction_time_start <= owner.valid_time_end " +
-                "and owner.transaction_time_end = " + DATABASE_INFINITY_STRING_SQL +
+                "and owner.transaction_time_end = " + DATABASE_INFINITY_STRING_SQL;
+
+    @Query(SELECT_USER_DEVICE +
             JOIN_INITIATOR +
-            "where :lower <= main_table.transaction_time_start " +
-            "and main_table.transaction_time_start <= :upper " +
+            WHERE_TIME_INTERVAL +
             "order by main_table.transaction_time_start desc, main_table.valid_time_end")
     abstract Flowable<List<UserDeviceEventFeedItem>> getUserDeviceEvents(Instant lower, Instant upper);
 
-    @Query("select " +
+    @Query(SELECT_USER_DEVICE +
+            JOIN_INITIATOR +
+            WHERE_TIME_INTERVAL +
+            "and main_table.initiates = :initiator " +
+            "order by main_table.transaction_time_start desc, main_table.valid_time_end")
+    abstract Flowable<List<UserDeviceEventFeedItem>> getUserDeviceEventsOfInitiator(int initiator, Instant lower, Instant upper);
+
+    @Query(SELECT_USER_DEVICE +
+            JOIN_INITIATOR +
+            WHERE_TIME_INTERVAL +
+            FILTER_INITIATES_USER +
+            "order by main_table.transaction_time_start desc, main_table.valid_time_end")
+    abstract Flowable<List<UserDeviceEventFeedItem>> getUserDeviceEventsOfInitiatorUser(int initiatorUser, Instant lower, Instant upper);
+
+    private static final String SELECT_SCALED_UNIT = "select " +
             EVENT_COLUMNS +
             "main_table.scale as scale, " +
             "unit.name as name, " +
@@ -124,14 +194,30 @@ abstract class EventDao {
             "join unit on unit.id = main_table.unit " +
                 "and unit.valid_time_start <= main_table.transaction_time_start " +
                 "and main_table.transaction_time_start < unit.valid_time_end " +
-                "and unit.transaction_time_end = " + DATABASE_INFINITY_STRING_SQL +
+                "and unit.transaction_time_end = " + DATABASE_INFINITY_STRING_SQL;
+
+    @Query(SELECT_SCALED_UNIT +
             JOIN_INITIATOR +
-            "where :lower <= main_table.transaction_time_start " +
-            "and main_table.transaction_time_start < :upper " +
+            WHERE_TIME_INTERVAL +
             "order by main_table.transaction_time_start desc, main_table.valid_time_end")
     abstract Flowable<List<ScaledUnitEventFeedItem>> getScaledUnitEvents(Instant lower, Instant upper);
 
-    @Query("select " +
+    @Query(SELECT_SCALED_UNIT +
+            JOIN_INITIATOR +
+            WHERE_TIME_INTERVAL +
+            "and main_table.initiates = :initiator " +
+            "order by main_table.transaction_time_start desc, main_table.valid_time_end")
+    abstract Flowable<List<ScaledUnitEventFeedItem>> getScaledUnitEventsOfInitiator(int initiator, Instant lower, Instant upper);
+
+    @Query(SELECT_SCALED_UNIT +
+            JOIN_INITIATOR +
+            WHERE_TIME_INTERVAL +
+            FILTER_INITIATES_USER +
+            "order by main_table.transaction_time_start desc, main_table.valid_time_end")
+    abstract Flowable<List<ScaledUnitEventFeedItem>> getScaledUnitEventsOfInitiatorUser(int initiatorUser, Instant lower, Instant upper);
+
+    public static final String SELECT_FOOD_JOIN_TABLES =
+            "select " +
             EVENT_COLUMNS +
             "main_table.name as name," +
             "main_table.to_buy as toBuy," +
@@ -152,43 +238,36 @@ abstract class EventDao {
             "left outer join location on location.id = main_table.location " +
                 "and location.valid_time_start <= main_table.transaction_time_start " +
                 "and main_table.transaction_time_start < location.valid_time_end " +
-                "and location.transaction_time_end = " + DATABASE_INFINITY_STRING_SQL +
+                "and location.transaction_time_end = " + DATABASE_INFINITY_STRING_SQL;
+
+    @Query(SELECT_FOOD_JOIN_TABLES +
             JOIN_INITIATOR +
-            "where :lower <= main_table.transaction_time_start " +
-            "and main_table.transaction_time_start < :upper " +
+            WHERE_TIME_INTERVAL +
             "order by main_table.transaction_time_start desc, main_table.valid_time_end")
     abstract Flowable<List<FoodEventFeedItem>> getFoodEvents(Instant lower, Instant upper);
 
-    @Query("select " +
-            EVENT_COLUMNS +
-            "main_table.name as name," +
-            "main_table.to_buy as toBuy," +
-            "main_table.expiration_offset as expirationOffset, " +
-            "scaled_unit.scale as unitScale, " +
-            "unit.abbreviation as abbreviation, " +
-            "location.name as locationName, " +
-            "main_table.description as description " +
-            "from food main_table " +
-            "join scaled_unit on scaled_unit.id = main_table.store_unit " +
-                "and scaled_unit.valid_time_start <= main_table.transaction_time_start " +
-                "and main_table.transaction_time_start < scaled_unit.valid_time_end " +
-                "and scaled_unit.transaction_time_end = " + DATABASE_INFINITY_STRING_SQL +
-            "join unit on unit.id = scaled_unit.unit " +
-                "and unit.valid_time_start <= main_table.transaction_time_start " +
-                "and main_table.transaction_time_start < unit.valid_time_end " +
-                "and unit.transaction_time_end = " + DATABASE_INFINITY_STRING_SQL +
-            "left outer join location on location.id = main_table.location " +
-                "and location.valid_time_start <= main_table.transaction_time_start " +
-                "and main_table.transaction_time_start < location.valid_time_end " +
-                "and location.transaction_time_end = " + DATABASE_INFINITY_STRING_SQL +
+    @Query(SELECT_FOOD_JOIN_TABLES +
             JOIN_INITIATOR +
-            "where :lower <= main_table.transaction_time_start " +
-            "and main_table.transaction_time_start < :upper " +
+            WHERE_TIME_INTERVAL +
             "and main_table.id = :foodId " +
             "order by main_table.transaction_time_start desc, main_table.valid_time_end")
     abstract Flowable<List<FoodEventFeedItem>> getFoodEventsOf(int foodId, Instant lower, Instant upper);
 
-    @Query("select " +
+    @Query(SELECT_FOOD_JOIN_TABLES +
+            JOIN_INITIATOR +
+            WHERE_TIME_INTERVAL +
+            "and main_table.initiates = :initiator " +
+            "order by main_table.transaction_time_start desc, main_table.valid_time_end")
+    abstract Flowable<List<FoodEventFeedItem>> getFoodEventsOfInitiator(int initiator, Instant lower, Instant upper);
+
+    @Query(SELECT_FOOD_JOIN_TABLES +
+            JOIN_INITIATOR +
+            WHERE_TIME_INTERVAL +
+            FILTER_INITIATES_USER +
+            "order by main_table.transaction_time_start desc, main_table.valid_time_end")
+    abstract Flowable<List<FoodEventFeedItem>> getFoodEventsOfInitiatorUser(int initiatorUser, Instant lower, Instant upper);
+
+    private static final String SELECT_FOOD_ITEM_JOIN_TABLES = "select " +
             EVENT_COLUMNS +
             "food.name as foodName, " +
             "food.id as ofType, " +
@@ -222,93 +301,24 @@ abstract class EventDao {
             "cross join user_device on user_device.id = main_table.registers " +
                 "and user_device.valid_time_start <= main_table.transaction_time_start " +
                 "and main_table.transaction_time_start < user_device.valid_time_end " +
-                "and user_device.transaction_time_end = " + DATABASE_INFINITY_STRING_SQL +
+                "and user_device.transaction_time_end = " + DATABASE_INFINITY_STRING_SQL;
+
+    @Query(SELECT_FOOD_ITEM_JOIN_TABLES +
             CROSS_JOIN_INITIATOR +
-            "where :lower <= main_table.transaction_time_start " +
-            "and main_table.transaction_time_start < :upper " +
+            WHERE_TIME_INTERVAL +
             "order by main_table.transaction_time_start desc, main_table.valid_time_end")
     abstract Flowable<List<FoodItemEventFeedItem>> getFoodItemEvents(Instant lower, Instant upper);
 
-    @Query("select " +
-            EVENT_COLUMNS +
-            "food.name as foodName, " +
-            "food.id as ofType, " +
-            "main_table.eat_by as eatBy, " +
-            "scaled_unit.scale as unitScale, " +
-            "unit.abbreviation as abbreviation, " +
-            "user.name as buyer, " +
-            "user_device.name as registerer, " +
-            "location.name as locationName " +
-            "from food_item main_table " +
-            "cross join food on food.id = main_table.of_type " +
-                "and food.valid_time_start <= main_table.transaction_time_start " +
-                "and main_table.transaction_time_start < food.valid_time_end " +
-                "and food.transaction_time_end = " + DATABASE_INFINITY_STRING_SQL +
-            "cross join scaled_unit on scaled_unit.id = main_table.unit " +
-                "and scaled_unit.valid_time_start <= main_table.transaction_time_start " +
-                "and main_table.transaction_time_start < scaled_unit.valid_time_end " +
-                "and scaled_unit.transaction_time_end = " + DATABASE_INFINITY_STRING_SQL +
-            "cross join unit on unit.id = scaled_unit.unit " +
-                "and unit.valid_time_start <= main_table.transaction_time_start " +
-                "and main_table.transaction_time_start < unit.valid_time_end " +
-                "and unit.transaction_time_end = " + DATABASE_INFINITY_STRING_SQL +
-            "cross join location on location.id = main_table.stored_in " +
-                "and location.valid_time_start <= main_table.transaction_time_start " +
-                "and main_table.transaction_time_start < location.valid_time_end " +
-                "and location.transaction_time_end = " + DATABASE_INFINITY_STRING_SQL +
-            "cross join user on user.id = main_table.buys " +
-                "and user.valid_time_start <= main_table.transaction_time_start " +
-                "and main_table.transaction_time_start < user.valid_time_end " +
-                "and user.transaction_time_end = " + DATABASE_INFINITY_STRING_SQL +
-            "cross join user_device on user_device.id = main_table.registers " +
-                "and user_device.valid_time_start <= main_table.transaction_time_start " +
-                "and main_table.transaction_time_start < user_device.valid_time_end " +
-                "and user_device.transaction_time_end = " + DATABASE_INFINITY_STRING_SQL +
+    @Query(SELECT_FOOD_ITEM_JOIN_TABLES +
             CROSS_JOIN_INITIATOR +
-            "where :lower <= main_table.transaction_time_start " +
-            "and main_table.transaction_time_start < :upper " +
+            WHERE_TIME_INTERVAL +
             "and main_table.of_type = :foodId " +
             "order by main_table.transaction_time_start desc, main_table.valid_time_end")
     abstract Flowable<List<FoodItemEventFeedItem>> getFoodItemEventsOf(int foodId, Instant lower, Instant upper);
 
-    @Query("select " +
-            EVENT_COLUMNS +
-            "food.name as foodName, " +
-            "food.id as ofType, " +
-            "main_table.eat_by as eatBy, " +
-            "scaled_unit.scale as unitScale, " +
-            "unit.abbreviation as abbreviation, " +
-            "user.name as buyer, " +
-            "user_device.name as registerer, " +
-            "location.name as locationName " +
-            "from food_item main_table " +
-            "cross join food on food.id = main_table.of_type " +
-                "and food.valid_time_start <= main_table.transaction_time_start " +
-                "and main_table.transaction_time_start < food.valid_time_end " +
-                "and food.transaction_time_end = " + DATABASE_INFINITY_STRING_SQL +
-            "cross join scaled_unit on scaled_unit.id = main_table.unit " +
-                "and scaled_unit.valid_time_start <= main_table.transaction_time_start " +
-                "and main_table.transaction_time_start < scaled_unit.valid_time_end " +
-                "and scaled_unit.transaction_time_end = " + DATABASE_INFINITY_STRING_SQL +
-            "cross join unit on unit.id = scaled_unit.unit " +
-                "and unit.valid_time_start <= main_table.transaction_time_start " +
-                "and main_table.transaction_time_start < unit.valid_time_end " +
-                "and unit.transaction_time_end = " + DATABASE_INFINITY_STRING_SQL +
-            "cross join location on location.id = main_table.stored_in " +
-                "and location.valid_time_start <= main_table.transaction_time_start " +
-                "and main_table.transaction_time_start < location.valid_time_end " +
-                "and location.transaction_time_end = " + DATABASE_INFINITY_STRING_SQL +
-            "cross join user on user.id = main_table.buys " +
-                "and user.valid_time_start <= main_table.transaction_time_start " +
-                "and main_table.transaction_time_start < user.valid_time_end " +
-                "and user.transaction_time_end = " + DATABASE_INFINITY_STRING_SQL +
-            "cross join user_device on user_device.id = main_table.registers " +
-                "and user_device.valid_time_start <= main_table.transaction_time_start " +
-                "and main_table.transaction_time_start < user_device.valid_time_end " +
-                "and user_device.transaction_time_end = " + DATABASE_INFINITY_STRING_SQL +
+    @Query(SELECT_FOOD_ITEM_JOIN_TABLES +
             CROSS_JOIN_INITIATOR +
-            "where :lower <= main_table.transaction_time_start " +
-            "and main_table.transaction_time_start < :upper " +
+            WHERE_TIME_INTERVAL +
             "and :locationId in (" +
                 "select item.stored_in " +
                 "from food_item item " +
@@ -318,38 +328,57 @@ abstract class EventDao {
             "order by main_table.transaction_time_start desc, main_table.valid_time_end")
     abstract Flowable<List<FoodItemEventFeedItem>> getFoodItemEventsInvolving(int locationId, Instant lower, Instant upper);
 
-    @Query("select " +
-            EVENT_COLUMNS +
-            "main_table.number as eanNumber, " +
-            "food.name as foodName," +
-            "main_table.identifies as identifies " +
-            "from ean_number main_table " +
-            "join food on food.id = main_table.identifies " +
-                "and food.valid_time_start <= main_table.transaction_time_start " +
-                "and main_table.transaction_time_start < food.valid_time_end " +
-                "and food.transaction_time_end = " + DATABASE_INFINITY_STRING_SQL +
-            JOIN_INITIATOR +
-            "where :lower <= main_table.transaction_time_start " +
-            "and main_table.transaction_time_start < :upper " +
+    @Query(SELECT_FOOD_ITEM_JOIN_TABLES +
+            CROSS_JOIN_INITIATOR +
+            WHERE_TIME_INTERVAL +
+            "and main_table.initiates = :initiator " +
             "order by main_table.transaction_time_start desc, main_table.valid_time_end")
-    abstract Observable<List<EanNumberEventFeedItem>> getEanNumberEvents(Instant lower, Instant upper);
+    abstract Flowable<List<FoodItemEventFeedItem>> getFoodItemEventsOfInitiator(int initiator, Instant lower, Instant upper);
 
-    @Query("select " +
+    @Query(SELECT_FOOD_ITEM_JOIN_TABLES +
+            CROSS_JOIN_INITIATOR +
+            WHERE_TIME_INTERVAL +
+            FILTER_INITIATES_USER +
+            "order by main_table.transaction_time_start desc, main_table.valid_time_end")
+    abstract Flowable<List<FoodItemEventFeedItem>> getFoodItemEventsOfInitiatorUser(int initiatorUser, Instant lower, Instant upper);
+
+    private static final String SELECT_EAN_NUMBER_JOIN_FOOD = "select " +
             EVENT_COLUMNS +
             "main_table.number as eanNumber, " +
             "food.name as foodName, " +
             "main_table.identifies as identifies " +
             "from ean_number main_table " +
             "join food on food.id = main_table.identifies " +
-                "and food.valid_time_start <= main_table.transaction_time_start " +
-                "and main_table.transaction_time_start < food.valid_time_end " +
-                "and food.transaction_time_end = " + DATABASE_INFINITY_STRING_SQL +
+                    "and food.valid_time_start <= main_table.transaction_time_start " +
+                    "and main_table.transaction_time_start < food.valid_time_end " +
+                    "and food.transaction_time_end = " + DATABASE_INFINITY_STRING_SQL;
+
+    @Query(SELECT_EAN_NUMBER_JOIN_FOOD +
             JOIN_INITIATOR +
-            "where :lower <= main_table.transaction_time_start " +
-            "and main_table.transaction_time_start < :upper " +
+            WHERE_TIME_INTERVAL +
+            "order by main_table.transaction_time_start desc, main_table.valid_time_end")
+    abstract Observable<List<EanNumberEventFeedItem>> getEanNumberEvents(Instant lower, Instant upper);
+
+    @Query(SELECT_EAN_NUMBER_JOIN_FOOD +
+            JOIN_INITIATOR +
+            WHERE_TIME_INTERVAL +
             "and main_table.identifies = :foodId " +
             "order by main_table.transaction_time_start desc, main_table.valid_time_end")
-    abstract Observable<List<EanNumberEventFeedItem>> getEanNumberEventsOf(int foodId, Instant lower, Instant upper);
+    abstract Observable<List<EanNumberEventFeedItem>> getEanNumberEventsOfFood(int foodId, Instant lower, Instant upper);
+
+    @Query(SELECT_EAN_NUMBER_JOIN_FOOD +
+            JOIN_INITIATOR +
+            WHERE_TIME_INTERVAL +
+            "and main_table.initiates = :initiator " +
+            "order by main_table.transaction_time_start desc, main_table.valid_time_end")
+    abstract Observable<List<EanNumberEventFeedItem>> getEanNumberEventsOfInitiator(int initiator, Instant lower, Instant upper);
+
+    @Query(SELECT_EAN_NUMBER_JOIN_FOOD +
+            JOIN_INITIATOR +
+            WHERE_TIME_INTERVAL +
+            FILTER_INITIATES_USER +
+            "order by main_table.transaction_time_start desc, main_table.valid_time_end")
+    abstract Observable<List<EanNumberEventFeedItem>> getEanNumberEventsOfInitiatorUser(int initiatorUser, Instant lower, Instant upper);
 
     @Query("select max(last_update) x " +
             "from updates " +
@@ -360,173 +389,189 @@ abstract class EventDao {
             "limit 1")
     abstract Observable<Instant> getLatestUpdateTimestamp(List<EntityType> relevantEntities);
 
-    @Query("select min(transaction_time_start) " +
-            "from location " +
-            "where transaction_time_start >= :day")
-    abstract Maybe<Instant> getNextDayContainingLocationEvents(Instant day);
+    private static final String SELECT_REDUCER = "select " +
+            "case :previous " +
+                "when true then max(main_table.transaction_time_start) " +
+                "else min(main_table.transaction_time_end) end ";
 
-    @Query("select min(transaction_time_start) " +
-            "from location " +
-            "where transaction_time_start >= :day " +
-            "and id = :location")
-    abstract Maybe<Instant> getNextDayContainingLocationEvents(Instant day, int location);
+    @Query(SELECT_REDUCER +
+            "from location main_table " +
+            "where :previous != (main_table.transaction_time_start >= :day)")
+    abstract Maybe<Instant> getNextDayContainingLocationEvents(Instant day, boolean previous);
 
-    @Query("select min(transaction_time_start) " +
-            "from unit " +
-            "where transaction_time_start >= :day")
-    abstract Maybe<Instant> getNextDayContainingUnitEvents(Instant day);
+    @Query(SELECT_REDUCER +
+            "from location main_table " +
+            "where :previous != (main_table.transaction_time_start >= :day) " +
+            "and main_table.id = :location")
+    abstract Maybe<Instant> getNextDayContainingLocationEvents(Instant day, int location, boolean previous);
 
-    @Query("select min(transaction_time_start) " +
-            "from scaled_unit " +
-            "where transaction_time_start >= :day")
-    abstract Maybe<Instant> getNextDayContainingScaledUnitEvents(Instant day);
+    @Query(SELECT_REDUCER +
+            "from location main_table " +
+            "where :previous != (main_table.transaction_time_start >= :day) " +
+            "and main_table.initiates = :initiator")
+    abstract Maybe<Instant> getNextDayContainingLocationEventsOfInitiator(Instant day, boolean previous, int initiator);
 
-    @Query("select min(transaction_time_start) " +
-            "from food " +
-            "where transaction_time_start >= :day")
-    abstract Maybe<Instant> getNextDayContainingFoodEvents(Instant day);
+    @Query(SELECT_REDUCER +
+            "from location main_table " +
+            "where :previous != (main_table.transaction_time_start >= :day) " +
+            FILTER_INITIATES_USER)
+    abstract Maybe<Instant> getNextDayContainingLocationEventsOfInitiatorUser(Instant day, boolean previous, int initiatorUser);
 
-    @Query("select min(transaction_time_start) " +
-            "from food " +
-            "where transaction_time_start >= :day " +
-            "and id = :food")
-    abstract Maybe<Instant> getNextDayContainingFoodEvents(Instant day, int food);
+    @Query(SELECT_REDUCER +
+            "from unit main_table " +
+            "where :previous != (main_table.transaction_time_start >= :day)")
+    abstract Maybe<Instant> getNextDayContainingUnitEvents(Instant day, boolean previous);
 
-    @Query("select min(transaction_time_start) " +
-            "from food_item " +
-            "where transaction_time_start >= :day")
-    abstract Maybe<Instant> getNextDayContainingFoodItemEvents(Instant day);
+    @Query(SELECT_REDUCER +
+            "from unit main_table " +
+            "where :previous != (main_table.transaction_time_start >= :day) " +
+            "and main_table.initiates = :initiator")
+    abstract Maybe<Instant> getNextDayContainingUnitEventsOfInitiator(Instant day, boolean previous, int initiator);
 
-    @Query("select min(transaction_time_start) " +
-            "from food_item " +
-            "where transaction_time_start >= :day " +
-            "and stored_in = :location")
-    abstract Maybe<Instant> getNextDayContainingFoodItemEventsOfLocation(Instant day, int location);
+    @Query(SELECT_REDUCER +
+            "from unit main_table " +
+            "where :previous != (main_table.transaction_time_start >= :day) " +
+            FILTER_INITIATES_USER)
+    abstract Maybe<Instant> getNextDayContainingUnitEventsOfInitiatorUser(Instant day, boolean previous, int initiatorUser);
 
-    @Query("select min(transaction_time_start) " +
-            "from food_item " +
-            "where transaction_time_start >= :day " +
-            "and of_type = :food")
-    abstract Maybe<Instant> getNextDayContainingFoodItemEventsOfFood(Instant day, int food);
+    @Query(SELECT_REDUCER +
+            "from scaled_unit main_table " +
+            "where :previous != (main_table.transaction_time_start >= :day)")
+    abstract Maybe<Instant> getNextDayContainingScaledUnitEvents(Instant day, boolean previous);
 
-    @Query("select min(transaction_time_start) " +
-            "from ean_number " +
-            "where transaction_time_start >= :day")
-    abstract Maybe<Instant> getNextDayContainingEanNumberEvents(Instant day);
+    @Query(SELECT_REDUCER +
+            "from scaled_unit main_table " +
+            "where :previous != (main_table.transaction_time_start >= :day) " +
+            "and main_table.initiates = :initiator")
+    abstract Maybe<Instant> getNextDayContainingScaledUnitEventsOfInitiator(Instant day, boolean previous, int initiator);
 
-    @Query("select min(transaction_time_start) " +
-            "from ean_number " +
-            "where transaction_time_start >= :day " +
-            "and identifies = :food")
-    abstract Maybe<Instant> getNextDayContainingEanNumberEvents(Instant day, int food);
+    @Query(SELECT_REDUCER +
+            "from scaled_unit main_table " +
+            "where :previous != (main_table.transaction_time_start >= :day) " +
+            FILTER_INITIATES_USER)
+    abstract Maybe<Instant> getNextDayContainingScaledUnitEventsOfInitiatorUser(Instant day, boolean previous, int initiatorUser);
 
-    @Query("select min(transaction_time_start) " +
-            "from recipe " +
-            "where transaction_time_start >= :day")
-    abstract Maybe<Instant> getNextDayContainingRecipeEvents(Instant day);
+    @Query(SELECT_REDUCER +
+            "from food main_table " +
+            "where :previous != (main_table.transaction_time_start >= :day)")
+    abstract Maybe<Instant> getNextDayContainingFoodEvents(Instant day, boolean previous);
 
-    @Query("select min(transaction_time_start) " +
-            "from recipe_ingredient " +
-            "where transaction_time_start >= :day")
-    abstract Maybe<Instant> getNextDayContainingRecipeIngredientEvents(Instant day);
+    @Query(SELECT_REDUCER +
+            "from food main_table " +
+            "where :previous != (main_table.transaction_time_start >= :day) " +
+            "and main_table.id = :food")
+    abstract Maybe<Instant> getNextDayContainingFoodEvents(Instant day, int food, boolean previous);
 
-    @Query("select min(transaction_time_start) " +
-            "from recipe_product " +
-            "where transaction_time_start >= :day")
-    abstract Maybe<Instant> getNextDayContainingRecipeProductEvents(Instant day);
+    @Query(SELECT_REDUCER +
+            "from food main_table " +
+            "where :previous != (main_table.transaction_time_start >= :day) " +
+            "and main_table.initiates = :initiator")
+    abstract Maybe<Instant> getNextDayContainingFoodEventsOfInitiator(Instant day, boolean previous, int initiator);
 
-    @Query("select min(transaction_time_start) " +
-            "from user " +
-            "where transaction_time_start >= :day")
-    abstract Maybe<Instant> getNextDayContainingUserEvents(Instant day);
+    @Query(SELECT_REDUCER +
+            "from food main_table " +
+            "where :previous != (main_table.transaction_time_start >= :day) " +
+            FILTER_INITIATES_USER)
+    abstract Maybe<Instant> getNextDayContainingFoodEventsOfInitiatorUser(Instant day, boolean previous, int initiatorUser);
 
-    @Query("select min(transaction_time_start) " +
-            "from user_device " +
-            "where transaction_time_start >= :day")
-    abstract Maybe<Instant> getNextDayContainingUserDeviceEvents(Instant day);
+    @Query(SELECT_REDUCER +
+            "from food_item main_table " +
+            "where :previous != (main_table.transaction_time_start >= :day)")
+    abstract Maybe<Instant> getNextDayContainingFoodItemEvents(Instant day, boolean previous);
 
-    @Query("select max(transaction_time_start) " +
-            "from location " +
-            "where transaction_time_start < :day")
-    abstract Maybe<Instant> getPreviousDayContainingLocationEvents(Instant day);
+    @Query(SELECT_REDUCER +
+            "from food_item main_table " +
+            "where :previous != (main_table.transaction_time_start >= :day) " +
+            "and main_table.stored_in = :location")
+    abstract Maybe<Instant> getNextDayContainingFoodItemEventsOfLocation(Instant day, int location, boolean previous);
 
-    @Query("select max(transaction_time_start) " +
-            "from location " +
-            "where transaction_time_start < :day " +
-            "and id = :locationId")
-    abstract Maybe<Instant> getPreviousDayContainingLocationEvents(Instant day, int locationId);
+    @Query(SELECT_REDUCER +
+            "from food_item main_table " +
+            "where :previous != (main_table.transaction_time_start >= :day) " +
+            "and main_table.of_type = :food")
+    abstract Maybe<Instant> getNextDayContainingFoodItemEventsOfFood(Instant day, int food, boolean previous);
 
-    @Query("select max(transaction_time_start) " +
-            "from unit " +
-            "where transaction_time_start < :day")
-    abstract Maybe<Instant> getPreviousDayContainingUnitEvents(Instant day);
+    @Query(SELECT_REDUCER +
+            "from food_item main_table " +
+            "where :previous != (main_table.transaction_time_start >= :day) " +
+            "and main_table.initiates = :initiator")
+    abstract Maybe<Instant> getNextDayContainingFoodItemEventsOfInitiator(Instant day, boolean previous, int initiator);
 
-    @Query("select max(transaction_time_start) " +
-            "from scaled_unit " +
-            "where transaction_time_start < :day")
-    abstract Maybe<Instant> getPreviousDayContainingScaledUnitEvents(Instant day);
+    @Query(SELECT_REDUCER +
+            "from food_item main_table " +
+            "where :previous != (main_table.transaction_time_start >= :day) " +
+            FILTER_INITIATES_USER)
+    abstract Maybe<Instant> getNextDayContainingFoodItemEventsOfInitiatorUser(Instant day, boolean previous, int initiatorUser);
 
-    @Query("select max(transaction_time_start) " +
-            "from food " +
-            "where transaction_time_start < :day")
-    abstract Maybe<Instant> getPreviousDayContainingFoodEvents(Instant day);
+    @Query(SELECT_REDUCER +
+            "from ean_number main_table " +
+            "where :previous != (main_table.transaction_time_start >= :day)")
+    abstract Maybe<Instant> getNextDayContainingEanNumberEvents(Instant day, boolean previous);
 
-    @Query("select max(transaction_time_start) " +
-            "from food " +
-            "where transaction_time_start < :day " +
-            "and id = :food")
-    abstract Maybe<Instant> getPreviousDayContainingFoodEvents(Instant day, int food);
+    @Query(SELECT_REDUCER +
+            "from ean_number main_table " +
+            "where :previous != (main_table.transaction_time_start >= :day) " +
+            "and main_table.identifies = :food")
+    abstract Maybe<Instant> getNextDayContainingEanNumberEvents(Instant day, int food, boolean previous);
 
-    @Query("select max(transaction_time_start) " +
-            "from food_item " +
-            "where transaction_time_start < :day")
-    abstract Maybe<Instant> getPreviousDayContainingFoodItemEvents(Instant day);
+    @Query(SELECT_REDUCER +
+            "from ean_number main_table " +
+            "where :previous != (main_table.transaction_time_start >= :day) " +
+            "and main_table.initiates = :initiator")
+    abstract Maybe<Instant> getNextDayContainingEanNumberEvents(Instant day, boolean previous, int initiator);
 
-    @Query("select max(transaction_time_start) " +
-            "from food_item " +
-            "where transaction_time_start < :day " +
-            "and stored_in = :location")
-    abstract Maybe<Instant> getPreviousDayContainingFoodItemEventsOfLocation(Instant day, int location);
+    @Query(SELECT_REDUCER +
+            "from ean_number main_table " +
+            "where :previous != (main_table.transaction_time_start >= :day) " +
+            FILTER_INITIATES_USER)
+    abstract Maybe<Instant> getNextDayContainingEanNumberEventsUser(Instant day, boolean previous, int initiatorUser);
 
-    @Query("select max(transaction_time_start) " +
-            "from food_item " +
-            "where transaction_time_start < :day " +
-            "and of_type = :food")
-    abstract Maybe<Instant> getPreviousDayContainingFoodItemEventsOfFood(Instant day, int food);
+    @Query(SELECT_REDUCER +
+            "from recipe main_table " +
+            "where :previous != (main_table.transaction_time_start >= :day)")
+    abstract Maybe<Instant> getNextDayContainingRecipeEvents(Instant day, boolean previous);
 
-    @Query("select max(transaction_time_start) " +
-            "from ean_number " +
-            "where transaction_time_start < :day")
-    abstract Maybe<Instant> getPreviousDayContainingEanNumberEvents(Instant day);
+    @Query(SELECT_REDUCER +
+            "from recipe_ingredient main_table " +
+            "where :previous != (main_table.transaction_time_start >= :day)")
+    abstract Maybe<Instant> getNextDayContainingRecipeIngredientEvents(Instant day, boolean previous);
 
-    @Query("select max(transaction_time_start) " +
-            "from ean_number " +
-            "where transaction_time_start < :day " +
-            "and identifies = :food")
-    abstract Maybe<Instant> getPreviousDayContainingEanNumberEvents(Instant day, int food);
+    @Query(SELECT_REDUCER +
+            "from recipe_product main_table " +
+            "where :previous != (main_table.transaction_time_start >= :day)")
+    abstract Maybe<Instant> getNextDayContainingRecipeProductEvents(Instant day, boolean previous);
 
-    @Query("select max(transaction_time_start) " +
-            "from recipe " +
-            "where transaction_time_start < :day")
-    abstract Maybe<Instant> getPreviousDayContainingRecipeEvents(Instant day);
+    @Query(SELECT_REDUCER +
+            "from user main_table " +
+            "where :previous != (main_table.transaction_time_start >= :day)")
+    abstract Maybe<Instant> getNextDayContainingUserEvents(Instant day, boolean previous);
 
-    @Query("select max(transaction_time_start) " +
-            "from recipe_ingredient " +
-            "where transaction_time_start < :day")
-    abstract Maybe<Instant> getPreviousDayContainingRecipeIngredientEvents(Instant day);
+    @Query(SELECT_REDUCER +
+            "from user main_table " +
+            "where :previous != (main_table.transaction_time_start >= :day) " +
+            "and main_table.initiates = :initiator")
+    abstract Maybe<Instant> getNextDayContainingUserEventsOfInitiator(Instant day, boolean previous, int initiator);
 
-    @Query("select max(transaction_time_start) " +
-            "from recipe_product " +
-            "where transaction_time_start < :day")
-    abstract Maybe<Instant> getPreviousDayContainingRecipeProductEvents(Instant day);
+    @Query(SELECT_REDUCER +
+            "from user main_table " +
+            "where :previous != (main_table.transaction_time_start >= :day) " +
+            FILTER_INITIATES_USER)
+    abstract Maybe<Instant> getNextDayContainingUserEventsOfInitiatorUser(Instant day, boolean previous, int initiatorUser);
 
-    @Query("select max(transaction_time_start) " +
-            "from user " +
-            "where transaction_time_start < :day")
-    abstract Maybe<Instant> getPreviousDayContainingUserEvents(Instant day);
+    @Query(SELECT_REDUCER +
+            "from user_device main_table " +
+            "where :previous != (main_table.transaction_time_start >= :day)")
+    abstract Maybe<Instant> getNextDayContainingUserDeviceEvents(Instant day, boolean previous);
 
-    @Query("select max(transaction_time_start) " +
-            "from user_device " +
-            "where transaction_time_start < :day")
-    abstract Maybe<Instant> getPreviousDayContainingUserDeviceEvents(Instant day);
+    @Query(SELECT_REDUCER +
+            "from user_device main_table " +
+            "where :previous != (main_table.transaction_time_start >= :day) " +
+            "and main_table.initiates = :initiator")
+    abstract Maybe<Instant> getNextDayContainingUserDeviceEventsOfInitiator(Instant day, boolean previous, int initiator);
+
+    @Query(SELECT_REDUCER +
+            "from user_device main_table " +
+            "where :previous != (main_table.transaction_time_start >= :day) " +
+            FILTER_INITIATES_USER)
+    abstract Maybe<Instant> getNextDayContainingUserDeviceEventsOfInitiatorUser(Instant day, boolean previous, int initiatorUser);
 }

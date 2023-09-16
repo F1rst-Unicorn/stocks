@@ -22,10 +22,7 @@
 package de.njsm.stocks.client.navigation;
 
 import android.os.Bundle;
-import de.njsm.stocks.client.business.entities.Food;
-import de.njsm.stocks.client.business.entities.Id;
-import de.njsm.stocks.client.business.entities.IdImpl;
-import de.njsm.stocks.client.business.entities.Location;
+import de.njsm.stocks.client.business.entities.*;
 import de.njsm.stocks.client.fragment.history.HistoryFragmentArgs;
 
 import javax.inject.Inject;
@@ -50,6 +47,22 @@ class HistoryNavigatorImpl extends BaseNavigator implements HistoryNavigator {
     public Optional<Id<Location>> getLocation(Bundle arguments) {
         var args = HistoryFragmentArgs.fromBundle(arguments);
         return Optional.of(args.getLocationId())
+                .filter(v -> v != -1)
+                .map(IdImpl::create);
+    }
+
+    @Override
+    public Optional<Id<User>> getUser(Bundle arguments) {
+        var args = HistoryFragmentArgs.fromBundle(arguments);
+        return Optional.of(args.getUserId())
+                .filter(v -> v != -1)
+                .map(IdImpl::create);
+    }
+
+    @Override
+    public Optional<Id<UserDevice>> getUserDevice(Bundle arguments) {
+        var args = HistoryFragmentArgs.fromBundle(arguments);
+        return Optional.of(args.getUserDeviceId())
                 .filter(v -> v != -1)
                 .map(IdImpl::create);
     }

@@ -21,10 +21,7 @@
 
 package de.njsm.stocks.client.business.event;
 
-import de.njsm.stocks.client.business.entities.EntityType;
-import de.njsm.stocks.client.business.entities.Food;
-import de.njsm.stocks.client.business.entities.Id;
-import de.njsm.stocks.client.business.entities.Location;
+import de.njsm.stocks.client.business.entities.*;
 import io.reactivex.rxjava3.core.Maybe;
 import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.core.Single;
@@ -36,31 +33,21 @@ public interface EventRepository {
 
     Observable<Instant> getNewEventNotifier(List<EntityType> relevantEntities);
 
-    Single<List<LocationEventFeedItem>> getLocationFeed(Instant day);
+    Single<List<LocationEventFeedItem>> getLocationFeed(EventKeyHint hint, Instant day);
 
-    Single<List<UnitEventFeedItem>> getUnitFeed(Instant day);
+    Single<List<UnitEventFeedItem>> getUnitFeed(EventKeyHint hint, Instant day);
 
-    Single<List<UserEventFeedItem>> getUserFeed(Instant day);
+    Single<List<UserEventFeedItem>> getUserFeed(EventKeyHint hint, Instant day);
 
-    Single<List<UserDeviceEventFeedItem>> getUserDeviceFeed(Instant day);
+    Single<List<UserDeviceEventFeedItem>> getUserDeviceFeed(EventKeyHint hint, Instant day);
 
-    Single<List<ScaledUnitEventFeedItem>> getScaledUnitFeed(Instant day);
+    Single<List<ScaledUnitEventFeedItem>> getScaledUnitFeed(EventKeyHint hint, Instant day);
 
-    Single<List<FoodEventFeedItem>> getFoodFeed(Instant day);
+    Single<List<FoodEventFeedItem>> getFoodFeed(EventKeyHint hint, Instant day);
 
-    Single<List<FoodItemEventFeedItem>> getFoodItemFeed(Instant day);
+    Single<List<FoodItemEventFeedItem>> getFoodItemFeed(EventKeyHint hint, Instant day);
 
-    Single<List<EanNumberEventFeedItem>> getEanNumberFeed(Instant day);
-
-    Single<List<LocationEventFeedItem>> getLocationEventsOf(Id<Location> location, Instant day);
-
-    Single<List<FoodItemEventFeedItem>> getFoodItemEventsInvolving(Id<Location> location, Instant day);
-
-    Single<List<EanNumberEventFeedItem>> getEanNumberEventsOf(Id<Food> food, Instant day);
-
-    Single<List<FoodEventFeedItem>> getFoodEventsOf(Id<Food> food, Instant day);
-
-    Single<List<FoodItemEventFeedItem>> getFoodItemEventsOf(Id<Food> food, Instant day);
+    Single<List<EanNumberEventFeedItem>> getEanNumberFeed(EventKeyHint hint, Instant day);
 
     Maybe<Instant> getPreviousDayContainingEvents(Instant day, List<EntityType> relevantEntities, EventKeyHint hint);
 

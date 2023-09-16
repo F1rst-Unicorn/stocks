@@ -24,12 +24,11 @@ package de.njsm.stocks.client.fragment.userdevicelist;
 
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
+import android.view.*;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
+import androidx.core.view.MenuProvider;
 import androidx.lifecycle.ViewModelProvider;
 import de.njsm.stocks.client.business.entities.Id;
 import de.njsm.stocks.client.business.entities.User;
@@ -44,7 +43,7 @@ import de.njsm.stocks.client.ui.R;
 
 import javax.inject.Inject;
 
-public class UserDeviceListFragment extends BottomToolbarFragment {
+public class UserDeviceListFragment extends BottomToolbarFragment implements MenuProvider {
 
     private UserDeviceListViewModel userDeviceListViewModel;
 
@@ -66,7 +65,7 @@ public class UserDeviceListFragment extends BottomToolbarFragment {
         templateSwipeList.setLoading();
 
         userId = userDeviceListNavigator.getUserId(requireArguments());
-        userDeviceAdapter = new UserDeviceAdapter(this::onListItemClicked);
+        userDeviceAdapter = new UserDeviceAdapter(this::onListItemClicked, this::onListItemLongClicked);
         userDeviceListViewModel.get(userId).observe(getViewLifecycleOwner(), this::onListDataReceived);
 
         SwipeCallback callback = new SwipeCallback(
@@ -79,7 +78,30 @@ public class UserDeviceListFragment extends BottomToolbarFragment {
         templateSwipeList.bindFloatingActionButton(this::onAddItem);
         templateSwipeList.bindSwipeDown(this::onSwipeDown);
 
+        requireActivity().addMenuProvider(this, getViewLifecycleOwner());
+
         return root;
+    }
+
+    @Override
+    public void onCreateMenu(@NonNull Menu menu, @NonNull MenuInflater menuInflater) {
+        menuInflater.inflate(R.menu.history, menu);
+    }
+
+    @Override
+    public boolean onMenuItemSelected(@NonNull MenuItem menuItem) {
+        if (menuItem.getItemId() == R.id.menu_history) {
+            userDeviceListNavigator.showHistory(userId);
+            return true;
+        }
+
+        return false;
+    }
+
+    private boolean onListItemLongClicked(View listItem) {
+        int listItemIndex = ((TextWithPrefixIconViewHolder) listItem.getTag()).getBindingAdapterPosition();
+        userDeviceListViewModel.resolveId(listItemIndex, userDeviceListNavigator::showDeviceHistory);
+        return true;
     }
 
     private void onListItemClicked(View listItem) {

@@ -55,10 +55,48 @@ public abstract class EventKeyHint {
         }
     }
 
+    @AutoValue
+    public static abstract class User extends EventKeyHint {
+        public abstract IdImpl<de.njsm.stocks.client.business.entities.User> id();
+
+        @Override
+        protected <I, O> O visit(Visitor<I, O> visitor, I input) {
+            return visitor.user(this, input);
+        }
+
+        public static User of(Id<de.njsm.stocks.client.business.entities.User> user) {
+            return new AutoValue_EventKeyHint_User(IdImpl.from(user));
+        }
+    }
+
+    @AutoValue
+    public static abstract class UserDevice extends EventKeyHint {
+        public abstract IdImpl<de.njsm.stocks.client.business.entities.UserDevice> id();
+
+        @Override
+        protected <I, O> O visit(Visitor<I, O> visitor, I input) {
+            return visitor.userDevice(this, input);
+        }
+
+        public static UserDevice of(Id<de.njsm.stocks.client.business.entities.UserDevice> userDevice) {
+            return new AutoValue_EventKeyHint_UserDevice(IdImpl.from(userDevice));
+        }
+    }
+
     public static final class None extends EventKeyHint {
         @Override
         protected <I, O> O visit(Visitor<I, O> visitor, I input) {
             return visitor.none(this, input);
+        }
+
+        @Override
+        public int hashCode() {
+            return 42;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            return obj instanceof None;
         }
     }
 
@@ -66,9 +104,21 @@ public abstract class EventKeyHint {
         default O visit(EventKeyHint hint, I input) {
             return hint.visit(this, input);
         }
-        O none(None none, I input);
-        O location(Location location, I input);
-        O food(Food food, I input);
+        default O none(None none, I input) {
+            throw new UnsupportedOperationException("unimplemented");
+        }
+        default O location(Location location, I input) {
+            throw new UnsupportedOperationException("unimplemented");
+        }
+        default O food(Food food, I input) {
+            throw new UnsupportedOperationException("unimplemented");
+        }
+        default O user(User user, I input) {
+            throw new UnsupportedOperationException("unimplemented");
+        }
+        default O userDevice(UserDevice userDevice, I input) {
+            throw new UnsupportedOperationException("unimplemented");
+        }
     }
 
     protected abstract <I, O> O visit(Visitor<I, O> visitor, I input);

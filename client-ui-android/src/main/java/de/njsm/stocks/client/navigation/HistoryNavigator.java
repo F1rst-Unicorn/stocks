@@ -22,9 +22,7 @@
 package de.njsm.stocks.client.navigation;
 
 import android.os.Bundle;
-import de.njsm.stocks.client.business.entities.Food;
-import de.njsm.stocks.client.business.entities.Id;
-import de.njsm.stocks.client.business.entities.Location;
+import de.njsm.stocks.client.business.entities.*;
 
 import java.util.Optional;
 
@@ -33,4 +31,8 @@ public interface HistoryNavigator {
     Optional<Id<Food>> getFood(Bundle requireArguments);
 
     Optional<Id<Location>> getLocation(Bundle requireArguments);
+
+    Optional<Id<User>> getUser(Bundle requireArguments);
+
+    Optional<Id<UserDevice>> getUserDevice(Bundle requireArguments);
 }

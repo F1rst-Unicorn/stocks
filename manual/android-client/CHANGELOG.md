@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+* User's and device's activity (by long pressing it) can be shown
+  ([#78](https://j.njsm.de/git/veenj/stocks/issues/78)).
+
 ## [4.7.0.0]
 
 ### Added

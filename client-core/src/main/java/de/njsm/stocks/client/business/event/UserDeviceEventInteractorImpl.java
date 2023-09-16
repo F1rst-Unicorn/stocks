@@ -21,14 +21,25 @@
 
 package de.njsm.stocks.client.business.event;
 
-import de.njsm.stocks.client.business.entities.*;
+import de.njsm.stocks.client.business.Localiser;
+import de.njsm.stocks.client.business.entities.Id;
+import de.njsm.stocks.client.business.entities.UserDevice;
+import de.njsm.stocks.client.execution.Scheduler;
 
-public interface EventInteractorFactory {
-    EventInteractor forLocation(Id<Location> location);
+import javax.inject.Inject;
 
-    EventInteractor forFood(Id<Food> food);
+public class UserDeviceEventInteractorImpl extends EventInteractorImpl implements EventInteractor {
 
-    EventInteractor forUser(Id<User> user);
+    private final Id<UserDevice> userDevice;
 
-    EventInteractor forUserDevice(Id<UserDevice> userDevice);
+    @Inject
+    public UserDeviceEventInteractorImpl(Id<UserDevice> userDevice, EventRepository repository, ActivityEventFactory eventFactory, Localiser localiser, Scheduler scheduler) {
+        super(repository, eventFactory, localiser, scheduler);
+        this.userDevice = userDevice;
+    }
+
+    @Override
+    EventKeyHint getHint() {
+        return EventKeyHint.UserDevice.of(userDevice);
+    }
 }

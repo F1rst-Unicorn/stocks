@@ -79,9 +79,18 @@ public class HistoryFragment extends BottomToolbarFragment {
         var food = navigator.getFood(requireArguments());
         if (food.isPresent())
             return historyViewModel.getActivityFeedForFood(food.get());
+
         var location = navigator.getLocation(requireArguments());
         if (location.isPresent())
             return historyViewModel.getActivityFeedForLocation(location.get());
+
+        var user = navigator.getUser(requireArguments());
+        if (user.isPresent())
+            return historyViewModel.getActivityFeedForUser(user.get());
+
+        var userDevice = navigator.getUserDevice(requireArguments());
+        if (userDevice.isPresent())
+            return historyViewModel.getActivityFeedForUserDevice(userDevice.get());
 
         return historyViewModel.getActivityFeed();
     }

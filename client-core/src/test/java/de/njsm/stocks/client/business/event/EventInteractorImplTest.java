@@ -76,13 +76,13 @@ public class EventInteractorImplTest {
             }
         });
 
-        when(repository.getUnitFeed(any())).thenReturn(Single.just(emptyList()));
-        when(repository.getUserFeed(any())).thenReturn(Single.just(emptyList()));
-        when(repository.getUserDeviceFeed(any())).thenReturn(Single.just(emptyList()));
-        when(repository.getScaledUnitFeed(any())).thenReturn(Single.just(emptyList()));
-        when(repository.getFoodFeed(any())).thenReturn(Single.just(emptyList()));
-        when(repository.getFoodItemFeed(any())).thenReturn(Single.just(emptyList()));
-        when(repository.getEanNumberFeed(any())).thenReturn(Single.just(emptyList()));
+        when(repository.getUnitFeed(any(), any())).thenReturn(Single.just(emptyList()));
+        when(repository.getUserFeed(any(), any())).thenReturn(Single.just(emptyList()));
+        when(repository.getUserDeviceFeed(any(), any())).thenReturn(Single.just(emptyList()));
+        when(repository.getScaledUnitFeed(any(), any())).thenReturn(Single.just(emptyList()));
+        when(repository.getFoodFeed(any(), any())).thenReturn(Single.just(emptyList()));
+        when(repository.getFoodItemFeed(any(), any())).thenReturn(Single.just(emptyList()));
+        when(repository.getEanNumberFeed(any(), any())).thenReturn(Single.just(emptyList()));
         when(repository.getPreviousDayContainingEvents(any(), any(), any())).thenReturn(Maybe.empty());
         when(repository.getNextDayContainingEvents(any(), any(), any())).thenReturn(Maybe.empty());
     }
@@ -95,7 +95,7 @@ public class EventInteractorImplTest {
     @Test
     void singleLocationCreatedIsTransformed() {
         LocationEventFeedItem input = getValid();
-        when(repository.getLocationFeed(localiser.toInstant(LocalDate.EPOCH))).thenReturn(just(of(input)));
+        when(repository.getLocationFeed(new EventKeyHint.None(), localiser.toInstant(LocalDate.EPOCH))).thenReturn(just(of(input)));
 
         var actual = uut.getEventsOf(LocalDate.EPOCH);
 
@@ -112,7 +112,7 @@ public class EventInteractorImplTest {
     @Test
     void singleLocationDeletedIsTransformed() {
         LocationEventFeedItem input = getTerminated("Fridge", "");
-        when(repository.getLocationFeed(localiser.toInstant(LocalDate.EPOCH))).thenReturn(just(of(input)));
+        when(repository.getLocationFeed(new EventKeyHint.None(), localiser.toInstant(LocalDate.EPOCH))).thenReturn(just(of(input)));
 
         var actual = uut.getEventsOf(LocalDate.EPOCH);
 
@@ -130,7 +130,7 @@ public class EventInteractorImplTest {
     void singleLocationUpdatedIsTransformed() {
         LocationEventFeedItem current = getValid();
         LocationEventFeedItem former = getTerminated("Basement", "altered");
-        when(repository.getLocationFeed(localiser.toInstant(LocalDate.EPOCH))).thenReturn(just(of(former, current)));
+        when(repository.getLocationFeed(new EventKeyHint.None(), localiser.toInstant(LocalDate.EPOCH))).thenReturn(just(of(former, current)));
 
         var actual = uut.getEventsOf(LocalDate.EPOCH);
 
@@ -161,7 +161,7 @@ public class EventInteractorImplTest {
                 "Jack",
                 "Fridge",
                 "");
-        when(repository.getLocationFeed(localiser.toInstant(LocalDate.EPOCH))).thenReturn(just(of(first, second)));
+        when(repository.getLocationFeed(new EventKeyHint.None(), localiser.toInstant(LocalDate.EPOCH))).thenReturn(just(of(first, second)));
 
         var actual = uut.getEventsOf(LocalDate.EPOCH);
 

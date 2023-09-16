@@ -33,18 +33,26 @@ public class NextDayContainingEventsWithLocationVisitor extends NextDayContainin
 
     private final IdImpl<Location> location;
 
-    NextDayContainingEventsWithLocationVisitor(EventDao eventDao, List<EntityType> queriedEntities, Instant day, IdImpl<Location> location) {
-        super(eventDao, queriedEntities, day);
+    static NextDayContainingEventsVisitor intoFuture(EventDao eventDao, List<EntityType> queriedEntities, Instant day, IdImpl<Location> location) {
+        return new NextDayContainingEventsWithLocationVisitor(eventDao, queriedEntities, day, false, location);
+    }
+
+    static NextDayContainingEventsVisitor intoPast(EventDao eventDao, List<EntityType> queriedEntities, Instant day, IdImpl<Location> location) {
+        return new NextDayContainingEventsWithLocationVisitor(eventDao, queriedEntities, day, true, location);
+    }
+
+    NextDayContainingEventsWithLocationVisitor(EventDao eventDao, List<EntityType> queriedEntities, Instant day, boolean previous, IdImpl<Location> location) {
+        super(eventDao, queriedEntities, day, previous);
         this.location = location;
     }
 
     @Override
     public Maybe<Instant> location(Void input) {
-        return eventDao.getNextDayContainingLocationEvents(day, location.id());
+        return eventDao.getNextDayContainingLocationEvents(day, location.id(), previous);
     }
 
     @Override
     public Maybe<Instant> foodItem(Void input) {
-        return eventDao.getNextDayContainingFoodItemEventsOfLocation(day, location.id());
+        return eventDao.getNextDayContainingFoodItemEventsOfLocation(day, location.id(), previous);
     }
 }

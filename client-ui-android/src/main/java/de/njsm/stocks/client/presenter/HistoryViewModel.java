@@ -29,9 +29,7 @@ import androidx.paging.PagingData;
 import androidx.paging.PagingLiveData;
 import de.njsm.stocks.client.business.Localiser;
 import de.njsm.stocks.client.business.Synchroniser;
-import de.njsm.stocks.client.business.entities.Food;
-import de.njsm.stocks.client.business.entities.Id;
-import de.njsm.stocks.client.business.entities.Location;
+import de.njsm.stocks.client.business.entities.*;
 import de.njsm.stocks.client.business.entities.event.ActivityEvent;
 import de.njsm.stocks.client.business.event.EventInteractor;
 import de.njsm.stocks.client.business.event.EventInteractorFactory;
@@ -56,6 +54,10 @@ public class HistoryViewModel extends ViewModel {
 
     private final Map<Integer, LiveData<PagingData<ActivityEvent>>> foodHistoryPagers;
 
+    private final Map<Integer, LiveData<PagingData<ActivityEvent>>> userHistoryPagers;
+
+    private final Map<Integer, LiveData<PagingData<ActivityEvent>>> userDeviceHistoryPagers;
+
     @Inject
     HistoryViewModel(Localiser localiser, EventInteractor interactor, EventInteractorFactory factory, Synchroniser synchroniser) {
         this.localiser = localiser;
@@ -64,6 +66,17 @@ public class HistoryViewModel extends ViewModel {
         this.unitHistoryPager = getPageCache(localiser, interactor);
         this.locationHistoryPagers = new TreeMap<>();
         this.foodHistoryPagers = new TreeMap<>();
+        this.userHistoryPagers = new TreeMap<>();
+        this.userDeviceHistoryPagers = new TreeMap<>();
+    }
+
+    @Override
+    protected void onCleared() {
+        super.onCleared();
+        locationHistoryPagers.clear();
+        foodHistoryPagers.clear();
+        userHistoryPagers.clear();
+        userDeviceHistoryPagers.clear();
     }
 
     public LiveData<PagingData<ActivityEvent>> getActivityFeed() {
@@ -82,6 +95,16 @@ public class HistoryViewModel extends ViewModel {
     public LiveData<PagingData<ActivityEvent>> getActivityFeedForFood(Id<Food> food) {
         var interactor = factory.forFood(food);
         return foodHistoryPagers.computeIfAbsent(food.id(), k -> getPageCache(localiser, interactor));
+    }
+
+    public LiveData<PagingData<ActivityEvent>> getActivityFeedForUser(Id<User> user) {
+        var interactor = factory.forUser(user);
+        return userHistoryPagers.computeIfAbsent(user.id(), k -> getPageCache(localiser, interactor));
+    }
+
+    public LiveData<PagingData<ActivityEvent>> getActivityFeedForUserDevice(Id<UserDevice> userDevice) {
+        var interactor = factory.forUserDevice(userDevice);
+        return userDeviceHistoryPagers.computeIfAbsent(userDevice.id(), k -> getPageCache(localiser, interactor));
     }
 
     private LiveData<PagingData<ActivityEvent>> getPageCache(Localiser localiser, EventInteractor interactor) {

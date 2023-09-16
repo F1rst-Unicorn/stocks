@@ -47,9 +47,9 @@ public class LocationEventInteractorImpl extends BaseEventInteractorImpl impleme
 
     @Override
     public Single<ActivityEventPage> getEventsOf(LocalDate day) {
-        Single<List<ActivityEvent>> events = repository.getLocationEventsOf(location, localiser.toInstant(day))
+        Single<List<ActivityEvent>> events = repository.getLocationFeed(getHint(), localiser.toInstant(day))
                 .map(v -> transformToEvents(v, eventFactory::getLocationEventFrom))
-                .mergeWith(repository.getFoodItemEventsInvolving(location, localiser.toInstant(day))
+                .mergeWith(repository.getFoodItemFeed(getHint(), localiser.toInstant(day))
                         .map(v -> transformToEvents(v, eventFactory::getFoodItemEventFrom)))
 
                 .buffer(getRelevantEntities().size())
