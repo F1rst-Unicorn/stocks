@@ -58,8 +58,13 @@ public class SetupGreetingFragment extends InjectableFragment implements CameraP
 
     private void onScanButtonClicked(View view) {
         if (probeForCameraPermission()) {
-            qrScanOperation.launch(requireActivity());
+            onPermissionGranted();
         }
+    }
+
+    @Override
+    public void onPermissionGranted() {
+        qrScanOperation.launch(requireActivity());
     }
 
     private void onManualSetupClicked(View view) {

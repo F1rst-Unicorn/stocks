@@ -95,6 +95,12 @@ public class EanNumberListFragment extends BottomToolbarFragment implements Came
     }
 
     private void onAddItem(View view) {
+        if (probeForCameraPermission(true))
+            eanNumberScanOperation.launch(requireActivity());
+    }
+
+    @Override
+    public void onPermissionGranted() {
         eanNumberScanOperation.launch(requireActivity());
     }
 

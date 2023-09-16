@@ -21,16 +21,20 @@
 
 package de.njsm.stocks.client.activity;
 
+import android.Manifest;
 import android.app.SearchManager;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
+import androidx.annotation.NonNull;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -38,6 +42,7 @@ import androidx.navigation.ui.NavigationUI;
 import com.google.android.material.navigation.NavigationView;
 import dagger.android.AndroidInjection;
 import de.njsm.stocks.R;
+import de.njsm.stocks.client.fragment.util.CameraPermissionProber;
 import de.njsm.stocks.client.navigation.NavigationArgConsumerImpl;
 import de.njsm.stocks.client.navigation.NavigationGraphDirections;
 import de.njsm.stocks.client.presenter.MainActivityViewModel;
@@ -45,6 +50,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
+import java.util.List;
 
 public class MainActivity extends BaseActivity {
 
@@ -143,6 +149,24 @@ public class MainActivity extends BaseActivity {
 
         drawerLayout.closeDrawer(GravityCompat.START);
         return false;
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (grantResults.length > 0
+                && permissions[0].equals(Manifest.permission.CAMERA)
+                && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            List<Fragment> fragments = getSupportFragmentManager().getFragments();
+            if (fragments.size() > 0) {
+                fragments = fragments.get(0).getChildFragmentManager().getFragments();
+                if (fragments.size() > 0) {
+                    Fragment currentFragment = fragments.get(0);
+                    if (currentFragment instanceof CameraPermissionProber)
+                        ((CameraPermissionProber) currentFragment).onPermissionGranted();
+                }
+            }
+        }
     }
 
     @Override

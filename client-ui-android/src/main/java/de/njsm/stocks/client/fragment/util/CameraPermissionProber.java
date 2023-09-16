@@ -75,4 +75,6 @@ public interface CameraPermissionProber {
     String getString(@StringRes int id);
 
     default void doNothing(DialogInterface dialogInterface, int i) {}
+
+    void onPermissionGranted();
 }

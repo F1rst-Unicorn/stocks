@@ -21,27 +21,8 @@
 
 package de.njsm.stocks.client.activity;
 
-import android.Manifest;
-import android.content.pm.PackageManager;
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import com.google.zxing.integration.android.IntentIntegrator;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class BaseActivity extends AppCompatActivity  {
 
-    private static final Logger LOG = LoggerFactory.getLogger(BaseActivity.class);
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (grantResults.length > 0
-                && permissions[0].equals(Manifest.permission.CAMERA)
-                && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            LOG.info("Starting QR code reader");
-            IntentIntegrator integrator = new IntentIntegrator(this);
-            integrator.initiateScan();
-        }
-    }
 }

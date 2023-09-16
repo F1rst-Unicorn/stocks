@@ -35,7 +35,6 @@ import androidx.lifecycle.ViewModelProvider;
 import de.njsm.stocks.client.business.entities.CrashLog;
 import de.njsm.stocks.client.fragment.BottomToolbarFragment;
 import de.njsm.stocks.client.fragment.listswipe.SwipeCallback;
-import de.njsm.stocks.client.fragment.util.CameraPermissionProber;
 import de.njsm.stocks.client.fragment.view.TemplateSwipeList;
 import de.njsm.stocks.client.presenter.CrashLogListViewModel;
 import de.njsm.stocks.client.presenter.DateRenderStrategy;
@@ -44,7 +43,7 @@ import de.njsm.stocks.client.ui.R;
 import javax.inject.Inject;
 import java.util.List;
 
-public class CrashLogListFragment extends BottomToolbarFragment implements CameraPermissionProber {
+public class CrashLogListFragment extends BottomToolbarFragment {
 
     private CrashLogListViewModel crashLogListViewModel;
 

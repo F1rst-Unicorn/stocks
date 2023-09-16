@@ -21,16 +21,22 @@
 
 package de.njsm.stocks.client.activity;
 
+import android.Manifest;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
+import androidx.annotation.NonNull;
 import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.NavigationUI;
 import dagger.android.AndroidInjection;
 import de.njsm.stocks.R;
+import de.njsm.stocks.client.fragment.util.CameraPermissionProber;
 import de.njsm.stocks.client.navigation.NavigationArgConsumerImpl;
 
 import javax.inject.Inject;
+import java.util.List;
 
 public class SetupBaseActivity extends BaseActivity {
 
@@ -50,6 +56,24 @@ public class SetupBaseActivity extends BaseActivity {
         navController = Navigation.findNavController(this, R.id.activity_setup_nav_host_fragment);
         navigationArgConsumer.setNavController(navController);
         NavigationUI.setupWithNavController(toolbar, navController);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (grantResults.length > 0
+                && permissions[0].equals(Manifest.permission.CAMERA)
+                && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            List<Fragment> fragments = getSupportFragmentManager().getFragments();
+            if (fragments.size() > 0) {
+                fragments = fragments.get(0).getChildFragmentManager().getFragments();
+                if (fragments.size() > 0) {
+                    Fragment currentFragment = fragments.get(0);
+                    if (currentFragment instanceof CameraPermissionProber)
+                        ((CameraPermissionProber) currentFragment).onPermissionGranted();
+                }
+            }
+        }
     }
 
     @Override
