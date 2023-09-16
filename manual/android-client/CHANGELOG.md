@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## [4.8.0.1]
+
 ### Fixed
 
 * Long-pressing a user device actually shows its history.
