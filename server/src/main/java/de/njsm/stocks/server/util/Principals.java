@@ -121,6 +121,7 @@ public class Principals {
     public static boolean isNameValid(String name) {
         int noDollar = name.indexOf('$');
         int noEqual  = name.indexOf('=');
-        return noDollar == -1 && noEqual == -1;
+        int noSpace  = name.indexOf(' ');
+        return noDollar == -1 && noEqual == -1 && noSpace == -1;
     }
 }

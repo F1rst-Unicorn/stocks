@@ -133,7 +133,7 @@ public class PrincipalsTest {
         inputList.add("fdsaiofpra");
         inputList.add("Henry8th");
         inputList.add("123flowerpower");
-        inputList.add(">> Master <<");
+        inputList.add(">>Master<<");
         inputList.add("!\"\\^,.;:§%&/()?+*#'-_<>|");
 
         for (String input : inputList) {
@@ -148,6 +148,7 @@ public class PrincipalsTest {
         inputList.add("AdversaryDevice$1");
         inputList.add("CN=John");
         inputList.add("==> Fool <==");
+        inputList.add("My Mobile");
 
         for (String input : inputList) {
             assertFalse(Principals.isNameValid(input));

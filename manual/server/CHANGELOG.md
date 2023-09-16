@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+### Fixed
+
+* Reject adding user or device names with spaces
+  ([#60](https://j.njsm.de/git/veenj/stocks/issues/60)).
+
 ## [5.7.0.3]
 
 ### Performance
