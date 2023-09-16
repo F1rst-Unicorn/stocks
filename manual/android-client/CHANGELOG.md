@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## [4.8.0.2]
+
 ### Fixed
 
 * Fix that first scan of QR code on setup doesn't move to final form
