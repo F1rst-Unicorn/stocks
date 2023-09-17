@@ -392,7 +392,7 @@ abstract class EventDao {
     private static final String SELECT_REDUCER = "select " +
             "case :previous " +
                 "when true then max(main_table.transaction_time_start) " +
-                "else min(main_table.transaction_time_end) end ";
+                "else min(main_table.transaction_time_start) end ";
 
     @Query(SELECT_REDUCER +
             "from location main_table " +

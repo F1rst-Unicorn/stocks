@@ -21,6 +21,7 @@
 
 package de.njsm.stocks.client.database;
 
+import de.njsm.stocks.client.business.entities.EntityType;
 import de.njsm.stocks.client.business.event.*;
 import org.junit.Before;
 import org.junit.Test;
@@ -33,6 +34,7 @@ import java.util.List;
 import static de.njsm.stocks.client.business.Constants.INFINITY;
 import static de.njsm.stocks.client.database.BitemporalOperations.currentDelete;
 import static de.njsm.stocks.client.database.BitemporalOperations.sequencedDeleteOfEntireTime;
+import static de.njsm.stocks.client.database.util.Util.test;
 import static de.njsm.stocks.client.database.util.Util.testList;
 
 public class EventRepositoryEventLoadingTest extends DbTestCase {
@@ -304,5 +306,45 @@ public class EventRepositoryEventLoadingTest extends DbTestCase {
                 EanNumberEventFeedItem.create(eanNumber.id(), deleteTime, deleteTime, initiatorOwner.name(), food.name(), eanNumber.number(), food.id()),
                 EanNumberEventFeedItem.create(eanNumber.id(), INFINITY, Instant.EPOCH, initiatorOwner.name(), food.name(), eanNumber.number(), food.id())
         ));
+    }
+
+    @Test
+    public void gettingNextLocationEventWorks() {
+        var location = standardEntities.locationDbEntityBuilder()
+                .initiates(initiator.id())
+                .build();
+        stocksDatabase.synchronisationDao().writeLocations(List.of(location));
+        Instant firstUpdateTime = Instant.EPOCH.plus(1, ChronoUnit.DAYS);
+        List<LocationDbEntity> firstUpdated = BitemporalOperations.<LocationDbEntity, LocationDbEntity.Builder>
+                currentUpdate(location, b -> b.name("newName"), firstUpdateTime);
+        stocksDatabase.synchronisationDao().writeLocations(firstUpdated);
+        Instant secondUpdateTime = firstUpdateTime.plus(1, ChronoUnit.DAYS);
+        List<LocationDbEntity> secondUpdated = BitemporalOperations.<LocationDbEntity, LocationDbEntity.Builder>
+                currentUpdate(firstUpdated.get(2), b -> b.name("yetAnotherName"), secondUpdateTime);
+        stocksDatabase.synchronisationDao().writeLocations(secondUpdated);
+
+        var actual = uut.getNextDayContainingEvents(firstUpdateTime, List.of(EntityType.LOCATION), new EventKeyHint.None());
+
+        test(actual).assertValue(secondUpdateTime);
+    }
+
+    @Test
+    public void gettingPreviousLocationEventWorks() {
+        var location = standardEntities.locationDbEntityBuilder()
+                .initiates(initiator.id())
+                .build();
+        stocksDatabase.synchronisationDao().writeLocations(List.of(location));
+        Instant firstUpdateTime = Instant.EPOCH.plus(1, ChronoUnit.DAYS);
+        List<LocationDbEntity> firstUpdated = BitemporalOperations.<LocationDbEntity, LocationDbEntity.Builder>
+                currentUpdate(location, b -> b.name("newName"), firstUpdateTime);
+        stocksDatabase.synchronisationDao().writeLocations(firstUpdated);
+        Instant secondUpdateTime = firstUpdateTime.plus(1, ChronoUnit.DAYS);
+        List<LocationDbEntity> secondUpdated = BitemporalOperations.<LocationDbEntity, LocationDbEntity.Builder>
+                currentUpdate(firstUpdated.get(2), b -> b.name("yetAnotherName"), secondUpdateTime);
+        stocksDatabase.synchronisationDao().writeLocations(secondUpdated);
+
+        var actual = uut.getPreviousDayContainingEvents(firstUpdateTime, List.of(EntityType.LOCATION), new EventKeyHint.None());
+
+        test(actual).assertValue(Instant.EPOCH);
     }
 }
