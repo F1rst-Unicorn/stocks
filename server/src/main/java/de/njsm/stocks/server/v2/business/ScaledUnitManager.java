@@ -21,11 +21,13 @@ package de.njsm.stocks.server.v2.business;
 
 
 import de.njsm.stocks.common.api.ScaledUnit;
-import de.njsm.stocks.common.api.StatusCode;
 import de.njsm.stocks.common.api.ScaledUnitForDeletion;
 import de.njsm.stocks.common.api.ScaledUnitForEditing;
+import de.njsm.stocks.common.api.StatusCode;
 import de.njsm.stocks.server.v2.db.ScaledUnitHandler;
 import de.njsm.stocks.server.v2.db.jooq.tables.records.ScaledUnitRecord;
+
+import java.time.Instant;
 
 public class ScaledUnitManager extends BusinessObject<ScaledUnitRecord, ScaledUnit>
         implements BusinessGettable<ScaledUnitRecord, ScaledUnit>,
@@ -44,6 +46,16 @@ public class ScaledUnitManager extends BusinessObject<ScaledUnitRecord, ScaledUn
     }
 
     public StatusCode delete(ScaledUnitForDeletion ScaledUnit) {
-        return runOperation(() -> dbHandler.delete(ScaledUnit));
+        return runOperation(() -> {
+            var currentScaledUnitsResult = dbHandler.get(false, Instant.EPOCH);
+            if (currentScaledUnitsResult.isFail())
+                return currentScaledUnitsResult.fail();
+
+            var currentScaledUnits = currentScaledUnitsResult.success();
+            if (currentScaledUnits.count() == 1)
+                return StatusCode.ACCESS_DENIED;
+
+            return dbHandler.delete(ScaledUnit);
+        });
     }
 }

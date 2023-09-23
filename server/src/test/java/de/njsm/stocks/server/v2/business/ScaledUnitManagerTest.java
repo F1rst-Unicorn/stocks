@@ -19,15 +19,16 @@
 
 package de.njsm.stocks.server.v2.business;
 
-import de.njsm.stocks.common.api.StatusCode;
-import de.njsm.stocks.common.api.ScaledUnitForDeletion;
-import de.njsm.stocks.common.api.ScaledUnitForEditing;
+import de.njsm.stocks.common.api.*;
 import de.njsm.stocks.server.v2.db.ScaledUnitHandler;
+import fj.data.Validation;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
+import java.time.Instant;
+import java.util.stream.Stream;
 
 import static de.njsm.stocks.server.v2.web.PrincipalFilterTest.TEST_USER;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -77,11 +78,44 @@ public class ScaledUnitManagerTest {
                 .version(2)
                 .build();
         when(dbHandler.delete(data)).thenReturn(StatusCode.SUCCESS);
+        when(dbHandler.get(false, Instant.EPOCH)).thenReturn(Validation.success(Stream.of(ScaledUnitForGetting.builder()
+                .id(1)
+                .version(2)
+                .unit(1)
+                .scale(BigDecimal.ONE)
+                .build(),
+                ScaledUnitForGetting.builder()
+                        .id(2)
+                        .version(2)
+                        .unit(1)
+                        .scale(BigDecimal.ONE)
+                        .build())));
 
         StatusCode result = uut.delete(data);
 
         assertEquals(StatusCode.SUCCESS, result);
+        verify(dbHandler).get(false, Instant.EPOCH);
         verify(dbHandler).delete(data);
         verify(dbHandler).commit();
+    }
+
+    @Test
+    public void deletingLastScaledUnitIsDenied() {
+        ScaledUnitForDeletion data = ScaledUnitForDeletion.builder()
+                .id(1)
+                .version(2)
+                .build();
+        when(dbHandler.get(false, Instant.EPOCH)).thenReturn(Validation.success(Stream.of(ScaledUnitForGetting.builder()
+                .id(1)
+                .version(2)
+                .unit(1)
+                .scale(BigDecimal.ONE)
+                .build())));
+
+        StatusCode result = uut.delete(data);
+
+        assertEquals(StatusCode.ACCESS_DENIED, result);
+        verify(dbHandler).get(false, Instant.EPOCH);
+        verify(dbHandler).rollback();
     }
 }
