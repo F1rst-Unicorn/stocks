@@ -39,7 +39,10 @@ public class UpdateManager implements AsyncRunner {
 
     public Validation<StatusCode, Stream<Update>> getUpdates(AsyncResponse r) {
         return runAsynchronously(r, () -> {
-            updateBackend.setReadOnly();
+            var result = updateBackend.setReadOnly();
+            if (result.isFail()) {
+                return Validation.fail(result);
+            }
             return updateBackend.get();
         });
     }

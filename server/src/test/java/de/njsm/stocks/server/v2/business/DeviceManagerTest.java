@@ -45,6 +45,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.when;
 
 public class DeviceManagerTest {
 
@@ -142,6 +143,7 @@ public class DeviceManagerTest {
         AsyncResponse r = Mockito.mock(AsyncResponse.class);
         Mockito.when(dbHandler.get(false, Instant.EPOCH)).thenReturn(Validation.success(Stream.empty()));
         Mockito.when(dbHandler.commit()).thenReturn(StatusCode.SUCCESS);
+        when(dbHandler.setReadOnly()).thenReturn(StatusCode.SUCCESS);
 
         Validation<StatusCode, Stream<UserDevice>> result = uut.get(r, false, Instant.EPOCH);
 
@@ -216,6 +218,7 @@ public class DeviceManagerTest {
                 .build();
         Mockito.when(authAdmin.revokeCertificate(device.id())).thenReturn(StatusCode.SUCCESS);
         Mockito.when(dbHandler.commit()).thenReturn(StatusCode.SUCCESS);
+        when(dbHandler.setReadOnly()).thenReturn(StatusCode.SUCCESS);
 
         StatusCode result = uut.revokeDevice(device);
 

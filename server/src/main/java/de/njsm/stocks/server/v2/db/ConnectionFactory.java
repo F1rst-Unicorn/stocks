@@ -25,6 +25,7 @@ import org.apache.logging.log4j.Logger;
 import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.Optional;
 
 public class ConnectionFactory {
 
@@ -38,17 +39,24 @@ public class ConnectionFactory {
         this.pool = pool;
     }
 
-    /**
-     * Opens a new connection only on first call
-     */
-    public Connection getConnection() throws SQLException {
+    public void initConnection() throws SQLException {
         if (connection == null) {
             LOG.debug("Checking out new connection");
             connection = pool.getConnection();
             LOG.debug("Checked out new connection");
         }
+    }
 
+    /**
+     * Opens a new connection only on first call
+     */
+    public Connection getConnection() throws SQLException {
+        initConnection();
         return connection;
+    }
+
+    public Optional<Connection> getExistingConnection() {
+        return Optional.ofNullable(connection);
     }
 
     public void reset() {

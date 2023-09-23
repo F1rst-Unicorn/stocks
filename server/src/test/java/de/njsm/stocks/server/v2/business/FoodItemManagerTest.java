@@ -42,6 +42,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.when;
 
 public class FoodItemManagerTest {
 
@@ -71,6 +72,7 @@ public class FoodItemManagerTest {
     @Test
     public void gettingItemsIsForwarded() {
         AsyncResponse r = Mockito.mock(AsyncResponse.class);
+        when(backend.setReadOnly()).thenReturn(StatusCode.SUCCESS);
         Mockito.when(backend.get(false, Instant.EPOCH)).thenReturn(Validation.success(Stream.empty()));
 
         Validation<StatusCode, Stream<FoodItem>> result = uut.get(r, false, Instant.EPOCH);

@@ -36,6 +36,7 @@ import java.util.stream.Stream;
 import static de.njsm.stocks.server.v2.web.PrincipalFilterTest.TEST_USER;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.when;
 
 public class LocationManagerTest {
 
@@ -87,6 +88,7 @@ public class LocationManagerTest {
         AsyncResponse r = Mockito.mock(AsyncResponse.class);
         Mockito.when(dbLayer.get(false, Instant.EPOCH)).thenReturn(Validation.success(Stream.empty()));
         Mockito.when(dbLayer.commit()).thenReturn(StatusCode.SUCCESS);
+        when(dbLayer.setReadOnly()).thenReturn(StatusCode.SUCCESS);
 
         Validation<StatusCode, Stream<Location>> result = uut.get(r, false, Instant.EPOCH);
 

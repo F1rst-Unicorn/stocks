@@ -55,6 +55,11 @@ public class FailSafeDatabaseHandler implements FallibleOperationWrapper<DSLCont
     }
 
     public StatusCode setReadOnly() {
+        try {
+            connectionFactory.initConnection();
+        } catch (SQLException e) {
+            return StatusCode.DATABASE_UNREACHABLE;
+        }
         return new ConnectionHandler(connectionFactory).setReadOnly();
     }
 

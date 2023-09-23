@@ -76,6 +76,17 @@ public abstract class DbTestCase {
         return factory;
     }
 
+    protected ConnectionFactory getUnreachableConnectionFactory() throws SQLException {
+        var ds = new ComboPooledDataSource();
+        ds.setJdbcUrl(getUrlByHost("unreachable.example"));
+        ds.setProperties(getPostgresqlProperties(System.getProperties()));
+        ds.setMaxPoolSize(1);
+        ds.setMinPoolSize(1);
+        ds.setLoginTimeout(1);
+        ds.setCheckoutTimeout(1000);
+        return new ConnectionFactory(ds);
+    }
+
     protected DSLContext getDSLContext() {
         return DSL.using(connection, SQLDialect.POSTGRES);
     }
@@ -87,12 +98,15 @@ public abstract class DbTestCase {
     }
 
     protected static String getUrl() {
-        String address = System.getProperty("de.njsm.stocks.server.v2.db.host");
+        return getUrlByHost(System.getProperty("de.njsm.stocks.server.v2.db.host"));
+    }
+
+    private static String getUrlByHost(String host) {
         String port = System.getProperty("de.njsm.stocks.server.v2.db.port");
         String name = System.getProperty("de.njsm.stocks.server.v2.db.name");
 
         return String.format("jdbc:postgresql://%s:%s/%s",
-                address,
+                host,
                 port,
                 name);
     }

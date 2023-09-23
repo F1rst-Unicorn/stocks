@@ -84,7 +84,10 @@ public class DeviceManager extends BusinessObject<UserDeviceRecord, UserDevice> 
 
     public StatusCode revokeDevice(UserDeviceForDeletion device) {
         return runOperation(() -> {
-            userDeviceHandler.setReadOnly();
+            var result = userDeviceHandler.setReadOnly();
+            if (result.isFail()) {
+                return result;
+            }
             return authAdmin.revokeCertificate(device.id());
         });
     }

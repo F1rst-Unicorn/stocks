@@ -4,6 +4,11 @@
 
 ### Fixed
 
+* Errors connecting to the database are now reported as unreachable database to
+  clients ([#61](https://j.njsm.de/git/veenj/stocks/issues/61)).
+
+* DB connection timeout has been lowered to 3s.
+
 * Reject adding user or device names with spaces
   ([#60](https://j.njsm.de/git/veenj/stocks/issues/60)).
 

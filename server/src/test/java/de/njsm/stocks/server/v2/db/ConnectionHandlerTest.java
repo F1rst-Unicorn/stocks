@@ -19,7 +19,9 @@
 
 package de.njsm.stocks.server.v2.db;
 
+import de.njsm.stocks.common.api.EanNumberForDeletion;
 import de.njsm.stocks.common.api.StatusCode;
+import de.njsm.stocks.server.v2.business.EanNumberManager;
 import fj.data.Validation;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -27,7 +29,9 @@ import org.mockito.Mockito;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.Optional;
 
+import static de.njsm.stocks.server.v2.web.PrincipalFilterTest.TEST_USER;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class ConnectionHandlerTest extends DbTestCase {
@@ -96,13 +100,13 @@ public class ConnectionHandlerTest extends DbTestCase {
     public void failingDisablingAutoCommitOnRollbackResetsFactoryAnyway() throws SQLException {
         var connection = Mockito.mock(Connection.class);
         var connectionFactory = Mockito.mock(ConnectionFactory.class);
-        Mockito.when(connectionFactory.getConnection()).thenReturn(connection);
+        Mockito.when(connectionFactory.getExistingConnection()).thenReturn(Optional.of(connection));
         Mockito.doThrow(new SQLException("test")).when(connection).setAutoCommit(false);
         uut = new ConnectionHandler(connectionFactory);
 
         uut.rollback();
 
-        Mockito.verify(connectionFactory).getConnection();
+        Mockito.verify(connectionFactory).getExistingConnection();
         Mockito.verify(connectionFactory).reset();
         Mockito.verify(connection).setAutoCommit(false);
         Mockito.verifyNoMoreInteractions(connection);
@@ -113,13 +117,13 @@ public class ConnectionHandlerTest extends DbTestCase {
     public void failingRollbackResetsFactoryAnyway() throws SQLException {
         var connection = Mockito.mock(Connection.class);
         var connectionFactory = Mockito.mock(ConnectionFactory.class);
-        Mockito.when(connectionFactory.getConnection()).thenReturn(connection);
+        Mockito.when(connectionFactory.getExistingConnection()).thenReturn(Optional.of(connection));
         Mockito.doThrow(new SQLException("test")).when(connection).rollback();
         uut = new ConnectionHandler(connectionFactory);
 
         uut.rollback();
 
-        Mockito.verify(connectionFactory).getConnection();
+        Mockito.verify(connectionFactory).getExistingConnection();
         Mockito.verify(connectionFactory).reset();
         Mockito.verify(connection).setAutoCommit(false);
         Mockito.verify(connection).rollback();
@@ -131,13 +135,13 @@ public class ConnectionHandlerTest extends DbTestCase {
     public void failingClosingAfterRollbackResetsFactoryAnyway() throws SQLException {
         var connection = Mockito.mock(Connection.class);
         var connectionFactory = Mockito.mock(ConnectionFactory.class);
-        Mockito.when(connectionFactory.getConnection()).thenReturn(connection);
+        Mockito.when(connectionFactory.getExistingConnection()).thenReturn(Optional.of(connection));
         Mockito.doThrow(new SQLException("test")).when(connection).close();
         uut = new ConnectionHandler(connectionFactory);
 
         uut.rollback();
 
-        Mockito.verify(connectionFactory).getConnection();
+        Mockito.verify(connectionFactory).getExistingConnection();
         Mockito.verify(connectionFactory).reset();
         Mockito.verify(connection).setAutoCommit(false);
         Mockito.verify(connection).rollback();
@@ -150,13 +154,13 @@ public class ConnectionHandlerTest extends DbTestCase {
     public void failingDisablingAutoCommitOnCommitResetsFactoryAnyway() throws SQLException {
         var connection = Mockito.mock(Connection.class);
         var connectionFactory = Mockito.mock(ConnectionFactory.class);
-        Mockito.when(connectionFactory.getConnection()).thenReturn(connection);
+        Mockito.when(connectionFactory.getExistingConnection()).thenReturn(Optional.of(connection));
         Mockito.doThrow(new SQLException("test")).when(connection).setAutoCommit(false);
         uut = new ConnectionHandler(connectionFactory);
 
         uut.commit();
 
-        Mockito.verify(connectionFactory).getConnection();
+        Mockito.verify(connectionFactory).getExistingConnection();
         Mockito.verify(connectionFactory).reset();
         Mockito.verify(connection).setAutoCommit(false);
         Mockito.verifyNoMoreInteractions(connection);
@@ -167,13 +171,13 @@ public class ConnectionHandlerTest extends DbTestCase {
     public void failingCommitResetsFactoryAnyway() throws SQLException {
         var connection = Mockito.mock(Connection.class);
         var connectionFactory = Mockito.mock(ConnectionFactory.class);
-        Mockito.when(connectionFactory.getConnection()).thenReturn(connection);
+        Mockito.when(connectionFactory.getExistingConnection()).thenReturn(Optional.of(connection));
         Mockito.doThrow(new SQLException("test")).when(connection).commit();
         uut = new ConnectionHandler(connectionFactory);
 
         uut.commit();
 
-        Mockito.verify(connectionFactory).getConnection();
+        Mockito.verify(connectionFactory).getExistingConnection();
         Mockito.verify(connectionFactory).reset();
         Mockito.verify(connection).setAutoCommit(false);
         Mockito.verify(connection).commit();
@@ -185,18 +189,28 @@ public class ConnectionHandlerTest extends DbTestCase {
     public void failingClosingAfterCommitResetsFactoryAnyway() throws SQLException {
         var connection = Mockito.mock(Connection.class);
         var connectionFactory = Mockito.mock(ConnectionFactory.class);
-        Mockito.when(connectionFactory.getConnection()).thenReturn(connection);
+        Mockito.when(connectionFactory.getExistingConnection()).thenReturn(Optional.of(connection));
         Mockito.doThrow(new SQLException("test")).when(connection).close();
         uut = new ConnectionHandler(connectionFactory);
 
         uut.commit();
 
-        Mockito.verify(connectionFactory).getConnection();
+        Mockito.verify(connectionFactory).getExistingConnection();
         Mockito.verify(connectionFactory).reset();
         Mockito.verify(connection).setAutoCommit(false);
         Mockito.verify(connection).commit();
         Mockito.verify(connection).close();
         Mockito.verifyNoMoreInteractions(connection);
         Mockito.verifyNoMoreInteractions(connectionFactory);
+    }
+
+    @Test
+    void unreachableDatabaseIsPropagatedByBusiness() throws SQLException {
+        EanNumberManager business = new EanNumberManager(new EanNumberHandler(getUnreachableConnectionFactory()));
+        business.setPrincipals(TEST_USER);
+
+        var result = business.delete(EanNumberForDeletion.builder().id(1).version(1).build());
+
+        assertEquals(StatusCode.DATABASE_UNREACHABLE, result);
     }
 }

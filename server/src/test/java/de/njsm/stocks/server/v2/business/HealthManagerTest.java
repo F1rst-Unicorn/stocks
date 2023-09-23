@@ -49,6 +49,7 @@ public class HealthManagerTest {
     @Test
     public void testGettingHealth() {
         when(db.commit()).thenReturn(StatusCode.SUCCESS);
+        when(db.setReadOnly()).thenReturn(StatusCode.SUCCESS);
         Validation<StatusCode, Health> result = uut.get();
 
         assertTrue(result.isSuccess());

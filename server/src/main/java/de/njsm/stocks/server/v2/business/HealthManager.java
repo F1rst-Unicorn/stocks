@@ -38,7 +38,10 @@ public class HealthManager {
     }
 
     public Validation<StatusCode, Health> get() {
-        dbBackend.setReadOnly();
+        var result = dbBackend.setReadOnly();
+        if (result.isFail()) {
+            return Validation.fail(result);
+        }
 
         StatusCode db = dbBackend.get();
         StatusCode ca = caBackend.getHealth();

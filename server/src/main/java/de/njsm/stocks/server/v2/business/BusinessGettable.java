@@ -33,7 +33,10 @@ public interface BusinessGettable<U extends TableRecord<U>, T extends Entity<T>>
 
     default Validation<StatusCode, Stream<T>> get(AsyncResponse r, boolean bitemporal, Instant startingFrom) {
         return runAsynchronously(r, () -> {
-            getDbHandler().setReadOnly();
+            var result = getDbHandler().setReadOnly();
+            if (result.isFail()) {
+                return Validation.fail(result);
+            }
             return getDbHandler().get(bitemporal, startingFrom);
         });
     }

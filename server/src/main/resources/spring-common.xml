@@ -106,6 +106,7 @@
         <property name="contextClassLoaderSource" value="library" />
         <property name="privilegeSpawnedThreads" value="true" />
         <property name="unreturnedConnectionTimeout" value="60" />
+        <property name="checkoutTimeout" value="3000" />
     </bean>
 
     <bean name="datasourceForMigrations" class="com.mchange.v2.c3p0.ComboPooledDataSource">
@@ -121,6 +122,7 @@
         <property name="properties" ref="dbConfig" />
         <property name="contextClassLoaderSource" value="library" />
         <property name="privilegeSpawnedThreads" value="true" />
+        <property name="checkoutTimeout" value="3000" />
     </bean>
 
     <bean id="liquibase" class="liquibase.integration.spring.SpringLiquibase" lazy-init="false">

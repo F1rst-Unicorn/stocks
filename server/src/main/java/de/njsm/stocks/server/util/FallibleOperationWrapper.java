@@ -39,7 +39,7 @@ public interface FallibleOperationWrapper<I, E extends Exception> {
         try {
             return wrap(function).accept();
         } catch (Exception e) {
-            LOG.error("", e);
+            LOG.error("wrapped operation failed", e);
             return Validation.fail(getDefaultErrorCode());
         }
     }

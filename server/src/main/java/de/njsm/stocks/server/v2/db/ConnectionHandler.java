@@ -28,7 +28,7 @@ import fj.data.Validation;
 import java.sql.Connection;
 import java.sql.SQLException;
 
-public class ConnectionHandler implements FallibleOperationWrapper<Connection, SQLException> {
+class ConnectionHandler implements FallibleOperationWrapper<Connection, SQLException> {
 
     private static final String SERIALISATION_FAILURE_SQL_STATE = "40001";
 
@@ -36,11 +36,11 @@ public class ConnectionHandler implements FallibleOperationWrapper<Connection, S
 
     private final ConnectionFactory connectionFactory;
 
-    public ConnectionHandler(ConnectionFactory connectionFactory) {
+    ConnectionHandler(ConnectionFactory connectionFactory) {
         this.connectionFactory = connectionFactory;
     }
 
-    public StatusCode commit() {
+    StatusCode commit() {
         return runCommand(con -> {
             connectionFactory.reset();
             con.setAutoCommit(false);
@@ -50,7 +50,7 @@ public class ConnectionHandler implements FallibleOperationWrapper<Connection, S
         });
     }
 
-    public StatusCode rollback() {
+    StatusCode rollback() {
         return runCommand(con -> {
             connectionFactory.reset();
             con.setAutoCommit(false);
@@ -60,7 +60,7 @@ public class ConnectionHandler implements FallibleOperationWrapper<Connection, S
         });
     }
 
-    public StatusCode setReadOnly() {
+    StatusCode setReadOnly() {
         return runCommand(con -> {
             con.setReadOnly(true);
             return StatusCode.SUCCESS;
@@ -76,8 +76,13 @@ public class ConnectionHandler implements FallibleOperationWrapper<Connection, S
     public <O> ProducerWithExceptions<Validation<StatusCode, O>, SQLException> wrap(FunctionWithExceptions<Connection, Validation<StatusCode, O>, SQLException> client) {
         return () -> {
             try {
-                Connection con = connectionFactory.getConnection();
-                return client.apply(con);
+                var connection = connectionFactory.getExistingConnection();
+                if (connection.isPresent()) {
+                    return client.apply(connection.get());
+                } else {
+                    LOG.debug("no existing connection");
+                    return Validation.fail(StatusCode.DATABASE_UNREACHABLE);
+                }
             } catch (RuntimeException e) {
                 return lookForSqlException(e);
             } catch (SQLException e) {
@@ -91,7 +96,7 @@ public class ConnectionHandler implements FallibleOperationWrapper<Connection, S
         };
     }
 
-    private boolean isCheckViolation(SQLException e) {
+    private static boolean isCheckViolation(SQLException e) {
         String sqlState = e.getSQLState();
 
         if (sqlState != null && sqlState.equals(CHECK_VIOLATION_SQL_STATE)) {
@@ -108,6 +113,8 @@ public class ConnectionHandler implements FallibleOperationWrapper<Connection, S
             if (cause instanceof SQLException)
                 if (isSerialisationConflict((SQLException) cause))
                     return Validation.fail(StatusCode.SERIALISATION_CONFLICT);
+                else if (isCheckViolation((SQLException) cause))
+                    return Validation.fail(StatusCode.FOREIGN_KEY_CONSTRAINT_VIOLATION);
 
             cause = cause.getCause();
         }
