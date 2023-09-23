@@ -128,7 +128,7 @@ public class UserHandlerTest extends DbTestCase implements CrudOperationsTest<Us
     @Override
     public Versionable<User> getValidEntity() {
         return UserForDeletion.builder()
-                .id(1)
+                .id(5)
                 .version(0)
                 .build();
     }

@@ -60,9 +60,6 @@ public class NullableBitemporalForeignKeyTest extends DbTestCase {
     public void insertingNullIsValid() throws SQLException {
         FoodRecord food = getFood(null);
         food.setVersion(0);
-        food.setValidTimeStart(getTimeTick(0));
-        food.setValidTimeEnd(getTimeTick(2));
-        food.setTransactionTimeStart(getTimeTick(0));
         food.setTransactionTimeEnd(INFINITY);
         food.insert();
 

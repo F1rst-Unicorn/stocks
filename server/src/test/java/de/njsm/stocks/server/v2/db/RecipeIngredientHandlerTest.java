@@ -57,7 +57,7 @@ public class RecipeIngredientHandlerTest
                 .amount(5)
                 .ingredient(3)
                 .unit(1)
-                .recipe(4)
+                .recipe(1)
                 .build();
     }
 

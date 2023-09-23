@@ -393,7 +393,7 @@ public class FoodHandlerTest extends DbTestCase implements CrudOperationsTest<Fo
     @Override
     public Versionable<Food> getValidEntity() {
         return FoodForDeletion.builder()
-                .id(2)
+                .id(1)
                 .version(0)
                 .build();
     }

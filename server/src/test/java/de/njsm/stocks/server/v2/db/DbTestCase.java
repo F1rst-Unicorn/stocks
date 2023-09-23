@@ -69,6 +69,9 @@ public abstract class DbTestCase {
 
     @AfterEach
     public void tearDown() throws SQLException {
+        if (!connection.isClosed()) {
+            connection.commit();
+        }
         connection.close();
     }
 

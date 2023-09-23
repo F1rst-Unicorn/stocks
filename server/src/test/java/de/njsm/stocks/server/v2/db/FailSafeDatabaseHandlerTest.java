@@ -27,8 +27,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class FailSafeDatabaseHandlerTest extends DbTestCase {
 
@@ -108,7 +107,7 @@ public class FailSafeDatabaseHandlerTest extends DbTestCase {
     }
 
     /**
-     * Example taken from https://www.postgresql.org/docs/11/transaction-iso.html#XACT-SERIALIZABLE
+     * Example taken from https://www.postgresql.org/docs/current/transaction-iso.html#XACT-SERIALIZABLE
      */
     @Test
     public void serialisationErrorIsNoted() throws Exception {

@@ -21,12 +21,7 @@
 
 package de.njsm.stocks.server.v2.db.bitemporal;
 
-import de.njsm.stocks.common.api.Location;
-import de.njsm.stocks.common.api.StatusCode;
-import de.njsm.stocks.common.api.BitemporalLocation;
-import de.njsm.stocks.common.api.BitemporalUserDevice;
-import de.njsm.stocks.common.api.LocationForDeletion;
-import de.njsm.stocks.common.api.LocationForRenaming;
+import de.njsm.stocks.common.api.*;
 import de.njsm.stocks.server.util.Principals;
 import de.njsm.stocks.server.v2.db.DbTestCase;
 import de.njsm.stocks.server.v2.db.FoodItemHandler;

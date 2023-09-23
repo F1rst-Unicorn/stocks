@@ -189,7 +189,7 @@ public class RecipeHandlerTest extends DbTestCase implements CrudOperationsTest<
     @Override
     public RecipeForDeletion getValidEntity() {
         return RecipeForDeletion.builder()
-                .id(1)
+                .id(2)
                 .version(0)
                 .build();
     }

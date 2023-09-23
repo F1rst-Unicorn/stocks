@@ -54,7 +54,7 @@ public class RecipeProductHandlerTest extends DbTestCase
                 .amount(5)
                 .product(3)
                 .unit(1)
-                .recipe(4)
+                .recipe(1)
                 .build();
     }
 

@@ -62,14 +62,16 @@ class SampleData {
                     "('Carrot', false, null, 'carrot description',  1, '2 days', 1), " +
                     "('Beer', true, null, 'beer description', 1, '0 days', 1), " +
                     "('Cheese', false, 1, '', 1, '3 days', 1)",
+            "insert into \"user\" (name, initiates, valid_time_start, valid_time_end, transaction_time_start, transaction_time_end) values " +
+                    "('Default', 1, '1970-01-02 00:00:00Z', 'infinity', '1970-01-02 00:00:00Z', 'infinity')",
             "insert into \"user\" (name, initiates) values " +
-                    "('Default', 1), " +
                     "('Stocks', 1), " +
                     "('Bob', 1), " +
                     "('Alice', 1), " +
                     "('Jack', 1)",
+            "insert into user_device (name, belongs_to, initiates, technical_use_case, valid_time_start, valid_time_end, transaction_time_start, transaction_time_end) values " +
+                    "('Default', 1, 1, null, '1970-01-02 00:00:00Z', 'infinity', '1970-01-02 00:00:00Z', 'infinity')",
             "insert into user_device (name, belongs_to, initiates, technical_use_case) values " +
-                    "('Default', 1, 1, NULL), " +
                     "('Job Runner', 2, 1, 'job-runner'), " +
                     "('mobile', 3, 1, NULL), " +
                     "('mobile2', 3, 1, NULL), " +
