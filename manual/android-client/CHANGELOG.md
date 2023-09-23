@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## [4.8.0.3]
+
 ### Fixed
 
 * Fix rare error where showing activity events showed wrong order.
