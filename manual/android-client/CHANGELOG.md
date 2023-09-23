@@ -2,13 +2,16 @@
 
 ## Unreleased
 
+### Fixed
+
+* Fix rare error where showing activity events showed wrong order.
+
 ## [4.8.0.2]
 
 ### Fixed
 
 * Fix that first scan of QR code on setup doesn't move to final form
   ([#92](https://j.njsm.de/git/veenj/stocks/issues/92)).
-
 
 ## [4.8.0.1]
 
