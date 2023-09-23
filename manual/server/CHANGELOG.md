@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## [5.7.0.4]
+
 ### Fixed
 
 * Errors connecting to the database are now reported as unreachable database to
