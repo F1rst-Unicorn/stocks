@@ -23,11 +23,14 @@ package de.njsm.stocks.client.business.entities;
 
 import com.google.auto.value.AutoValue;
 
+import java.io.Serializable;
 import java.time.Duration;
 import java.util.List;
 
 @AutoValue
-public abstract class RecipeAddForm implements ErrorDetails {
+public abstract class RecipeAddForm implements ErrorDetails, Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     public abstract String name();
 

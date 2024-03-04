@@ -30,8 +30,7 @@ public class RecipeIngredientEditFoodAdapter extends RecipeFoodAdapter<RecipeIng
 
     public RecipeIngredientEditFoodAdapter(RecipeEditFormData data) {
         super(data.availableFood(), data.availableUnits());
-        list.addAll(data.ingredients());
-        notifyItemRangeInserted(0, list.size());
+        add(data.ingredients());
     }
 
     public void add() {

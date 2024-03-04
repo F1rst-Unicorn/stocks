@@ -55,6 +55,11 @@ public abstract class RecipeFoodAdapter<T> extends RecyclerView.Adapter<RecipeFo
         return new RecipeFoodViewHolder(v, foodForSelection, unitsForSelection);
     }
 
+    public void add(List<T> items) {
+        list.addAll(items);
+        notifyItemRangeInserted(list.size() - items.size(), items.size());
+    }
+
     public void delete(int listItemPosition) {
         list.remove(listItemPosition);
         notifyItemRemoved(listItemPosition);

@@ -23,8 +23,12 @@ package de.njsm.stocks.client.business.entities;
 
 import com.google.auto.value.AutoValue;
 
+import java.io.Serializable;
+
 @AutoValue
-public abstract class RecipeProductToAdd {
+public abstract class RecipeProductToAdd implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     public abstract int amount();
 

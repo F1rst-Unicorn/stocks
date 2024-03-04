@@ -116,7 +116,7 @@ public class RecipeAddFragmentTest {
                 isDescendantOfA(withId(R.id.fragment_recipe_form_instructions)),
                 withClassName(is(TextInputEditText.class.getName()))
         )).perform(replaceText(recipe.instructions()));
-        scenario.onFragment(v -> v.onOptionsItemSelected(menuItem(v.requireContext(), R.id.menu_check)));
+        scenario.onFragment(v -> v.onMenuItemSelected(menuItem(v.requireContext(), R.id.menu_check)));
 
         verify(recipeAddInteractor).add(recipe);
         verify(navigator).back();
@@ -124,7 +124,7 @@ public class RecipeAddFragmentTest {
 
     @Test
     public void submittingWithoutNameIsProhibited() {
-        scenario.onFragment(v -> v.onOptionsItemSelected(menuItem(v.requireContext(), R.id.menu_check)));
+        scenario.onFragment(v -> v.onMenuItemSelected(menuItem(v.requireContext(), R.id.menu_check)));
 
         verify(recipeAddInteractor, never()).add(any());
         onView(withId(R.id.fragment_recipe_form_name))
@@ -171,6 +171,17 @@ public class RecipeAddFragmentTest {
                 withClassName(is(TextInputEditText.class.getName()))
         )).perform(replaceText(recipe.name()));
 
+        addFood(addButton, list);
+        scenario.onFragment(v -> v.onMenuItemSelected(menuItem(v.requireContext(), R.id.menu_check)));
+
+        var expected = RecipeAddForm.create(recipe.name(), "", Duration.ZERO,
+                ingredients,
+                products);
+        verify(recipeAddInteractor).add(expected);
+        verify(navigator).back();
+    }
+
+    private static void addFood(int addButton, int list) {
         onView(withId(addButton)).perform(click());
         onView(allOf(isDescendantOfA(recyclerView(list)
                 .atPositionOnView(0, R.id.item_recipe_food_amount)),
@@ -182,13 +193,6 @@ public class RecipeAddFragmentTest {
         onView(recyclerView(list)
                 .atPositionOnView(0, R.id.item_recipe_food_unit)).perform(click());
         onData(anything()).atPosition(1).perform(click());
-        scenario.onFragment(v -> v.onOptionsItemSelected(menuItem(v.requireContext(), R.id.menu_check)));
-
-        var expected = RecipeAddForm.create(recipe.name(), "", Duration.ZERO,
-                ingredients,
-                products);
-        verify(recipeAddInteractor).add(expected);
-        verify(navigator).back();
     }
 
     @Test
@@ -212,23 +216,56 @@ public class RecipeAddFragmentTest {
                 withClassName(is(TextInputEditText.class.getName()))
         )).perform(replaceText(recipe.name()));
 
-        onView(withId(addButton)).perform(click());
-        onView(allOf(isDescendantOfA(recyclerView(list)
-                .atPositionOnView(0, R.id.item_recipe_food_amount)),
-                withClassName(is(TextInputEditText.class.getName()))))
-                .perform(replaceText("3"));
-        onView(recyclerView(list)
-                .atPositionOnView(0, R.id.item_recipe_food_food)).perform(click());
-        onData(anything()).atPosition(1).perform(click());
-        onView(recyclerView(list)
-                .atPositionOnView(0, R.id.item_recipe_food_unit)).perform(click());
-        onData(anything()).atPosition(1).perform(click());
+        addFood(addButton, list);
         onView(recyclerView(list).atPosition(0)).perform(swipeRight());
-        scenario.onFragment(v -> v.onOptionsItemSelected(menuItem(v.requireContext(), R.id.menu_check)));
+        scenario.onFragment(v -> v.onMenuItemSelected(menuItem(v.requireContext(), R.id.menu_check)));
 
         var expected = RecipeAddForm.create(recipe.name(), "", Duration.ZERO,
                 emptyList(),
                 emptyList());
+        verify(recipeAddInteractor).add(expected);
+        verify(navigator).back();
+    }
+
+    @Test
+    public void formDataIsPersisted() {
+        var recipe = getInput();
+
+        onView(allOf(
+                isDescendantOfA(withId(R.id.fragment_recipe_form_name)),
+                withClassName(is(TextInputEditText.class.getName()))
+        )).perform(replaceText(recipe.name()));
+        addFood(R.id.fragment_recipe_form_add_ingredient, R.id.fragment_recipe_form_ingredient_list);
+        addFood(R.id.fragment_recipe_form_add_product, R.id.fragment_recipe_form_product_list);
+
+        scenario.recreate();
+        scenario.onFragment(v -> v.onMenuItemSelected(menuItem(v.requireContext(), R.id.menu_check)));
+
+        var expected = RecipeAddForm.create(recipe.name(), "", Duration.ZERO,
+                List.of(RecipeIngredientToAdd.create(3, selectableData.availableFood().get(1), selectableData.availableUnits().get(1))),
+                List.of(RecipeProductToAdd.create(3, selectableData.availableFood().get(1), selectableData.availableUnits().get(1))));
+        verify(recipeAddInteractor).add(expected);
+        verify(navigator).back();
+    }
+
+    @Test
+    public void formDataIsPersistedWhenRecreatingTwice() {
+        var recipe = getInput();
+
+        onView(allOf(
+                isDescendantOfA(withId(R.id.fragment_recipe_form_name)),
+                withClassName(is(TextInputEditText.class.getName()))
+        )).perform(replaceText(recipe.name()));
+        addFood(R.id.fragment_recipe_form_add_ingredient, R.id.fragment_recipe_form_ingredient_list);
+        addFood(R.id.fragment_recipe_form_add_product, R.id.fragment_recipe_form_product_list);
+
+        scenario.recreate();
+        scenario.recreate();
+        scenario.onFragment(v -> v.onMenuItemSelected(menuItem(v.requireContext(), R.id.menu_check)));
+
+        var expected = RecipeAddForm.create(recipe.name(), "", Duration.ZERO,
+                List.of(RecipeIngredientToAdd.create(3, selectableData.availableFood().get(1), selectableData.availableUnits().get(1))),
+                List.of(RecipeProductToAdd.create(3, selectableData.availableFood().get(1), selectableData.availableUnits().get(1))));
         verify(recipeAddInteractor).add(expected);
         verify(navigator).back();
     }

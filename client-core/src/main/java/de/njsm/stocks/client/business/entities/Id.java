@@ -21,7 +21,9 @@
 
 package de.njsm.stocks.client.business.entities;
 
-public interface Id<T extends Entity<T>> {
+import java.io.Serializable;
+
+public interface Id<T extends Entity<T>> extends Serializable {
 
     int id();
 

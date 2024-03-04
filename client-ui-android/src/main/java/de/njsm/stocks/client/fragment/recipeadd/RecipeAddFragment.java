@@ -26,6 +26,7 @@ import android.os.Bundle;
 import android.view.*;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.view.MenuProvider;
 import androidx.lifecycle.ViewModelProvider;
 import de.njsm.stocks.client.business.entities.RecipeAddForm;
 import de.njsm.stocks.client.databind.RecipeForm;
@@ -35,8 +36,9 @@ import de.njsm.stocks.client.presenter.RecipeAddViewModel;
 import de.njsm.stocks.client.ui.R;
 
 import javax.inject.Inject;
+import java.io.Serializable;
 
-public class RecipeAddFragment extends BottomToolbarFragment {
+public class RecipeAddFragment extends BottomToolbarFragment implements MenuProvider {
 
     private RecipeAddViewModel viewModel;
 
@@ -62,6 +64,7 @@ public class RecipeAddFragment extends BottomToolbarFragment {
 
             ingredientAdapter = new RecipeIngredientAddFoodAdapter(data);
             productAdapter = new RecipeProductFoodAddAdapter(data);
+            readSavedData(savedInstanceState);
 
             form.setIngredients(ingredientAdapter, ingredientAdapter::delete);
             form.setProducts(productAdapter, productAdapter::delete);
@@ -69,17 +72,33 @@ public class RecipeAddFragment extends BottomToolbarFragment {
             form.setOnAddProduct(productAdapter::add);
         });
 
-        setHasOptionsMenu(true);
+        requireActivity().addMenuProvider(this, getViewLifecycleOwner());
         return root;
     }
 
+    private void readSavedData(Bundle savedInstanceState) {
+        if (savedInstanceState == null)
+            return;
+
+        Serializable serializable = savedInstanceState.getSerializable(RECIPE);
+        if (serializable != null) {
+            savedInstanceState.putSerializable(RECIPE, null);
+            RecipeAddForm savedData = (RecipeAddForm) serializable;
+            form.setName(savedData.name());
+            form.setDuration(savedData.duration());
+            form.setInstructions(savedData.instructions());
+            ingredientAdapter.add(savedData.ingredients());
+            productAdapter.add(savedData.products());
+        }
+    }
+
     @Override
-    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+    public void onCreateMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
         inflater.inflate(R.menu.check, menu);
     }
 
     @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+    public boolean onMenuItemSelected(@NonNull MenuItem menuItem) {
         if (!form.maySubmit()) {
             form.showErrors();
             return true;
@@ -90,11 +109,23 @@ public class RecipeAddFragment extends BottomToolbarFragment {
                 form.getInstructions(),
                 form.getDuration(),
                 ingredientAdapter.get(),
-                productAdapter.get()
-        );
+                productAdapter.get());
         viewModel.add(data);
         navigator.back();
         return true;
+    }
+
+    private static final String RECIPE = "RECIPE";
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putSerializable(RECIPE, RecipeAddForm.create(
+                form.getName(),
+                form.getInstructions(),
+                form.getDuration(),
+                ingredientAdapter.get(),
+                productAdapter.get()));
     }
 
     @Inject
