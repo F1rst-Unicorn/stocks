@@ -22,11 +22,15 @@
 package de.njsm.stocks.client.business.entities;
 
 import com.google.auto.value.AutoValue;
+import de.njsm.stocks.client.business.SearchRepository;
 
+import java.io.Serializable;
 import java.time.Duration;
 
 @AutoValue
-public abstract class RecipeEditBaseData implements Id<Recipe> {
+public abstract class RecipeEditBaseData implements Id<Recipe>, Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     public abstract String name();
 

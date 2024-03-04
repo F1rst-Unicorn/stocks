@@ -207,6 +207,18 @@ public class RecipeEditFragmentTest {
                                        List<RecipeProductEditFormData> products,
                                        int position) {
         var input = getInputData();
+        addFood(addButton, list, position);
+
+        scenario.onFragment(v -> v.onMenuItemSelected(menuItem(v.requireContext(), R.id.menu_check)));
+
+        var expected = RecipeEditForm.create(input.recipe(),
+                ingredients,
+                products);
+        verify(recipeEditInteractor).edit(expected);
+        verify(navigator).back();
+    }
+
+    private static void addFood(int addButton, int list, int position) {
         onView(withId(addButton)).perform(nestedScrollTo(), click(), nestedScrollTo());
         onView(allOf(isDescendantOfA(recyclerView(list)
                         .atPositionOnView(position, R.id.item_recipe_food_amount)),
@@ -218,14 +230,6 @@ public class RecipeEditFragmentTest {
         onView(recyclerView(list)
                 .atPositionOnView(position, R.id.item_recipe_food_unit)).perform(click());
         onData(anything()).atPosition(1).perform(scrollTo(), click());
-
-        scenario.onFragment(v -> v.onMenuItemSelected(menuItem(v.requireContext(), R.id.menu_check)));
-
-        var expected = RecipeEditForm.create(input.recipe(),
-                ingredients,
-                products);
-        verify(recipeEditInteractor).edit(expected);
-        verify(navigator).back();
     }
 
     @Test
@@ -246,17 +250,7 @@ public class RecipeEditFragmentTest {
                                                   @IdRes int list, int position) {
         var input = getInputData();
 
-        onView(withId(addButton)).perform(nestedScrollTo(), click(), nestedScrollTo());
-        onView(allOf(isDescendantOfA(recyclerView(list)
-                .atPositionOnView(position, R.id.item_recipe_food_amount)),
-                withClassName(is(TextInputEditText.class.getName()))))
-                .perform(replaceText("3"));
-        onView(recyclerView(list)
-                .atPositionOnView(position, R.id.item_recipe_food_food)).perform(click());
-        onData(anything()).atPosition(1).perform(click());
-        onView(recyclerView(list)
-                .atPositionOnView(position, R.id.item_recipe_food_unit)).perform(click());
-        onData(anything()).atPosition(1).perform(click());
+        addFood(addButton, list, position);
         onView(recyclerView(list).atPosition(position)).perform(swipeRight());
 
         scenario.onFragment(v -> v.onMenuItemSelected(menuItem(v.requireContext(), R.id.menu_check)));
@@ -264,6 +258,49 @@ public class RecipeEditFragmentTest {
         var expected = RecipeEditForm.create(input.recipe(),
                 input.ingredients(),
                 input.products());
+        verify(recipeEditInteractor).edit(expected);
+        verify(navigator).back();
+    }
+
+    @Test
+    public void formDataIsPersisted() {
+        var recipe = getInputData();
+        var expectedIngredients = new ArrayList<>(recipe.ingredients());
+        expectedIngredients.add(RecipeIngredientEditFormData.create(-1, 3, 1, recipe.availableUnits().get(1), 1, recipe.availableFood().get(1)));
+        var expectedProducts = new ArrayList<>(recipe.products());
+        expectedProducts.add(RecipeProductEditFormData.create(-1, 3, 1, recipe.availableUnits().get(1), 1, recipe.availableFood().get(1)));
+
+        addFood(R.id.fragment_recipe_form_add_ingredient, R.id.fragment_recipe_form_ingredient_list, recipe.ingredients().size());
+        addFood(R.id.fragment_recipe_form_add_product, R.id.fragment_recipe_form_product_list, recipe.products().size());
+
+        scenario.recreate();
+        scenario.onFragment(v -> v.onMenuItemSelected(menuItem(v.requireContext(), R.id.menu_check)));
+
+        var expected = RecipeEditForm.create(recipe.recipe(),
+                expectedIngredients,
+                expectedProducts);
+        verify(recipeEditInteractor).edit(expected);
+        verify(navigator).back();
+    }
+
+    @Test
+    public void formDataIsPersistedWhenRecreatingTwice() {
+        var recipe = getInputData();
+        var expectedIngredients = new ArrayList<>(recipe.ingredients());
+        expectedIngredients.add(RecipeIngredientEditFormData.create(-1, 3, 1, recipe.availableUnits().get(1), 1, recipe.availableFood().get(1)));
+        var expectedProducts = new ArrayList<>(recipe.products());
+        expectedProducts.add(RecipeProductEditFormData.create(-1, 3, 1, recipe.availableUnits().get(1), 1, recipe.availableFood().get(1)));
+
+        addFood(R.id.fragment_recipe_form_add_ingredient, R.id.fragment_recipe_form_ingredient_list, recipe.ingredients().size());
+        addFood(R.id.fragment_recipe_form_add_product, R.id.fragment_recipe_form_product_list, recipe.products().size());
+
+        scenario.recreate();
+        scenario.recreate();
+        scenario.onFragment(v -> v.onMenuItemSelected(menuItem(v.requireContext(), R.id.menu_check)));
+
+        var expected = RecipeEditForm.create(recipe.recipe(),
+                expectedIngredients,
+                expectedProducts);
         verify(recipeEditInteractor).edit(expected);
         verify(navigator).back();
     }

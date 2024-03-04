@@ -26,7 +26,7 @@ import de.njsm.stocks.client.business.entities.*;
 import de.njsm.stocks.client.databind.RecipeFoodAdapter;
 import de.njsm.stocks.client.databind.RecipeFoodViewHolder;
 
-import static de.njsm.stocks.client.business.ListSearcher.findFirstBy;
+import static de.njsm.stocks.client.business.ListSearcher.searchFirst;
 
 public class RecipeIngredientAddFoodAdapter extends RecipeFoodAdapter<RecipeIngredientToAdd> {
 
@@ -45,8 +45,8 @@ public class RecipeIngredientAddFoodAdapter extends RecipeFoodAdapter<RecipeIngr
     public void onBindViewHolder(@NonNull RecipeFoodViewHolder holder, int position) {
         RecipeIngredientToAdd data = list.get(position);
         holder.setAmount(data.amount());
-        holder.setSelectedFood(findFirstBy(foodForSelection, data.ingredient(), f -> f));
-        holder.setSelectedUnit(findFirstBy(unitsForSelection, data.unit(), u -> u));
+        searchFirst(this.foodForSelection, data.ingredient()).ifPresent(holder::setSelectedFood);
+        searchFirst(this.unitsForSelection, data.unit()).ifPresent(holder::setSelectedUnit);
         holder.setCallback(this::onItemEdit);
     }
 

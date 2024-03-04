@@ -28,7 +28,6 @@ import de.njsm.stocks.client.business.entities.conflict.ConflictData;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Function;
 import java.util.function.Predicate;
 
 public class ListSearcher {
@@ -42,9 +41,14 @@ public class ListSearcher {
                 .or(() -> key.original().flatMap(v -> searchFirst(list, v.id())));
     }
 
-    private static <E extends Entity<E>, T extends Id<E>>
+    public static <E extends Entity<E>, T extends Id<E>>
     Optional<Integer> searchFirst(List<T> list, int id) {
         return searchFirst(list, v -> v.id() == id);
+    }
+
+    public static <E extends Entity<E>, T extends Id<E>>
+    Optional<Integer> searchFirst(List<T> list, Id<E> id) {
+        return searchFirst(list, v -> v.id() == id.id());
     }
 
     private static <T> Optional<Integer> searchFirst(List<T> list, Predicate<T> predicate) {
@@ -73,11 +77,6 @@ public class ListSearcher {
     public static <E extends Entity<E>, T extends Id<E>>
     int findFirst(List<T> list, int id) {
         return searchFirst(list, v -> v.id() == id).orElseThrow(() -> new IllegalStateException("No matching item " + id + " found: " + list));
-    }
-
-    public static <E extends Entity<E>, T>
-    int findFirstBy(List<T> list, Id<E> id, Function<T, Id<E>> mapper) {
-        return searchFirst(list, v -> mapper.apply(v).id() == id.id()).orElseThrow(() -> new IllegalStateException("No matching item " + id.id() + " found: " + list));
     }
 
     public static <E extends Entity<E>, T extends Id<E>>

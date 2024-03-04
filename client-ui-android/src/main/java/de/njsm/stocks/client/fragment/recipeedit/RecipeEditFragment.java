@@ -27,10 +27,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.view.MenuProvider;
 import androidx.lifecycle.ViewModelProvider;
-import de.njsm.stocks.client.business.entities.Id;
-import de.njsm.stocks.client.business.entities.Recipe;
-import de.njsm.stocks.client.business.entities.RecipeEditBaseData;
-import de.njsm.stocks.client.business.entities.RecipeEditForm;
+import de.njsm.stocks.client.business.entities.*;
 import de.njsm.stocks.client.databind.RecipeForm;
 import de.njsm.stocks.client.fragment.BottomToolbarFragment;
 import de.njsm.stocks.client.navigation.RecipeEditNavigator;
@@ -39,6 +36,7 @@ import de.njsm.stocks.client.ui.R;
 import org.jetbrains.annotations.NotNull;
 
 import javax.inject.Inject;
+import java.io.Serializable;
 
 public class RecipeEditFragment extends BottomToolbarFragment implements MenuProvider {
 
@@ -64,8 +62,7 @@ public class RecipeEditFragment extends BottomToolbarFragment implements MenuPro
         recipeId = navigator.getRecipe(requireArguments());
 
         viewModel.get(recipeId).observe(getViewLifecycleOwner(), data -> {
-            ingredientAdapter = new RecipeIngredientEditFoodAdapter(data);
-            productAdapter = new RecipeProductEditFoodAdapter(data);
+            readSavedInstanceState(data, savedInstanceState);
 
             form.setName(data.recipe().name());
             form.setInstructions(data.recipe().instructions());
@@ -80,9 +77,30 @@ public class RecipeEditFragment extends BottomToolbarFragment implements MenuPro
         return root;
     }
 
+    private void readSavedInstanceState(RecipeEditFormData data, Bundle savedInstanceState) {
+        if (savedInstanceState != null) {
+            Serializable serializable = savedInstanceState.getSerializable(RECIPE);
+            if (serializable != null) {
+                savedInstanceState.putSerializable(RECIPE, null);
+                RecipeEditForm savedData = (RecipeEditForm) serializable;
+                form.setName(savedData.recipe().name());
+                form.setDuration(savedData.recipe().duration());
+                form.setInstructions(savedData.recipe().instructions());
+                ingredientAdapter = new RecipeIngredientEditFoodAdapter(data, savedData.ingredients());
+                productAdapter = new RecipeProductEditFoodAdapter(data, savedData.products());
+            } else {
+                ingredientAdapter = new RecipeIngredientEditFoodAdapter(data);
+                productAdapter = new RecipeProductEditFoodAdapter(data);
+            }
+        } else {
+            ingredientAdapter = new RecipeIngredientEditFoodAdapter(data);
+            productAdapter = new RecipeProductEditFoodAdapter(data);
+        }
+    }
+
 
     @Override
-    public void onCreateMenu(@NonNull @NotNull Menu menu, @NonNull @NotNull MenuInflater inflater) {
+    public void onCreateMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
         inflater.inflate(R.menu.check, menu);
     }
 
@@ -100,11 +118,25 @@ public class RecipeEditFragment extends BottomToolbarFragment implements MenuPro
                         form.getInstructions(),
                         form.getDuration()),
                 ingredientAdapter.get(),
-                productAdapter.get()
-        );
+                productAdapter.get());
         viewModel.submit(data);
         navigator.back();
         return true;
+    }
+
+    private static final String RECIPE = "RECIPE";
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putSerializable(RECIPE, RecipeEditForm.create(
+                RecipeEditBaseData.create(
+                        recipeId.id(),
+                        form.getName(),
+                        form.getInstructions(),
+                        form.getDuration()),
+                ingredientAdapter.get(),
+                productAdapter.get()));
     }
 
     @Inject

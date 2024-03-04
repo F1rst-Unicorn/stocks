@@ -26,11 +26,18 @@ import de.njsm.stocks.client.business.entities.*;
 import de.njsm.stocks.client.databind.RecipeFoodAdapter;
 import de.njsm.stocks.client.databind.RecipeFoodViewHolder;
 
+import java.util.List;
+
 public class RecipeProductEditFoodAdapter extends RecipeFoodAdapter<RecipeProductEditFormData> {
 
     public RecipeProductEditFoodAdapter(RecipeEditFormData data) {
         super(data.availableFood(), data.availableUnits());
         add(data.products());
+    }
+
+    public RecipeProductEditFoodAdapter(RecipeEditFormData data, List<RecipeProductEditFormData> list) {
+        super(data.availableFood(), data.availableUnits());
+        add(list);
     }
 
     public void add() {
