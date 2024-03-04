@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+### Fixed
+
+* Store form data when switching apps during recipe cooking, adding or editing
+  ([#93](https://j.njsm.de/git/veenj/stocks/issues/93)).
+
 ## [4.8.0.3]
 
 ### Fixed
