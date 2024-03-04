@@ -50,7 +50,8 @@ import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.isDescendantOfA;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
-import static de.njsm.stocks.client.Matchers.*;
+import static de.njsm.stocks.client.Matchers.recyclerView;
+import static de.njsm.stocks.client.Matchers.withImageDrawable;
 import static de.njsm.stocks.client.business.entities.IdImpl.create;
 import static de.njsm.stocks.client.fragment.Util.menuItem;
 import static org.hamcrest.Matchers.allOf;
@@ -148,6 +149,39 @@ public class RecipeCookFragmentTest {
         onView(allOf(isDescendantOfA(recyclerView(R.id.fragment_recipe_cook_ingredients).atPosition(0)),
                 recyclerView(R.id.item_recipe_item_amounts).atPositionOnView(0, R.id.item_amount_incrementor_plus)))
                 .perform(click());
+
+        onView(allOf(isDescendantOfA(recyclerView(R.id.fragment_recipe_cook_ingredients).atPosition(0)),
+                recyclerView(R.id.item_recipe_item_amounts).atPositionOnView(0, R.id.item_amount_incrementor_stock_counter)))
+                .check(matches(withText(unitRenderStrategy.render(ingredient.presentAmount().get(0).increase().scaleSelected()))));
+    }
+
+    @Test
+    public void formStateIsPersisted() {
+        var recipe = getInputData();
+        var ingredient = recipe.ingredients().get(0);
+
+        onView(allOf(isDescendantOfA(recyclerView(R.id.fragment_recipe_cook_ingredients).atPosition(0)),
+                recyclerView(R.id.item_recipe_item_amounts).atPositionOnView(0, R.id.item_amount_incrementor_plus)))
+                .perform(click());
+
+        scenario.recreate();
+
+        onView(allOf(isDescendantOfA(recyclerView(R.id.fragment_recipe_cook_ingredients).atPosition(0)),
+                recyclerView(R.id.item_recipe_item_amounts).atPositionOnView(0, R.id.item_amount_incrementor_stock_counter)))
+                .check(matches(withText(unitRenderStrategy.render(ingredient.presentAmount().get(0).increase().scaleSelected()))));
+    }
+
+    @Test
+    public void formStateIsPersistedWhenRestoringTwice() {
+        var recipe = getInputData();
+        var ingredient = recipe.ingredients().get(0);
+
+        onView(allOf(isDescendantOfA(recyclerView(R.id.fragment_recipe_cook_ingredients).atPosition(0)),
+                recyclerView(R.id.item_recipe_item_amounts).atPositionOnView(0, R.id.item_amount_incrementor_plus)))
+                .perform(click());
+
+        scenario.recreate();
+        scenario.recreate();
 
         onView(allOf(isDescendantOfA(recyclerView(R.id.fragment_recipe_cook_ingredients).atPosition(0)),
                 recyclerView(R.id.item_recipe_item_amounts).atPositionOnView(0, R.id.item_amount_incrementor_stock_counter)))

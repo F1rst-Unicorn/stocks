@@ -22,7 +22,9 @@
 package de.njsm.stocks.client.business.entities;
 
 import com.google.auto.value.AutoValue;
+import de.njsm.stocks.client.business.SearchRepository;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -32,7 +34,9 @@ import static java.math.BigDecimal.valueOf;
 import static java.util.stream.Collectors.toMap;
 
 @AutoValue
-public abstract class RecipeCookingFormDataIngredient {
+public abstract class RecipeCookingFormDataIngredient implements Serializable {
+
+    private static final long serialVersionUID = 1;
 
     public abstract IdImpl<Food> id();
 
@@ -74,7 +78,9 @@ public abstract class RecipeCookingFormDataIngredient {
     }
 
     @AutoValue
-    public static abstract class PresentAmount {
+    public abstract static class PresentAmount implements Serializable {
+
+        private static final long serialVersionUID = 1;
 
         public abstract Amount amount();
 
@@ -112,7 +118,9 @@ public abstract class RecipeCookingFormDataIngredient {
     }
 
     @AutoValue
-    public static abstract class Amount implements UnitAmount {
+    public abstract static class Amount implements UnitAmount, Serializable {
+
+        private static final long serialVersionUID = 1;
 
         public static Amount create(BigDecimal amount, String abbreviation) {
             return new AutoValue_RecipeCookingFormDataIngredient_Amount(amount, abbreviation);

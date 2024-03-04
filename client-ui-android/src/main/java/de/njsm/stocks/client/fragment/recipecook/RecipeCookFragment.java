@@ -32,8 +32,10 @@ import de.njsm.stocks.client.fragment.BottomToolbarFragment;
 import de.njsm.stocks.client.navigation.RecipeCookNavigator;
 import de.njsm.stocks.client.presenter.RecipeCookViewModel;
 import de.njsm.stocks.client.ui.R;
+import org.jetbrains.annotations.NotNull;
 
 import javax.inject.Inject;
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.stream.Collectors;
 
@@ -56,7 +58,14 @@ public class RecipeCookFragment extends BottomToolbarFragment implements MenuPro
         requireActivity().setTitle(R.string.title_cook_recipe);
 
         viewModel.get(recipeId).observe(getViewLifecycleOwner(), data -> {
-            var mergedRecipe = data.mergeFrom(form.getCurrentIngredients(), form.getCurrentProducts());
+            RecipeCookingFormData mergedRecipe;
+            if (savedInstanceState != null) {
+                mergedRecipe = readSavedData(savedInstanceState, data);
+            } else {
+                mergedRecipe = data;
+            }
+
+            mergedRecipe = mergedRecipe.mergeFrom(form.getCurrentIngredients(), form.getCurrentProducts());
             form.setIngredients(mergedRecipe.ingredients());
             form.setProducts(mergedRecipe.products());
         });
@@ -65,6 +74,18 @@ public class RecipeCookFragment extends BottomToolbarFragment implements MenuPro
         return root;
     }
 
+    private static RecipeCookingFormData readSavedData(
+            @NotNull Bundle savedInstanceState,
+            RecipeCookingFormData data) {
+        Serializable serializable = savedInstanceState.getSerializable(RECIPE);
+        if (serializable != null) {
+            savedInstanceState.putSerializable(RECIPE, null);
+            RecipeCookingFormData savedData = (RecipeCookingFormData) serializable;
+            return data.mergeFrom(savedData.ingredients(), savedData.products());
+        } else {
+            return data;
+        }
+    }
 
     @Override
     public void onCreateMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
@@ -86,6 +107,17 @@ public class RecipeCookFragment extends BottomToolbarFragment implements MenuPro
 
         navigator.back();
         return true;
+    }
+
+    private static final String RECIPE = "RECIPE";
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putSerializable(RECIPE, RecipeCookingFormData.create(
+                "",
+                form.getCurrentIngredients(),
+                form.getCurrentProducts()));
     }
 
     @Inject

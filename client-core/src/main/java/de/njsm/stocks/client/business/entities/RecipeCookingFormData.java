@@ -23,13 +23,16 @@ package de.njsm.stocks.client.business.entities;
 
 import com.google.auto.value.AutoValue;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toMap;
 
 @AutoValue
-public abstract class RecipeCookingFormData {
+public abstract class RecipeCookingFormData implements Serializable {
+
+    private static final long serialVersionUID = 1;
 
     public abstract String name();
 

@@ -23,8 +23,12 @@ package de.njsm.stocks.client.business.entities;
 
 import com.google.auto.value.AutoValue;
 
+import java.io.Serializable;
+
 @AutoValue
-public abstract class IdImpl<T extends Entity<T>> implements Id<T> {
+public abstract class IdImpl<T extends Entity<T>> implements Id<T>, Serializable {
+
+    private static final long serialVersionUID = 1;
 
     public long longId() {
         return id();

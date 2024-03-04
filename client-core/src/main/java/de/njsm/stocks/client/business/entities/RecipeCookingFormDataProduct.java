@@ -23,12 +23,15 @@ package de.njsm.stocks.client.business.entities;
 
 import com.google.auto.value.AutoValue;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 
 import static de.njsm.stocks.client.business.entities.IdImpl.from;
 
 @AutoValue
-public abstract class RecipeCookingFormDataProduct {
+public abstract class RecipeCookingFormDataProduct implements Serializable {
+
+    private static final long serialVersionUID = 1;
 
     public abstract IdImpl<Food> id();
 
@@ -58,7 +61,9 @@ public abstract class RecipeCookingFormDataProduct {
     }
 
     @AutoValue
-    public static abstract class Amount implements UnitAmount {
+    public abstract static class Amount implements UnitAmount, Serializable {
+
+        private static final long serialVersionUID = 1;
 
         public abstract IdImpl<ScaledUnit> id();
 
