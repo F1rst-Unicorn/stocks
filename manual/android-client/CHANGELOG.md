@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+### Added
+
+* Clicking on an ingredient or product when cooking a recipe shows its food
+  details
+  ([#44](https://j.njsm.de/git/veenj/stocks/issues/44)).
+
 ## [4.8.0.4]
 
 ### Fixed

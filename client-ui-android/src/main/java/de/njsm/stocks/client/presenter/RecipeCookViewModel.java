@@ -28,6 +28,7 @@ import de.njsm.stocks.client.business.RecipeCookInteractor;
 import de.njsm.stocks.client.business.entities.*;
 
 import javax.inject.Inject;
+import java.util.Optional;
 
 public class RecipeCookViewModel extends ViewModel {
 
@@ -36,6 +37,8 @@ public class RecipeCookViewModel extends ViewModel {
     private final FoodToBuyInteractor foodToBuyInteractor;
 
     private final ObservableDataCache<RecipeCookingFormData> data;
+
+    private Optional<RecipeCookingFormData> preserved = Optional.empty();
 
     @Inject
     RecipeCookViewModel(RecipeCookInteractor interactor, FoodToBuyInteractor foodToBuyInteractor, ObservableDataCache<RecipeCookingFormData> data) {
@@ -54,5 +57,16 @@ public class RecipeCookViewModel extends ViewModel {
 
     public void cookRecipe(RecipeCookingForm recipeCookingForm) {
         interactor.cook(recipeCookingForm);
+    }
+
+    public void preserve(RecipeCookingFormData preserved) {
+        this.preserved = Optional.of(preserved);
+    }
+
+    public Optional<RecipeCookingFormData> getPreserved(IdImpl<Recipe> recipeId) {
+        var result = preserved;
+        preserved = Optional.empty();
+        return result
+                .filter(v -> v.id().equals(recipeId));
     }
 }

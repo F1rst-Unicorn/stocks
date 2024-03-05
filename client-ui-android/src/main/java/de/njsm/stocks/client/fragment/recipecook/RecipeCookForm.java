@@ -44,16 +44,17 @@ class RecipeCookForm {
 
     private final TextView productsHeadline;
 
-    RecipeCookForm(View root, Consumer<IdImpl<Food>> toBuyCallback) {
+    RecipeCookForm(View root, Consumer<IdImpl<Food>> toBuyCallback,
+                   Consumer<IdImpl<Food>> showFoodCallback) {
         ingredientHeadline = root.findViewById(R.id.fragment_recipe_cook_label_ingredients);
         productsHeadline = root.findViewById(R.id.fragment_recipe_cook_label_products);
         RecyclerView ingredients = root.findViewById(R.id.fragment_recipe_cook_ingredients);
-        ingredientAdapter = new RecipeIngredientAdapter(toBuyCallback);
+        ingredientAdapter = new RecipeIngredientAdapter(toBuyCallback, showFoodCallback);
         ingredients.setLayoutManager(new LinearLayoutManager(root.getContext()));
         ingredients.setAdapter(ingredientAdapter);
 
         RecyclerView products = root.findViewById(R.id.fragment_recipe_cook_products);
-        productAdapter = new RecipeProductAdapter();
+        productAdapter = new RecipeProductAdapter(showFoodCallback);
         products.setLayoutManager(new LinearLayoutManager(root.getContext()));
         products.setAdapter(productAdapter);
 

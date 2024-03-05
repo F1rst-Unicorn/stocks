@@ -22,10 +22,13 @@
 package de.njsm.stocks.client.navigation;
 
 import android.os.Bundle;
+import de.njsm.stocks.client.business.entities.Food;
 import de.njsm.stocks.client.business.entities.IdImpl;
 import de.njsm.stocks.client.business.entities.Recipe;
 
 public interface RecipeCookNavigator extends Navigator {
 
     IdImpl<Recipe> getRecipe(Bundle args);
+
+    void showFood(IdImpl<Food> food);
 }

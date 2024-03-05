@@ -50,8 +50,11 @@ class RecipeIngredientAdapter extends RecyclerView.Adapter<RecipeIngredientViewH
 
     private final Consumer<IdImpl<Food>> toBuyCallback;
 
-    RecipeIngredientAdapter(Consumer<IdImpl<Food>> toBuyCallback) {
+    private final Consumer<IdImpl<Food>> showFoodCallback;
+
+    RecipeIngredientAdapter(Consumer<IdImpl<Food>> toBuyCallback, Consumer<IdImpl<Food>> showFoodCallback) {
         this.toBuyCallback = toBuyCallback;
+        this.showFoodCallback = showFoodCallback;
         unitAmountRenderStrategy = new UnitAmountRenderStrategy();
     }
 
@@ -102,6 +105,7 @@ class RecipeIngredientAdapter extends RecyclerView.Adapter<RecipeIngredientViewH
         holder.setToBuy(item.toBuy());
         holder.setAmounts(item.presentAmount());
         holder.setToBuyCallback(__ -> toBuyCallback.accept(item.id()));
+        holder.setShowFoodCallback(__ -> showFoodCallback.accept(item.id()));
     }
 
     @Override

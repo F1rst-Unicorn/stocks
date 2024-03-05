@@ -88,6 +88,7 @@ class RecipeCookInteractorImplTest {
         var actual = uut.getData(recipeId);
 
         actual.test().assertValue(RecipeCookingFormData.create(
+                recipe.id(),
                 recipe.name(),
                 List.of(RecipeCookingFormDataIngredient.create(
                         requiredIngredient.food(),
@@ -110,6 +111,7 @@ class RecipeCookInteractorImplTest {
         var actual = uut.getData(recipeId);
 
         actual.test().assertValue(RecipeCookingFormData.create(
+                recipe.id(),
                 recipe.name(),
                 List.of(RecipeCookingFormDataIngredient.create(
                         presentIngredient.ofType(),
@@ -135,6 +137,7 @@ class RecipeCookInteractorImplTest {
         var actual = uut.getData(recipeId);
 
         actual.test().assertValue(RecipeCookingFormData.create(
+                recipe.id(),
                 recipe.name(),
                 List.of(RecipeCookingFormDataIngredient.create(
                         secondRequiredIngredient.food(),
@@ -164,6 +167,7 @@ class RecipeCookInteractorImplTest {
         var actual = uut.getData(recipeId);
 
         actual.test().assertValue(RecipeCookingFormData.create(
+                recipe.id(),
                 recipe.name(),
                 List.of(RecipeCookingFormDataIngredient.create(
                         requiredIngredient.food(),

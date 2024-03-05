@@ -156,6 +156,17 @@ public class RecipeCookFragmentTest {
     }
 
     @Test
+    public void pressingIngredientNavigates() {
+        var recipe = getInputData();
+        var ingredient = recipe.ingredients().get(0);
+
+        onView(recyclerView(R.id.fragment_recipe_cook_ingredients).atPositionOnView(0, R.id.item_recipe_item_food_name))
+                .perform(click());
+
+        verify(navigator).showFood(ingredient.id());
+    }
+
+    @Test
     public void formStateIsPersisted() {
         var recipe = getInputData();
         var ingredient = recipe.ingredients().get(0);
@@ -279,6 +290,7 @@ public class RecipeCookFragmentTest {
     @NotNull
     private static RecipeCookingFormData getInputData() {
         return RecipeCookingFormData.create(
+                create(1),
                 "Pizza",
                 List.of(
                         RecipeCookingFormDataIngredient.create(

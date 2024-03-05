@@ -22,9 +22,11 @@
 package de.njsm.stocks.client.navigation;
 
 import android.os.Bundle;
+import de.njsm.stocks.client.business.entities.Food;
 import de.njsm.stocks.client.business.entities.IdImpl;
 import de.njsm.stocks.client.business.entities.Recipe;
 import de.njsm.stocks.client.fragment.recipecook.RecipeCookFragmentArgs;
+import de.njsm.stocks.client.fragment.recipecook.RecipeCookFragmentDirections;
 
 import javax.inject.Inject;
 
@@ -38,5 +40,11 @@ class RecipeCookNavigatorImpl extends BaseNavigator implements RecipeCookNavigat
     @Override
     public IdImpl<Recipe> getRecipe(Bundle args) {
         return IdImpl.create(RecipeCookFragmentArgs.fromBundle(args).getId());
+    }
+
+    @Override
+    public void showFood(IdImpl<Food> food) {
+        var directions = RecipeCookFragmentDirections.actionNavFragmentRecipeCookToNavFragmentFoodItemList(food.id());
+        getNavigationArgConsumer().navigate(directions);
     }
 }

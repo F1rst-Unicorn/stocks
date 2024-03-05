@@ -21,13 +21,12 @@
 
 package de.njsm.stocks.client.business;
 
-import de.njsm.stocks.client.business.entities.IdImpl;
-import de.njsm.stocks.client.business.entities.Recipe;
-import de.njsm.stocks.client.business.entities.RecipeCookingForm;
-import de.njsm.stocks.client.business.entities.RecipeCookingFormData;
+import de.njsm.stocks.client.business.entities.*;
 import io.reactivex.rxjava3.core.Observable;
 
 import javax.inject.Inject;
+import java.math.BigDecimal;
+import java.util.List;
 
 class InMemoryRecipeCookInteractorImpl implements RecipeCookInteractor {
 
@@ -37,7 +36,22 @@ class InMemoryRecipeCookInteractorImpl implements RecipeCookInteractor {
 
     @Override
     public Observable<RecipeCookingFormData> getData(IdImpl<Recipe> recipeId) {
-        return Observable.empty();
+        return Observable.just(RecipeCookingFormData.create(
+                IdImpl.create(1),
+                "Pizza",
+                List.of(RecipeCookingFormDataIngredient.create(
+                        IdImpl.create(2),
+                        "Cheese",
+                        false,
+                        List.of(RecipeCookingFormDataIngredient.Amount.create(BigDecimal.TEN, "g")),
+                        List.of(RecipeCookingFormDataIngredient.PresentAmount.create(
+                                RecipeCookingFormDataIngredient.Amount.create(BigDecimal.TEN, "g"),
+                                IdImpl.create(3),
+                                4, 2
+                        ))
+                )),
+                List.of()
+        ));
     }
 
     @Override

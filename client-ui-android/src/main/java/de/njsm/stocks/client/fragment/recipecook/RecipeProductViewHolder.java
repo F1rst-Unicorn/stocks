@@ -64,6 +64,10 @@ class RecipeProductViewHolder extends RecyclerView.ViewHolder {
         this.adapter.setData(amounts);
     }
 
+    void setShowFoodCallback(View.OnClickListener callback) {
+        this.itemView.setOnClickListener(callback);
+    }
+
     interface ButtonCallback {
         void onClicked(RecipeProductViewHolder viewHolder);
     }

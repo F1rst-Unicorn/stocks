@@ -89,7 +89,7 @@ class RecipeCookInteractorImpl implements RecipeCookInteractor {
                 .map(v -> toFormDataIngredient(presentIngredientsByFood.getOrDefault(v.get(0).food(), emptyList()), v))
                 .collect(toList());
 
-        return RecipeCookingFormData.create(recipe.name(), formDataIngredients, products);
+        return RecipeCookingFormData.create(recipe.id(), recipe.name(), formDataIngredients, products);
     }
 
     private RecipeCookingFormDataIngredient toFormDataIngredient(List<FoodItemForCooking> presentFoodItemsOfThisIngredient, List<RecipeIngredientForCooking> ingredientAmounts) {

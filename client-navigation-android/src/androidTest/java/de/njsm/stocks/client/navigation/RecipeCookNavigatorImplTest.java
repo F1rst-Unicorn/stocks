@@ -22,17 +22,27 @@
 package de.njsm.stocks.client.navigation;
 
 import android.os.Bundle;
+import de.njsm.stocks.client.business.entities.Food;
 import de.njsm.stocks.client.business.entities.Id;
+import de.njsm.stocks.client.business.entities.IdImpl;
 import de.njsm.stocks.client.business.entities.Recipe;
+import de.njsm.stocks.client.fragment.recipecook.RecipeCookFragmentDirections;
+import org.junit.Before;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 
 public class RecipeCookNavigatorImplTest extends NavigationTest {
 
+    private RecipeCookNavigatorImpl uut;
+
+    @Before
+    public void setup() {
+        uut = new RecipeCookNavigatorImpl(navigationArgConsumer);
+    }
+
     @Test
     public void argumentIsExtracted() {
-        RecipeCookNavigatorImpl uut = new RecipeCookNavigatorImpl(navigationArgConsumer);
         Bundle input = new Bundle();
         int expected = 42;
         input.putInt("id", expected);
@@ -40,5 +50,15 @@ public class RecipeCookNavigatorImplTest extends NavigationTest {
         Id<Recipe> actual = uut.getRecipe(input);
 
         assertEquals(expected, actual.id());
+    }
+
+    @Test
+    public void showingFoodContentBindsCorrectly() {
+        IdImpl<Food> expected = IdImpl.create(42);
+
+        uut.showFood(expected);
+
+        RecipeCookFragmentDirections.ActionNavFragmentRecipeCookToNavFragmentFoodItemList actual = navigationArgConsumer.getLastArgument(RecipeCookFragmentDirections.ActionNavFragmentRecipeCookToNavFragmentFoodItemList.class);
+        assertEquals(expected.id(), actual.getFoodId());
     }
 }

@@ -34,14 +34,16 @@ public abstract class RecipeCookingFormData implements Serializable {
 
     private static final long serialVersionUID = 1;
 
+    public abstract IdImpl<Recipe> id();
+
     public abstract String name();
 
     public abstract List<RecipeCookingFormDataIngredient> ingredients();
 
     public abstract List<RecipeCookingFormDataProduct> products();
 
-    public static RecipeCookingFormData create(String name, List<RecipeCookingFormDataIngredient> ingredients, List<RecipeCookingFormDataProduct> products) {
-        return new AutoValue_RecipeCookingFormData(name, ingredients, products);
+    public static RecipeCookingFormData create(IdImpl<Recipe> id, String name, List<RecipeCookingFormDataIngredient> ingredients, List<RecipeCookingFormDataProduct> products) {
+        return new AutoValue_RecipeCookingFormData(id, name, ingredients, products);
     }
 
     /**
@@ -54,7 +56,7 @@ public abstract class RecipeCookingFormData implements Serializable {
         var productsByFood = products.stream()
                 .collect(toMap(RecipeCookingFormDataProduct::id, v -> v));
 
-        return create(name(),
+        return create(id(), name(),
                 ingredients().stream().map(v -> v.mergeFrom(ingredientsByFood.get(v.id()))).collect(Collectors.toList()),
                 products().stream().map(v -> v.mergeFrom(productsByFood.get(v.id()))).collect(Collectors.toList()));
     }

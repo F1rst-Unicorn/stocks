@@ -28,11 +28,14 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 import com.google.common.collect.Lists;
+import de.njsm.stocks.client.business.entities.Food;
+import de.njsm.stocks.client.business.entities.IdImpl;
 import de.njsm.stocks.client.business.entities.RecipeCookingFormDataProduct;
 import de.njsm.stocks.client.presenter.UnitAmountRenderStrategy;
 import de.njsm.stocks.client.ui.R;
 
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 import static de.njsm.stocks.client.fragment.util.ListDiffer.byNestedId;
@@ -44,7 +47,10 @@ class RecipeProductAdapter extends RecyclerView.Adapter<RecipeProductViewHolder>
 
     private final UnitAmountRenderStrategy unitAmountRenderStrategy;
 
-    RecipeProductAdapter() {
+    private final Consumer<IdImpl<Food>> showFoodCallback;
+
+    RecipeProductAdapter(Consumer<IdImpl<Food>> showFoodCallback) {
+        this.showFoodCallback = showFoodCallback;
         unitAmountRenderStrategy = new UnitAmountRenderStrategy();
     }
 
@@ -88,6 +94,7 @@ class RecipeProductAdapter extends RecyclerView.Adapter<RecipeProductViewHolder>
         holder.setFoodName(item.name());
         holder.setRecipeAmounts(unitAmountRenderStrategy.render(item.producedAmount()));
         holder.setAmounts(List.of(item.producedAmount()));
+        holder.setShowFoodCallback(__ -> showFoodCallback.accept(item.id()));
     }
 
     @Override

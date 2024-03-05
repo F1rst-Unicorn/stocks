@@ -32,11 +32,10 @@ import de.njsm.stocks.client.fragment.BottomToolbarFragment;
 import de.njsm.stocks.client.navigation.RecipeCookNavigator;
 import de.njsm.stocks.client.presenter.RecipeCookViewModel;
 import de.njsm.stocks.client.ui.R;
-import org.jetbrains.annotations.NotNull;
 
 import javax.inject.Inject;
-import java.io.Serializable;
 import java.util.Collection;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class RecipeCookFragment extends BottomToolbarFragment implements MenuProvider {
@@ -47,49 +46,52 @@ public class RecipeCookFragment extends BottomToolbarFragment implements MenuPro
 
     private RecipeCookForm form;
 
+    private IdImpl<Recipe> recipeId;
+
     @Override
     @NonNull
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View root = super.onCreateView(inflater, container, savedInstanceState);
 
         View view = insertContent(inflater, root, R.layout.fragment_recipe_cook);
-        form = new RecipeCookForm(view, viewModel::putFoodToBuy);
-        IdImpl<Recipe> recipeId = navigator.getRecipe(requireArguments());
+        form = new RecipeCookForm(view, viewModel::putFoodToBuy, this::showFood);
+        recipeId = navigator.getRecipe(requireArguments());
         requireActivity().setTitle(R.string.title_cook_recipe);
 
-        viewModel.get(recipeId).observe(getViewLifecycleOwner(), data -> {
-            RecipeCookingFormData mergedRecipe;
-            if (savedInstanceState != null) {
-                mergedRecipe = readSavedData(savedInstanceState, data);
-            } else {
-                mergedRecipe = data;
-            }
-
-            mergedRecipe = mergedRecipe.mergeFrom(form.getCurrentIngredients(), form.getCurrentProducts());
-            form.setIngredients(mergedRecipe.ingredients());
-            form.setProducts(mergedRecipe.products());
-        });
-
+        readSavedData(savedInstanceState).ifPresent(this::handleNewData);
+        viewModel.getPreserved(recipeId).ifPresent(this::handleNewData);
+        viewModel.get(recipeId).observe(getViewLifecycleOwner(), this::handleNewData);
         requireActivity().addMenuProvider(this, getViewLifecycleOwner());
         return root;
     }
 
-    private static RecipeCookingFormData readSavedData(
-            @NotNull Bundle savedInstanceState,
-            RecipeCookingFormData data) {
-        Serializable serializable = savedInstanceState.getSerializable(RECIPE);
-        if (serializable != null) {
-            savedInstanceState.putSerializable(RECIPE, null);
-            RecipeCookingFormData savedData = (RecipeCookingFormData) serializable;
-            return data.mergeFrom(savedData.ingredients(), savedData.products());
-        } else {
-            return data;
-        }
+    private void handleNewData(RecipeCookingFormData data) {
+        data = data.mergeFrom(form.getCurrentIngredients(), form.getCurrentProducts());
+        form.setIngredients(data.ingredients());
+        form.setProducts(data.products());
+    }
+
+    private static Optional<RecipeCookingFormData> readSavedData(@Nullable Bundle savedInstanceState) {
+        return Optional.ofNullable(savedInstanceState)
+                .map(v -> (RecipeCookingFormData) v.getSerializable(RECIPE))
+                .map(v -> {
+                    savedInstanceState.putSerializable(RECIPE, null);
+                    return v;
+                });
     }
 
     @Override
     public void onCreateMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
         inflater.inflate(R.menu.check, menu);
+    }
+
+    private void showFood(IdImpl<Food> food) {
+        viewModel.preserve(RecipeCookingFormData.create(
+                recipeId,
+                "",
+                form.getCurrentIngredients(),
+                form.getCurrentProducts()));
+        navigator.showFood(food);
     }
 
     @Override
@@ -113,8 +115,8 @@ public class RecipeCookFragment extends BottomToolbarFragment implements MenuPro
 
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
-        super.onSaveInstanceState(outState);
         outState.putSerializable(RECIPE, RecipeCookingFormData.create(
+                recipeId,
                 "",
                 form.getCurrentIngredients(),
                 form.getCurrentProducts()));
