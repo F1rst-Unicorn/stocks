@@ -112,7 +112,7 @@ public class SetupTest {
 
     public static KeyPair generateKeyPair() throws NoSuchAlgorithmException {
         KeyPairGenerator gen = KeyPairGenerator.getInstance("RSA");
-        gen.initialize(1024);
+        gen.initialize(2048);
         return gen.generateKeyPair();
     }
 
