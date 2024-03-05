@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## [4.8.0.4]
+
 ### Fixed
 
 * Store form data when switching apps during recipe cooking, adding or editing
