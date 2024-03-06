@@ -66,8 +66,11 @@ public class HistoryFragment extends BottomToolbarFragment {
                 this::getString);
         templateSwipeList.initialiseList(requireContext(), adapter);
         RecyclerView activityFeed = listRoot.findViewById(R.id.template_swipe_list_list);
-        getActivityFeed().observe(getViewLifecycleOwner(), v -> {
+        adapter.addLoadStateListener(__ -> {
             activityFeed.scrollToPosition(0);
+            return null;
+        });
+        getActivityFeed().observe(getViewLifecycleOwner(), v -> {
             adapter.submitData(getLifecycle(), v);
             templateSwipeList.setList();
         });

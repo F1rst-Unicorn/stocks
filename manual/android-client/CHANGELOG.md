@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+### Fixed
+
+* The activity feed now scrolls to top on new events
+  ([#96](https://j.njsm.de/git/veenj/stocks/issues/96)).
+
 ### Added
 
 * Clicking on an ingredient or product when cooking a recipe shows its food

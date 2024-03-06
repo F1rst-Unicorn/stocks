@@ -86,10 +86,11 @@ public class OutlineFragment extends BottomToolbarFragment implements MenuProvid
                 localiser,
                 this::getString);
         activityFeed.setAdapter(adapter);
-        outlineViewModel.getActivityFeed().observe(getViewLifecycleOwner(), v -> {
+        adapter.addLoadStateListener(__ -> {
             activityFeed.scrollToPosition(0);
-            adapter.submitData(getLifecycle(), v);
+            return null;
         });
+        outlineViewModel.getActivityFeed().observe(getViewLifecycleOwner(), v -> adapter.submitData(getLifecycle(), v));
 
         requireActivity().addMenuProvider(this, getViewLifecycleOwner());
 
