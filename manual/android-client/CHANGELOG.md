@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## [4.9.0.0]
+
 ### Fixed
 
 * The activity feed now scrolls to top on new events
