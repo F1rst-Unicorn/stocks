@@ -136,7 +136,7 @@ object Build : BuildType({
         gradle {
             name = "Assemble new module system"
             tasks = "check test connectedCheck assemble"
-            buildFile = "build.gradle"
+            buildFile = "build.gradle.kts"
             gradleHome = "/usr/bin/gradle"
             gradleWrapperPath = "."
             enableStacktrace = true
