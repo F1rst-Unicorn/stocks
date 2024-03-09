@@ -38,8 +38,8 @@ if git tag | grep "android-client-$VERSION" >/dev/null ; then
 fi
 
 echo Patching version number
-sed -i "s/versionName .*/versionName \"$VERSION\"/g" \
-        "$STOCKS_ROOT"/client-app-android/build.gradle
+sed -i "s/versionName .*/versionName = \"$VERSION\"/g" \
+        "$STOCKS_ROOT"/client-app-android/build.gradle.kts
 
 sed -i -e "/## Unreleased/a ## [$VERSION]" -e "/## Unreleased/G" \
         "$STOCKS_ROOT/manual/android-client/CHANGELOG.md"
