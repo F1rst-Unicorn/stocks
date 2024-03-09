@@ -3,10 +3,9 @@ plugins {
 }
 
 android {
-    compileSdk = 33
+    compileSdk = 34
     defaultConfig {
         minSdk = 24
-        targetSdk = 33
         multiDexEnabled = true
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
@@ -28,13 +27,14 @@ android {
     }
 
     testOptions {
+        targetSdk = 34
         animationsDisabled = true
         unitTests {
             isIncludeAndroidResources = true
         }
     }
 
-    packagingOptions {
+    packaging {
         resources {
             excludes += listOf(
                 "META-INF/DEPENDENCIES.txt",
@@ -54,6 +54,7 @@ android {
     }
 
     lint {
+        targetSdk = 34
         abortOnError = false
         checkAllWarnings = true
         baseline = project.rootProject.file("config/android-lint/lint.xml")

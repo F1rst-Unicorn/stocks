@@ -23,10 +23,10 @@ plugins {
 }
 
 android {
-    compileSdk = 33
+    compileSdk = 34
     defaultConfig {
         minSdk = 24
-        targetSdk = 33
+        targetSdk = 34
         multiDexEnabled = true
         testInstrumentationRunner = "de.njsm.stocks.client.TestRunner"
 
@@ -69,7 +69,7 @@ android {
         }
     }
 
-    packagingOptions {
+    packaging {
         resources {
             excludes += listOf(
                 "META-INF/DEPENDENCIES.txt",
