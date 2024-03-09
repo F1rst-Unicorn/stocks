@@ -16,17 +16,3 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-
-rootProject.name = 'stocks'
-
-include ':client-app-android'
-include ':client-core'
-include ':client-crypto'
-include ':client-database-android'
-include ':client-fakes'
-include ':client-fakes-android'
-include ':client-navigation-android'
-include ':client-network'
-include ':client-settings-android'
-include ':client-ui-android'
-include ':common'

@@ -1,0 +1,98 @@
+[versions]
+android-gradle-plugin = "7.2.2"
+android-navigation = "2.6.0"
+android-paging = "3.1.1"
+android-room = "2.5.2"
+autovalue = "1.10.1"
+bouncycastle = "1.70"
+dagger = "2.44"
+hamcrest = "2.2"
+jackson = "2.13.1"
+log4j = "2.17.2"
+mockito = "4.8.0"
+retrofit = "2.9.0"
+kotlin = "1.8.0"
+
+[libraries]
+android-application = { module = "com.android.application:com.android.application.gradle.plugin", version.ref = "android-gradle-plugin"}
+android-coordinatorlayout = "androidx.coordinatorlayout:coordinatorlayout:1.2.0"
+android-core-common = "androidx.arch.core:core-common:2.2.0"
+android-core-runtime = "androidx.arch.core:core-common:2.2.0"
+android-core-testing = "androidx.arch.core:core-testing:2.2.0"
+android-desugar = "com.android.tools:desugar_jdk_libs:1.1.6"
+android-espresso = "androidx.test.espresso:espresso-core:3.5.1"
+android-espresso-contrib = "androidx.test.espresso:espresso-contrib:3.5.1"
+android-espresso-intent = "androidx.test.espresso:espresso-intents:3.5.1"
+android-gradle-plugin = { module = "com.android.tools.build:gradle", version.ref = "android-gradle-plugin" }
+android-library = { module = "com.android.library:com.android.library.gradle.plugin", version.ref = "android-gradle-plugin"}
+android-lifecycle-extensions = "androidx.lifecycle:lifecycle-extensions:2.2.0"
+android-lifecycle-reactivestreams = "androidx.lifecycle:lifecycle-reactivestreams:2.6.1"
+android-lifecycle-viewmodel = "androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.1"
+android-material = "com.google.android.material:material:1.9.0"
+android-navigation-fragment = { module = "androidx.navigation:navigation-fragment", version.ref = "android-navigation" }
+android-navigation-safeargs = "androidx.navigation:navigation-safe-args-gradle-plugin:2.7.7"
+android-navigation-ui = { module = "androidx.navigation:navigation-ui", version.ref = "android-navigation" }
+android-paging-runtime = { module = "androidx.paging:paging-runtime", version.ref = "android-paging" }
+android-paging-rxjava = { module = "androidx.paging:paging-rxjava3", version.ref = "android-paging" }
+android-preference = "androidx.preference:preference:1.2.0"
+android-room = { module = "androidx.room:room-runtime", version.ref = "android-room" }
+android-recyclerview = "androidx.recyclerview:recyclerview:1.3.0"
+android-room-processor = { module = "androidx.room:room-compiler", version.ref = "android-room" }
+android-room-rxjava3 = { module = "androidx.room:room-rxjava3", version.ref = "android-room" }
+android-room-testing = { module = "androidx.room:room-testing", version.ref = "android-room" }
+android-sqlite = "com.github.requery:sqlite-android:3.42.0"
+android-swiperefreshlayout = "androidx.swiperefreshlayout:swiperefreshlayout:1.1.0"
+android-test-fragment = "androidx.fragment:fragment-testing:1.6.0"
+android-test-junit = "androidx.test.ext:junit:1.1.5"
+android-test-rules = "androidx.test:rules:1.5.0"
+android-test-runner = "androidx.test:runner:1.5.2"
+autovalue = { module = "com.google.auto.value:auto-value-annotations", version.ref = "autovalue"}
+autovalue-processor = { module = "com.google.auto.value:auto-value", version.ref = "autovalue" }
+bouncycastle-pkix = { module = "org.bouncycastle:bcpkix-jdk15on", version.ref = "bouncycastle" }
+bouncycastle-prov = { module = "org.bouncycastle:bcprov-jdk15on", version.ref = "bouncycastle" }
+dagger = { module = "com.google.dagger:dagger", version.ref = "dagger" }
+dagger-android = { module = "com.google.dagger:dagger-android", version.ref = "dagger" }
+dagger-android-processor = { module = "com.google.dagger:dagger-android-processor", version.ref = "dagger" }
+dagger-android-support = { module = "com.google.dagger:dagger-android-support", version.ref = "dagger" }
+dagger-processor = { module = "com.google.dagger:dagger-compiler", version.ref = "dagger" }
+functionaljava = "org.functionaljava:functionaljava-java8:4.8.1"
+guava = "com.google.guava:guava:31.1-jre"
+hamcrest = { module = "org.hamcrest:hamcrest", version.ref = "hamcrest" }
+hamcrest-core = { module = "org.hamcrest:hamcrest-core", version.ref = "hamcrest" }
+inject = "javax.inject:javax.inject:1"
+jackson-annotations = { module = "com.fasterxml.jackson.core:jackson-annotations", version.ref = "jackson" }
+jackson-databind = { module = "com.fasterxml.jackson.core:jackson-databind", version.ref = "jackson" }
+jackson-datatype-jdk8 = { module = "com.fasterxml.jackson.datatype:jackson-datatype-jdk8", version.ref = "jackson" }
+jakarta-ws-rs = "jakarta.ws.rs:jakarta.ws.rs-api:2.1.6"
+junit4 = "junit:junit:4.13.2"
+junit5 = "org.junit.jupiter:junit-jupiter:5.9.0"
+kotlin-jdk7 = { module = "org.jetbrains.kotlin:kotlin-stdlib-jdk7", version.ref = "kotlin" }
+kotlin-jdk8 = { module = "org.jetbrains.kotlin:kotlin-stdlib-jdk8", version.ref = "kotlin" }
+log4j-api = { module = "org.apache.logging.log4j:log4j-api", version.ref = "log4j" }
+log4j-core = { module = "org.apache.logging.log4j:log4j-core", version.ref = "log4j" }
+log4j-slf4j-impl = { module = "org.apache.logging.log4j:log4j-slf4j-impl", version.ref = "log4j" }
+log4j-web = { module = "org.apache.logging.log4j:log4j-web", version.ref = "log4j" }
+mockito = { module = "org.mockito:mockito-core", version.ref = "mockito" }
+mockito-android = { module = "org.mockito:mockito-android", version.ref = "mockito" }
+mockito-junit5 = { module = "org.mockito:mockito-junit-jupiter", version.ref = "mockito" }
+mpandroidchart = "com.github.PhilJay:MPAndroidChart:v3.1.0"
+retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit"}
+retrofit-converter-jackson = { module = "com.squareup.retrofit2:converter-jackson", version.ref = "retrofit"}
+retrofit-converter-scalars = { module = "com.squareup.retrofit2:converter-scalars", version.ref = "retrofit"}
+rxjava = "io.reactivex.rxjava3:rxjava:3.1.5"
+rxjava-android = "io.reactivex.rxjava3:rxandroid:3.0.0"
+slf4j = "org.slf4j:slf4j-api:1.7.36"
+slf4j-android = "uk.uuid.slf4j:slf4j-android:1.7.36-0"
+zxing = "com.google.zxing:core:3.4.0"
+zxing-android = "com.journeyapps:zxing-android-embedded:4.3.0"
+
+[bundles]
+android-navigation = ["android-navigation-ui", "android-navigation-fragment"]
+android-test = ["android-core-testing", "android-test-junit", "android-test-runner"]
+bouncycastle = ["bouncycastle-prov", "bouncycastle-pkix"]
+dagger-android = ["dagger", "dagger-android", "dagger-android-support"]
+hamcrest = ["hamcrest", "hamcrest-core"]
+jackson = ["jackson-annotations", "jackson-databind"]
+log4j = ["log4j-api", "log4j-core", "log4j-web", "log4j-slf4j-impl"]
+retrofit = ["retrofit", "retrofit-converter-jackson", "retrofit-converter-scalars"]
+zxing = ["zxing", "zxing-android"]
