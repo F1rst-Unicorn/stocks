@@ -21,14 +21,14 @@ package de.njsm.stocks.server.v2.business.data;
 
 import com.google.auto.value.AutoValue;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 @AutoValue
 public abstract class ServerTicket implements TicketData {
 
     public abstract int id();
 
-    public abstract Date creationDate();
+    public abstract LocalDateTime creationDate();
 
     public static Builder builder() {
         return new AutoValue_ServerTicket.Builder();
@@ -39,6 +39,6 @@ public abstract class ServerTicket implements TicketData {
 
         public abstract Builder id(int v);
 
-        public abstract Builder creationDate(Date v);
+        public abstract Builder creationDate(LocalDateTime v);
     }
 }

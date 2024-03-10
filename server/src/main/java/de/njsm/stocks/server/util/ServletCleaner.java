@@ -36,6 +36,7 @@ public class ServletCleaner implements ServletContextListener {
     @Override
     public void contextInitialized(ServletContextEvent sce) {
         System.getProperties().setProperty("org.jooq.no-logo", "true");
+        System.getProperties().setProperty("org.jooq.no-tips", "true");
     }
 
     @Override

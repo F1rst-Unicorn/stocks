@@ -31,13 +31,11 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Matchers.any;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 
@@ -49,13 +47,13 @@ public class TicketAuthoriserTest {
 
     private TicketHandler databaseHandler;
 
-    private final int validityTime = 10 * 60 * 1000;
+    private final int validityTimeInMilliseconds = 10 * 60 * 1000;
 
     @BeforeEach
     public void setup() {
         authAdmin = Mockito.mock(AuthAdmin.class);
         databaseHandler = Mockito.mock(TicketHandler.class);
-        uut = new TicketAuthoriser(authAdmin, databaseHandler, validityTime / (60 * 1000));
+        uut = new TicketAuthoriser(authAdmin, databaseHandler, validityTimeInMilliseconds / (60 * 1000));
     }
 
     @AfterEach
@@ -90,7 +88,7 @@ public class TicketAuthoriserTest {
                 .build();
         ServerTicket storedTicket = ServerTicket.builder()
                 .id(0)
-                .creationDate(new Date())
+                .creationDate(LocalDateTime.now())
                 .deviceId(stub.deviceId())
                 .ticket("")
                 .build();
@@ -119,7 +117,7 @@ public class TicketAuthoriserTest {
                 .build();
         ServerTicket storedTicket = ServerTicket.builder()
                 .id(0)
-                .creationDate(new Date())
+                .creationDate(LocalDateTime.now())
                 .deviceId(stub.deviceId())
                 .ticket("")
                 .build();
@@ -147,7 +145,7 @@ public class TicketAuthoriserTest {
                 .build();
         ServerTicket storedTicket = ServerTicket.builder()
                 .id(0)
-                .creationDate(new Date(System.currentTimeMillis() - validityTime - 1))
+                .creationDate(LocalDateTime.now().minusNanos(validityTimeInMilliseconds * 1000000L + 1))
                 .deviceId(deviceId)
                 .ticket("")
                 .build();
@@ -171,7 +169,7 @@ public class TicketAuthoriserTest {
                 .build();
         ServerTicket storedTicket = ServerTicket.builder()
                 .id(0)
-                .creationDate(new Date())
+                .creationDate(LocalDateTime.now())
                 .deviceId(deviceId-1)
                 .ticket("")
                 .build();
@@ -195,7 +193,7 @@ public class TicketAuthoriserTest {
                 .build();
         ServerTicket storedTicket = ServerTicket.builder()
                 .id(0)
-                .creationDate(new Date())
+                .creationDate(LocalDateTime.now())
                 .deviceId(deviceId)
                 .ticket("")
                 .build();
@@ -226,7 +224,7 @@ public class TicketAuthoriserTest {
                 .build();
         ServerTicket storedTicket = ServerTicket.builder()
                 .id(0)
-                .creationDate(new Date())
+                .creationDate(LocalDateTime.now())
                 .deviceId(deviceId)
                 .ticket("")
                 .build();
@@ -258,7 +256,7 @@ public class TicketAuthoriserTest {
                 .build();
         ServerTicket storedTicket = ServerTicket.builder()
                 .id(0)
-                .creationDate(new Date())
+                .creationDate(LocalDateTime.now())
                 .deviceId(deviceId)
                 .ticket("")
                 .build();
@@ -291,7 +289,7 @@ public class TicketAuthoriserTest {
                 .build();
         ServerTicket storedTicket = ServerTicket.builder()
                 .id(0)
-                .creationDate(new Date())
+                .creationDate(LocalDateTime.now())
                 .deviceId(deviceId)
                 .ticket("")
                 .build();
@@ -328,7 +326,7 @@ public class TicketAuthoriserTest {
                 .build();
         ServerTicket storedTicket = ServerTicket.builder()
                 .id(0)
-                .creationDate(new Date())
+                .creationDate(LocalDateTime.now())
                 .deviceId(deviceId)
                 .ticket("")
                 .build();
@@ -364,7 +362,7 @@ public class TicketAuthoriserTest {
                 .build();
         ServerTicket storedTicket = ServerTicket.builder()
                 .id(0)
-                .creationDate(new Date())
+                .creationDate(LocalDateTime.now())
                 .deviceId(deviceId)
                 .ticket("")
                 .build();

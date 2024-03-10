@@ -34,10 +34,8 @@ import org.jooq.Record4;
 import org.jooq.Result;
 import org.jooq.impl.DSL;
 
-import java.sql.Timestamp;
-import java.time.Instant;
+import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
-import java.util.Date;
 
 import static de.njsm.stocks.server.v2.db.jooq.tables.Ticket.TICKET;
 import static de.njsm.stocks.server.v2.db.jooq.tables.User.USER;
@@ -55,7 +53,7 @@ public class TicketHandler extends FailSafeDatabaseHandler {
         return runCommand(context -> {
             context.insertInto(TICKET)
                     .columns(TICKET.BELONGS_DEVICE, TICKET.CREATED_ON, TICKET.TICKET_)
-                    .values(deviceId, new Timestamp(Instant.now().toEpochMilli()), ticket)
+                    .values(deviceId, LocalDateTime.now(), ticket)
                     .execute();
             return StatusCode.SUCCESS;
         });
@@ -76,7 +74,7 @@ public class TicketHandler extends FailSafeDatabaseHandler {
 
                 return Validation.success(ServerTicket.builder()
                         .id(record.getId())
-                        .creationDate(new Date(record.getCreatedOn().toInstant().toEpochMilli()))
+                        .creationDate(record.getCreatedOn())
                         .deviceId(record.getBelongsDevice())
                         .ticket(record.getTicket())
                         .build());

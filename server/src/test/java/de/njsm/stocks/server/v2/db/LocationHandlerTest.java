@@ -33,7 +33,7 @@ import java.util.stream.Stream;
 
 import static de.njsm.stocks.server.v2.web.PrincipalFilterTest.TEST_USER;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Matchers.any;
+import static org.mockito.ArgumentMatchers.any;
 
 public class LocationHandlerTest extends DbTestCase implements CrudOperationsTest<LocationRecord, Location> {
 

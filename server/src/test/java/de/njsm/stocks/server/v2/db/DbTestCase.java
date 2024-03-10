@@ -22,6 +22,7 @@ package de.njsm.stocks.server.v2.db;
 import com.mchange.v2.c3p0.ComboPooledDataSource;
 import org.jooq.DSLContext;
 import org.jooq.SQLDialect;
+import org.jooq.conf.Settings;
 import org.jooq.impl.DSL;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
@@ -47,6 +48,7 @@ public abstract class DbTestCase {
         ds = new ComboPooledDataSource();
         ds.setJdbcUrl(getUrl());
         ds.setProperties(getPostgresqlProperties(System.getProperties()));
+        ds.setInitialPoolSize(1);
         ds.setMaxPoolSize(1);
         ds.setMinPoolSize(1);
     }
@@ -91,7 +93,8 @@ public abstract class DbTestCase {
     }
 
     protected DSLContext getDSLContext() {
-        return DSL.using(connection, SQLDialect.POSTGRES);
+        var settings = new Settings().withReturnAllOnUpdatableRecord(true);
+        return DSL.using(connection, SQLDialect.POSTGRES, settings);
     }
 
     static Connection createConnection() throws SQLException {
@@ -134,6 +137,4 @@ public abstract class DbTestCase {
         }
         return result;
     }
-
-
 }

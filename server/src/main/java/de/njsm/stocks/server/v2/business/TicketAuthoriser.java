@@ -30,7 +30,7 @@ import fj.data.Validation;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 public class TicketAuthoriser implements BusinessOperations {
 
@@ -40,12 +40,12 @@ public class TicketAuthoriser implements BusinessOperations {
 
     private final AuthAdmin authAdmin;
 
-    private final int validityTime;
+    private final int validityTimeInMinutes;
 
-    public TicketAuthoriser(AuthAdmin authAdmin, TicketHandler databaseHandler, int validityTime) {
+    public TicketAuthoriser(AuthAdmin authAdmin, TicketHandler databaseHandler, int validityTimeInMinutes) {
         this.authAdmin = authAdmin;
         this.databaseHandler = databaseHandler;
-        this.validityTime = validityTime;
+        this.validityTimeInMinutes = validityTimeInMinutes;
     }
 
     public Validation<StatusCode, String> handleTicket(ClientTicket ticket) {
@@ -112,10 +112,10 @@ public class TicketAuthoriser implements BusinessOperations {
      * @return true iff the ticket is valid
      */
     private boolean isTicketInvalid(ClientTicket ticket, ServerTicket dbTicket) {
-        Date valid_till_date = new Date(dbTicket.creationDate().getTime() + validityTime * 60000);
-        Date now = new Date();
+        LocalDateTime valid_till_date = dbTicket.creationDate().plusMinutes(validityTimeInMinutes);
+        LocalDateTime now = LocalDateTime.now();
 
-        return now.after(valid_till_date) ||
+        return now.isAfter(valid_till_date) ||
                 dbTicket.deviceId() != ticket.deviceId();
     }
 

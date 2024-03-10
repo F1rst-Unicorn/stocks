@@ -17,39 +17,35 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-rootProject.name = "stocks"
+package de.njsm.stocks.server.v2.db.jooq;
 
-include(":client-app-android")
-include(":client-core")
-include(":client-crypto")
-include(":client-database-android")
-include(":client-fakes")
-include(":client-fakes-android")
-include(":client-navigation-android")
-include(":client-network")
-include(":client-settings-android")
-include(":client-ui-android")
-include(":common")
-include(":server")
+import org.jooq.Converter;
+import org.jooq.types.DayToSecond;
 
-pluginManagement {
-    repositories {
-        google()
-        mavenCentral()
-        gradlePluginPortal()
-        maven {
-            url = uri("https://jitpack.io")
-        }
+import java.time.Period;
+
+/**
+ * Only supports `INTERVAL YEAR MONTH DAY` type
+ */
+public class IntervalToPeriod implements Converter<DayToSecond, Period> {
+
+    @Override
+    public Period from(DayToSecond o) {
+        return Period.of(0, 0, o.getDays());
     }
-}
 
-dependencyResolutionManagement {
-    repositories {
-        google()
-        mavenCentral()
-        mavenLocal()
-        maven {
-            url = uri("https://jitpack.io")
-        }
+    @Override
+    public DayToSecond to(Period period) {
+        return new DayToSecond(period.getDays());
+    }
+
+    @Override
+    public Class<DayToSecond> fromType() {
+        return DayToSecond.class;
+    }
+
+    @Override
+    public Class<Period> toType() {
+        return Period.class;
     }
 }

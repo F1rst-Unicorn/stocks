@@ -28,7 +28,7 @@ import fj.data.Validation;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 import static de.njsm.stocks.server.v2.db.jooq.tables.Ticket.TICKET;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -90,7 +90,7 @@ public class TicketHandlerTest extends DbTestCase {
     public void removingUnknownTicketIsReported() {
         ServerTicket ticket = ServerTicket.builder()
                 .id(-1)
-                .creationDate(new Date())
+                .creationDate(LocalDateTime.now())
                 .deviceId(0)
                 .ticket("")
                 .build();

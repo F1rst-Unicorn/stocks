@@ -27,6 +27,7 @@ import de.njsm.stocks.server.util.Principals;
 import fj.data.Validation;
 import org.jooq.DSLContext;
 import org.jooq.SQLDialect;
+import org.jooq.conf.Settings;
 import org.jooq.impl.DSL;
 
 import java.sql.Connection;
@@ -77,7 +78,8 @@ public class FailSafeDatabaseHandler implements FallibleOperationWrapper<DSLCont
                 con.setAutoCommit(false);
                 if (con.getTransactionIsolation() != Connection.TRANSACTION_SERIALIZABLE)
                     con.setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
-                DSLContext context = DSL.using(con, SQLDialect.POSTGRES);
+                var settings = new Settings().withReturnAllOnUpdatableRecord(true);
+                DSLContext context = DSL.using(con, SQLDialect.POSTGRES, settings);
                 return client.apply(context);
             } catch (RuntimeException e) {
                 return ConnectionHandler.lookForSqlException(e);
