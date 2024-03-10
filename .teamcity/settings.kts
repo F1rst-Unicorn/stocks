@@ -105,7 +105,14 @@ object Build : BuildType({
     steps {
         gradle {
             name = "Assemble artifacts"
-            tasks = "-Pprofile=teamcity check test connectedCheck assemble"
+            tasks = """
+                -Pprofile=teamcity
+                -x :server-test:test
+                check
+                test
+                connectedCheck
+                assemble
+            """.trimIndent()
             buildFile = "build.gradle.kts"
             gradleHome = "/usr/bin/gradle"
             gradleWrapperPath = "."
@@ -126,13 +133,13 @@ object Build : BuildType({
             name = "Server Installation"
             path = "server-test/bin/vm-deployment-test.sh"
         }
-        maven {
+        gradle {
             name = "Server System Test"
-            goals = "test"
-            pomLocation = "server-test/pom.xml"
-            runnerArgs = "-Dtest=TestSuite"
-            mavenVersion = auto()
-            localRepoScope = MavenBuildStep.RepositoryScope.MAVEN_DEFAULT
+            tasks = ":server-test:test --rerun"
+            buildFile = "build.gradle.kts"
+            gradleHome = "/usr/bin/gradle"
+            gradleWrapperPath = "."
+            enableStacktrace = true
         }
         exec {
             name = "Server Log collection"

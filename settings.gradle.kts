@@ -31,6 +31,7 @@ include(":client-settings-android")
 include(":client-ui-android")
 include(":common")
 include(":server")
+include(":server-test")
 
 pluginManagement {
     repositories {

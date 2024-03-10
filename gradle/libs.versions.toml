@@ -64,6 +64,7 @@ dagger-android-support = { module = "com.google.dagger:dagger-android-support", 
 dagger-processor = { module = "com.google.dagger:dagger-compiler", version.ref = "dagger" }
 functionaljava = { module = "org.functionaljava:functionaljava-java8", version.ref = "functionaljava" }
 functionaljava-java8 = { module = "org.functionaljava:functionaljava-java8", version.ref = "functionaljava" }
+gson = "com.google.code.gson:gson:2.8.6"
 guava = "com.google.guava:guava:33.0.0-jre"
 hamcrest = { module = "org.hamcrest:hamcrest", version.ref = "hamcrest" }
 hamcrest-core = { module = "org.hamcrest:hamcrest-core", version.ref = "hamcrest" }
@@ -105,6 +106,7 @@ postgresql = "org.postgresql:postgresql:42.7.2"
 prometheus = { module = "io.prometheus:simpleclient", version.ref = "prometheus" }
 prometheus-servlet = { module = "io.prometheus:simpleclient_servlet", version.ref = "prometheus" }
 quartz = "org.quartz-scheduler:quartz:2.3.2"
+rest-assured = "io.rest-assured:rest-assured:4.3.1"
 retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit"}
 retrofit-converter-jackson = { module = "com.squareup.retrofit2:converter-jackson", version.ref = "retrofit"}
 retrofit-converter-scalars = { module = "com.squareup.retrofit2:converter-scalars", version.ref = "retrofit"}
