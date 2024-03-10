@@ -1,4 +1,6 @@
+import com.android.build.gradle.internal.tasks.factory.dependsOn
 import org.jooq.meta.jaxb.Property
+import org.liquibase.gradle.Activity
 
 /* stocks is client-server program to manage a household's food stock
  * Copyright (C) 2019  The stocks developers
@@ -23,6 +25,7 @@ plugins {
     war
     id ("checkstyle")
     id("org.jooq.jooq-codegen-gradle")
+    id("org.liquibase.gradle")
 }
 
 group = "de.njsm.stocks"
@@ -66,6 +69,12 @@ dependencies {
     annotationProcessor(libs.autovalue.processor)
 
     jooqCodegen(libs.postgresql)
+    liquibaseRuntime(libs.liquibase) {
+        exclude(group = "ch.qos.logback", module = "logback-classic")
+    }
+    liquibaseRuntime(libs.postgresql)
+    liquibaseRuntime(libs.picocli)
+    liquibaseRuntime(libs.jaxb.api)
 
     testImplementation(libs.junit5)
     testImplementation(libs.hamcrest)
@@ -124,8 +133,17 @@ sourceSets {
     }
 }
 
-tasks.withType<JavaCompile>() {
-    dependsOn(tasks.getByName("jooqCodegen"))
+liquibase {
+    activities {
+        register("main") {
+            arguments = mapOf(
+                "searchPath" to "$projectDir",
+                "changeLogFile" to "src/main/resources/migrations/master.xml",
+                "url" to "jdbc:postgresql://${profile.get("de.njsm.stocks.server.v2.db.host")}:${profile.get("de.njsm.stocks.server.v2.db.port")}/${profile.get("de.njsm.stocks.server.v2.db.name")}?user=${profile.get("de.njsm.stocks.server.v2.db.postgres.user")}&password=${profile.get("de.njsm.stocks.server.v2.db.postgres.password")}&ssl=${profile.get("de.njsm.stocks.server.v2.db.postgres.ssl")}&sslmode=${profile.get("de.njsm.stocks.server.v2.db.postgres.sslmode")}&sslcert=${profile.get("de.njsm.stocks.server.v2.db.postgres.sslcert")}&sslkey=${profile.get("de.njsm.stocks.server.v2.db.postgres.sslkey")}&sslrootcert=${profile.get("de.njsm.stocks.server.v2.db.postgres.sslrootcert")}&",
+                "driver" to "org.postgresql.Driver",
+            )
+        }
+    }
 }
 
 jooq {
@@ -180,4 +198,13 @@ jooq {
             }
         }
     }
+}
+
+val resetDb = tasks.register("resetDb") {
+    dependsOn(tasks.getByName("dropAll"))
+    dependsOn(tasks.getByName("update"))
+}
+tasks.jooqCodegen.dependsOn(resetDb)
+tasks.withType<JavaCompile>() {
+    dependsOn(tasks.jooqCodegen)
 }

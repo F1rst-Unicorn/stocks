@@ -16,5 +16,6 @@ dependencies {
     implementation(libs.android.application)
     implementation(libs.android.navigation.safeargs)
     implementation(libs.jooq.plugin)
+    implementation(libs.liquibase.plugin)
     implementation(libs.jaxb.api)
 }
