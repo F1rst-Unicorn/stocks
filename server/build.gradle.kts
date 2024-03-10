@@ -2,7 +2,8 @@ import com.android.build.gradle.internal.tasks.factory.dependsOn
 import org.jooq.meta.jaxb.Property
 import org.liquibase.gradle.Activity
 
-/* stocks is client-server program to manage a household's food stock
+/*
+ * stocks is client-server program to manage a household's food stock
  * Copyright (C) 2019  The stocks developers
  *
  * This file is part of the stocks program suite.
@@ -19,6 +20,7 @@ import org.liquibase.gradle.Activity
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  */
 
 plugins {
