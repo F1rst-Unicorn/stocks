@@ -156,13 +156,6 @@ package "Only Server" {
     }
 }
 
-package "Only Client" {
-    class Config {
-        {static} key: String
-        value: String
-    }
-}
-
 package "Only Android" {
     class SearchSuggestion {
         {static} term: String

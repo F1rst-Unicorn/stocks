@@ -1,3 +1,0 @@
-Title: Show all food
-Input: food list
-Output: ^Current food:\n    0x Beer\n    1x Bread\n        ([0-9]{2}\.){2}[0-9]{4} in Freezer, Jack @ cli-client\n    0x Carrot\n    3x Cheese\n        ([0-9]{2}\.){2}[0-9]{4} in Fridge, Jack @ cli-client\n        ([0-9]{2}\.){2}[0-9]{4} in Fridge, Jack @ cli-client\n        ([0-9]{2}\.){2}[0-9]{4} in Fridge, Jack @ cli-client\n    6x Ham\n        ([0-9]{2}\.){2}[0-9]{4} in Fridge, Jack @ cli-client\n        ([0-9]{2}\.){2}[0-9]{4} in Fridge, Jack @ cli-client\n        ([0-9]{2}\.){2}[0-9]{4} in Fridge, Jack @ cli-client\n        ([0-9]{2}\.){2}[0-9]{4} in Fridge, Jack @ cli-client\n        ([0-9]{2}\.){2}[0-9]{4} in Fridge, Jack @ cli-client\n        ([0-9]{2}\.){2}[0-9]{4} in Fridge, Jack @ cli-client\n\n$

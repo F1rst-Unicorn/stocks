@@ -1,3 +1,0 @@
-Title: Add food for item tests
-Input: food add Cheese
-Output: ^$

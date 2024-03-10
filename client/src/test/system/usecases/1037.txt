@@ -1,3 +1,0 @@
-Title: Remove user who has device
-Input: user remove Juliette
-Output: ^$

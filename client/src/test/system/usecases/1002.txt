@@ -1,3 +1,0 @@
-Title: List no devices
-Input: dev list
-Output: ^No devices there...\n$

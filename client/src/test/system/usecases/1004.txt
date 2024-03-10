@@ -1,3 +1,0 @@
-Title: List no food
-Input: food
-Output: ^No food to show...\n$

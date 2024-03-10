@@ -46,44 +46,6 @@ as user revocation.
 
 There is currently no uniform concept to test server upgrades.
 
-## Client
-
-### Unit and Integration Tests
-
-There are many unit and integration tests located in `src/java/test`.
-It contains a mix of unit tests which can run in isolation, but also
-integration tests which require the existence of a stocks
-mariadb database or do access the local file system. They only test small
-parts of the system in isolation.
-
-### System Tests
-
-To test the whole client you need to have the server set up as described above.
-Moreover you need a second VM set up to deploy the client on as described in
-`manual/development/vm-setup.md`.
-
-#### Building a New Package
-
-To create an Arch Linux package from the sources, run `makepkg` inside
-`deploy-client`.
-
-#### Testing New Clients
-
-After the package has been built all you need to do is running the `client/src/
-test/system/bin/vm-deployment-test.sh` script. It will locate the package you
-built depending on the version number.
-The use cases provided in `client/src/test/system/usecases/` will be run in
-alphabetical order to verify the behaviour of the client.
-Output texts will contain both human readable text as well as TeamCity
-service messages to be parsed by the CI server.
-
-#### Testing Client Upgrades
-
-Since the client has to be able to upgrade itself without any interaction
-upgrades should not contain any test-worthy logic. Anything which needs to be
-done has to be implemented in the Java upgrading package and be unit/integration
-tested with JUnit.
-
 ## License
 
 Copyright (C)  2019  The stocks developers

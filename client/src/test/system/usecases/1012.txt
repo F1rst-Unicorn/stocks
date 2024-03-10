@@ -1,3 +1,0 @@
-Title: Rename mistyped location
-Input: loc rename Basemnet Basement
-Output: ^$

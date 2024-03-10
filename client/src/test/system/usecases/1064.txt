@@ -1,3 +1,0 @@
-Title: Eat singleton item
-Input: eat Bread
-Output: ^$

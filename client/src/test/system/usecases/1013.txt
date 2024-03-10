@@ -1,3 +1,0 @@
-Title: List final locations
-Input: loc list
-Output: ^Current locations: \n\t[0-9]+: Basement\n\t[0-9]+: Cupboard\n\t[0-9]+: Fridge\n$

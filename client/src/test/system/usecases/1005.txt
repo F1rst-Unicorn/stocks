@@ -1,3 +1,0 @@
-Title: First refresh
-Input: refresh
-Output: ^Update successful\n$

@@ -8,10 +8,6 @@ and when it should be consumed.
 
 See `manual/server/` for build and maintenance manuals.
 
-## Linux client
-
-See `manual/client/` for build and maintenance manuals.
-
 ## Android app installation
 
 Build the app with the integrated gradle script and deploy it to your device.

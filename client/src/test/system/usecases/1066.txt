@@ -1,3 +1,0 @@
-Title: Show food quietly
-Input: food list -q
-Output: ^Current food:\n    0x Beer\n    0x Bread\n    0x Carrot\n    2x Cheese\n    6x Ham\n\n$

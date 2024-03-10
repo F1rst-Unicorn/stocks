@@ -1,3 +1,0 @@
-Title: Refresh full
-Input: refresh -f
-Output: ^$

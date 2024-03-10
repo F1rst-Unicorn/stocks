@@ -1,3 +1,0 @@
-Title: Edit non-interactively
-Input: edit --f Bread --l Fridge --d +4d
-Output: ^$

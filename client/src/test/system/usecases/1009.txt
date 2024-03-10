@@ -1,3 +1,0 @@
-Title: Add second location
-Input: loc add Cupboard
-Output: ^$

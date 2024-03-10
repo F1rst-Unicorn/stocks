@@ -1,3 +1,0 @@
-Title: Show no expired food
-Input: food list --d 0
-Output: ^No food to show...\n$

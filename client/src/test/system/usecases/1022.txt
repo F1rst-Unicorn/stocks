@@ -1,3 +1,0 @@
-Title: Rename interactively
-Input: food rename Carrot\n\nBread
-Output: ^Found more than one possibility: \n\t[0-9]+: Carrot\n\t[0-9]+: Carrot\nChoose one  \([0-9]+\): New name: $

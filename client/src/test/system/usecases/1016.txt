@@ -1,3 +1,0 @@
-Title: Add food type
-Input: food add Bread
-Output: ^$

@@ -1,3 +1,0 @@
-Title: Refresh without changes
-Input: refresh
-Output: ^Already up to date\n$

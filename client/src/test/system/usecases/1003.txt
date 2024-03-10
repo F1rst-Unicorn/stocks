@@ -1,3 +1,0 @@
-Title: List no locations
-Input: loc list
-Output: ^No locations there...\n$

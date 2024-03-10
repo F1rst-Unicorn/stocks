@@ -1,3 +1,0 @@
-Title: Eat one of several item
-Input: eat\nCheese
-Output: ^What to eat\?  $

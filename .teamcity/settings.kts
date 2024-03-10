@@ -77,11 +77,8 @@ object Build : BuildType({
 
     artifactRules = """
         deploy-server/stocks-server-*-any.pkg.tar.zst
-        deploy-client/stocks-*-any.pkg.tar.zst
 
         server/target/server.log
-        client/target/client-client.log
-        client/target/client-server.log
 
         client-app-android/build/reports/**/* => client-app-android
         client-core/build/reports/**/* => client-core
@@ -107,7 +104,7 @@ object Build : BuildType({
 
     steps {
         gradle {
-            name = "Assemble new module system"
+            name = "Assemble artifacts"
             tasks = "-Pprofile=teamcity check test connectedCheck assemble"
             buildFile = "build.gradle.kts"
             gradleHome = "/usr/bin/gradle"
@@ -117,12 +114,6 @@ object Build : BuildType({
         exec {
             name = "Package server"
             workingDir = "deploy-server"
-            path = "makepkg"
-            arguments = "-cf"
-        }
-        exec {
-            name = "Package client"
-            workingDir = "deploy-client"
             path = "makepkg"
             arguments = "-cf"
         }
@@ -147,15 +138,6 @@ object Build : BuildType({
             name = "Server Log collection"
             executionMode = BuildStep.ExecutionMode.ALWAYS
             path = "server-test/bin/collect-log.sh"
-        }
-        exec {
-            name = "Clean client"
-            executionMode = BuildStep.ExecutionMode.ALWAYS
-            path = "client/src/test/system/bin/clean-up.sh"
-        }
-        exec {
-            name = "Client Deployment test"
-            path = "client/src/test/system/bin/vm-deployment-test.sh"
         }
     }
 

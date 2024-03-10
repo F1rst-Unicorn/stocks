@@ -1,3 +1,0 @@
-Title: Add food type interactively
-Input: food add\nBeer
-Output: ^New food's name: $

@@ -1,3 +1,0 @@
-Title: List remaining user
-Input: user list
-Output: ^Current users: \n\t1: Jack\n\t2: Stocks\n$

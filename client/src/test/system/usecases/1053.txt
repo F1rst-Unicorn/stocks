@@ -1,3 +1,0 @@
-Title: Show food starting with C quietly
-Input: food list -q --r ^C
-Output: ^Current food:\n    0x Carrot\n    3x Cheese\n\n$

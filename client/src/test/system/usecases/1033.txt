@@ -1,3 +1,0 @@
-Title: List devices
-Input: dev
-Output: ^Current devices: \n\t1: Jack's Device\n\t2: Stocks's Job Runner\n\t[0-9]+: Juliette's Mobile\n\t[0-9]+: Jack's Mobile\n\t[0-9]+: Jack's android-client\n\t[0-9]+: Jack's cli-client\n$

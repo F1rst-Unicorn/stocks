@@ -1,3 +1,0 @@
-Title: Rename food interactively
-Input: food rename\nBread\nCarrot
-Output: ^Food name: New name: $

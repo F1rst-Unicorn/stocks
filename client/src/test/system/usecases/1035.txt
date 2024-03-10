@@ -1,3 +1,0 @@
-Title: Remove device
-Input: dev remove Mobile
-Output: ^$

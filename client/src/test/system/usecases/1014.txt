@@ -1,3 +1,0 @@
-Title: Add location interactively
-Input: loc add\nFreezer
-Output: ^Location name: $
