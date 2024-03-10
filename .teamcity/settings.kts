@@ -106,36 +106,9 @@ object Build : BuildType({
     }
 
     steps {
-        maven {
-            name = "Compile & Unit Test"
-            goals = "clean install"
-            runnerArgs = "-P teamcity"
-            mavenVersion = auto()
-            localRepoScope = MavenBuildStep.RepositoryScope.MAVEN_DEFAULT
-            coverageEngine = idea {
-                includeClasses = "de.njsm.stocks.*"
-                excludeClasses = """
-                    de.njsm.stocks.clientold.storage.jooq.tables.*
-                    de.njsm.stocks.server.v2.db.jooq.tables.*
-                    de.njsm.stocks.server.v2.db.jooq.Sequences
-                    de.njsm.stocks.server.v2.db.jooq.Keys
-                    de.njsm.stocks.server.v2.db.jooq.Public
-                    de.njsm.stocks.server.v2.db.jooq.Tables
-                    de.njsm.stocks.server.v2.db.jooq.DefaultCatalog
-                    de.njsm.stocks.server.v2.db.jooq.Indexes
-                    de.njsm.stocks.server.v2.business.data.AutoValue_*
-
-                    de.njsm.stocks.common.api.AutoValue_*
-
-                    de.njsm.*.*Test
-                    de.njsm.stocks.server.v2.matchers.*
-                    de.njsm.stocks.server.v2.web.Util
-                """.trimIndent()
-            }
-        }
         gradle {
             name = "Assemble new module system"
-            tasks = "check test connectedCheck assemble"
+            tasks = "-Pprofile=teamcity check test connectedCheck assemble"
             buildFile = "build.gradle.kts"
             gradleHome = "/usr/bin/gradle"
             gradleWrapperPath = "."

@@ -38,16 +38,10 @@ build() {
     cd "$srcdir"
 
     if [[ "$CI_SERVER" != "" ]] ; then
-        MVN_ARGS="-P teamcity"
+        ARGS="-Pprofile=teamcity"
     fi
 
-    cd common
-    mvn $MVN_ARGS -Dmaven.test.skip=true install
-    cd ..
-
-    cd server
-    mvn $MVN_ARGS -Dmaven.test.skip=true clean package
-    cd ..
+    ./gradlew $ARGS :server:assemble
 }
 
 package() {
