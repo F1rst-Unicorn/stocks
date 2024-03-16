@@ -44,7 +44,7 @@ class RecipeCookNavigatorImpl extends BaseNavigator implements RecipeCookNavigat
 
     @Override
     public void showFood(IdImpl<Food> food) {
-        var directions = RecipeCookFragmentDirections.actionNavFragmentRecipeCookToNavFragmentFoodItemList(food.id());
+        var directions = RecipeCookFragmentDirections.actionNavFragmentRecipeCookToNavFragmentFoodItemTabs(food.id());
         getNavigationArgConsumer().navigate(directions);
     }
 }

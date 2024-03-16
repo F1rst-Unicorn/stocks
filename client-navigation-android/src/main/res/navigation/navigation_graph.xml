@@ -507,8 +507,8 @@
                 android:name="id"
                 app:argType="integer"/>
         <action
-                android:id="@+id/action_nav_fragment_recipe_cook_to_nav_fragment_food_item_list"
-                app:destination="@id/nav_fragment_food_item_list">
+                android:id="@+id/action_nav_fragment_recipe_cook_to_nav_fragment_food_item_tabs"
+                app:destination="@id/nav_fragment_food_item_tabs">
         </action>
     </fragment>
     <fragment

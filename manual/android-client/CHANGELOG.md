@@ -4,6 +4,9 @@
 
 ### Fixed
 
+* The food item view shown from the recipe cooking view is now fully functional
+  ([#103](https://j.njsm.de/git/veenj/stocks/issues/103)).
+
 * The activity feed now scrolls to top on new events only when refreshing
   ([#102](https://j.njsm.de/git/veenj/stocks/issues/102)).
 

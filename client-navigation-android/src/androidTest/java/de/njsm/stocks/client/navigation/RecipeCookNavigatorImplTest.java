@@ -58,7 +58,7 @@ public class RecipeCookNavigatorImplTest extends NavigationTest {
 
         uut.showFood(expected);
 
-        RecipeCookFragmentDirections.ActionNavFragmentRecipeCookToNavFragmentFoodItemList actual = navigationArgConsumer.getLastArgument(RecipeCookFragmentDirections.ActionNavFragmentRecipeCookToNavFragmentFoodItemList.class);
+        RecipeCookFragmentDirections.ActionNavFragmentRecipeCookToNavFragmentFoodItemTabs actual = navigationArgConsumer.getLastArgument(RecipeCookFragmentDirections.ActionNavFragmentRecipeCookToNavFragmentFoodItemTabs.class);
         assertEquals(expected.id(), actual.getFoodId());
     }
 }
