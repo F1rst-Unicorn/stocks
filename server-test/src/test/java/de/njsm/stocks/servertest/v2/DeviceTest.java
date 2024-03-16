@@ -25,24 +25,26 @@ import de.njsm.stocks.servertest.TestSuite;
 import groovy.lang.Tuple2;
 import io.restassured.http.ContentType;
 import io.restassured.response.ValidatableResponse;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.hasItems;
 import static org.hamcrest.Matchers.*;
 
+@Order(1400)
 public class DeviceTest {
 
     private static int userId;
 
-    @BeforeClass
-    public static void getUser() {
+    @BeforeAll
+    static void getUser() {
         userId = UserTest.createNewUser("Jeannie");
     }
 
     @Test
-    public void addDevice() {
+    void addDevice() {
         String name = "devicetestdevice";
 
         assertOnAdd(name, userId)
@@ -54,7 +56,7 @@ public class DeviceTest {
     }
 
     @Test
-    public void deleteDevice() {
+    void deleteDevice() {
         String name = "devicedeletetest";
 
         int deviceId = assertOnAdd(name, userId)
@@ -79,7 +81,7 @@ public class DeviceTest {
     }
 
     @Test
-    public void revokeDevice() {
+    void revokeDevice() {
         String name = "devicedeletetest";
 
         int deviceId = assertOnAdd(name, userId)
@@ -102,7 +104,7 @@ public class DeviceTest {
                 .body("data.id", hasItems(deviceId));
     }
 
-    public static Tuple2<Integer, String> createNewDevice(String name, int userId) {
+    static Tuple2<Integer, String> createNewDevice(String name, int userId) {
         String ticket = addDevice(name, userId);
         int id = getIdOfDevice(name);
 

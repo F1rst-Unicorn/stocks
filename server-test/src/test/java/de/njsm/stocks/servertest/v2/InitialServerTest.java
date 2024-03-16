@@ -23,15 +23,17 @@ package de.njsm.stocks.servertest.v2;
 
 import de.njsm.stocks.servertest.TestSuite;
 import io.restassured.http.ContentType;
-import org.junit.Test;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
 
 import static io.restassured.RestAssured.when;
 import static org.hamcrest.Matchers.*;
 
+@Order(300)
 public class InitialServerTest {
 
     @Test
-    public void foodIsEmpty() {
+    void foodIsEmpty() {
         when()
                 .get(TestSuite.DOMAIN + "/v2/food").
         then()
@@ -43,7 +45,7 @@ public class InitialServerTest {
     }
 
     @Test
-    public void locationsAreEmpty() {
+    void locationsAreEmpty() {
         when()
                 .get(TestSuite.DOMAIN + "/v2/location").
         then()
@@ -55,7 +57,7 @@ public class InitialServerTest {
     }
 
     @Test
-    public void foodItemsAreEmpty() {
+    void foodItemsAreEmpty() {
         when()
                 .get(TestSuite.DOMAIN + "/v2/fooditem").
         then()
@@ -68,7 +70,7 @@ public class InitialServerTest {
 
 
     @Test
-    public void eansAreEmpty() {
+    void eansAreEmpty() {
         when().
                 get(TestSuite.DOMAIN + "/v2/ean").
         then()
@@ -80,7 +82,7 @@ public class InitialServerTest {
     }
 
     @Test
-    public void initialUserIsOnly() {
+    void initialUserIsOnly() {
         when()
                 .get(TestSuite.DOMAIN + "/v2/user").
         then()
@@ -92,7 +94,7 @@ public class InitialServerTest {
     }
 
     @Test
-    public void initialDeviceIsOnly() {
+    void initialDeviceIsOnly() {
         when()
                 .get(TestSuite.DOMAIN + "/v2/device").
         then()

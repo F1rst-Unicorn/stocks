@@ -23,15 +23,17 @@ package de.njsm.stocks.servertest.v2;
 
 import de.njsm.stocks.servertest.TestSuite;
 import io.restassured.http.ContentType;
-import org.junit.Test;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.equalTo;
 
+@Order(500)
 public class HealthTest {
 
     @Test
-    public void testHealth() {
+    void testHealth() {
         given()
                 .log().ifValidationFails().
         when()

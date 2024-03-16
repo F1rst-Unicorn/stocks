@@ -24,16 +24,18 @@ package de.njsm.stocks.servertest.v2;
 import de.njsm.stocks.servertest.TestSuite;
 import io.restassured.http.ContentType;
 import io.restassured.response.ValidatableResponse;
-import org.junit.Test;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.hasItem;
 
+@Order(700)
 public class UserTest implements Deleter {
 
     @Test
-    public void addUser() {
+    void addUser() {
         String name = "testuser";
         assertOnAdd(name)
                 .body("status", equalTo(0));
@@ -43,28 +45,28 @@ public class UserTest implements Deleter {
     }
 
     @Test
-    public void addInvalidName() {
+    void addInvalidName() {
         assertOnAdd("")
                 .statusCode(400)
                 .body("status", equalTo(7));
     }
 
     @Test
-    public void deleteInvalidVersion() {
+    void deleteInvalidVersion() {
         assertOnDelete(1, -1)
                 .statusCode(400)
                 .body("status", equalTo(7));
     }
 
     @Test
-    public void deleteInvalidId() {
+    void deleteInvalidId() {
         assertOnDelete(0, 1)
                 .statusCode(400)
                 .body("status", equalTo(7));
     }
 
     @Test
-    public void deleteUser() {
+    void deleteUser() {
         String name = "deleteusertest";
         assertOnAdd(name)
                 .body("status", equalTo(0));
@@ -78,7 +80,7 @@ public class UserTest implements Deleter {
                 .body("status", equalTo(0));
     }
 
-    public static int createNewUser(String name) {
+    static int createNewUser(String name) {
         assertOnAdd(name);
         return assertOnUsers()
                 .extract()
@@ -86,7 +88,7 @@ public class UserTest implements Deleter {
                 .getInt("data.findAll{ it.name == '" + name + "' }.last().id");
     }
 
-    public static ValidatableResponse assertOnAdd(String name) {
+    static ValidatableResponse assertOnAdd(String name) {
         return given()
                 .log().ifValidationFails()
                 .queryParam("name", name).
@@ -96,7 +98,7 @@ public class UserTest implements Deleter {
                 .contentType(ContentType.JSON);
     }
 
-    public static ValidatableResponse assertOnUsers() {
+    static ValidatableResponse assertOnUsers() {
         return given()
                 .log().ifValidationFails().
         when()

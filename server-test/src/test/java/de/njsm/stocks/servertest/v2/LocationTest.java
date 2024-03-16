@@ -29,7 +29,9 @@ import de.njsm.stocks.servertest.TestSuite;
 import de.njsm.stocks.servertest.v2.repo.FoodRepository;
 import io.restassured.http.ContentType;
 import io.restassured.response.ValidatableResponse;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
 
 import javax.inject.Inject;
 import java.time.Instant;
@@ -40,6 +42,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasItem;
 
+@Order(600)
 public class LocationTest extends Base {
 
     private LocationAddService locationAddService;
@@ -52,7 +55,7 @@ public class LocationTest extends Base {
     }
 
     @Test
-    public void addAnItem() {
+    void addAnItem() {
         String name = getUniqueName("addAnItem");
         locationAddService.add(LocationAddForm.create(name, ""));
 
@@ -62,7 +65,7 @@ public class LocationTest extends Base {
     }
 
     @Test
-    public void initiatingDevicesAreSet() {
+    void initiatingDevicesAreSet() {
         String name = getUniqueName("initiatingDevicesAreSet");
         addLocationType(name);
 
@@ -73,7 +76,7 @@ public class LocationTest extends Base {
     }
 
     @Test
-    public void renameLocation() {
+    void renameLocation() {
         String name = "Location4";
         String newName = "Location2";
         int id = createNewLocationType(name);
@@ -87,7 +90,7 @@ public class LocationTest extends Base {
     }
 
     @Test
-    public void renamingFailsWithWrongVersion() {
+    void renamingFailsWithWrongVersion() {
         String name = "Location3";
         String newName = "Location2";
         int id = createNewLocationType(name);
@@ -98,7 +101,7 @@ public class LocationTest extends Base {
     }
 
     @Test
-    public void renamingUnknownIdIsReported() {
+    void renamingUnknownIdIsReported() {
         String newName = "Location2";
 
         assertOnRename(9999, 0, newName)
@@ -107,7 +110,7 @@ public class LocationTest extends Base {
     }
 
     @Test
-    public void deleteLocation() {
+    void deleteLocation() {
         String name = "Location1";
         int id = createNewLocationType(name);
 
@@ -117,7 +120,7 @@ public class LocationTest extends Base {
     }
 
     @Test
-    public void deletingFailsWithWrongVersion() {
+    void deletingFailsWithWrongVersion() {
         String name = "Location1";
         int id = createNewLocationType(name);
 
@@ -127,14 +130,14 @@ public class LocationTest extends Base {
     }
 
     @Test
-    public void deletingUnknownIdIsReported() {
+    void deletingUnknownIdIsReported() {
         assertOnDelete(99999, 0, false)
                 .statusCode(404)
                 .body("status", equalTo(2));
     }
 
     @Test
-    public void deleteCascadinglySucceeds() {
+    void deleteCascadinglySucceeds() {
         int locId = createNewLocationType("cascadingTest");
         int foodId = FoodRepository.getAnyFoodId();
         FoodItemTest.createNewItem(Instant.EPOCH, locId, foodId);
@@ -147,7 +150,7 @@ public class LocationTest extends Base {
     }
 
     @Test
-    public void alterLocationDescription() {
+    void alterLocationDescription() {
         String name = "Fridge";
         String newDescription = "new description";
         int id = createNewLocationType(name);

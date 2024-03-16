@@ -25,7 +25,8 @@ import de.njsm.stocks.servertest.TestSuite;
 import de.njsm.stocks.servertest.v2.repo.FoodRepository;
 import io.restassured.http.ContentType;
 import io.restassured.response.ValidatableResponse;
-import org.junit.Test;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
 
 import java.time.Instant;
 import java.time.ZoneId;
@@ -33,15 +34,16 @@ import java.time.format.DateTimeFormatter;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
+@Order(1200)
 public class FoodItemTest implements Deleter {
 
     private static final DateTimeFormatter FORMAT = DateTimeFormatter.ofPattern("yyyy.MM.dd-HH:mm:ss.SSSSSS-Z")
             .withZone(ZoneId.of("UTC"));
 
     @Test
-    public void addFoodItem() {
+    void addFoodItem() {
         int locationId = LocationTest.createNewLocationType("food item");
         int foodId = FoodRepository.getAnyFoodId();
         Instant date = Instant.ofEpochMilli(14);
@@ -57,7 +59,7 @@ public class FoodItemTest implements Deleter {
     }
 
     @Test
-    public void editItem() {
+    void editItem() {
         int locationId = LocationTest.createNewLocationType("food item");
         int movedLocation = LocationTest.createNewLocationType("moved food item");
         int foodId = FoodRepository.getAnyFoodId();
@@ -80,7 +82,7 @@ public class FoodItemTest implements Deleter {
     }
 
     @Test
-    public void editInvalidVersionIsReported() {
+    void editInvalidVersionIsReported() {
         int locationId = LocationTest.createNewLocationType("food item");
         int movedLocation = LocationTest.createNewLocationType("moved food item");
         int foodId = FoodRepository.getAnyFoodId();
@@ -94,7 +96,7 @@ public class FoodItemTest implements Deleter {
     }
 
     @Test
-    public void editInvalidIdIsReported() {
+    void editInvalidIdIsReported() {
         Instant editedDate = Instant.ofEpochMilli(15);
 
         assertOnEdit(99999, 0, editedDate, 1)
@@ -103,7 +105,7 @@ public class FoodItemTest implements Deleter {
     }
 
     @Test
-    public void deleteItem() {
+    void deleteItem() {
         int locationId = LocationTest.createNewLocationType("food item delete");
         int foodId = FoodRepository.getAnyFoodId();
         Instant date = Instant.ofEpochMilli(14);
@@ -115,7 +117,7 @@ public class FoodItemTest implements Deleter {
     }
 
     @Test
-    public void deletingInvalidVersionIsReported() {
+    void deletingInvalidVersionIsReported() {
         int locationId = LocationTest.createNewLocationType("food item delete");
         int foodId = FoodRepository.getAnyFoodId();
         Instant date = Instant.ofEpochMilli(14);
@@ -127,7 +129,7 @@ public class FoodItemTest implements Deleter {
     }
 
     @Test
-    public void deletingUnknownIdIsReported() {
+    void deletingUnknownIdIsReported() {
         assertOnDelete(999, 0)
                 .statusCode(404)
                 .body("status", equalTo(2));

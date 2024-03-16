@@ -24,16 +24,18 @@ package de.njsm.stocks.servertest.v2;
 import de.njsm.stocks.servertest.TestSuite;
 import io.restassured.http.ContentType;
 import io.restassured.response.ValidatableResponse;
-import org.junit.Test;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasItem;
 
+@Order(1000)
 public class ScaledUnitTest implements Deleter {
 
     @Test
-    public void addAnItem() {
+    void addAnItem() {
         int id = createNew(42);
 
         assertOnData()
@@ -42,7 +44,7 @@ public class ScaledUnitTest implements Deleter {
     }
 
     @Test
-    public void editAnItem() {
+    void editAnItem() {
         int id = createNew(1409);
 
         assertOnEdit(id, 0, 1410)
@@ -51,7 +53,7 @@ public class ScaledUnitTest implements Deleter {
     }
 
     @Test
-    public void delete() {
+    void delete() {
         int id = createNew(43);
 
         assertOnDelete(id, 0)
@@ -60,7 +62,7 @@ public class ScaledUnitTest implements Deleter {
     }
 
     @Test
-    public void deletingFailsWithWrongVersion() {
+    void deletingFailsWithWrongVersion() {
         int id = createNew(43);
 
         assertOnDelete(id, 99)
@@ -69,7 +71,7 @@ public class ScaledUnitTest implements Deleter {
     }
 
     @Test
-    public void deletingUnknownIdIsReported() {
+    void deletingUnknownIdIsReported() {
         assertOnDelete(9999, 0)
                 .statusCode(404)
                 .body("status", equalTo(2));

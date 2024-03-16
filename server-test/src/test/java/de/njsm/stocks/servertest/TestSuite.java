@@ -21,30 +21,7 @@
 
 package de.njsm.stocks.servertest;
 
-import de.njsm.stocks.servertest.v2.*;
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-
-@RunWith(Suite.class)
-@Suite.SuiteClasses({SetupTest.class,
-                     InvalidAccessTest.class,
-                     InitialServerTest.class,
-                     UpdateChangeTest.class,
-                     HealthTest.class,
-                     LocationTest.class,
-                     UserTest.class,
-                     FoodTest.class,
-                     UnitTest.class,
-                     ScaledUnitTest.class,
-                     EanTest.class,
-                     FoodItemTest.class,
-                     RecipeTest.class,
-                     DeviceTest.class,
-                     RegistrationTest.class,
-                     Cleanup.class,
-})
 public class TestSuite {
-
     public static final String HOSTNAME = System.getenv().getOrDefault("DEPLOYMENT_VM", "dp-server");
 
     public static final String CA_PORT = "10910";
@@ -52,5 +29,4 @@ public class TestSuite {
     public static final String INIT_PORT = "10911";
 
     public static final String DOMAIN = "https://" + HOSTNAME + ":10912";
-
 }
