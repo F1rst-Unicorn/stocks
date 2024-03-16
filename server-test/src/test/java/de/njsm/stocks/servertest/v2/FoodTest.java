@@ -21,17 +21,30 @@
 
 package de.njsm.stocks.servertest.v2;
 
+import de.njsm.stocks.client.business.entities.IdImpl;
+import de.njsm.stocks.client.business.entities.Location;
 import de.njsm.stocks.servertest.TestSuite;
+import de.njsm.stocks.servertest.v2.repo.LocationRepository;
 import io.restassured.http.ContentType;
 import io.restassured.response.ValidatableResponse;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+
+import javax.inject.Inject;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.*;
 
 @Order(800)
 public class FoodTest extends Base implements Deleter {
+
+    private LocationRepository locationRepository;
+
+    @BeforeEach
+    void setUp() {
+        dagger.inject(this);
+    }
 
     @Test
     void testBitemporalFood() {
@@ -59,16 +72,16 @@ public class FoodTest extends Base implements Deleter {
         String name = getUniqueName("renameFood");
         String newName = name + ".new";
         int id = createNewFoodType(name);
-        int locationId = LocationTest.createNewLocationType(name);
+        IdImpl<Location> locationId = locationRepository.createNewLocationType(name);
 
-        assertOnRename(id, 0, newName, 42, locationId)
+        assertOnRename(id, 0, newName, 42, locationId.id())
                 .statusCode(200)
                 .body("status", equalTo(0));
 
         assertOnFood()
                 .body("data.name", hasItem(newName))
                 .body("data.expirationOffset", hasItem(42))
-                .body("data.location", hasItem(locationId));
+                .body("data.location", hasItem(locationId.id()));
     }
 
     @Test
@@ -76,10 +89,10 @@ public class FoodTest extends Base implements Deleter {
         String name = getUniqueName("renameFoodWithDescription");
         String newName = name + ".new";
         int id = createNewFoodType(name);
-        int locationId = LocationTest.createNewLocationType(name);
+        IdImpl<Location> locationId = locationRepository.createNewLocationType(name);
         String description = "description";
 
-        assertOnEdit(id, 0, newName, 42, locationId, description)
+        assertOnEdit(id, 0, newName, 42, locationId.id(), description)
                 .statusCode(200)
                 .body("status", equalTo(0));
 
@@ -87,7 +100,7 @@ public class FoodTest extends Base implements Deleter {
                 .body("data.name", hasItem(newName))
                 .body("data.expirationOffset", hasItem(42))
                 .body("data.description", hasItem(description))
-                .body("data.location", hasItem(locationId));
+                .body("data.location", hasItem(locationId.id()));
     }
 
     @Test
@@ -267,5 +280,10 @@ public class FoodTest extends Base implements Deleter {
     @Override
     public String getEndpoint() {
         return "/v2/food";
+    }
+
+    @Inject
+    void setLocationRepository(LocationRepository locationRepository) {
+        this.locationRepository = locationRepository;
     }
 }

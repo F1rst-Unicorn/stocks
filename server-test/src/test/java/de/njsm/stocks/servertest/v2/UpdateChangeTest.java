@@ -22,13 +22,16 @@
 package de.njsm.stocks.servertest.v2;
 
 import de.njsm.stocks.servertest.TestSuite;
+import de.njsm.stocks.servertest.v2.repo.LocationRepository;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import io.restassured.response.ValidatableResponse;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 
-import static de.njsm.stocks.servertest.v2.LocationTest.addLocationType;
+import javax.inject.Inject;
+
 import static io.restassured.RestAssured.given;
 import static io.restassured.RestAssured.when;
 import static org.hamcrest.Matchers.equalTo;
@@ -37,7 +40,14 @@ import static org.hamcrest.core.IsIterableContaining.hasItem;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @Order(400)
-public class UpdateChangeTest {
+public class UpdateChangeTest extends Base {
+
+    private LocationRepository locationRepository;
+
+    @BeforeEach
+    void setUp() {
+        dagger.inject(this);
+    }
 
     @Test
     void updatesChangeOnDataChange() {
@@ -79,7 +89,7 @@ public class UpdateChangeTest {
     }
 
     private void addALocation(String name) {
-        addLocationType("update " + name);
+        locationRepository.createNewLocationType("update " + name);
     }
 
     private String getLocationChangeDate() {
@@ -96,5 +106,10 @@ public class UpdateChangeTest {
                 .response();
 
         return response.jsonPath().getString("data.findAll{ it.table == 'Location' }[0].lastUpdate");
+    }
+
+    @Inject
+    void setLocationRepository(LocationRepository locationRepository) {
+        this.locationRepository = locationRepository;
     }
 }

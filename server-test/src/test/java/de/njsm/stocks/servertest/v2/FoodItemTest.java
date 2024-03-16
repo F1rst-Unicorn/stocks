@@ -21,58 +21,73 @@
 
 package de.njsm.stocks.servertest.v2;
 
+import de.njsm.stocks.client.business.entities.FoodItemForSynchronisation;
+import de.njsm.stocks.client.business.entities.IdImpl;
+import de.njsm.stocks.client.business.entities.Location;
 import de.njsm.stocks.servertest.TestSuite;
 import de.njsm.stocks.servertest.v2.repo.FoodRepository;
+import de.njsm.stocks.servertest.v2.repo.LocationRepository;
 import io.restassured.http.ContentType;
 import io.restassured.response.ValidatableResponse;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 
+import javax.inject.Inject;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 
 import static io.restassured.RestAssured.given;
+import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @Order(1200)
-public class FoodItemTest implements Deleter {
+public class FoodItemTest extends Base implements Deleter {
 
     private static final DateTimeFormatter FORMAT = DateTimeFormatter.ofPattern("yyyy.MM.dd-HH:mm:ss.SSSSSS-Z")
             .withZone(ZoneId.of("UTC"));
 
+    private LocationRepository locationRepository;
+
+    @BeforeEach
+    void setUp() {
+        dagger.inject(this);
+    }
+
     @Test
     void addFoodItem() {
-        int locationId = LocationTest.createNewLocationType("food item");
+        IdImpl<Location> locationId = locationRepository.createNewLocationType("addFoodItem");
         int foodId = FoodRepository.getAnyFoodId();
         Instant date = Instant.ofEpochMilli(14);
 
-        addFoodItem(date, locationId, foodId);
+        addFoodItem(date, locationId.id(), foodId);
 
-        assertOnItems()
-                .body("data.ofType", hasItems(foodId))
-                .body("data.storedIn", hasItems(locationId))
-                .body("data.eatByDate", hasItem(FORMAT.format(date)))
-                .body("data.registers", hasItems(1))
-                .body("data.buys", hasItems(1));
+        var foodItems = updateService.getFoodItems(Instant.EPOCH);
+        assertThat(foodItems).filteredOn(FoodItemForSynchronisation::storedIn, locationId.id())
+                .isNotEmpty()
+                .allMatch(v -> v.eatBy().equals(date))
+                .allMatch(v -> v.registers() == 1)
+                .allMatch(v -> v.buys() == 1)
+                .allMatch(v -> v.ofType() == foodId);
     }
 
     @Test
     void editItem() {
-        int locationId = LocationTest.createNewLocationType("food item");
-        int movedLocation = LocationTest.createNewLocationType("moved food item");
+        IdImpl<Location> locationId = locationRepository.createNewLocationType("editItem first");
+        IdImpl<Location> movedLocation = locationRepository.createNewLocationType("editItem second");
         int foodId = FoodRepository.getAnyFoodId();
         Instant date = Instant.ofEpochMilli(14);
         Instant editedDate = Instant.ofEpochMilli(15);
-        int id = createNewItem(date, locationId, foodId);
+        int id = createNewItem(date, locationId.id(), foodId);
 
-        assertOnEdit(id, 0, editedDate, movedLocation)
+        assertOnEdit(id, 0, editedDate, movedLocation.id())
                 .statusCode(200)
                 .body("status", equalTo(0));
 
         int version = assertOnItems()
-                .body("data.storedIn", hasItem(movedLocation))
+                .body("data.storedIn", hasItem(movedLocation.id()))
                 .body("data.eatByDate", hasItem(FORMAT.format(editedDate)))
                 .extract()
                 .jsonPath()
@@ -83,14 +98,14 @@ public class FoodItemTest implements Deleter {
 
     @Test
     void editInvalidVersionIsReported() {
-        int locationId = LocationTest.createNewLocationType("food item");
-        int movedLocation = LocationTest.createNewLocationType("moved food item");
+        IdImpl<Location> locationId = locationRepository.createNewLocationType("editInvalidVersionIsReported first");
+        IdImpl<Location> movedLocation = locationRepository.createNewLocationType("editInvalidVersionIsReported second");
         int foodId = FoodRepository.getAnyFoodId();
         Instant date = Instant.ofEpochMilli(14);
         Instant editedDate = Instant.ofEpochMilli(15);
-        int id = createNewItem(date, locationId, foodId);
+        int id = createNewItem(date, locationId.id(), foodId);
 
-        assertOnEdit(id, 99, editedDate, movedLocation)
+        assertOnEdit(id, 99, editedDate, movedLocation.id())
                 .statusCode(400)
                 .body("status", equalTo(3));
     }
@@ -106,10 +121,10 @@ public class FoodItemTest implements Deleter {
 
     @Test
     void deleteItem() {
-        int locationId = LocationTest.createNewLocationType("food item delete");
+        IdImpl<Location> locationId = locationRepository.createNewLocationType("deleteItem");
         int foodId = FoodRepository.getAnyFoodId();
         Instant date = Instant.ofEpochMilli(14);
-        int id = createNewItem(date, locationId, foodId);
+        int id = createNewItem(date, locationId.id(), foodId);
 
         assertOnDelete(id, 0)
                 .statusCode(200)
@@ -118,10 +133,10 @@ public class FoodItemTest implements Deleter {
 
     @Test
     void deletingInvalidVersionIsReported() {
-        int locationId = LocationTest.createNewLocationType("food item delete");
+        IdImpl<Location> locationId = locationRepository.createNewLocationType("food item delete");
         int foodId = FoodRepository.getAnyFoodId();
         Instant date = Instant.ofEpochMilli(14);
-        int id = createNewItem(date, locationId, foodId);
+        int id = createNewItem(date, locationId.id(), foodId);
 
         assertOnDelete(id, 99)
                 .statusCode(400)
@@ -191,5 +206,10 @@ public class FoodItemTest implements Deleter {
     @Override
     public String getEndpoint() {
         return "/v2/fooditem";
+    }
+
+    @Inject
+    void setLocationRepository(LocationRepository locationRepository) {
+        this.locationRepository = locationRepository;
     }
 }
