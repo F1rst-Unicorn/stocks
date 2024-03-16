@@ -21,28 +21,44 @@
 
 package de.njsm.stocks.servertest.v2;
 
+import de.njsm.stocks.client.business.LocationAddService;
+import de.njsm.stocks.client.business.UpdateService;
+import de.njsm.stocks.client.business.entities.LocationAddForm;
+import de.njsm.stocks.client.business.entities.LocationForSynchronisation;
 import de.njsm.stocks.servertest.TestSuite;
 import de.njsm.stocks.servertest.v2.repo.FoodRepository;
 import io.restassured.http.ContentType;
 import io.restassured.response.ValidatableResponse;
 import org.junit.Test;
 
+import javax.inject.Inject;
 import java.time.Instant;
+import java.util.List;
 
 import static io.restassured.RestAssured.given;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasItem;
 
 public class LocationTest extends Base {
 
+    private LocationAddService locationAddService;
+
+    private UpdateService updateService;
+
+    @BeforeEach
+    void inject() {
+        dagger.inject(this);
+    }
+
     @Test
     public void addAnItem() {
         String name = getUniqueName("addAnItem");
-        addLocationType(name);
+        locationAddService.add(LocationAddForm.create(name, ""));
 
-        assertOnLocation()
-                .body("status", equalTo(0))
-                .body("data.name", hasItem(name));
+        List<LocationForSynchronisation> locations = updateService.getLocations(Instant.EPOCH);
+        assertThat(locations).filteredOn(LocationForSynchronisation::name, name)
+                        .isNotEmpty();
     }
 
     @Test
@@ -222,5 +238,15 @@ public class LocationTest extends Base {
                 .log().ifValidationFails()
                 .statusCode(200)
                 .contentType(ContentType.JSON);
+    }
+
+    @Inject
+    void setLocationAddService(LocationAddService locationAddService) {
+        this.locationAddService = locationAddService;
+    }
+
+    @Inject
+    void setUpdateService(UpdateService updateService) {
+        this.updateService = updateService;
     }
 }

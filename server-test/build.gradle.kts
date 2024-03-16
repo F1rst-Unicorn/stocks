@@ -46,6 +46,10 @@ tasks.test {
 dependencies {
     testImplementation(project(":common"))
     testImplementation(libs.junit4)
+    testImplementation(project(":client-core"))
+    testImplementation(project(":client-crypto"))
+    testImplementation(project(":client-network"))
+    testImplementation(libs.assertj)
     testImplementation(libs.gson)
     testImplementation(libs.guava)
     testImplementation(libs.rest.assured)
@@ -53,5 +57,7 @@ dependencies {
     testImplementation(libs.bundles.jackson)
     testImplementation(libs.jackson.datatype.jdk8)
     testImplementation(libs.jackson.jaxrs)
+    testImplementation(libs.dagger)
+    testAnnotationProcessor(libs.dagger.processor)
 }
 

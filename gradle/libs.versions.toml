@@ -51,6 +51,7 @@ android-test-fragment = "androidx.fragment:fragment-testing:1.6.2"
 android-test-junit = "androidx.test.ext:junit:1.1.5"
 android-test-rules = "androidx.test:rules:1.5.0"
 android-test-runner = "androidx.test:runner:1.5.2"
+assertj = "org.assertj:assertj-core:3.25.3"
 autovalue = { module = "com.google.auto.value:auto-value-annotations", version.ref = "autovalue"}
 autovalue-processor = { module = "com.google.auto.value:auto-value", version.ref = "autovalue" }
 bouncycastle-pkix = { module = "org.bouncycastle:bcpkix-jdk18on", version.ref = "bouncycastle" }
