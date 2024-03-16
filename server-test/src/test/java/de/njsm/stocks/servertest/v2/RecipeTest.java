@@ -26,9 +26,11 @@ import de.njsm.stocks.servertest.TestSuite;
 import de.njsm.stocks.servertest.v2.repo.*;
 import io.restassured.http.ContentType;
 import io.restassured.response.ValidatableResponse;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 
+import javax.inject.Inject;
 import java.time.Duration;
 import java.util.Collections;
 import java.util.List;
@@ -40,6 +42,13 @@ import static org.hamcrest.Matchers.hasItem;
 
 @Order(1300)
 public class RecipeTest extends Base implements Deleter {
+
+    private UnitRepository unitRepository;
+
+    @BeforeEach
+    void setUp() {
+        dagger.inject(this);
+    }
 
     @Test
     void addingARecipeWorks() {
@@ -161,7 +170,7 @@ public class RecipeTest extends Base implements Deleter {
 
     private String putRecipeWithIngredientAndProduct(String distinguisher) {
         int foodId = FoodRepository.getAnyFoodId();
-        int unitId = UnitRepository.getAnyUnitId();
+        int unitId = unitRepository.getAnyUnitId().id();
 
         String name = getUniqueName(distinguisher);
         RecipeForInsertion recipe = RecipeForInsertion.builder()
@@ -222,5 +231,10 @@ public class RecipeTest extends Base implements Deleter {
     @Override
     public String getEndpoint() {
         return "/v2/recipe";
+    }
+
+    @Inject
+    void setUnitRepository(UnitRepository unitRepository) {
+        this.unitRepository = unitRepository;
     }
 }

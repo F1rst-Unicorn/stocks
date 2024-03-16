@@ -21,145 +21,145 @@
 
 package de.njsm.stocks.servertest.v2;
 
-import de.njsm.stocks.servertest.TestSuite;
-import io.restassured.http.ContentType;
-import io.restassured.response.ValidatableResponse;
+import de.njsm.stocks.client.business.EntityDeleteService;
+import de.njsm.stocks.client.business.StatusCodeException;
+import de.njsm.stocks.client.business.UnitAddService;
+import de.njsm.stocks.client.business.UnitEditService;
+import de.njsm.stocks.client.business.entities.*;
+import de.njsm.stocks.servertest.v2.repo.UnitRepository;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 
-import static io.restassured.RestAssured.given;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.hasItem;
+import javax.inject.Inject;
+import java.time.Instant;
+import java.util.List;
+
+import static de.njsm.stocks.client.business.Constants.INFINITY;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 @Order(900)
-public class UnitTest implements Deleter {
+public class UnitTest extends Base {
+
+    private UnitAddService unitAddService;
+
+    private UnitEditService unitEditService;
+
+    private EntityDeleteService<Unit> unitDeleteService;
+
+    private UnitRepository unitRepository;
+
+    @BeforeEach
+    void setUp() {
+        dagger.inject(this);
+    }
 
     @Test
     void addAnItem() {
-        add("Liter", "l");
+        UnitAddForm input = UnitAddForm.create("Liter", "l");
 
-        assertOnData()
-                .body("data.name", hasItem("Liter"))
-                .body("data.abbreviation", hasItem("l"));
+        unitAddService.addUnit(input);
+
+        var units = updateService.getUnits(Instant.EPOCH);
+        assertThat(units).filteredOn(UnitForSynchronisation::name, input.name())
+                .isNotEmpty()
+                .allMatch(v -> v.abbreviation().equals(input.abbreviation()));
     }
 
     @Test
     void rename() {
         String newName = "Cabal";
         String newAbbreviation = "fdsa";
-        int id = createNew("Gramm", "g");
+        IdImpl<Unit> id = unitRepository.createNew("Gramm", "g");
 
-        assertOnRename(id, 0, newName, newAbbreviation)
-                .statusCode(200)
-                .body("status", equalTo(0));
+        unitEditService.edit(UnitForEditing.builder()
+                .id(id.id())
+                .version(0)
+                .name(newName)
+                .abbreviation(newAbbreviation)
+                .build());
 
-        assertOnData()
-                .body("data.name", hasItem(newName))
-                .body("data.abbreviation", hasItem(newAbbreviation));
+        var units = updateService.getUnits(Instant.EPOCH);
+        assertThat(units).filteredOn(UnitForSynchronisation::name, newName)
+                .isNotEmpty()
+                .allMatch(v -> v.abbreviation().equals(newAbbreviation));
     }
 
     @Test
     void renamingFailsWithWrongVersion() {
         String newName = "Cabal";
         String newAbbreviation = "fdsa";
-        int id = createNew("Gramm", "g");
+        IdImpl<Unit> id = unitRepository.createNew("Gramm", "g");
 
-        assertOnRename(id, 99, newName, newAbbreviation)
-                .statusCode(400)
-                .body("status", equalTo(3));
+        assertThatExceptionOfType(StatusCodeException.class)
+                .isThrownBy(() -> unitEditService.edit(UnitForEditing.builder()
+                        .id(id.id())
+                        .version(99)
+                        .name(newName)
+                        .abbreviation(newAbbreviation)
+                        .build()))
+                .matches(v -> v.getStatusCode() == StatusCode.INVALID_DATA_VERSION);
     }
 
     @Test
     void renamingUnknownIdIsReported() {
-        assertOnRename(9999, 0, "newName", "fdsa")
-                .statusCode(404)
-                .body("status", equalTo(2));
+        assertThatExceptionOfType(StatusCodeException.class)
+                .isThrownBy(() -> unitEditService.edit(UnitForEditing.builder()
+                        .id(9999)
+                        .version(0)
+                        .name("newName")
+                        .abbreviation("newAbbreviation")
+                        .build()))
+                .matches(v -> v.getStatusCode() == StatusCode.NOT_FOUND);
     }
 
     @Test
     void delete() {
         String name = "Cookie";
-        int id = createNew(name, "fdsa");
+        IdImpl<Unit> id = unitRepository.createNew(name, "fdsa");
 
-        assertOnDelete(id, 0)
-                .statusCode(200)
-                .body("status", equalTo(0));
+        unitDeleteService.delete(UnitForDeletion.create(id.id(), 0));
+
+        List<UnitForSynchronisation> locations = updateService.getUnits(Instant.EPOCH);
+        assertThat(locations).filteredOn(UnitForSynchronisation::name, name)
+                .isNotEmpty()
+                .anyMatch(v -> v.transactionTimeEnd().isBefore(INFINITY));
     }
 
     @Test
     void deletingFailsWithWrongVersion() {
-        String name = "Cookie";
-        int id = createNew(name, "fdsa");
+        IdImpl<Unit> id = unitRepository.createNew("Cookie", "fdsa");
 
-        assertOnDelete(id, 99)
-                .statusCode(400)
-                .body("status", equalTo(3));
+        assertThatExceptionOfType(StatusCodeException.class)
+                .isThrownBy(() -> unitDeleteService.delete(UnitForDeletion.create(id.id(), 99)))
+                .matches(v -> v.getStatusCode() == StatusCode.INVALID_DATA_VERSION);
     }
 
     @Test
     void deletingUnknownIdIsReported() {
-        assertOnDelete(9999, 0)
-                .statusCode(404)
-                .body("status", equalTo(2));
+        assertThatExceptionOfType(StatusCodeException.class)
+                .isThrownBy(() -> unitDeleteService.delete(UnitForDeletion.create(9999, 0)))
+                .matches(v -> v.getStatusCode() == StatusCode.NOT_FOUND);
     }
 
-    public static int createNew(String name, String abbreviation) {
-        add(name, abbreviation);
-        return getIdOf(name);
+    @Inject
+    void setUnitAddService(UnitAddService unitAddService) {
+        this.unitAddService = unitAddService;
     }
 
-    private static void add(String name, String abbreviation) {
-        given()
-                .log().ifValidationFails()
-                .queryParam("name", name)
-                .queryParam("abbreviation", abbreviation).
-        when()
-                .put(TestSuite.DOMAIN + "/v2/unit").
-        then()
-                .log().ifValidationFails()
-                .statusCode(200)
-                .contentType(ContentType.JSON)
-                .body("status", equalTo(0));
+    @Inject
+    void setUnitRepository(UnitRepository unitRepository) {
+        this.unitRepository = unitRepository;
     }
 
-    private static int getIdOf(String name) {
-        return assertOnData()
-                .extract()
-                .jsonPath()
-                .getInt("data.findAll{ it.name == '" + name + "' }.last().id");
-
+    @Inject
+    void setUnitDeleteService(EntityDeleteService<Unit> unitDeleteService) {
+        this.unitDeleteService = unitDeleteService;
     }
 
-    private ValidatableResponse assertOnRename(int id, int version, String newName, String newAbbreviation) {
-        return
-        given()
-                .log().ifValidationFails()
-                .queryParam("id", id)
-                .queryParam("version", version)
-                .queryParam("name", newName)
-                .queryParam("abbreviation", newAbbreviation).
-        when()
-                .put(TestSuite.DOMAIN + "/v2/unit/rename").
-        then()
-                .log().ifValidationFails()
-                .contentType(ContentType.JSON);
-    }
-
-    public static ValidatableResponse assertOnData() {
-        return
-        given()
-                .log().ifValidationFails().
-        when()
-                .get(TestSuite.DOMAIN + "/v2/unit").
-        then()
-                .log().ifValidationFails()
-                .statusCode(200)
-                .contentType(ContentType.JSON)
-                .body("status", equalTo(0));
-    }
-
-    @Override
-    public String getEndpoint() {
-        return "/v2/unit";
+    @Inject
+    void setUnitEditService(UnitEditService unitEditService) {
+        this.unitEditService = unitEditService;
     }
 }

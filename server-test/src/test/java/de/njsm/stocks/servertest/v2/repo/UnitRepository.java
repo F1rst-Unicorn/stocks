@@ -21,22 +21,53 @@
 
 package de.njsm.stocks.servertest.v2.repo;
 
-import de.njsm.stocks.servertest.v2.UnitTest;
+import de.njsm.stocks.client.business.UnitAddService;
+import de.njsm.stocks.client.business.UpdateService;
+import de.njsm.stocks.client.business.entities.Id;
+import de.njsm.stocks.client.business.entities.IdImpl;
+import de.njsm.stocks.client.business.entities.Unit;
+import de.njsm.stocks.client.business.entities.UnitAddForm;
 
-import java.util.List;
+import javax.inject.Inject;
+import java.time.Instant;
+
+import static de.njsm.stocks.client.business.Constants.INFINITY;
 
 public class UnitRepository {
 
+    private final UnitAddService unitAddService;
 
-    public static int getAnyUnitId() {
-        List<Integer> ids = UnitTest.assertOnData()
-                .extract()
-                .jsonPath()
-                .getList("data.id");
+    private final UpdateService updateService;
 
-        if (ids.isEmpty())
-            return UnitTest.createNew("getAnyUnitId", "getAnyUnitId");
-        else
-            return ids.get(0);
+    @Inject
+    public UnitRepository(UnitAddService unitAddService, UpdateService updateService) {
+        this.unitAddService = unitAddService;
+        this.updateService = updateService;
+    }
+
+    public IdImpl<Unit> getAnyUnitId() {
+        return updateService.getUnits(Instant.EPOCH)
+                .stream()
+                .filter(v -> v.transactionTimeEnd().equals(INFINITY))
+                .filter(v -> v.validTimeStart().isBefore(Instant.now()))
+                .filter(v -> v.validTimeEnd().isAfter(Instant.now()))
+                .findFirst()
+                .map(Id::id)
+                .<IdImpl<Unit>>map(IdImpl::create)
+                .orElseGet(() -> createNew("getAnyUnitId", "getAnyUnitId"));
+    }
+
+    public IdImpl<Unit> createNew(String name, String abbreviation) {
+        unitAddService.addUnit(UnitAddForm.create(name, abbreviation));
+        return getIdOf(name);
+    }
+
+    private IdImpl<Unit> getIdOf(String name) {
+        return updateService.getUnits(Instant.EPOCH)
+                .stream()
+                .filter(v -> v.name().equals(name))
+                .map(v -> IdImpl.<Unit>create(v.id()))
+                .findFirst()
+                .orElseThrow();
     }
 }
