@@ -27,11 +27,7 @@ import io.restassured.config.RestAssuredConfig;
 import io.restassured.config.SSLConfig;
 import io.restassured.http.ContentType;
 import io.restassured.response.ValidatableResponse;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.FixMethodOrder;
-import org.junit.Test;
-import org.junit.runners.MethodSorters;
+import org.junit.jupiter.api.*;
 
 import java.io.File;
 import java.security.KeyPair;
@@ -40,7 +36,8 @@ import java.security.KeyStore;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.*;
 
-@FixMethodOrder(MethodSorters.NAME_ASCENDING)
+@TestMethodOrder(MethodOrderer.MethodName.class)
+@Order(1500)
 public class RegistrationTest {
 
     private static String ticket;
@@ -55,7 +52,7 @@ public class RegistrationTest {
 
     private static KeyStore keystore;
 
-    @BeforeClass
+    @BeforeAll
     public static void setupCredentials() throws Exception {
         userId = UserTest.createNewUser("Jon");
         Tuple2<Integer, String> ticket = DeviceTest.createNewDevice("Laptop", userId);
@@ -66,7 +63,7 @@ public class RegistrationTest {
         commonName = "Jon$" + userId + "$Laptop$" + deviceId;
     }
 
-    @AfterClass
+    @AfterAll
     public static void removeKeystore() {
         new File("keystore_2").deleteOnExit();
     }

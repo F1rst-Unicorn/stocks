@@ -24,16 +24,18 @@ package de.njsm.stocks.servertest.v2;
 import de.njsm.stocks.servertest.TestSuite;
 import io.restassured.http.ContentType;
 import io.restassured.response.ValidatableResponse;
-import org.junit.Test;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasItem;
 
+@Order(900)
 public class UnitTest implements Deleter {
 
     @Test
-    public void addAnItem() {
+    void addAnItem() {
         add("Liter", "l");
 
         assertOnData()
@@ -42,7 +44,7 @@ public class UnitTest implements Deleter {
     }
 
     @Test
-    public void rename() {
+    void rename() {
         String newName = "Cabal";
         String newAbbreviation = "fdsa";
         int id = createNew("Gramm", "g");
@@ -57,7 +59,7 @@ public class UnitTest implements Deleter {
     }
 
     @Test
-    public void renamingFailsWithWrongVersion() {
+    void renamingFailsWithWrongVersion() {
         String newName = "Cabal";
         String newAbbreviation = "fdsa";
         int id = createNew("Gramm", "g");
@@ -68,14 +70,14 @@ public class UnitTest implements Deleter {
     }
 
     @Test
-    public void renamingUnknownIdIsReported() {
+    void renamingUnknownIdIsReported() {
         assertOnRename(9999, 0, "newName", "fdsa")
                 .statusCode(404)
                 .body("status", equalTo(2));
     }
 
     @Test
-    public void delete() {
+    void delete() {
         String name = "Cookie";
         int id = createNew(name, "fdsa");
 
@@ -85,7 +87,7 @@ public class UnitTest implements Deleter {
     }
 
     @Test
-    public void deletingFailsWithWrongVersion() {
+    void deletingFailsWithWrongVersion() {
         String name = "Cookie";
         int id = createNew(name, "fdsa");
 
@@ -95,7 +97,7 @@ public class UnitTest implements Deleter {
     }
 
     @Test
-    public void deletingUnknownIdIsReported() {
+    void deletingUnknownIdIsReported() {
         assertOnDelete(9999, 0)
                 .statusCode(404)
                 .body("status", equalTo(2));

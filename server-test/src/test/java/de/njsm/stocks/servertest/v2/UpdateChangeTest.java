@@ -25,7 +25,8 @@ import de.njsm.stocks.servertest.TestSuite;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import io.restassured.response.ValidatableResponse;
-import org.junit.Test;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
 
 import static de.njsm.stocks.servertest.v2.LocationTest.addLocationType;
 import static io.restassured.RestAssured.given;
@@ -33,29 +34,30 @@ import static io.restassured.RestAssured.when;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.iterableWithSize;
 import static org.hamcrest.core.IsIterableContaining.hasItem;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
+@Order(400)
 public class UpdateChangeTest {
 
     @Test
-    public void updatesChangeOnDataChange() {
+    void updatesChangeOnDataChange() {
         String olderDate = getLocationChangeDate();
         addALocation("1");
         String youngerDate = getLocationChangeDate();
 
-        assertTrue(olderDate + " is not older than " + youngerDate,
-                olderDate.compareTo(youngerDate) < 0);
+        assertTrue(olderDate.compareTo(youngerDate) < 0,
+                olderDate + " is not older than " + youngerDate);
 
         olderDate = youngerDate;
         addALocation("2");
         youngerDate = getLocationChangeDate();
 
-        assertTrue(olderDate + " is not older than " + youngerDate,
-                olderDate.compareTo(youngerDate) < 0);
+        assertTrue(olderDate.compareTo(youngerDate) < 0,
+                olderDate + " is not older than " + youngerDate);
     }
 
     @Test
-    public void gettingChangesStartingFromDateWorks() {
+    void gettingChangesStartingFromDateWorks() {
         addALocation("3");
         String lastChangeDate = getLocationChangeDate();
         addALocation("4");

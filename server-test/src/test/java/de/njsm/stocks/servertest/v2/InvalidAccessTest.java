@@ -22,14 +22,16 @@
 package de.njsm.stocks.servertest.v2;
 
 import de.njsm.stocks.servertest.TestSuite;
-import org.junit.Test;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
 
 import static io.restassured.RestAssured.when;
 
+@Order(200)
 public class InvalidAccessTest {
 
     @Test
-    public void cannotAccessServerViaSentry() {
+    void cannotAccessServerViaSentry() {
         when().
                 get("https://" + TestSuite.HOSTNAME + ":" + TestSuite.INIT_PORT + "/v2/location").
         then()
@@ -38,7 +40,7 @@ public class InvalidAccessTest {
     }
 
     @Test
-    public void cannotAccessSentryViaServer() {
+    void cannotAccessSentryViaServer() {
         when().
                 post(TestSuite.DOMAIN + "/v2/auth/newuser").
         then()

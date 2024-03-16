@@ -40,15 +40,17 @@ tasks.withType<JavaCompile> {
 }
 
 tasks.test {
-    include("**/TestSuite.class")
+    useJUnitPlatform()
+    systemProperty("junit.jupiter.testclass.order.default", "org.junit.jupiter.api.ClassOrderer\$OrderAnnotation")
 }
 
 dependencies {
     testImplementation(project(":common"))
-    testImplementation(libs.junit4)
     testImplementation(project(":client-core"))
     testImplementation(project(":client-crypto"))
     testImplementation(project(":client-network"))
+    testImplementation(libs.junit5)
+    testImplementation(libs.junit.platform)
     testImplementation(libs.assertj)
     testImplementation(libs.gson)
     testImplementation(libs.guava)

@@ -29,9 +29,10 @@ import de.njsm.stocks.servertest.v2.repo.RecipeRepository;
 import groovy.lang.Tuple2;
 import io.restassured.http.ContentType;
 import io.restassured.path.json.JsonPath;
-import org.junit.FixMethodOrder;
-import org.junit.Test;
-import org.junit.runners.MethodSorters;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 
 import java.io.FileWriter;
 import java.io.IOException;
@@ -43,11 +44,12 @@ import static io.restassured.RestAssured.given;
 import static io.restassured.RestAssured.when;
 import static org.hamcrest.Matchers.equalTo;
 
-@FixMethodOrder(MethodSorters.NAME_ASCENDING)
+@TestMethodOrder(MethodOrderer.MethodName.class)
+@Order(1600)
 public class Cleanup {
 
     @Test
-    public void clean01Devices() {
+    void clean01Devices() {
         List<VersionedData> ids = getIds("/v2/device");
 
         List<Integer> ignoredDevices = List.of(1, 2);
@@ -68,7 +70,7 @@ public class Cleanup {
     }
 
     @Test
-    public void clean02Ean() {
+    void clean02Ean() {
         List<VersionedData> ids = getIds("/v2/ean");
 
         for (VersionedData d : ids) {
@@ -86,7 +88,7 @@ public class Cleanup {
     }
 
     @Test
-    public void clean03FoodItems() {
+    void clean03FoodItems() {
         List<VersionedData> ids = getIds("/v2/fooditem");
 
         for (VersionedData d : ids) {
@@ -104,7 +106,7 @@ public class Cleanup {
     }
 
     @Test
-    public void clean04Recipes() {
+    void clean04Recipes() {
         List<RecipeForGetting> data = RecipeRepository.getAll();
 
         for (RecipeForGetting d : data) {
@@ -127,7 +129,7 @@ public class Cleanup {
     }
 
     @Test
-    public void clean05Food() {
+    void clean05Food() {
         List<VersionedData> ids = getIds("/v2/food");
 
         for (VersionedData d : ids) {
@@ -145,7 +147,7 @@ public class Cleanup {
     }
 
     @Test
-    public void clean06Locations() {
+    void clean06Locations() {
         List<VersionedData> ids = getIds("/v2/location");
 
         for (VersionedData d : ids) {
@@ -163,7 +165,7 @@ public class Cleanup {
     }
 
     @Test
-    public void clean07ScaledUnits() {
+    void clean07ScaledUnits() {
         List<VersionedData> ids = getIds("/v2/scaled-unit");
 
         for (VersionedData d : ids) {
@@ -182,7 +184,7 @@ public class Cleanup {
     }
 
     @Test
-    public void clean08Units() {
+    void clean08Units() {
         List<VersionedData> ids = getIds("/v2/unit");
 
         for (VersionedData d : ids) {
@@ -201,7 +203,7 @@ public class Cleanup {
     }
 
     @Test
-    public void clean09Users() {
+    void clean09Users() {
         List<VersionedData> ids = getIds("/v2/user");
 
         List<Integer> ignoredUsers = List.of(1, 2);
@@ -222,7 +224,7 @@ public class Cleanup {
     }
 
     @Test
-    public void setupOtherTestAccounts() throws IOException {
+    void setupOtherTestAccounts() throws IOException {
         Tuple2<Integer, String> ticket1 = DeviceTest.createNewDevice("cli-client", 1);
         Tuple2<Integer, String> ticket2 = DeviceTest.createNewDevice("android-client", 1);
 

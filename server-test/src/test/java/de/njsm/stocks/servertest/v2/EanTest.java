@@ -25,18 +25,18 @@ import de.njsm.stocks.servertest.TestSuite;
 import de.njsm.stocks.servertest.v2.repo.FoodRepository;
 import io.restassured.http.ContentType;
 import io.restassured.response.ValidatableResponse;
-import org.junit.Test;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
 
 import static io.restassured.RestAssured.given;
 import static io.restassured.RestAssured.when;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.hasItems;
-import static org.hamcrest.Matchers.not;
+import static org.hamcrest.Matchers.*;
 
+@Order(1100)
 public class EanTest implements Deleter {
 
     @Test
-    public void addAEan() {
+    void addAEan() {
         String code = "1231231231231";
         int foodId = FoodRepository.getAnyFoodId();
 
@@ -48,7 +48,7 @@ public class EanTest implements Deleter {
     }
 
     @Test
-    public void removeAEan() {
+    void removeAEan() {
         String name = "1231231231232";
         int foodId = FoodRepository.getAnyFoodId();
         addEan(name, foodId);

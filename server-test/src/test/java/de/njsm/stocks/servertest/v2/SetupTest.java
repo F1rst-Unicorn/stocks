@@ -34,9 +34,10 @@ import org.bouncycastle.pkcs.PKCS10CertificationRequestBuilder;
 import org.bouncycastle.pkcs.jcajce.JcaPKCS10CertificationRequestBuilder;
 import org.bouncycastle.util.io.pem.PemObject;
 import org.bouncycastle.util.io.pem.PemWriter;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
 
 import javax.security.auth.x500.X500Principal;
 import java.io.ByteArrayInputStream;
@@ -56,18 +57,19 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.Matchers.isEmptyOrNullString;
 import static org.hamcrest.Matchers.not;
 
+@Order(100)
 public class SetupTest {
 
-    private String subjectName = "Jack$1$Device$1";
+    private final String subjectName = "Jack$1$Device$1";
 
     private KeyPair clientKeys;
 
     private static KeyStore keystore;
 
-    public static final String PASSWORD = "thisisapassword";
+    static final String PASSWORD = "passwordfooyouneverguessme$32XD";
 
-    @Before
-    public void setup() throws Exception {
+    @BeforeEach
+    void setup() throws Exception {
         keystore = getFirstKeystore();
         RestAssured.config = RestAssured.config().sslConfig(sslConfig()
                 .allowAllHostnames()
@@ -76,19 +78,19 @@ public class SetupTest {
                         .enableLoggingOfRequestAndResponseIfValidationFails());
     }
 
-    @After
-    public void tearDown() {
+    @AfterEach
+    void tearDown() {
         RestAssured.config = RestAssured.config().sslConfig(sslConfig()
                 .allowAllHostnames()
                 .trustStore(keystore)
-                .keyStore("keystore_test", PASSWORD))
+                .keyStore("keystore", PASSWORD))
                 .logConfig(LogConfig.logConfig()
                         .enableLoggingOfRequestAndResponseIfValidationFails());
 
     }
 
     @Test
-    public void setupFirstAccount() throws Exception {
+    void setupFirstAccount() throws Exception {
         clientKeys = generateKeyPair();
         String csr = getCsr(clientKeys, subjectName);
 
@@ -108,17 +110,17 @@ public class SetupTest {
                 .body("data", not(isEmptyOrNullString()));
 
         String rawCert = response.extract().jsonPath().getString("data");
-        storeToDisk(keystore, rawCert, "keystore_test", clientKeys);
+        storeToDisk(keystore, rawCert, "keystore", clientKeys);
 
     }
 
-    public static KeyPair generateKeyPair() throws NoSuchAlgorithmException {
+    static KeyPair generateKeyPair() throws NoSuchAlgorithmException {
         KeyPairGenerator gen = KeyPairGenerator.getInstance("RSA");
         gen.initialize(2048);
         return gen.generateKeyPair();
     }
 
-    public static void storeToDisk(KeyStore keystore, String rawCert, String fileName, KeyPair clientKeys) throws CertificateException, KeyStoreException, IOException, NoSuchAlgorithmException {
+    static void storeToDisk(KeyStore keystore, String rawCert, String fileName, KeyPair clientKeys) throws CertificateException, KeyStoreException, IOException, NoSuchAlgorithmException {
         Certificate clientCert = convertToCertificate(rawCert);
         Certificate[] trustChain = new Certificate[3];
         trustChain[0] = clientCert;
@@ -131,7 +133,7 @@ public class SetupTest {
         keystore.store(new FileOutputStream(fileName), PASSWORD.toCharArray());
     }
 
-    public static KeyStore getFirstKeystore() throws KeyStoreException, CertificateException, IOException, NoSuchAlgorithmException {
+    static KeyStore getFirstKeystore() throws KeyStoreException, CertificateException, IOException, NoSuchAlgorithmException {
         KeyStore keystore = KeyStore.getInstance(KeyStore.getDefaultType());
         keystore.load(null);
         String ca = when().
@@ -145,7 +147,7 @@ public class SetupTest {
         return keystore;
     }
 
-    public static String getCsr(KeyPair clientKeys, String subjectName) throws OperatorCreationException, IOException {
+    static String getCsr(KeyPair clientKeys, String subjectName) throws OperatorCreationException, IOException {
         X500Principal principal = new X500Principal("CN=" + subjectName +
                 ",OU=User,O=stocks");
         ContentSigner signGen = new JcaContentSignerBuilder("SHA256WithRSA").build(clientKeys.getPrivate());

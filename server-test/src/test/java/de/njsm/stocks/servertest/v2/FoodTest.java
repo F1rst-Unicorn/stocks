@@ -24,15 +24,17 @@ package de.njsm.stocks.servertest.v2;
 import de.njsm.stocks.servertest.TestSuite;
 import io.restassured.http.ContentType;
 import io.restassured.response.ValidatableResponse;
-import org.junit.Test;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.*;
 
+@Order(800)
 public class FoodTest extends Base implements Deleter {
 
     @Test
-    public void testBitemporalFood() {
+    void testBitemporalFood() {
         addFoodType(getUniqueName("testBitemporalFood"));
 
         assertOnFood(true)
@@ -44,7 +46,7 @@ public class FoodTest extends Base implements Deleter {
     }
 
     @Test
-    public void addAnItem() {
+    void addAnItem() {
         String name = getUniqueName("addAnItem");
         addFoodType(name);
 
@@ -53,7 +55,7 @@ public class FoodTest extends Base implements Deleter {
     }
 
     @Test
-    public void renameFood() {
+    void renameFood() {
         String name = getUniqueName("renameFood");
         String newName = name + ".new";
         int id = createNewFoodType(name);
@@ -70,7 +72,7 @@ public class FoodTest extends Base implements Deleter {
     }
 
     @Test
-    public void renameFoodWithDescription() {
+    void renameFoodWithDescription() {
         String name = getUniqueName("renameFoodWithDescription");
         String newName = name + ".new";
         int id = createNewFoodType(name);
@@ -89,7 +91,7 @@ public class FoodTest extends Base implements Deleter {
     }
 
     @Test
-    public void alterFoodDescription() {
+    void alterFoodDescription() {
         String name = getUniqueName("alterFoodDescription");
         String newDescription = "new description";
         int id = createNewFoodType(name);
@@ -112,7 +114,7 @@ public class FoodTest extends Base implements Deleter {
     }
 
     @Test
-    public void setBuyStatus() {
+    void setBuyStatus() {
         String name = getUniqueName("setBuyStatus");
         int id = createNewFoodType(name);
 
@@ -126,7 +128,7 @@ public class FoodTest extends Base implements Deleter {
     }
 
     @Test
-    public void renamingFailsWithWrongVersion() {
+    void renamingFailsWithWrongVersion() {
         String name = getUniqueName("renamingFailsWithWrongVersion");
         String newName = name + ".new";
         int id = createNewFoodType(name);
@@ -137,14 +139,14 @@ public class FoodTest extends Base implements Deleter {
     }
 
     @Test
-    public void renamingUnknownIdIsReported() {
+    void renamingUnknownIdIsReported() {
         assertOnRename(9999, 0, "dummy", 0, 0)
                 .statusCode(404)
                 .body("status", equalTo(2));
     }
 
     @Test
-    public void deleteFood() {
+    void deleteFood() {
         String name = getUniqueName("deleteFood");
         int id = createNewFoodType(name);
 
@@ -154,7 +156,7 @@ public class FoodTest extends Base implements Deleter {
     }
 
     @Test
-    public void deletingFailsWithWrongVersion() {
+    void deletingFailsWithWrongVersion() {
         String name = getUniqueName("deletingFailsWithWrongVersion");
         int id = createNewFoodType(name);
 
@@ -164,7 +166,7 @@ public class FoodTest extends Base implements Deleter {
     }
 
     @Test
-    public void deletingUnknownIdIsReported() {
+    void deletingUnknownIdIsReported() {
         assertOnDelete(9999, 0)
                 .statusCode(404)
                 .body("status", equalTo(2));
