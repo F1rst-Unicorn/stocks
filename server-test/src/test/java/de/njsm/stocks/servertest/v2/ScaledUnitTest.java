@@ -22,17 +22,28 @@
 package de.njsm.stocks.servertest.v2;
 
 import de.njsm.stocks.servertest.TestSuite;
+import de.njsm.stocks.servertest.v2.repo.UnitRepository;
 import io.restassured.http.ContentType;
 import io.restassured.response.ValidatableResponse;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+
+import javax.inject.Inject;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasItem;
 
 @Order(1000)
-public class ScaledUnitTest implements Deleter {
+public class ScaledUnitTest extends Base implements Deleter {
+
+    private UnitRepository unitRepository;
+
+    @BeforeEach
+    void setUp() {
+        dagger.inject(this);
+    }
 
     @Test
     void addAnItem() {
@@ -77,8 +88,8 @@ public class ScaledUnitTest implements Deleter {
                 .body("status", equalTo(2));
     }
 
-    static int createNew(int scale) {
-        int unit = UnitTest.createNew("scaled unit test", "scaled unit test");
+    int createNew(int scale) {
+        int unit = unitRepository.createNew("scaled unit test", "scaled unit test").id();
         add(scale, unit);
         return getIdOf(scale);
     }
@@ -135,5 +146,10 @@ public class ScaledUnitTest implements Deleter {
     @Override
     public String getEndpoint() {
         return "/v2/scaled-unit";
+    }
+
+    @Inject
+    void setUnitRepository(UnitRepository unitRepository) {
+        this.unitRepository = unitRepository;
     }
 }

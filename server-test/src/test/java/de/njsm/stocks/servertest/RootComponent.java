@@ -24,10 +24,7 @@ package de.njsm.stocks.servertest;
 import dagger.Component;
 import de.njsm.stocks.client.crypto.CryptoModule;
 import de.njsm.stocks.client.network.NetworkModule;
-import de.njsm.stocks.servertest.v2.FoodItemTest;
-import de.njsm.stocks.servertest.v2.FoodTest;
-import de.njsm.stocks.servertest.v2.LocationTest;
-import de.njsm.stocks.servertest.v2.UpdateChangeTest;
+import de.njsm.stocks.servertest.v2.*;
 
 import javax.inject.Singleton;
 
@@ -48,6 +45,12 @@ public interface RootComponent {
     void inject(UpdateChangeTest updateChangeTest);
 
     void inject(FoodTest foodTest);
+
+    void inject(UnitTest unitTest);
+
+    void inject(ScaledUnitTest scaledUnitTest);
+
+    void inject(RecipeTest recipeTest);
 
     @Component.Builder
     interface Builder {
