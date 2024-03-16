@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+### Fixed
+
+* The activity feed now scrolls to top on new events only when refreshing
+  ([#102](https://j.njsm.de/git/veenj/stocks/issues/102)).
+
 ## [4.9.0.0]
 
 ### Fixed

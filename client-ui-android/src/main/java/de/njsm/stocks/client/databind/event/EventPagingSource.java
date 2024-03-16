@@ -38,14 +38,18 @@ public class EventPagingSource extends RxPagingSource<LocalDate, ActivityEvent> 
 
     private final Localiser localiser;
 
+    private boolean invalidated;
+
     public EventPagingSource(EventInteractor interactor, Localiser localiser) {
         this.interactor = interactor;
         this.localiser = localiser;
+        this.invalidated = true;
 
         var disposable = interactor.getNewEventNotifier()
                 .subscribe(v -> this.invalidate());
         this.registerInvalidatedCallback(() -> {
             disposable.dispose();
+            invalidated = true;
             return null;
         });
     }
@@ -66,6 +70,7 @@ public class EventPagingSource extends RxPagingSource<LocalDate, ActivityEvent> 
         LocalDate day = loadParams.getKey();
         if (day == null) {
             day = localiser.today();
+            invalidated = false;
         }
         return day;
     }
@@ -73,6 +78,10 @@ public class EventPagingSource extends RxPagingSource<LocalDate, ActivityEvent> 
     @Nullable
     @Override
     public LocalDate getRefreshKey(@NotNull PagingState<LocalDate, ActivityEvent> state) {
+        if (invalidated) {
+            return null;
+        }
+
         Integer anchorPosition = state.getAnchorPosition();
         if (anchorPosition == null) {
             return null;

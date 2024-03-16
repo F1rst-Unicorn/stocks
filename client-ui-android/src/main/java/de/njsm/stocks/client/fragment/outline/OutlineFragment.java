@@ -35,6 +35,8 @@ import androidx.appcompat.widget.SearchView;
 import androidx.core.content.ContextCompat;
 import androidx.core.view.MenuProvider;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.paging.CombinedLoadStates;
+import androidx.paging.LoadState;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -47,6 +49,8 @@ import de.njsm.stocks.client.navigation.OutlineNavigator;
 import de.njsm.stocks.client.presenter.OutlineViewModel;
 import de.njsm.stocks.client.ui.R;
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
+import io.reactivex.rxjava3.disposables.Disposable;
+import io.reactivex.rxjava3.subjects.PublishSubject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -63,6 +67,8 @@ public class OutlineFragment extends BottomToolbarFragment implements MenuProvid
     private Localiser localiser;
 
     private ActivityResultLauncher<Activity> eanNumberScanOperation;
+
+    private Disposable refreshLoadState;
 
     @NonNull
     @Override
@@ -86,8 +92,12 @@ public class OutlineFragment extends BottomToolbarFragment implements MenuProvid
                 localiser,
                 this::getString);
         activityFeed.setAdapter(adapter);
-        adapter.addLoadStateListener(__ -> {
-            activityFeed.scrollToPosition(0);
+        PublishSubject<CombinedLoadStates> subject = PublishSubject.create();
+        refreshLoadState = subject.distinctUntilChanged(CombinedLoadStates::getRefresh)
+                .filter(v -> v.getRefresh() instanceof LoadState.NotLoading)
+                .subscribe(combinedLoadStates -> activityFeed.scrollToPosition(0));
+        adapter.addLoadStateListener(t -> {
+            subject.onNext(t);
             return null;
         });
         outlineViewModel.getActivityFeed().observe(getViewLifecycleOwner(), v -> adapter.submitData(getLifecycle(), v));
@@ -98,6 +108,15 @@ public class OutlineFragment extends BottomToolbarFragment implements MenuProvid
                 v -> v.ifPresent(this::onEanNumberScanned));
 
         return root;
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        if (refreshLoadState != null) {
+            refreshLoadState.dispose();
+            refreshLoadState = null;
+        }
     }
 
     private void onEanNumberScanned(String eanNumber) {

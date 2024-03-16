@@ -29,6 +29,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.paging.CombinedLoadStates;
+import androidx.paging.LoadState;
 import androidx.paging.PagingData;
 import androidx.recyclerview.widget.RecyclerView;
 import de.njsm.stocks.client.business.Localiser;
@@ -39,6 +41,8 @@ import de.njsm.stocks.client.fragment.view.TemplateSwipeList;
 import de.njsm.stocks.client.navigation.HistoryNavigator;
 import de.njsm.stocks.client.presenter.HistoryViewModel;
 import de.njsm.stocks.client.ui.R;
+import io.reactivex.rxjava3.disposables.Disposable;
+import io.reactivex.rxjava3.subjects.PublishSubject;
 
 import javax.inject.Inject;
 
@@ -49,6 +53,8 @@ public class HistoryFragment extends BottomToolbarFragment {
     private HistoryNavigator navigator;
 
     private Localiser localiser;
+
+    private Disposable refreshLoadState;
 
     @NonNull
     @Override
@@ -66,8 +72,12 @@ public class HistoryFragment extends BottomToolbarFragment {
                 this::getString);
         templateSwipeList.initialiseList(requireContext(), adapter);
         RecyclerView activityFeed = listRoot.findViewById(R.id.template_swipe_list_list);
-        adapter.addLoadStateListener(__ -> {
-            activityFeed.scrollToPosition(0);
+        PublishSubject<CombinedLoadStates> subject = PublishSubject.create();
+        refreshLoadState = subject.distinctUntilChanged(CombinedLoadStates::getRefresh)
+                .filter(v -> v.getRefresh() instanceof LoadState.NotLoading)
+                .subscribe(combinedLoadStates -> activityFeed.scrollToPosition(0));
+        adapter.addLoadStateListener(t -> {
+            subject.onNext(t);
             return null;
         });
         getActivityFeed().observe(getViewLifecycleOwner(), v -> {
@@ -96,6 +106,15 @@ public class HistoryFragment extends BottomToolbarFragment {
             return historyViewModel.getActivityFeedForUserDevice(userDevice.get());
 
         return historyViewModel.getActivityFeed();
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        if (refreshLoadState != null) {
+            refreshLoadState.dispose();
+            refreshLoadState = null;
+        }
     }
 
     @Inject
