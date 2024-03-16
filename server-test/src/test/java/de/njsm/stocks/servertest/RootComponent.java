@@ -19,23 +19,29 @@
  *
  */
 
-package de.njsm.stocks.servertest.v2;
+package de.njsm.stocks.servertest;
 
-import de.njsm.stocks.servertest.DaggerRootComponent;
-import de.njsm.stocks.servertest.RootComponent;
-import org.junit.jupiter.api.BeforeEach;
+import dagger.Component;
+import de.njsm.stocks.client.crypto.CryptoModule;
+import de.njsm.stocks.client.network.NetworkModule;
+import de.njsm.stocks.servertest.v2.LocationTest;
 
-public class Base {
+import javax.inject.Singleton;
 
-    RootComponent dagger;
+@Singleton
+@Component(
+        modules = {
+                NetworkModule.class,
+                CryptoModule.class,
+                TestModule.class,
+        }
+)
+public interface RootComponent {
 
-    @BeforeEach
-    public void setup() {
-        dagger = DaggerRootComponent.builder()
-                .build();
-    }
+    void inject(LocationTest locationTest);
 
-    String getUniqueName(String distinguisher) {
-        return this.getClass().getCanonicalName() + "." + distinguisher;
+    @Component.Builder
+    interface Builder {
+        RootComponent build();
     }
 }

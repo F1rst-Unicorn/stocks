@@ -30,7 +30,7 @@ pkg
 
 # test files
 client/src/test/system/resources
-server-test/keystore_test
+server-test/keystore*
 
 # Ansible
 *.retry
