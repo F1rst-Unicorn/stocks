@@ -21,11 +21,16 @@
 
 package de.njsm.stocks.servertest.v2;
 
+import de.njsm.stocks.client.business.UpdateService;
 import de.njsm.stocks.servertest.DaggerRootComponent;
 import de.njsm.stocks.servertest.RootComponent;
 import org.junit.jupiter.api.BeforeEach;
 
+import javax.inject.Inject;
+
 public class Base {
+
+    UpdateService updateService;
 
     RootComponent dagger;
 
@@ -37,5 +42,10 @@ public class Base {
 
     String getUniqueName(String distinguisher) {
         return this.getClass().getCanonicalName() + "." + distinguisher;
+    }
+
+    @Inject
+    void setUpdateService(UpdateService updateService) {
+        this.updateService = updateService;
     }
 }

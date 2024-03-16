@@ -21,14 +21,10 @@
 
 package de.njsm.stocks.servertest.v2;
 
-import de.njsm.stocks.client.business.LocationAddService;
-import de.njsm.stocks.client.business.UpdateService;
-import de.njsm.stocks.client.business.entities.LocationAddForm;
-import de.njsm.stocks.client.business.entities.LocationForSynchronisation;
-import de.njsm.stocks.servertest.TestSuite;
+import de.njsm.stocks.client.business.*;
+import de.njsm.stocks.client.business.entities.*;
 import de.njsm.stocks.servertest.v2.repo.FoodRepository;
-import io.restassured.http.ContentType;
-import io.restassured.response.ValidatableResponse;
+import de.njsm.stocks.servertest.v2.repo.LocationRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
@@ -37,17 +33,20 @@ import javax.inject.Inject;
 import java.time.Instant;
 import java.util.List;
 
-import static io.restassured.RestAssured.given;
+import static de.njsm.stocks.client.business.Constants.INFINITY;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.hasItem;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 @Order(600)
 public class LocationTest extends Base {
 
     private LocationAddService locationAddService;
 
-    private UpdateService updateService;
+    private LocationEditService locationEditService;
+
+    private EntityDeleteService<Location> locationDeleteService;
+
+    private LocationRepository locationRepository;
 
     @BeforeEach
     void inject() {
@@ -57,190 +56,114 @@ public class LocationTest extends Base {
     @Test
     void addAnItem() {
         String name = getUniqueName("addAnItem");
+
         locationAddService.add(LocationAddForm.create(name, ""));
 
         List<LocationForSynchronisation> locations = updateService.getLocations(Instant.EPOCH);
         assertThat(locations).filteredOn(LocationForSynchronisation::name, name)
-                        .isNotEmpty();
-    }
-
-    @Test
-    void initiatingDevicesAreSet() {
-        String name = getUniqueName("initiatingDevicesAreSet");
-        addLocationType(name);
-
-        assertOnLocation(true)
-                .body("status", equalTo(0))
-                .body("data.name", hasItem(name))
-                .body("data.initiates", hasItem(1));
+                .isNotEmpty()
+                .allMatch(v -> v.initiates() == 1);
     }
 
     @Test
     void renameLocation() {
-        String name = "Location4";
-        String newName = "Location2";
-        int id = createNewLocationType(name);
+        String name = getUniqueName("renameLocation");
+        String newName = getUniqueName("renameLocation2");
+        IdImpl<Location> id = locationRepository.createNewLocationType(name);
+        LocationForEditing input = LocationForEditing.builder()
+                .id(id.id())
+                .version(0)
+                .name(newName)
+                .description("new description")
+                .build();
 
-        assertOnRename(id, 0, newName)
-                .statusCode(200)
-                .body("status", equalTo(0));
+        locationEditService.editLocation(input);
 
-        assertOnLocation()
-                .body("data.name", hasItem(newName));
+        List<LocationForSynchronisation> locations = updateService.getLocations(Instant.EPOCH);
+        assertThat(locations).filteredOn(LocationForSynchronisation::name, newName)
+                .isNotEmpty()
+                .allMatch(v -> v.description().equals(input.description()));
     }
 
     @Test
     void renamingFailsWithWrongVersion() {
-        String name = "Location3";
-        String newName = "Location2";
-        int id = createNewLocationType(name);
+        String name = getUniqueName("renamingFailsWithWrongVersion");
+        String newName = getUniqueName("renamingFailsWithWrongVersion2");
+        IdImpl<Location> id = locationRepository.createNewLocationType(name);
 
-        assertOnRename(id, 99, newName)
-                .statusCode(400)
-                .body("status", equalTo(3));
+        assertThatExceptionOfType(StatusCodeException.class)
+                .isThrownBy(() -> locationEditService.editLocation(LocationForEditing.builder()
+                        .id(id.id())
+                        .version(99)
+                        .name(newName)
+                        .description("")
+                        .build()))
+                .matches(v -> v.getStatusCode() == StatusCode.INVALID_DATA_VERSION);
     }
 
     @Test
     void renamingUnknownIdIsReported() {
-        String newName = "Location2";
-
-        assertOnRename(9999, 0, newName)
-                .statusCode(404)
-                .body("status", equalTo(2));
+        assertThatExceptionOfType(StatusCodeException.class)
+                .isThrownBy(() -> locationEditService.editLocation(LocationForEditing.builder()
+                        .id(9999)
+                        .version(0)
+                        .name("Location2")
+                        .description("")
+                        .build()))
+                .matches(v -> v.getStatusCode() == StatusCode.NOT_FOUND);
     }
 
     @Test
     void deleteLocation() {
         String name = "Location1";
-        int id = createNewLocationType(name);
+        IdImpl<Location> id = locationRepository.createNewLocationType(name);
 
-        assertOnDelete(id, 0, false)
-                .statusCode(200)
-                .body("status", equalTo(0));
+        locationDeleteService.delete(LocationForDeletion.builder()
+                .id(id.id())
+                .version(0)
+                .build());
+
+        List<LocationForSynchronisation> locations = updateService.getLocations(Instant.EPOCH);
+        assertThat(locations).filteredOn(LocationForSynchronisation::name, name)
+                .isNotEmpty()
+                .anyMatch(v -> v.transactionTimeEnd().isBefore(INFINITY));
     }
 
     @Test
     void deletingFailsWithWrongVersion() {
         String name = "Location1";
-        int id = createNewLocationType(name);
+        IdImpl<Location> id = locationRepository.createNewLocationType(name);
 
-        assertOnDelete(id, 99, false)
-                .statusCode(400)
-                .body("status", equalTo(3));
+        assertThatExceptionOfType(StatusCodeException.class)
+                .isThrownBy(() -> locationDeleteService.delete(LocationForDeletion.builder()
+                        .id(id.id())
+                        .version(99)
+                        .build()))
+                .matches(v -> v.getStatusCode() == StatusCode.INVALID_DATA_VERSION);
     }
 
     @Test
     void deletingUnknownIdIsReported() {
-        assertOnDelete(99999, 0, false)
-                .statusCode(404)
-                .body("status", equalTo(2));
+        assertThatExceptionOfType(StatusCodeException.class)
+                .isThrownBy(() -> locationDeleteService.delete(LocationForDeletion.builder()
+                        .id(99999)
+                        .version(0)
+                        .build()))
+                .matches(v -> v.getStatusCode() == StatusCode.NOT_FOUND);
     }
 
     @Test
-    void deleteCascadinglySucceeds() {
-        int locId = createNewLocationType("cascadingTest");
+    void deleteWhileContainingFoodFails() {
+        IdImpl<Location> locationId = locationRepository.createNewLocationType("cascadingTest");
         int foodId = FoodRepository.getAnyFoodId();
-        FoodItemTest.createNewItem(Instant.EPOCH, locId, foodId);
+        FoodItemTest.createNewItem(Instant.EPOCH, locationId.id(), foodId);
 
-        assertOnDelete(locId, 0, false)
-                .body("status", equalTo(4));
-
-        assertOnDelete(locId, 0, true)
-                .body("status", equalTo(0));
-    }
-
-    @Test
-    void alterLocationDescription() {
-        String name = "Fridge";
-        String newDescription = "new description";
-        int id = createNewLocationType(name);
-
-        given()
-                .log().ifValidationFails()
-                .queryParam("id", id)
-                .queryParam("version", 0)
-                .formParam("description", newDescription).
-        when()
-                .post(TestSuite.DOMAIN + "/v2/location/description").
-        then()
-                .log().ifValidationFails()
-                .contentType(ContentType.JSON)
-                .statusCode(200)
-                .body("status", equalTo(0));
-
-        assertOnLocation()
-                .body("data.description", hasItem(newDescription));
-    }
-
-    ValidatableResponse assertOnDelete(int id, int version, boolean cascade) {
-        return
-        given()
-                .log().ifValidationFails()
-                .queryParam("id", id)
-                .queryParam("version", version)
-                .queryParam("cascade", cascade ? 1 : 0).
-        when()
-                .delete(TestSuite.DOMAIN + "/v2/location").
-        then()
-                .log().ifValidationFails()
-                .contentType(ContentType.JSON);
-    }
-
-    static int createNewLocationType(String name) {
-        addLocationType(name);
-        return getIdOfLocation(name);
-    }
-
-    static void addLocationType(String name) {
-        given()
-                .log().ifValidationFails()
-                .queryParam("name", name)
-        .when()
-                .put(TestSuite.DOMAIN + "/v2/location").
-        then()
-                .log().ifValidationFails()
-                .statusCode(200)
-                .contentType(ContentType.JSON)
-                .body("status", equalTo(0));
-    }
-
-    static int getIdOfLocation(String name) {
-        return assertOnLocation()
-                .extract()
-                .jsonPath()
-                .getInt("data.findAll{ it.name == '" + name + "' }.last().id");
-
-    }
-
-    private ValidatableResponse assertOnRename(int id, int version, String newName) {
-        return
-        given()
-                .log().ifValidationFails()
-                .queryParam("id", id)
-                .queryParam("version", version)
-                .queryParam("new", newName).
-        when()
-                .put(TestSuite.DOMAIN + "/v2/location/rename").
-        then()
-                .log().ifValidationFails()
-                .contentType(ContentType.JSON);
-    }
-
-    private static ValidatableResponse assertOnLocation() {
-        return assertOnLocation(false);
-    }
-
-    private static ValidatableResponse assertOnLocation(boolean bitemporal) {
-        return
-        given()
-                .log().ifValidationFails()
-                .queryParam("bitemporal", bitemporal ? 1 : 0).
-        when()
-                .get(TestSuite.DOMAIN + "/v2/location").
-        then()
-                .log().ifValidationFails()
-                .statusCode(200)
-                .contentType(ContentType.JSON);
+        assertThatExceptionOfType(StatusCodeException.class)
+                .isThrownBy(() -> locationDeleteService.delete(LocationForDeletion.builder()
+                        .id(locationId.id())
+                        .version(0)
+                        .build()))
+                .matches(v -> v.getStatusCode() == StatusCode.FOREIGN_KEY_CONSTRAINT_VIOLATION);
     }
 
     @Inject
@@ -249,7 +172,17 @@ public class LocationTest extends Base {
     }
 
     @Inject
-    void setUpdateService(UpdateService updateService) {
-        this.updateService = updateService;
+    void setLocationEditService(LocationEditService locationEditService) {
+        this.locationEditService = locationEditService;
+    }
+
+    @Inject
+    void setLocationDeleteService(EntityDeleteService<Location> locationDeleteService) {
+        this.locationDeleteService = locationDeleteService;
+    }
+
+    @Inject
+    void setLocationRepository(LocationRepository locationRepository) {
+        this.locationRepository = locationRepository;
     }
 }
