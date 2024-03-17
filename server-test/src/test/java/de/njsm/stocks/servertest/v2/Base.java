@@ -25,27 +25,46 @@ import de.njsm.stocks.client.business.UpdateService;
 import de.njsm.stocks.servertest.DaggerRootComponent;
 import de.njsm.stocks.servertest.RootComponent;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.TestInfo;
 
 import javax.inject.Inject;
+import java.lang.reflect.Method;
 
 public class Base {
 
     UpdateService updateService;
 
+    TestInfo testInfo;
+
     RootComponent dagger;
 
+    private int counter = 0;
+
     @BeforeEach
-    public void setup() {
+    public void setup(TestInfo testInfo) {
         dagger = DaggerRootComponent.builder()
+                .withTestInfo(testInfo)
                 .build();
     }
 
+    @Deprecated
     String getUniqueName(String distinguisher) {
-        return this.getClass().getCanonicalName() + "." + distinguisher;
+        return this.getClass().getCanonicalName() + "." + distinguisher + counter++;
+    }
+
+    String getUniqueName() {
+        return (testInfo.getTestClass().map(Class::getName).orElse("dummy")
+                + "-" + testInfo.getTestMethod().map(Method::getName).orElse("dummy")
+                + counter++).replace('.', '-');
     }
 
     @Inject
     void setUpdateService(UpdateService updateService) {
         this.updateService = updateService;
+    }
+
+    @Inject
+    void setTestInfo(TestInfo testInfo) {
+        this.testInfo = testInfo;
     }
 }

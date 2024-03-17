@@ -21,10 +21,12 @@
 
 package de.njsm.stocks.servertest;
 
+import dagger.BindsInstance;
 import dagger.Component;
 import de.njsm.stocks.client.crypto.CryptoModule;
 import de.njsm.stocks.client.network.NetworkModule;
 import de.njsm.stocks.servertest.v2.*;
+import org.junit.jupiter.api.TestInfo;
 
 import javax.inject.Singleton;
 
@@ -52,8 +54,17 @@ public interface RootComponent {
 
     void inject(RecipeTest recipeTest);
 
+    void inject(UserTest userTest);
+
+    void inject(DeviceTest deviceTest);
+
+    void inject(RegistrationTest registrationTest);
+
     @Component.Builder
     interface Builder {
         RootComponent build();
+
+        @BindsInstance
+        Builder withTestInfo(TestInfo testInfo);
     }
 }
