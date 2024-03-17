@@ -4,6 +4,7 @@ plugins {
 
 repositories {
     mavenCentral()
+    gradlePluginPortal()
     google()
     maven {
         url = uri("https://jitpack.io")
@@ -18,4 +19,5 @@ dependencies {
     implementation(libs.jooq.plugin)
     implementation(libs.liquibase.plugin)
     implementation(libs.jaxb.api)
+    implementation(libs.ktlint)
 }
