@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## [4.9.0.1]
+
 ### Fixed
 
 * The food item view shown from the recipe cooking view is now fully functional
