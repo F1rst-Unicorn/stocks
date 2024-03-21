@@ -105,14 +105,7 @@ object Build : BuildType({
     steps {
         gradle {
             name = "Assemble artifacts"
-            tasks = """
-                -Pprofile=teamcity
-                -x :server-test:test
-                check
-                test
-                connectedCheck
-                assemble
-            """.trimIndent()
+            tasks = "-Pprofile=teamcity check test connectedCheck assemble -x :server-test:test"
             buildFile = "build.gradle.kts"
             gradleHome = "/usr/bin/gradle"
             gradleWrapperPath = "."
