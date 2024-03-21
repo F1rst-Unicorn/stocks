@@ -23,7 +23,7 @@ DEPLOYMENT_VM="${DEPLOYMENT_VM:-dp-server}"
 
 set -e
 
-rm -rf $STOCKS_ROOT/server/target/server.log
+rm -rf $STOCKS_ROOT/server/build/server.log
 
 cd "$STOCKS_ROOT/deploy-server"
 

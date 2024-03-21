@@ -22,4 +22,4 @@ STOCKS_ROOT="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/../.."
 DEPLOYMENT_VM="${DEPLOYMENT_VM:-dp-server}"
 
 scp $DEPLOYMENT_VM:/var/log/tomcat8/stocks-stocks.log \
-        $STOCKS_ROOT/server/target/server.log
+        $STOCKS_ROOT/server/build/server.log

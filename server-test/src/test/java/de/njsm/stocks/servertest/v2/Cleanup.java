@@ -226,10 +226,10 @@ public class Cleanup {
         Tuple2<Integer, String> ticket1 = DeviceTest.createNewDevice("cli-client", 1);
         Tuple2<Integer, String> ticket2 = DeviceTest.createNewDevice("android-client", 1);
 
-        writeToFile("target/01_ticket", ticket1.getSecond());
-        writeToFile("target/01_id", String.valueOf(ticket1.getFirst()));
-        writeToFile("target/02_ticket", ticket2.getSecond());
-        writeToFile("target/02_id", String.valueOf(ticket2.getFirst()));
+        writeToFile("build/01_ticket", ticket1.getSecond());
+        writeToFile("build/01_id", String.valueOf(ticket1.getFirst()));
+        writeToFile("build/02_ticket", ticket2.getSecond());
+        writeToFile("build/02_id", String.valueOf(ticket2.getFirst()));
 
     }
 

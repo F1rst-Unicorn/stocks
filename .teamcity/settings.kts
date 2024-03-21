@@ -78,7 +78,7 @@ object Build : BuildType({
     artifactRules = """
         deploy-server/stocks-server-*-any.pkg.tar.zst
 
-        server/target/server.log
+        server/build/server.log
 
         client-app-android/build/reports/**/* => client-app-android
         client-core/build/reports/**/* => client-core

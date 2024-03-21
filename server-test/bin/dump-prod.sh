@@ -3,8 +3,8 @@
 STOCKS_ROOT="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/../.."
 
 BASEDIR="/home/jan/Programme/Java/stocks/server/src/main/resources/migrations"
-DUMP="$STOCKS_ROOT/server-test/target/prod-dump.sql"
-DUMP_FOR_SERVER="$STOCKS_ROOT/server-test/target/prod-dump-for-dp-server.sql"
+DUMP="$STOCKS_ROOT/server-test/build/prod-dump.sql"
+DUMP_FOR_SERVER="$STOCKS_ROOT/server-test/build/prod-dump-for-dp-server.sql"
 DEPLOYMENT_VM="${DEPLOYMENT_VM:-dp-server}"
 
 if [[ ! -f $DUMP ]] ; then
