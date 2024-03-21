@@ -16,7 +16,7 @@ log4j = "2.20.0"
 mockito = "4.8.0"
 prometheus = "0.9.0"
 retrofit = "2.9.0"
-spring = "5.2.8.RELEASE"
+spring = "5.3.33"
 
 [libraries]
 android-application = { module = "com.android.application:com.android.application.gradle.plugin", version.ref = "android-gradle-plugin"}
