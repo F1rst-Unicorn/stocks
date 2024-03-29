@@ -29,6 +29,7 @@ import de.njsm.stocks.client.business.entities.LocationForDeletion
 import de.njsm.stocks.client.business.entities.LocationForEditing
 import de.njsm.stocks.client.business.entities.LocationForSynchronisation
 import de.njsm.stocks.client.business.entities.StatusCode
+import de.njsm.stocks.servertest.v2.repo.FoodItemRepository
 import de.njsm.stocks.servertest.v2.repo.FoodRepository
 import de.njsm.stocks.servertest.v2.repo.LocationRepository
 import org.assertj.core.api.Assertions
@@ -51,6 +52,12 @@ class LocationTest : Base() {
         @Inject set
 
     internal lateinit var locationRepository: LocationRepository
+        @Inject set
+
+    internal lateinit var foodRepository: FoodRepository
+        @Inject set
+
+    internal lateinit var foodItemRepository: FoodItemRepository
         @Inject set
 
     @BeforeEach
@@ -178,15 +185,15 @@ class LocationTest : Base() {
 
     @Test
     fun deleteWhileContainingFoodFails() {
-        val locationId = locationRepository.createNewLocationType(uniqueName)
-        val foodId = FoodRepository.getAnyFoodId()
-        FoodItemTest.createNewItem(Instant.EPOCH, locationId.id(), foodId)
+        val location = locationRepository.createNewLocationType(uniqueName)
+        val food = foodRepository.createNewFood(uniqueName)
+        foodItemRepository.createItem(location, food)
 
         assertThatExceptionOfType(StatusCodeException::class.java)
             .isThrownBy {
                 locationDeleteService.delete(
                     LocationForDeletion.builder()
-                        .id(locationId.id())
+                        .id(location.id())
                         .version(0)
                         .build(),
                 )

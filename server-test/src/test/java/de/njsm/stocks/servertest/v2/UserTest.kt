@@ -38,7 +38,6 @@ import javax.inject.Inject
 
 @Order(700)
 class UserTest : Base() {
-
     internal lateinit var userAddService: UserAddService
         @Inject set
 

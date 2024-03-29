@@ -22,15 +22,8 @@ package de.njsm.stocks.servertest.v2
 
 import de.njsm.stocks.client.business.entities.EntityType
 import de.njsm.stocks.client.business.entities.LocationForSynchronisation
-import de.njsm.stocks.servertest.TestSuite
 import de.njsm.stocks.servertest.v2.repo.LocationRepository
-import io.restassured.RestAssured
-import io.restassured.http.ContentType
-import io.restassured.response.Response
-import io.restassured.response.ValidatableResponse
 import org.assertj.core.api.Assertions.assertThat
-import org.hamcrest.Matchers
-import org.hamcrest.core.IsIterableContaining
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Order
@@ -40,7 +33,6 @@ import javax.inject.Inject
 
 @Order(400)
 class UpdateChangeTest : Base() {
-
     internal lateinit var locationRepository: LocationRepository
 
     @BeforeEach
@@ -69,7 +61,6 @@ class UpdateChangeTest : Base() {
         val lastChangeDate = locationChangeDate
         locationRepository.createNewLocationType(uniqueName)
 
-
         assertThat(getDataYoungerThan(lastChangeDate)).hasSize(1)
     }
 
@@ -81,10 +72,10 @@ class UpdateChangeTest : Base() {
         get() {
             val updates = updateService.updates
             return updates.stream()
-                    .filter { it.table() == EntityType.LOCATION }
-                    .map { it.lastUpdate() }
-                    .findFirst()
-                    .get()
+                .filter { it.table() == EntityType.LOCATION }
+                .map { it.lastUpdate() }
+                .findFirst()
+                .get()
         }
 
     @Inject
