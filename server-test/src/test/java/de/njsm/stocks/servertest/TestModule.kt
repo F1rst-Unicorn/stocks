@@ -37,8 +37,16 @@ interface TestModule {
     companion object {
         @Provides
         @Singleton
-        fun serverEndpoint(settings: Settings, certificateStore: CertificateStore): ServerEndpoint {
-            return ServerEndpoint.create(settings.serverName, settings.serverPort, certificateStore.trustManager, certificateStore.keyManager)
+        fun serverEndpoint(
+            settings: Settings,
+            certificateStore: CertificateStore,
+        ): ServerEndpoint {
+            return ServerEndpoint.create(
+                settings.serverName,
+                settings.serverPort,
+                certificateStore.trustManager,
+                certificateStore.keyManager,
+            )
         }
 
         @Provides
