@@ -58,4 +58,5 @@ dependencies {
     testImplementation(libs.jackson.jaxrs)
     testImplementation(libs.dagger)
     testAnnotationProcessor(libs.dagger.processor)
+    kaptTest(libs.dagger.processor)
 }

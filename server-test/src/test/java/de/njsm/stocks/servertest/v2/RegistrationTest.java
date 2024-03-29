@@ -21,7 +21,10 @@
 
 package de.njsm.stocks.servertest.v2;
 
+import de.njsm.stocks.client.business.entities.IdImpl;
+import de.njsm.stocks.client.business.entities.User;
 import de.njsm.stocks.servertest.TestSuite;
+import de.njsm.stocks.servertest.v2.repo.UserRepository;
 import groovy.lang.Tuple2;
 import io.restassured.config.RestAssuredConfig;
 import io.restassured.config.SSLConfig;
@@ -29,6 +32,7 @@ import io.restassured.http.ContentType;
 import io.restassured.response.ValidatableResponse;
 import org.junit.jupiter.api.*;
 
+import javax.inject.Inject;
 import java.io.File;
 import java.security.KeyPair;
 import java.security.KeyStore;
@@ -38,33 +42,39 @@ import static org.hamcrest.Matchers.*;
 
 @TestMethodOrder(MethodOrderer.MethodName.class)
 @Order(1500)
-public class RegistrationTest {
+public class RegistrationTest extends Base {
 
-    private static String ticket;
+    private String ticket;
 
-    private static int userId;
+    private int deviceId;
 
-    private static int deviceId;
+    private KeyPair keypair;
 
-    private static KeyPair keypair;
+    private String commonName;
 
-    private static String commonName;
+    private KeyStore keystore;
 
-    private static KeyStore keystore;
+    private UserRepository userRepository;
 
-    @BeforeAll
-    public static void setupCredentials() throws Exception {
-        userId = UserTest.createNewUser("Jon");
-        Tuple2<Integer, String> ticket = DeviceTest.createNewDevice("Laptop", userId);
-        RegistrationTest.ticket = ticket.getSecond();
-        RegistrationTest.deviceId = ticket.getFirst();
+    private IdImpl<User> userId;
+
+    private String userName;
+
+    @BeforeEach
+    public void setupCredentials() throws Exception {
+        dagger.inject(this);
+        userName = getUniqueName();
+        userId = userRepository.createNewUser(userName);
+        Tuple2<Integer, String> ticket = DeviceTest.createNewDevice("Laptop", userId.id());
+        this.ticket = ticket.getSecond();
+        deviceId = ticket.getFirst();
 
         keypair = SetupTest.generateKeyPair();
-        commonName = "Jon$" + userId + "$Laptop$" + deviceId;
+        commonName = userName + "$" + userId.id() + "$Laptop$" + deviceId;
     }
 
-    @AfterAll
-    public static void removeKeystore() {
+    @AfterEach
+    public void removeKeystore() {
         new File("keystore_2").deleteOnExit();
     }
 
@@ -81,10 +91,10 @@ public class RegistrationTest {
 
     @Test
     public void test1cannotRegisterWithWrongCommonName() throws Exception {
-        tryFailingRegistration(deviceId, ticket, "Jon$" + userId + "$Laptop$0");
-        tryFailingRegistration(deviceId, ticket, "Jon$" + userId + "$Lapto$" + deviceId);
-        tryFailingRegistration(deviceId, ticket, "Jack$" + userId + "$Laptop$" + deviceId);
-        tryFailingRegistration(deviceId, ticket, "Jon$0$Laptop$" + deviceId);
+        tryFailingRegistration(deviceId, ticket, userName + "$" + userId.id() + "$Laptop$0");
+        tryFailingRegistration(deviceId, ticket, userName + "$" + userId.id() + "$Lapto$" + deviceId);
+        tryFailingRegistration(deviceId, ticket, "Jack$" + userId.id() + "$Laptop$" + deviceId);
+        tryFailingRegistration(deviceId, ticket, userName + "$0$Laptop$" + deviceId);
         tryFailingRegistration(deviceId, ticket, "");
     }
 
@@ -163,6 +173,10 @@ public class RegistrationTest {
         then()
                 .log().ifValidationFails()
                 .contentType(ContentType.JSON);
+    }
 
+    @Inject
+    void setUserRepository(UserRepository userRepository) {
+        this.userRepository = userRepository;
     }
 }

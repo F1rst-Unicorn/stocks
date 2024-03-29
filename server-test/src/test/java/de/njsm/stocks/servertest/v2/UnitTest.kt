@@ -59,21 +59,21 @@ class UnitTest : Base() {
 
     @Test
     fun addAnItem() {
-        val input = UnitAddForm.create("Liter", "l")
+        val input = UnitAddForm.create(uniqueName, uniqueName)
 
         unitAddService.addUnit(input)
 
         val units = updateService.getUnits(Instant.EPOCH)
         Assertions.assertThat(units).filteredOn(UnitForSynchronisation::name, input.name())
-            .isNotEmpty()
-            .allMatch { v -> v.abbreviation() == input.abbreviation() }
+            .isNotEmpty
+            .allMatch { it.abbreviation() == input.abbreviation() }
     }
 
     @Test
     fun rename() {
-        val newName = "Cabal"
-        val newAbbreviation = "fdsa"
-        val id = unitRepository.createNew("Gramm", "g")
+        val newName = uniqueName
+        val newAbbreviation = uniqueName
+        val id = unitRepository.createNew(uniqueName, uniqueName)
 
         unitEditService.edit(
             UnitForEditing.builder()
@@ -86,15 +86,15 @@ class UnitTest : Base() {
 
         val units = updateService.getUnits(Instant.EPOCH)
         Assertions.assertThat(units).filteredOn(UnitForSynchronisation::name, newName)
-            .isNotEmpty()
-            .allMatch { v -> v.abbreviation() == newAbbreviation }
+            .isNotEmpty
+            .allMatch { it.abbreviation() == newAbbreviation }
     }
 
     @Test
     fun renamingFailsWithWrongVersion() {
-        val newName = "Cabal"
-        val newAbbreviation = "fdsa"
-        val id = unitRepository.createNew("Gramm", "g")
+        val newName = uniqueName
+        val newAbbreviation = uniqueName
+        val id = unitRepository.createNew(uniqueName, uniqueName)
 
         assertThatExceptionOfType(StatusCodeException::class.java)
             .isThrownBy {
@@ -107,7 +107,7 @@ class UnitTest : Base() {
                         .build(),
                 )
             }
-            .matches { v -> v.statusCode == StatusCode.INVALID_DATA_VERSION }
+            .matches { it.statusCode == StatusCode.INVALID_DATA_VERSION }
     }
 
     @Test
@@ -118,40 +118,40 @@ class UnitTest : Base() {
                     UnitForEditing.builder()
                         .id(9999)
                         .version(0)
-                        .name("newName")
-                        .abbreviation("newAbbreviation")
+                        .name(uniqueName)
+                        .abbreviation(uniqueName)
                         .build(),
                 )
             }
-            .matches { v -> v.statusCode == StatusCode.NOT_FOUND }
+            .matches { it.statusCode == StatusCode.NOT_FOUND }
     }
 
     @Test
     fun delete() {
-        val name = "Cookie"
-        val id = unitRepository.createNew(name, "fdsa")
+        val name = uniqueName
+        val id = unitRepository.createNew(name, uniqueName)
 
         unitDeleteService.delete(UnitForDeletion.create(id.id(), 0))
 
         val locations = updateService.getUnits(Instant.EPOCH)
         Assertions.assertThat(locations).filteredOn(UnitForSynchronisation::name, name)
-            .isNotEmpty()
-            .anyMatch { v -> v.transactionTimeEnd().isBefore(Constants.INFINITY) }
+            .isNotEmpty
+            .anyMatch { it.transactionTimeEnd().isBefore(Constants.INFINITY) }
     }
 
     @Test
     fun deletingFailsWithWrongVersion() {
-        val id = unitRepository.createNew("Cookie", "fdsa")
+        val id = unitRepository.createNew(uniqueName, uniqueName)
 
         assertThatExceptionOfType(StatusCodeException::class.java)
             .isThrownBy { unitDeleteService.delete(UnitForDeletion.create(id.id(), 99)) }
-            .matches { v -> v.statusCode == StatusCode.INVALID_DATA_VERSION }
+            .matches { it.statusCode == StatusCode.INVALID_DATA_VERSION }
     }
 
     @Test
     fun deletingUnknownIdIsReported() {
         assertThatExceptionOfType(StatusCodeException::class.java)
             .isThrownBy { unitDeleteService.delete(UnitForDeletion.create(9999, 0)) }
-            .matches { v -> v.statusCode == StatusCode.NOT_FOUND }
+            .matches { it.statusCode == StatusCode.NOT_FOUND }
     }
 }

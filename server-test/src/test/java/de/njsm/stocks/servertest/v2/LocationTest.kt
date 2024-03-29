@@ -60,124 +60,137 @@ class LocationTest : Base() {
 
     @Test
     fun addAnItem() {
-        val name = getUniqueName("addAnItem")
+        val name = uniqueName
 
-        locationAddService.add(LocationAddForm.create(name, ""))
+        locationAddService.add(LocationAddForm.create(name, uniqueName))
 
         val locations = updateService.getLocations(Instant.EPOCH)
         Assertions.assertThat(locations).filteredOn(LocationForSynchronisation::name, name)
-                .isNotEmpty()
-                .allMatch { v -> v.initiates() == 1 }
+            .isNotEmpty()
+            .allMatch { it.initiates() == 1 }
     }
 
     @Test
     fun renameLocation() {
-        val name = getUniqueName("renameLocation")
-        val newName = getUniqueName("renameLocation2")
+        val name = uniqueName
+        val newName = uniqueName
         val id = locationRepository.createNewLocationType(name)
-        val input = LocationForEditing.builder()
+        val input =
+            LocationForEditing.builder()
                 .id(id.id())
                 .version(0)
                 .name(newName)
-                .description("new description")
+                .description(uniqueName)
                 .build()
 
         locationEditService.editLocation(input)
 
         val locations = updateService.getLocations(Instant.EPOCH)
         Assertions.assertThat(locations).filteredOn(LocationForSynchronisation::name, newName)
-                .isNotEmpty()
-                .allMatch { v -> v.description() == input.description() }
+            .isNotEmpty()
+            .allMatch { it.description() == input.description() }
     }
 
     @Test
     fun renamingFailsWithWrongVersion() {
-        val name = getUniqueName("renamingFailsWithWrongVersion")
-        val newName = getUniqueName("renamingFailsWithWrongVersion2")
+        val name = uniqueName
+        val newName = uniqueName
         val id = locationRepository.createNewLocationType(name)
 
         assertThatExceptionOfType(StatusCodeException::class.java)
-                .isThrownBy {
-                    locationEditService.editLocation(LocationForEditing.builder()
-                            .id(id.id())
-                            .version(99)
-                            .name(newName)
-                            .description("")
-                            .build())
-                }
-                .matches { v -> v.statusCode == StatusCode.INVALID_DATA_VERSION }
+            .isThrownBy {
+                locationEditService.editLocation(
+                    LocationForEditing.builder()
+                        .id(id.id())
+                        .version(99)
+                        .name(newName)
+                        .description("")
+                        .build(),
+                )
+            }
+            .matches { it.statusCode == StatusCode.INVALID_DATA_VERSION }
     }
 
     @Test
     fun renamingUnknownIdIsReported() {
         assertThatExceptionOfType(StatusCodeException::class.java)
-                .isThrownBy {
-                    locationEditService.editLocation(LocationForEditing.builder()
-                            .id(9999)
-                            .version(0)
-                            .name("Location2")
-                            .description("")
-                            .build())
-                }
-                .matches { v -> v.statusCode == StatusCode.NOT_FOUND }
+            .isThrownBy {
+                locationEditService.editLocation(
+                    LocationForEditing.builder()
+                        .id(9999)
+                        .version(0)
+                        .name(uniqueName)
+                        .description(uniqueName)
+                        .build(),
+                )
+            }
+            .matches { it.statusCode == StatusCode.NOT_FOUND }
     }
 
     @Test
     fun deleteLocation() {
-        val name = "Location1"
+        val name = uniqueName
         val id = locationRepository.createNewLocationType(name)
 
-        locationDeleteService.delete(LocationForDeletion.builder()
+        locationDeleteService.delete(
+            LocationForDeletion.builder()
                 .id(id.id())
                 .version(0)
-                .build())
+                .build(),
+        )
 
         val locations = updateService.getLocations(Instant.EPOCH)
         Assertions.assertThat(locations).filteredOn(LocationForSynchronisation::name, name)
-                .isNotEmpty()
-                .anyMatch { v -> v.transactionTimeEnd().isBefore(Constants.INFINITY) }
+            .isNotEmpty()
+            .anyMatch { it.transactionTimeEnd().isBefore(Constants.INFINITY) }
     }
 
     @Test
     fun deletingFailsWithWrongVersion() {
-        val name = "Location1"
+        val name = uniqueName
         val id = locationRepository.createNewLocationType(name)
 
         assertThatExceptionOfType(StatusCodeException::class.java)
-                .isThrownBy {
-                    locationDeleteService.delete(LocationForDeletion.builder()
-                            .id(id.id())
-                            .version(99)
-                            .build())
-                }
-                .matches { v -> v.statusCode == StatusCode.INVALID_DATA_VERSION }
+            .isThrownBy {
+                locationDeleteService.delete(
+                    LocationForDeletion.builder()
+                        .id(id.id())
+                        .version(99)
+                        .build(),
+                )
+            }
+            .matches { it.statusCode == StatusCode.INVALID_DATA_VERSION }
     }
 
     @Test
     fun deletingUnknownIdIsReported() {
         assertThatExceptionOfType(StatusCodeException::class.java)
-                .isThrownBy {
-                    locationDeleteService.delete(LocationForDeletion.builder()
-                            .id(99999)
-                            .version(0)
-                            .build())
-                }
-                .matches { v -> v.statusCode == StatusCode.NOT_FOUND }
+            .isThrownBy {
+                locationDeleteService.delete(
+                    LocationForDeletion.builder()
+                        .id(99999)
+                        .version(0)
+                        .build(),
+                )
+            }
+            .matches { it.statusCode == StatusCode.NOT_FOUND }
     }
 
     @Test
     fun deleteWhileContainingFoodFails() {
-        val locationId = locationRepository.createNewLocationType("cascadingTest")
+        val locationId = locationRepository.createNewLocationType(uniqueName)
         val foodId = FoodRepository.getAnyFoodId()
         FoodItemTest.createNewItem(Instant.EPOCH, locationId.id(), foodId)
 
         assertThatExceptionOfType(StatusCodeException::class.java)
-                .isThrownBy {
-                    locationDeleteService.delete(LocationForDeletion.builder()
-                            .id(locationId.id())
-                            .version(0)
-                            .build())
-                }
-                .matches { v -> v.statusCode == StatusCode.FOREIGN_KEY_CONSTRAINT_VIOLATION }
+            .isThrownBy {
+                locationDeleteService.delete(
+                    LocationForDeletion.builder()
+                        .id(locationId.id())
+                        .version(0)
+                        .build(),
+                )
+            }
+            .matches { it.statusCode == StatusCode.FOREIGN_KEY_CONSTRAINT_VIOLATION }
     }
 }
