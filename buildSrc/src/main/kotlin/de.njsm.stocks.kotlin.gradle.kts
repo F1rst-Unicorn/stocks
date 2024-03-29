@@ -5,6 +5,7 @@ import org.jlleitschuh.gradle.ktlint.reporter.ReporterType
 
 plugins {
     kotlin("jvm")
+    kotlin("kapt")
     id("org.jlleitschuh.gradle.ktlint")
 }
 

@@ -22,44 +22,49 @@
 package de.njsm.stocks.servertest.v2;
 
 import de.njsm.stocks.servertest.TestSuite;
+import de.njsm.stocks.servertest.v2.repo.UserRepository;
 import groovy.lang.Tuple2;
 import io.restassured.http.ContentType;
 import io.restassured.response.ValidatableResponse;
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+
+import javax.inject.Inject;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.hasItems;
 import static org.hamcrest.Matchers.*;
 
 @Order(1400)
-public class DeviceTest {
+public class DeviceTest extends Base {
 
-    private static int userId;
+    private UserRepository userRepository;
 
-    @BeforeAll
-    static void getUser() {
-        userId = UserTest.createNewUser("Jeannie");
+    @BeforeEach
+    void setUp() {
+        dagger.inject(this);
     }
 
     @Test
     void addDevice() {
-        String name = "devicetestdevice";
+        String name = getUniqueName();
+        var userId = userRepository.createNewUser(getUniqueName());
 
-        assertOnAdd(name, userId)
+        assertOnAdd(name, userId.id())
                 .body("status", equalTo(0));
 
         assertOnDevices()
                 .body("data.name", hasItems(name))
-                .body("data.userId", hasItems(userId));
+                .body("data.userId", hasItems(userId.id()));
     }
 
     @Test
     void deleteDevice() {
-        String name = "devicedeletetest";
+        String name = getUniqueName();
+        var userId = userRepository.createNewUser(getUniqueName());
 
-        int deviceId = assertOnAdd(name, userId)
+        int deviceId = assertOnAdd(name, userId.id())
                 .extract()
                 .jsonPath()
                 .getInt("data.deviceId");
@@ -83,8 +88,9 @@ public class DeviceTest {
     @Test
     void revokeDevice() {
         String name = "devicedeletetest";
+        var userId = userRepository.createNewUser(getUniqueName());
 
-        int deviceId = assertOnAdd(name, userId)
+        int deviceId = assertOnAdd(name, userId.id())
                 .extract()
                 .jsonPath()
                 .getInt("data.deviceId");
@@ -152,4 +158,8 @@ public class DeviceTest {
                 .body("status", equalTo(0));
     }
 
+    @Inject
+    void setUserRepository(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
 }
