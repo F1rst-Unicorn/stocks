@@ -38,8 +38,6 @@ class UserRepository
                 .stream()
                 .filter { it.name() == name }
                 .filter { it.transactionTimeEnd() == INFINITY }
-                .filter { it.validTimeStart().isBefore(Instant.now()) }
-                .filter { it.validTimeEnd().isAfter(Instant.now()) }
                 .findAny()
                 .map { IdImpl.create<User>(it.id()) }
                 .get()

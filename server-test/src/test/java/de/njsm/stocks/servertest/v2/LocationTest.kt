@@ -32,7 +32,7 @@ import de.njsm.stocks.client.business.entities.StatusCode
 import de.njsm.stocks.servertest.v2.repo.FoodItemRepository
 import de.njsm.stocks.servertest.v2.repo.FoodRepository
 import de.njsm.stocks.servertest.v2.repo.LocationRepository
-import org.assertj.core.api.Assertions
+import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatExceptionOfType
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Order
@@ -72,7 +72,7 @@ class LocationTest : Base() {
         locationAddService.add(LocationAddForm.create(name, uniqueName))
 
         val locations = updateService.getLocations(Instant.EPOCH)
-        Assertions.assertThat(locations).filteredOn(LocationForSynchronisation::name, name)
+        assertThat(locations).filteredOn(LocationForSynchronisation::name, name)
             .isNotEmpty()
             .allMatch { it.initiates() == 1 }
     }
@@ -93,7 +93,7 @@ class LocationTest : Base() {
         locationEditService.editLocation(input)
 
         val locations = updateService.getLocations(Instant.EPOCH)
-        Assertions.assertThat(locations).filteredOn(LocationForSynchronisation::name, newName)
+        assertThat(locations).filteredOn(LocationForSynchronisation::name, newName)
             .isNotEmpty()
             .allMatch { it.description() == input.description() }
     }
@@ -147,7 +147,7 @@ class LocationTest : Base() {
         )
 
         val locations = updateService.getLocations(Instant.EPOCH)
-        Assertions.assertThat(locations).filteredOn(LocationForSynchronisation::name, name)
+        assertThat(locations).filteredOn(LocationForSynchronisation::name, name)
             .isNotEmpty
             .anyMatch { it.transactionTimeEnd().isBefore(Constants.INFINITY) }
     }
