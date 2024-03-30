@@ -35,6 +35,7 @@ import de.njsm.stocks.servertest.v2.repo.FoodItemRepository
 import de.njsm.stocks.servertest.v2.repo.FoodRepository
 import de.njsm.stocks.servertest.v2.repo.LocationRepository
 import de.njsm.stocks.servertest.v2.repo.UnitRepository
+import org.assertj.core.api.Assertions
 import org.assertj.core.api.Assertions.assertThatExceptionOfType
 import org.assertj.core.api.AssertionsForInterfaceTypes.assertThat
 import org.junit.jupiter.api.BeforeEach
@@ -109,7 +110,7 @@ class FoodItemTest : Base() {
                 .filter { it.ofType() == foodId.id() }
                 .toList()
         assertThat(foodItems).filteredOn(FoodItemForSynchronisation::ofType, foodId.id())
-                .filteredOn(FoodItemForSynchronisation::version, 1)
+            .filteredOn(FoodItemForSynchronisation::version, 1)
             .hasSize(1)
             .allMatch { it.storedIn() == movedLocation.id() }
             .allMatch { it.eatBy() == editedDate }
@@ -155,6 +156,11 @@ class FoodItemTest : Base() {
         val id = foodItemRepository.createItem(locationId, foodId)
 
         foodItemDeleteService.delete(FoodItemForDeletion.create(id.id(), 0))
+
+        val foodItems = updateService.getFoodItems(Instant.EPOCH)
+        Assertions.assertThat(foodItems).filteredOn(FoodItemForSynchronisation::id, id.id())
+            .isNotEmpty
+            .anyMatch { it.transactionTimeEnd().isBefore(Constants.INFINITY) }
     }
 
     @Test

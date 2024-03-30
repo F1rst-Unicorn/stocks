@@ -148,7 +148,7 @@ class LocationTest : Base() {
 
         val locations = updateService.getLocations(Instant.EPOCH)
         Assertions.assertThat(locations).filteredOn(LocationForSynchronisation::name, name)
-            .isNotEmpty()
+            .isNotEmpty
             .anyMatch { it.transactionTimeEnd().isBefore(Constants.INFINITY) }
     }
 
