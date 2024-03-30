@@ -25,6 +25,7 @@ import dagger.Component
 import de.njsm.stocks.client.crypto.CryptoModule
 import de.njsm.stocks.client.network.NetworkModule
 import de.njsm.stocks.servertest.v2.DeviceTest
+import de.njsm.stocks.servertest.v2.EanTest
 import de.njsm.stocks.servertest.v2.FoodItemTest
 import de.njsm.stocks.servertest.v2.FoodTest
 import de.njsm.stocks.servertest.v2.LocationTest
@@ -59,6 +60,8 @@ interface RootComponent {
     fun inject(deviceTest: DeviceTest)
 
     fun inject(registrationTest: RegistrationTest)
+
+    fun inject(eanTest: EanTest)
 
     @Component.Builder
     interface Builder {
