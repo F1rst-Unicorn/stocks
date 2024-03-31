@@ -41,7 +41,7 @@ class CallHandler {
     private static final Logger LOG = LoggerFactory.getLogger(CallHandler.class);
 
     @Inject
-    public CallHandler() {
+    CallHandler() {
     }
 
     StatusCode executeCommand(Call<? extends Response> call) {

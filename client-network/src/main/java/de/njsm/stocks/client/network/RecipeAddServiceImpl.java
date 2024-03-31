@@ -22,6 +22,8 @@
 package de.njsm.stocks.client.network;
 
 import de.njsm.stocks.client.business.RecipeAddService;
+import de.njsm.stocks.client.business.entities.IdImpl;
+import de.njsm.stocks.client.business.entities.Recipe;
 import de.njsm.stocks.client.business.entities.RecipeAddForm;
 import de.njsm.stocks.common.api.*;
 import retrofit2.Call;
@@ -30,7 +32,7 @@ import javax.inject.Inject;
 
 import static java.util.stream.Collectors.toList;
 
-class RecipeAddServiceImpl extends ServiceBase<RecipeAddForm> implements RecipeAddService {
+class RecipeAddServiceImpl extends ServiceQuery<RecipeAddForm, Recipe> implements RecipeAddService {
 
     @Inject
     RecipeAddServiceImpl(ServerApi api, CallHandler callHandler) {
@@ -38,12 +40,12 @@ class RecipeAddServiceImpl extends ServiceBase<RecipeAddForm> implements RecipeA
     }
 
     @Override
-    public void add(RecipeAddForm form) {
-        perform(form);
+    public IdImpl<Recipe> add(RecipeAddForm form) {
+        return retrieve(form);
     }
 
     @Override
-    Call<? extends Response> buildCall(RecipeAddForm input) {
+    Call<? extends DataResponse<Integer>> buildCall(RecipeAddForm input) {
         FullRecipeForInsertion networkData = FullRecipeForInsertion.builder()
                 .recipe(RecipeForInsertion.builder()
                         .name(input.name())

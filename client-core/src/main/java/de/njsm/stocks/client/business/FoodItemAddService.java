@@ -21,8 +21,10 @@
 
 package de.njsm.stocks.client.business;
 
+import de.njsm.stocks.client.business.entities.FoodItem;
 import de.njsm.stocks.client.business.entities.FoodItemToAdd;
+import de.njsm.stocks.client.business.entities.IdImpl;
 
 public interface FoodItemAddService {
-    void add(FoodItemToAdd item);
+    IdImpl<FoodItem> add(FoodItemToAdd item);
 }

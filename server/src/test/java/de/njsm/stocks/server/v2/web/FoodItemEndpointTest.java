@@ -124,7 +124,7 @@ public class FoodItemEndpointTest {
                 .buys(TEST_USER.getUid())
                 .unit(1)
                 .build();
-        Mockito.when(manager.add(expected)).thenReturn(StatusCode.SUCCESS);
+        Mockito.when(manager.add(expected)).thenReturn(Validation.success(1));
 
         Response result = uut.putItem(Util.createMockRequest(), DATE, expected.storedIn(), expected.ofType(), expected.unit().get());
 

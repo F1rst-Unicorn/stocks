@@ -30,7 +30,7 @@ import retrofit2.Call;
 
 import javax.inject.Inject;
 
-public class FoodDeleteServiceImpl extends ServiceBase<Versionable<Food>> implements EntityDeleteService<Food> {
+public class FoodDeleteServiceImpl extends ServiceCommand<Versionable<Food>> implements EntityDeleteService<Food> {
 
     @Inject
     FoodDeleteServiceImpl(ServerApi api, CallHandler callHandler) {

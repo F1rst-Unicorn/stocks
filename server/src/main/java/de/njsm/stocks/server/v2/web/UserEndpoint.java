@@ -52,10 +52,10 @@ public class UserEndpoint extends Endpoint implements Get<UserRecord, User>, Del
 
         if (isValidName(name, "name")) {
             manager.setPrincipals(getPrincipals(request));
-            StatusCode result = manager.add(UserForInsertion.builder()
+            Validation<StatusCode, Integer> result = manager.addReturningId(UserForInsertion.builder()
                     .name(name)
                     .build());
-            return new Response(result);
+            return new DataResponse<>(result);
 
         } else {
             return new DataResponse<>(Validation.fail(StatusCode.INVALID_ARGUMENT));

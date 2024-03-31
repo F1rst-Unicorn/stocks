@@ -112,12 +112,12 @@ public class EanNumberEndpointTest {
                 .eanNumber("CODE")
                 .identifiesFood(2)
                 .build();
-        when(manager.add(data)).thenReturn(SUCCESS);
+        when(manager.addReturningId(data)).thenReturn(Validation.success(1));
 
         Response response = uut.putEanNumber(createMockRequest(), data.eanNumber(), data.identifiesFood());
 
         assertEquals(SUCCESS, response.getStatus());
-        verify(manager).add(data);
+        verify(manager).addReturningId(data);
         Mockito.verify(manager).setPrincipals(TEST_USER);
     }
 

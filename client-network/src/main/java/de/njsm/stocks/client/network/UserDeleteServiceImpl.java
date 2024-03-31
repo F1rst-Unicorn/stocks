@@ -30,7 +30,7 @@ import retrofit2.Call;
 
 import javax.inject.Inject;
 
-public class UserDeleteServiceImpl extends ServiceBase<Versionable<User>> implements EntityDeleteService<User> {
+public class UserDeleteServiceImpl extends ServiceCommand<Versionable<User>> implements EntityDeleteService<User> {
 
     @Inject
     UserDeleteServiceImpl(ServerApi api, CallHandler callHandler) {

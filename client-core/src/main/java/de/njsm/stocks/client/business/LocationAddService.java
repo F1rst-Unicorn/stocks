@@ -21,9 +21,11 @@
 
 package de.njsm.stocks.client.business;
 
+import de.njsm.stocks.client.business.entities.IdImpl;
+import de.njsm.stocks.client.business.entities.Location;
 import de.njsm.stocks.client.business.entities.LocationAddForm;
 
 public interface LocationAddService {
 
-    void add(LocationAddForm locationAddForm);
+    IdImpl<Location> add(LocationAddForm locationAddForm);
 }

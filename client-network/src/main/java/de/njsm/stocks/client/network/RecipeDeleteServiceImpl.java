@@ -29,7 +29,7 @@ import retrofit2.Call;
 import javax.inject.Inject;
 import java.util.stream.Collectors;
 
-class RecipeDeleteServiceImpl extends ServiceBase<RecipeDeleteData> implements RecipeDeleteService {
+class RecipeDeleteServiceImpl extends ServiceCommand<RecipeDeleteData> implements RecipeDeleteService {
 
     @Inject
     RecipeDeleteServiceImpl(ServerApi api, CallHandler callHandler) {

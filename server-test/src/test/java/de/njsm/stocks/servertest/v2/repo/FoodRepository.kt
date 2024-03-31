@@ -34,21 +34,10 @@ class FoodRepository
     @Inject
     constructor(
         private val foodAddService: FoodAddService,
-        private val updateService: UpdateService,
         private val unitRepository: UnitRepository,
     ) {
         fun createNewFood(name: String): IdImpl<Food> {
-            foodAddService.add(FoodAddForm.create(name, false, Period.ZERO, null, unitRepository.anyUnitId.id(), ""))
-            return getIdOfFood(name)
-        }
-
-        private fun getIdOfFood(name: String): IdImpl<Food> {
-            val food = updateService.getFood(Instant.EPOCH)
-            return food.stream()
-                .filter { it.name() == name }
-                .findFirst()
-                .map { IdImpl.create<Food>(it.id()) }
-                .orElseThrow()
+            return foodAddService.add(FoodAddForm.create(name, false, Period.ZERO, null, unitRepository.anyUnitId.id(), ""))
         }
 
         companion object {

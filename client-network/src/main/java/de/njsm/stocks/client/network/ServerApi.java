@@ -45,17 +45,6 @@ public interface ServerApi {
     @PUT("/v3/location/edit")
     Call<Response> editLocation(@Body LocationForEditing location);
 
-    @PUT("/v2/location/rename")
-    Call<Response> renameLocation(@Query("id") int id,
-                                  @Query("version") int version,
-                                  @Query("new") String newName);
-
-    @POST("/v2/location/description")
-    @FormUrlEncoded
-    Call<Response> setLocationDescription(@Query("id") int id,
-                                          @Query("version") int version,
-                                          @Field("description") String description);
-
     @GET("/v2/user")
     Call<ListResponse<BitemporalUser>> getUsers(@Query("bitemporal") int bitemporal,
                                                 @Query("startingFrom") String startingFrom);
@@ -98,7 +87,7 @@ public interface ServerApi {
 
 
     @PUT("/v2/unit")
-    Call<Response> addUnit(@Query("name") String name,
+    Call<DataResponse<Integer>> addUnit(@Query("name") String name,
                            @Query("abbreviation") String abbreviation);
 
     @DELETE("/v2/unit")
@@ -112,7 +101,7 @@ public interface ServerApi {
                             @Query("abbreviation") String abbreviation);
 
     @PUT("/v2/scaled-unit")
-    Call<Response> addScaledUnit(@Query("scale") String scale,
+    Call<DataResponse<Integer>> addScaledUnit(@Query("scale") String scale,
                                  @Query("unit") int unit);
 
     @PUT("/v2/scaled-unit/edit")

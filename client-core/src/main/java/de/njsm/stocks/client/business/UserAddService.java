@@ -21,9 +21,11 @@
 
 package de.njsm.stocks.client.business;
 
+import de.njsm.stocks.client.business.entities.IdImpl;
+import de.njsm.stocks.client.business.entities.User;
 import de.njsm.stocks.client.business.entities.UserAddForm;
 
 public interface UserAddService {
 
-    void add(UserAddForm form);
+    IdImpl<User> add(UserAddForm form);
 }

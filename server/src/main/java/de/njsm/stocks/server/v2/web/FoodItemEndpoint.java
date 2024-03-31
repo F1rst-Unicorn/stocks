@@ -22,16 +22,12 @@
 package de.njsm.stocks.server.v2.web;
 
 
-import de.njsm.stocks.common.api.FoodItem;
-import de.njsm.stocks.common.api.Response;
-import de.njsm.stocks.common.api.StatusCode;
-import de.njsm.stocks.common.api.FoodItemForDeletion;
-import de.njsm.stocks.common.api.FoodItemForEditing;
-import de.njsm.stocks.common.api.FoodItemForInsertion;
+import de.njsm.stocks.common.api.*;
 import de.njsm.stocks.common.api.serialisers.InstantDeserialiser;
 import de.njsm.stocks.server.util.Principals;
 import de.njsm.stocks.server.v2.business.FoodItemManager;
 import de.njsm.stocks.server.v2.db.jooq.tables.records.FoodItemRecord;
+import fj.data.Validation;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
@@ -71,7 +67,7 @@ public class FoodItemEndpoint extends Endpoint implements
             Instant eatByDate = InstantDeserialiser.parseString(expirationDate);
             Principals user = getPrincipals(request);
             manager.setPrincipals(user);
-            StatusCode status = manager.add(FoodItemForInsertion.builder()
+            Validation<StatusCode, Integer> status = manager.add(FoodItemForInsertion.builder()
                     .eatByDate(eatByDate)
                     .ofType(ofType)
                     .storedIn(storedIn)
@@ -79,7 +75,7 @@ public class FoodItemEndpoint extends Endpoint implements
                     .buys(user.getUid())
                     .unit(unit)
                     .build());
-            return new Response(status);
+            return new DataResponse<>(status);
 
         } else {
             return new Response(StatusCode.INVALID_ARGUMENT);

@@ -69,12 +69,13 @@ class LocationTest : Base() {
     fun addAnItem() {
         val name = uniqueName
 
-        locationAddService.add(LocationAddForm.create(name, uniqueName))
+        val id = locationAddService.add(LocationAddForm.create(name, uniqueName))
 
         val locations = updateService.getLocations(Instant.EPOCH)
-        assertThat(locations).filteredOn(LocationForSynchronisation::name, name)
+        assertThat(locations).filteredOn(LocationForSynchronisation::id, id.id())
             .isNotEmpty()
             .allMatch { it.initiates() == 1 }
+            .allMatch { it.name() == name }
     }
 
     @Test

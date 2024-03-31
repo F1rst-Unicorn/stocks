@@ -30,7 +30,7 @@ import retrofit2.Call;
 
 import javax.inject.Inject;
 
-public class EanNumberDeleteServiceImpl extends ServiceBase<Versionable<EanNumber>> implements EntityDeleteService<EanNumber> {
+public class EanNumberDeleteServiceImpl extends ServiceCommand<Versionable<EanNumber>> implements EntityDeleteService<EanNumber> {
 
     @Inject
     EanNumberDeleteServiceImpl(ServerApi api, CallHandler callHandler) {

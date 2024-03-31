@@ -24,6 +24,7 @@ package de.njsm.stocks.server.v2.web;
 import com.google.common.collect.ImmutableSet;
 import de.njsm.stocks.common.api.*;
 import de.njsm.stocks.server.v2.business.RecipeManager;
+import fj.data.Validation;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -70,7 +71,7 @@ public class RecipeEndpointTest {
                 .ingredients(Collections.emptyList())
                 .products(Collections.emptyList())
                 .build();
-        when(recipeManager.add(input)).thenReturn(StatusCode.SUCCESS);
+        when(recipeManager.add(input)).thenReturn(Validation.success(1));
 
         Response result = uut.put(createMockRequest(), input);
 

@@ -27,6 +27,7 @@ import de.njsm.stocks.common.api.ScaledUnitForDeletion;
 import de.njsm.stocks.common.api.ScaledUnitForEditing;
 import de.njsm.stocks.common.api.ScaledUnitForInsertion;
 import de.njsm.stocks.server.v2.business.ScaledUnitManager;
+import fj.data.Validation;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -83,12 +84,12 @@ public class ScaledUnitEndpointTest {
                 .scale(BigDecimal.ONE)
                 .unit(1)
                 .build();
-        when(manager.add(any())).thenReturn(StatusCode.SUCCESS);
+        when(manager.addReturningId(any())).thenReturn(Validation.success(1));
 
         Response response = uut.put(createMockRequest(), input.scale().toPlainString(), input.unit());
 
         assertEquals(StatusCode.SUCCESS, response.getStatus());
-        verify(manager).add(input);
+        verify(manager).addReturningId(input);
         verify(manager).setPrincipals(TEST_USER);
     }
 
@@ -98,12 +99,12 @@ public class ScaledUnitEndpointTest {
                 .scale(BigDecimal.ONE)
                 .unit(1)
                 .build();
-        when(manager.add(any())).thenReturn(StatusCode.DATABASE_UNREACHABLE);
+        when(manager.addReturningId(any())).thenReturn(Validation.fail(StatusCode.DATABASE_UNREACHABLE));
 
         Response response = uut.put(createMockRequest(), input.scale().toPlainString(), input.unit());
 
         assertEquals(StatusCode.DATABASE_UNREACHABLE, response.getStatus());
-        verify(manager).add(input);
+        verify(manager).addReturningId(input);
         verify(manager).setPrincipals(TEST_USER);
     }
 

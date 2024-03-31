@@ -22,14 +22,16 @@
 package de.njsm.stocks.client.network;
 
 import de.njsm.stocks.client.business.FoodAddService;
+import de.njsm.stocks.client.business.entities.Food;
 import de.njsm.stocks.client.business.entities.FoodAddForm;
+import de.njsm.stocks.client.business.entities.IdImpl;
+import de.njsm.stocks.common.api.DataResponse;
 import de.njsm.stocks.common.api.FoodForInsertion;
-import de.njsm.stocks.common.api.Response;
 import retrofit2.Call;
 
 import javax.inject.Inject;
 
-class FoodAddServiceImpl extends ServiceBase<FoodAddForm> implements FoodAddService {
+class FoodAddServiceImpl extends ServiceQuery<FoodAddForm, Food> implements FoodAddService {
 
     @Inject
     FoodAddServiceImpl(ServerApi api, CallHandler callHandler) {
@@ -37,12 +39,12 @@ class FoodAddServiceImpl extends ServiceBase<FoodAddForm> implements FoodAddServ
     }
 
     @Override
-    public void add(FoodAddForm form) {
-        perform(form);
+    public IdImpl<Food> add(FoodAddForm form) {
+        return retrieve(form);
     }
 
     @Override
-    Call<? extends Response> buildCall(FoodAddForm input) {
+    Call<? extends DataResponse<Integer>> buildCall(FoodAddForm input) {
         int days = input.expirationOffset().getDays();
         FoodForInsertion networkData = FoodForInsertion.builder()
                 .name(input.name())

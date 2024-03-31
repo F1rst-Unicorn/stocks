@@ -22,13 +22,15 @@
 package de.njsm.stocks.client.network;
 
 import de.njsm.stocks.client.business.UserAddService;
+import de.njsm.stocks.client.business.entities.IdImpl;
+import de.njsm.stocks.client.business.entities.User;
 import de.njsm.stocks.client.business.entities.UserAddForm;
 import de.njsm.stocks.common.api.DataResponse;
 import retrofit2.Call;
 
 import javax.inject.Inject;
 
-class UserAddServiceImpl extends ServiceBase<UserAddForm> implements UserAddService {
+class UserAddServiceImpl extends ServiceQuery<UserAddForm, User> implements UserAddService {
 
     @Inject
     UserAddServiceImpl(ServerApi api, CallHandler callHandler) {
@@ -36,8 +38,8 @@ class UserAddServiceImpl extends ServiceBase<UserAddForm> implements UserAddServ
     }
 
     @Override
-    public void add(UserAddForm form) {
-        perform(form);
+    public IdImpl<User> add(UserAddForm form) {
+        return retrieve(form);
     }
 
     @Override

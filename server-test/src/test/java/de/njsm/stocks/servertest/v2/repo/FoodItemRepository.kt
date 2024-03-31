@@ -34,7 +34,6 @@ import javax.inject.Inject
 class FoodItemRepository
     @Inject
     constructor(
-        private val updateService: UpdateService,
         private val foodItemAddService: FoodItemAddService,
         private val unitRepository: UnitRepository,
     ) {
@@ -42,11 +41,6 @@ class FoodItemRepository
             location: IdImpl<Location>,
             food: IdImpl<Food>,
         ): IdImpl<FoodItem> {
-            foodItemAddService.add(FoodItemToAdd.create(Instant.EPOCH, food.id(), location.id(), unitRepository.anyUnitId.id()))
-            return updateService.getFoodItems(Instant.EPOCH).stream()
-                .filter { it.ofType() == food.id() && it.storedIn() == location.id() }
-                .map { IdImpl.create<FoodItem>(it.id()) }
-                .findFirst()
-                .get()
+            return foodItemAddService.add(FoodItemToAdd.create(Instant.EPOCH, food.id(), location.id(), unitRepository.anyUnitId.id()))
         }
     }

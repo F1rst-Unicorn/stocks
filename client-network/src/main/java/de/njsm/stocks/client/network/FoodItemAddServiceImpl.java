@@ -22,14 +22,16 @@
 package de.njsm.stocks.client.network;
 
 import de.njsm.stocks.client.business.FoodItemAddService;
+import de.njsm.stocks.client.business.entities.FoodItem;
 import de.njsm.stocks.client.business.entities.FoodItemToAdd;
-import de.njsm.stocks.common.api.Response;
+import de.njsm.stocks.client.business.entities.IdImpl;
+import de.njsm.stocks.common.api.DataResponse;
 import de.njsm.stocks.common.api.serialisers.InstantSerialiser;
 import retrofit2.Call;
 
 import javax.inject.Inject;
 
-class FoodItemAddServiceImpl extends ServiceBase<FoodItemToAdd> implements FoodItemAddService {
+class FoodItemAddServiceImpl extends ServiceQuery<FoodItemToAdd, FoodItem> implements FoodItemAddService {
 
     @Inject
     FoodItemAddServiceImpl(ServerApi api, CallHandler callHandler) {
@@ -37,12 +39,12 @@ class FoodItemAddServiceImpl extends ServiceBase<FoodItemToAdd> implements FoodI
     }
 
     @Override
-    public void add(FoodItemToAdd item) {
-        perform(item);
+    public IdImpl<FoodItem> add(FoodItemToAdd item) {
+        return retrieve(item);
     }
 
     @Override
-    Call<? extends Response> buildCall(FoodItemToAdd input) {
+    Call<? extends DataResponse<Integer>> buildCall(FoodItemToAdd input) {
         return api.addFoodItem(InstantSerialiser.serialize(input.eatBy()),
                 input.storedIn(),
                 input.ofType(),

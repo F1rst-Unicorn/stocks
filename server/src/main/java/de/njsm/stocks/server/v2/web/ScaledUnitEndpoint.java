@@ -24,6 +24,7 @@ package de.njsm.stocks.server.v2.web;
 import de.njsm.stocks.common.api.*;
 import de.njsm.stocks.server.v2.business.ScaledUnitManager;
 import de.njsm.stocks.server.v2.db.jooq.tables.records.ScaledUnitRecord;
+import fj.data.Validation;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
@@ -50,11 +51,11 @@ public class ScaledUnitEndpoint extends Endpoint implements Get<ScaledUnitRecord
                         @QueryParam("scale") String scale,
                         @QueryParam("unit") int unit) {
         manager.setPrincipals(getPrincipals(request));
-        StatusCode status = manager.add(ScaledUnitForInsertion.builder()
+        Validation<StatusCode, Integer> status = manager.addReturningId(ScaledUnitForInsertion.builder()
                 .scale(scale)
                 .unit(unit)
                 .build());
-        return new Response(status);
+        return new DataResponse<>(status);
     }
 
     @PUT

@@ -29,7 +29,7 @@ import retrofit2.Call;
 
 import javax.inject.Inject;
 
-class FoodEditServiceImpl extends ServiceBase<FoodForEditing> implements FoodEditService {
+class FoodEditServiceImpl extends ServiceCommand<FoodForEditing> implements FoodEditService {
 
     @Inject
     FoodEditServiceImpl(ServerApi api, CallHandler callHandler) {

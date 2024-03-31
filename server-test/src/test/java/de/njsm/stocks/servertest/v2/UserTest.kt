@@ -56,11 +56,12 @@ class UserTest : Base() {
     fun addUser() {
         val name = uniqueName
 
-        userAddService.add(UserAddForm.create(name))
+        val id = userAddService.add(UserAddForm.create(name))
 
         assertThat(updateService.getUsers(Instant.EPOCH))
-            .filteredOn(UserForSynchronisation::name, name)
+            .filteredOn(UserForSynchronisation::id, id.id())
             .isNotEmpty
+                .allMatch { it.name() == name }
     }
 
     @Test

@@ -22,14 +22,10 @@
 package de.njsm.stocks.server.v2.web;
 
 
-import de.njsm.stocks.common.api.Response;
-import de.njsm.stocks.common.api.StatusCode;
-import de.njsm.stocks.common.api.Unit;
-import de.njsm.stocks.common.api.UnitForDeletion;
-import de.njsm.stocks.common.api.UnitForInsertion;
-import de.njsm.stocks.common.api.UnitForRenaming;
+import de.njsm.stocks.common.api.*;
 import de.njsm.stocks.server.v2.business.UnitManager;
 import de.njsm.stocks.server.v2.db.jooq.tables.records.UnitRecord;
+import fj.data.Validation;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
@@ -53,15 +49,15 @@ public class UnitEndpoint extends Endpoint implements Get<UnitRecord, Unit>, Del
     @PUT
     @Produces(MediaType.APPLICATION_JSON)
     public Response put(@Context HttpServletRequest request,
-                        @QueryParam("name") String name,
-                        @QueryParam("abbreviation") String abbreviation) {
+                                     @QueryParam("name") String name,
+                                     @QueryParam("abbreviation") String abbreviation) {
         if (isValid(name, "name") && isValid(abbreviation, "abbreviation")) {
             manager.setPrincipals(getPrincipals(request));
-            StatusCode status = manager.add(UnitForInsertion.builder()
+            Validation<StatusCode, Integer> status = manager.addReturningId(UnitForInsertion.builder()
                     .name(name)
                     .abbreviation(abbreviation)
                     .build());
-            return new Response(status);
+            return new DataResponse<>(status);
         } else {
             return new Response(StatusCode.INVALID_ARGUMENT);
         }

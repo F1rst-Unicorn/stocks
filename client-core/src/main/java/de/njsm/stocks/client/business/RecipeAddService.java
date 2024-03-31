@@ -21,9 +21,11 @@
 
 package de.njsm.stocks.client.business;
 
+import de.njsm.stocks.client.business.entities.IdImpl;
+import de.njsm.stocks.client.business.entities.Recipe;
 import de.njsm.stocks.client.business.entities.RecipeAddForm;
 
 public interface RecipeAddService {
 
-    void add(RecipeAddForm form);
+    IdImpl<Recipe> add(RecipeAddForm form);
 }

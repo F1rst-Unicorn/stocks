@@ -32,16 +32,6 @@ class LocationRepository
     @Inject
     constructor(private val locationAddService: LocationAddService, private val updateService: UpdateService) {
         fun createNewLocationType(name: String): IdImpl<Location> {
-            locationAddService.add(LocationAddForm.create(name, ""))
-            return getIdOfLocation(name)
-        }
-
-        private fun getIdOfLocation(name: String): IdImpl<Location> {
-            val locations = updateService.getLocations(Instant.EPOCH)
-            return locations.stream()
-                .filter { it.name() == name }
-                .findFirst()
-                .map { IdImpl.create<Location>(it.id()) }
-                .orElseThrow()
+            return locationAddService.add(LocationAddForm.create(name, ""))
         }
     }
