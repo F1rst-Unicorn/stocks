@@ -33,7 +33,9 @@ import javax.inject.Inject
 
 @Order(400)
 class UpdateChangeTest : Base() {
+
     internal lateinit var locationRepository: LocationRepository
+        @Inject set
 
     @BeforeEach
     fun setUp() {
@@ -77,9 +79,4 @@ class UpdateChangeTest : Base() {
                 .findFirst()
                 .get()
         }
-
-    @Inject
-    fun setLocationRepository(locationRepository: LocationRepository) {
-        this.locationRepository = locationRepository
-    }
 }

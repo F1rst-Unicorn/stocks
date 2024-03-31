@@ -21,9 +21,11 @@
 
 package de.njsm.stocks.client.business;
 
+import de.njsm.stocks.client.business.entities.Food;
 import de.njsm.stocks.client.business.entities.FoodAddForm;
+import de.njsm.stocks.client.business.entities.IdImpl;
 
 public interface FoodAddService {
 
-    void add(FoodAddForm form);
+    IdImpl<Food> add(FoodAddForm form);
 }

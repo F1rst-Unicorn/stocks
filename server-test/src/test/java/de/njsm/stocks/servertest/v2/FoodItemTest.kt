@@ -78,15 +78,16 @@ class FoodItemTest : Base() {
         val foodId = foodRepository.createNewFood(uniqueName)
         val date = Instant.ofEpochMilli(14)
 
-        foodItemAddService.add(FoodItemToAdd.create(date, foodId.id(), locationId.id(), unitRepository.anyUnitId.id()))
+        val id = foodItemAddService.add(FoodItemToAdd.create(date, foodId.id(), locationId.id(), unitRepository.anyUnitId.id()))
 
         val foodItems = updateService.getFoodItems(Instant.EPOCH)
-        assertThat(foodItems).filteredOn(FoodItemForSynchronisation::storedIn, locationId.id())
+        assertThat(foodItems).filteredOn(FoodItemForSynchronisation::id, id.id())
             .isNotEmpty()
             .allMatch { it.eatBy() == date }
             .allMatch { it.registers() == 1 }
             .allMatch { it.buys() == 1 }
             .allMatch { it.ofType() == foodId.id() }
+            .allMatch { it.storedIn() == locationId.id() }
     }
 
     @Test
@@ -96,14 +97,9 @@ class FoodItemTest : Base() {
         val movedLocation = locationRepository.createNewLocationType(uniqueName)
         val date = Instant.ofEpochMilli(14)
         val editedDate = Instant.ofEpochMilli(15)
-        foodItemAddService.add(FoodItemToAdd.create(date, foodId.id(), locationId.id(), unitRepository.anyUnitId.id()))
-        val addedItem =
-            updateService.getFoodItems(Instant.EPOCH).stream()
-                .filter { it.ofType() == foodId.id() }
-                .findFirst()
-                .get()
+        val addedItem = foodItemAddService.add(FoodItemToAdd.create(date, foodId.id(), locationId.id(), unitRepository.anyUnitId.id()))
 
-        foodItemEditService.edit(FoodItemForEditing.create(addedItem.id(), 0, editedDate, movedLocation.id(), addedItem.unit()))
+        foodItemEditService.edit(FoodItemForEditing.create(addedItem.id(), 0, editedDate, movedLocation.id(), unitRepository.anyUnitId.id()))
 
         val foodItems =
             updateService.getFoodItems(Instant.EPOCH).stream()
@@ -123,17 +119,12 @@ class FoodItemTest : Base() {
         val movedLocation = locationRepository.createNewLocationType(uniqueName)
         val date = Instant.ofEpochMilli(14)
         val editedDate = Instant.ofEpochMilli(15)
-        foodItemAddService.add(FoodItemToAdd.create(date, foodId.id(), locationId.id(), unitRepository.anyUnitId.id()))
-        val addedItem =
-            updateService.getFoodItems(Instant.EPOCH).stream()
-                .filter { it.ofType() == foodId.id() }
-                .findFirst()
-                .get()
+        val id = foodItemAddService.add(FoodItemToAdd.create(date, foodId.id(), locationId.id(), unitRepository.anyUnitId.id()))
 
         assertThatExceptionOfType(StatusCodeException::class.java)
             .isThrownBy {
                 foodItemEditService.edit(
-                    FoodItemForEditing.create(addedItem.id(), 99, editedDate, movedLocation.id(), addedItem.unit()),
+                    FoodItemForEditing.create(id.id(), 99, editedDate, movedLocation.id(), unitRepository.anyUnitId.id()),
                 )
             }
             .matches { it.statusCode == StatusCode.INVALID_DATA_VERSION }

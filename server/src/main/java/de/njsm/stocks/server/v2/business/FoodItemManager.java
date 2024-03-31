@@ -21,15 +21,12 @@
 
 package de.njsm.stocks.server.v2.business;
 
-import de.njsm.stocks.common.api.FoodItem;
-import de.njsm.stocks.common.api.StatusCode;
-import de.njsm.stocks.common.api.FoodItemForDeletion;
-import de.njsm.stocks.common.api.FoodItemForEditing;
-import de.njsm.stocks.common.api.FoodItemForInsertion;
+import de.njsm.stocks.common.api.*;
 import de.njsm.stocks.server.util.Principals;
 import de.njsm.stocks.server.v2.db.FoodHandler;
 import de.njsm.stocks.server.v2.db.FoodItemHandler;
 import de.njsm.stocks.server.v2.db.jooq.tables.records.FoodItemRecord;
+import fj.data.Validation;
 
 public class FoodItemManager extends BusinessObject<FoodItemRecord, FoodItem> implements
         BusinessGettable<FoodItemRecord, FoodItem>,
@@ -45,9 +42,16 @@ public class FoodItemManager extends BusinessObject<FoodItemRecord, FoodItem> im
         this.foodHandler = foodHandler;
     }
 
-    public StatusCode add(FoodItemForInsertion item) {
-        return runOperation(() -> dbHandler.add(item)
-                .bind(() -> foodHandler.setToBuyStatus(item.ofTypeIdentifiable(), false)));
+    public Validation<StatusCode, Integer> add(FoodItemForInsertion item) {
+        return runFunction(() -> {
+            Validation<StatusCode, Integer> id = dbHandler.addReturningId(item);
+            if (id.isFail())
+                return id;
+            StatusCode toBuyStatusResult = foodHandler.setToBuyStatus(item.ofTypeIdentifiable(), false);
+            if (toBuyStatusResult.isFail())
+                return Validation.fail(toBuyStatusResult);
+            return id;
+        });
     }
 
     public StatusCode edit(FoodItemForEditing item) {

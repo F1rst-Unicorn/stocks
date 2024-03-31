@@ -66,27 +66,21 @@ class ScaledUnitTest : Base() {
         val unit = unitRepository.createNew(uniqueName, uniqueName)
         val input = ScaledUnitAddForm.create(BigDecimal.ONE, unit.id())
 
-        scaledUnitAddService.add(input)
+        val id = scaledUnitAddService.add(input)
 
         val scaledUnits = updateService.getScaledUnits(Instant.EPOCH)
-        assertThat(scaledUnits).filteredOn(ScaledUnitForSynchronisation::unit, unit.id())
+        assertThat(scaledUnits).filteredOn(ScaledUnitForSynchronisation::id, id.id())
             .isNotEmpty
             .allMatch { it.scale() == input.scale() }
+            .allMatch { it.unit() == unit.id() }
     }
 
     @Test
     fun editAnItem() {
         val unit = unitRepository.createNew(uniqueName, uniqueName)
         val modifiedUnit = unitRepository.createNew(uniqueName, uniqueName)
-        scaledUnitAddService.add(ScaledUnitAddForm.create(BigDecimal.ONE, unit.id()))
-        val scaledUnit =
-            updateService.getScaledUnits(Instant.EPOCH)
-                .stream()
-                .filter { it.unit() == unit.id() }
-                .findFirst()
-                .map { IdImpl.create<ScaledUnit>(it.id()) }
-                .orElseThrow()
-        val input = ScaledUnitForEditing.create(scaledUnit.id(), 0, BigDecimal.TEN, modifiedUnit.id())
+        val id = scaledUnitAddService.add(ScaledUnitAddForm.create(BigDecimal.ONE, unit.id()))
+        val input = ScaledUnitForEditing.create(id.id(), 0, BigDecimal.TEN, modifiedUnit.id())
 
         scaledUnitEditService.edit(input)
 
@@ -100,15 +94,8 @@ class ScaledUnitTest : Base() {
     fun editingFailsWithWrongVersion() {
         val unit = unitRepository.createNew(uniqueName, uniqueName)
         val modifiedUnit = unitRepository.createNew(uniqueName, uniqueName)
-        scaledUnitAddService.add(ScaledUnitAddForm.create(BigDecimal.ONE, unit.id()))
-        val scaledUnit =
-            updateService.getScaledUnits(Instant.EPOCH)
-                .stream()
-                .filter { it.unit() == unit.id() }
-                .findFirst()
-                .map { IdImpl.create<ScaledUnit>(it.id()) }
-                .orElseThrow()
-        val input = ScaledUnitForEditing.create(scaledUnit.id(), 99, BigDecimal.TEN, modifiedUnit.id())
+        val id = scaledUnitAddService.add(ScaledUnitAddForm.create(BigDecimal.ONE, unit.id()))
+        val input = ScaledUnitForEditing.create(id.id(), 99, BigDecimal.TEN, modifiedUnit.id())
 
         assertThatExceptionOfType(StatusCodeException::class.java)
             .isThrownBy {
@@ -132,16 +119,9 @@ class ScaledUnitTest : Base() {
     @Test
     fun delete() {
         val unit = unitRepository.createNew(uniqueName, uniqueName)
-        scaledUnitAddService.add(ScaledUnitAddForm.create(BigDecimal.ONE, unit.id()))
-        val scaledUnit =
-            updateService.getScaledUnits(Instant.EPOCH)
-                .stream()
-                .filter { it.unit() == unit.id() }
-                .findFirst()
-                .map { IdImpl.create<ScaledUnit>(it.id()) }
-                .orElseThrow()
+        val id = scaledUnitAddService.add(ScaledUnitAddForm.create(BigDecimal.ONE, unit.id()))
 
-        scaledUnitDeleteService.delete(ScaledUnitForDeletion.create(scaledUnit.id(), 0))
+        scaledUnitDeleteService.delete(ScaledUnitForDeletion.create(id.id(), 0))
 
         val scaledUnits = updateService.getScaledUnits(Instant.EPOCH)
         assertThat(scaledUnits).filteredOn(ScaledUnitForSynchronisation::unit, unit.id())
@@ -152,18 +132,11 @@ class ScaledUnitTest : Base() {
     @Test
     fun deletingFailsWithWrongVersion() {
         val unit = unitRepository.createNew(uniqueName, uniqueName)
-        scaledUnitAddService.add(ScaledUnitAddForm.create(BigDecimal.ONE, unit.id()))
-        val scaledUnit =
-            updateService.getScaledUnits(Instant.EPOCH)
-                .stream()
-                .filter { it.unit() == unit.id() }
-                .findFirst()
-                .map { IdImpl.create<ScaledUnit>(it.id()) }
-                .orElseThrow()
+        val id = scaledUnitAddService.add(ScaledUnitAddForm.create(BigDecimal.ONE, unit.id()))
 
         assertThatExceptionOfType(StatusCodeException::class.java)
             .isThrownBy {
-                scaledUnitDeleteService.delete(ScaledUnitForDeletion.create(scaledUnit.id(), 99))
+                scaledUnitDeleteService.delete(ScaledUnitForDeletion.create(id.id(), 99))
             }
             .matches { it.statusCode == StatusCode.INVALID_DATA_VERSION }
     }

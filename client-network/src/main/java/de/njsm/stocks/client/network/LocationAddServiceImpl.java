@@ -22,14 +22,16 @@
 package de.njsm.stocks.client.network;
 
 import de.njsm.stocks.client.business.LocationAddService;
+import de.njsm.stocks.client.business.entities.IdImpl;
+import de.njsm.stocks.client.business.entities.Location;
 import de.njsm.stocks.client.business.entities.LocationAddForm;
+import de.njsm.stocks.common.api.DataResponse;
 import de.njsm.stocks.common.api.LocationForInsertion;
-import de.njsm.stocks.common.api.Response;
 import retrofit2.Call;
 
 import javax.inject.Inject;
 
-class LocationAddServiceImpl extends ServiceBase<LocationAddForm> implements LocationAddService {
+class LocationAddServiceImpl extends ServiceQuery<LocationAddForm, Location> implements LocationAddService {
 
     @Inject
     LocationAddServiceImpl(ServerApi api, CallHandler callHandler) {
@@ -37,7 +39,7 @@ class LocationAddServiceImpl extends ServiceBase<LocationAddForm> implements Loc
     }
 
     @Override
-    Call<? extends Response> buildCall(LocationAddForm locationAddForm) {
+    Call<? extends DataResponse<Integer>> buildCall(LocationAddForm locationAddForm) {
         LocationForInsertion networkData = LocationForInsertion.builder()
                 .name(locationAddForm.name())
                 .description(locationAddForm.description())
@@ -47,7 +49,7 @@ class LocationAddServiceImpl extends ServiceBase<LocationAddForm> implements Loc
     }
 
     @Override
-    public void add(LocationAddForm locationAddForm) {
-        perform(locationAddForm);
+    public IdImpl<Location> add(LocationAddForm locationAddForm) {
+        return retrieve(locationAddForm);
     }
 }

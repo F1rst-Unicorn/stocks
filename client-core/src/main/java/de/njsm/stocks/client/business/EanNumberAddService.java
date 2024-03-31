@@ -21,8 +21,10 @@
 
 package de.njsm.stocks.client.business;
 
+import de.njsm.stocks.client.business.entities.EanNumber;
 import de.njsm.stocks.client.business.entities.EanNumberAddForm;
+import de.njsm.stocks.client.business.entities.IdImpl;
 
 public interface EanNumberAddService {
-    void add(EanNumberAddForm eanNumberAddForm);
+    IdImpl<EanNumber> add(EanNumberAddForm eanNumberAddForm);
 }

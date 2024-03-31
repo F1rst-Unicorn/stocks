@@ -34,6 +34,7 @@ import java.util.stream.Collectors;
 
 import static java.util.Collections.emptySet;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
@@ -52,9 +53,9 @@ public class RecipeManagerGeneralTest extends RecipeManagerTestBase {
         when(recipeHandler.addReturningId(recipe)).thenReturn(Validation.success(42));
         when(recipeHandler.commit()).thenReturn(StatusCode.SUCCESS);
 
-        StatusCode result = uut.add(fullRecipeForInsertion);
+        Validation<StatusCode, Integer> result = uut.add(fullRecipeForInsertion);
 
-        assertEquals(StatusCode.SUCCESS, result);
+        assertTrue(result.isSuccess());
         verify(recipeHandler).addReturningId(fullRecipeForInsertion.recipe());
         verify(recipeHandler).commit();
     }
@@ -73,9 +74,9 @@ public class RecipeManagerGeneralTest extends RecipeManagerTestBase {
         when(recipeHandler.commit()).thenReturn(StatusCode.SUCCESS);
         when(ingredientHandler.add(any())).thenReturn(StatusCode.SUCCESS);
 
-        StatusCode result = uut.add(fullRecipeForInsertion);
+        Validation<StatusCode, Integer> result = uut.add(fullRecipeForInsertion);
 
-        assertEquals(StatusCode.SUCCESS, result);
+        assertTrue(result.isSuccess());
         verify(recipeHandler).addReturningId(fullRecipeForInsertion.recipe());
         ArgumentCaptor<RecipeIngredientWithIdForInsertion> arguments = ArgumentCaptor.forClass(RecipeIngredientWithIdForInsertion.class);
         verify(ingredientHandler, Mockito.times(ingredients.size())).add(arguments.capture());
@@ -97,9 +98,9 @@ public class RecipeManagerGeneralTest extends RecipeManagerTestBase {
         when(recipeHandler.commit()).thenReturn(StatusCode.SUCCESS);
         when(ingredientHandler.add(any())).thenReturn(StatusCode.SUCCESS, StatusCode.DATABASE_UNREACHABLE);
 
-        StatusCode result = uut.add(fullRecipeForInsertion);
+        Validation<StatusCode, Integer> result = uut.add(fullRecipeForInsertion);
 
-        assertEquals(StatusCode.DATABASE_UNREACHABLE, result);
+        assertEquals(StatusCode.DATABASE_UNREACHABLE, result.fail());
         verify(recipeHandler).addReturningId(fullRecipeForInsertion.recipe());
         ArgumentCaptor<RecipeIngredientWithIdForInsertion> arguments = ArgumentCaptor.forClass(RecipeIngredientWithIdForInsertion.class);
         verify(ingredientHandler, Mockito.times(ingredients.size())).add(arguments.capture());
@@ -121,9 +122,9 @@ public class RecipeManagerGeneralTest extends RecipeManagerTestBase {
         when(recipeHandler.commit()).thenReturn(StatusCode.SUCCESS);
         when(ingredientHandler.add(any())).thenReturn(StatusCode.SUCCESS, StatusCode.SUCCESS, StatusCode.DATABASE_UNREACHABLE);
 
-        StatusCode result = uut.add(fullRecipeForInsertion);
+        Validation<StatusCode, Integer> result = uut.add(fullRecipeForInsertion);
 
-        assertEquals(StatusCode.DATABASE_UNREACHABLE, result);
+        assertEquals(StatusCode.DATABASE_UNREACHABLE, result.fail());
         verify(recipeHandler).addReturningId(fullRecipeForInsertion.recipe());
         ArgumentCaptor<RecipeIngredientWithIdForInsertion> arguments = ArgumentCaptor.forClass(RecipeIngredientWithIdForInsertion.class);
         verify(ingredientHandler, Mockito.times(ingredients.size())).add(arguments.capture());
@@ -147,9 +148,9 @@ public class RecipeManagerGeneralTest extends RecipeManagerTestBase {
         when(ingredientHandler.add(any())).thenReturn(StatusCode.SUCCESS);
         when(productHandler.add(any())).thenReturn(StatusCode.SUCCESS);
 
-        StatusCode result = uut.add(fullRecipeForInsertion);
+        Validation<StatusCode, Integer> result = uut.add(fullRecipeForInsertion);
 
-        assertEquals(StatusCode.SUCCESS, result);
+        assertTrue(result.isSuccess());
         verify(recipeHandler).addReturningId(fullRecipeForInsertion.recipe());
         ArgumentCaptor<RecipeIngredientWithIdForInsertion> ingredientArguments = ArgumentCaptor.forClass(RecipeIngredientWithIdForInsertion.class);
         verify(ingredientHandler, Mockito.times(ingredients.size())).add(ingredientArguments.capture());
@@ -176,9 +177,9 @@ public class RecipeManagerGeneralTest extends RecipeManagerTestBase {
         when(ingredientHandler.add(any())).thenReturn(StatusCode.SUCCESS);
         when(productHandler.add(any())).thenReturn(StatusCode.SUCCESS, StatusCode.DATABASE_UNREACHABLE);
 
-        StatusCode result = uut.add(fullRecipeForInsertion);
+        Validation<StatusCode, Integer> result = uut.add(fullRecipeForInsertion);
 
-        assertEquals(StatusCode.DATABASE_UNREACHABLE, result);
+        assertEquals(StatusCode.DATABASE_UNREACHABLE, result.fail());
         verify(recipeHandler).addReturningId(fullRecipeForInsertion.recipe());
         ArgumentCaptor<RecipeIngredientWithIdForInsertion> ingredientArguments = ArgumentCaptor.forClass(RecipeIngredientWithIdForInsertion.class);
         verify(ingredientHandler, Mockito.times(ingredients.size())).add(ingredientArguments.capture());

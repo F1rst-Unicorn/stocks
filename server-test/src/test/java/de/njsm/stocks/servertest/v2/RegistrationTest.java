@@ -21,11 +21,13 @@
 
 package de.njsm.stocks.servertest.v2;
 
+import de.njsm.stocks.client.business.UserDeviceAddService;
 import de.njsm.stocks.client.business.entities.IdImpl;
+import de.njsm.stocks.client.business.entities.NewClientTicket;
 import de.njsm.stocks.client.business.entities.User;
+import de.njsm.stocks.client.business.entities.UserDeviceAddForm;
 import de.njsm.stocks.servertest.TestSuite;
 import de.njsm.stocks.servertest.v2.repo.UserRepository;
-import groovy.lang.Tuple2;
 import io.restassured.config.RestAssuredConfig;
 import io.restassured.config.SSLConfig;
 import io.restassured.http.ContentType;
@@ -56,6 +58,8 @@ public class RegistrationTest extends Base {
 
     private UserRepository userRepository;
 
+    private UserDeviceAddService userDeviceAddService;
+
     private IdImpl<User> userId;
 
     private String userName;
@@ -65,9 +69,9 @@ public class RegistrationTest extends Base {
         dagger.inject(this);
         userName = getUniqueName();
         userId = userRepository.createNewUser(userName);
-        Tuple2<Integer, String> ticket = DeviceTest.createNewDevice("Laptop", userId.id());
-        this.ticket = ticket.getSecond();
-        deviceId = ticket.getFirst();
+        NewClientTicket ticket = userDeviceAddService.add(UserDeviceAddForm.create("Laptop", userId));
+        this.ticket = ticket.ticket();
+        deviceId = ticket.id().id();
 
         keypair = SetupTest.generateKeyPair();
         commonName = userName + "$" + userId.id() + "$Laptop$" + deviceId;
@@ -178,5 +182,10 @@ public class RegistrationTest extends Base {
     @Inject
     void setUserRepository(UserRepository userRepository) {
         this.userRepository = userRepository;
+    }
+
+    @Inject
+    void setUserDeviceAddService(UserDeviceAddService userDeviceAddService) {
+        this.userDeviceAddService = userDeviceAddService;
     }
 }

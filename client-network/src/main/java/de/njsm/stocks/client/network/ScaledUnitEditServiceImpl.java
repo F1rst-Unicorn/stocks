@@ -28,7 +28,7 @@ import retrofit2.Call;
 
 import javax.inject.Inject;
 
-class ScaledUnitEditServiceImpl extends ServiceBase<ScaledUnitForEditing> implements ScaledUnitEditService {
+class ScaledUnitEditServiceImpl extends ServiceCommand<ScaledUnitForEditing> implements ScaledUnitEditService {
 
     @Inject
     ScaledUnitEditServiceImpl(ServerApi api, CallHandler callHandler) {

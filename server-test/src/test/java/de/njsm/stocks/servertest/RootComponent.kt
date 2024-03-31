@@ -24,6 +24,7 @@ import dagger.BindsInstance
 import dagger.Component
 import de.njsm.stocks.client.crypto.CryptoModule
 import de.njsm.stocks.client.network.NetworkModule
+import de.njsm.stocks.servertest.v2.Cleanup
 import de.njsm.stocks.servertest.v2.DeviceTest
 import de.njsm.stocks.servertest.v2.EanTest
 import de.njsm.stocks.servertest.v2.FoodItemTest
@@ -41,6 +42,7 @@ import javax.inject.Singleton
 @Singleton
 @Component(modules = [NetworkModule::class, CryptoModule::class, TestModule::class])
 interface RootComponent {
+
     fun inject(locationTest: LocationTest)
 
     fun inject(foodItemTest: FoodItemTest)
@@ -62,6 +64,8 @@ interface RootComponent {
     fun inject(registrationTest: RegistrationTest)
 
     fun inject(eanTest: EanTest)
+
+    fun inject(Cleanup: Cleanup)
 
     @Component.Builder
     interface Builder {

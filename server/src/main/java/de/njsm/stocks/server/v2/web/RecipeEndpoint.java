@@ -24,6 +24,7 @@ package de.njsm.stocks.server.v2.web;
 import de.njsm.stocks.common.api.*;
 import de.njsm.stocks.server.v2.business.RecipeManager;
 import de.njsm.stocks.server.v2.db.jooq.tables.records.RecipeRecord;
+import fj.data.Validation;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
@@ -51,8 +52,8 @@ public class RecipeEndpoint extends Endpoint implements Get<RecipeRecord, Recipe
     public Response put(@Context HttpServletRequest request,
                         @NotNull FullRecipeForInsertion input) {
         manager.setPrincipals(getPrincipals(request));
-        StatusCode result = manager.add(input);
-        return new Response(result);
+        Validation<StatusCode, Integer> result = manager.add(input);
+        return new DataResponse<>(result);
     }
 
     @PUT

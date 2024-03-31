@@ -49,16 +49,6 @@ class UnitRepository
             name: String,
             abbreviation: String?,
         ): IdImpl<Unit> {
-            unitAddService.addUnit(UnitAddForm.create(name, abbreviation))
-            return getIdOf(name)
-        }
-
-        private fun getIdOf(name: String): IdImpl<Unit> {
-            return updateService.getUnits(Instant.EPOCH)
-                .stream()
-                .filter { it.name() == name }
-                .map { v: UnitForSynchronisation -> IdImpl.create<Unit>(v.id()) }
-                .findFirst()
-                .orElseThrow()
+            return unitAddService.addUnit(UnitAddForm.create(name, abbreviation))
         }
     }

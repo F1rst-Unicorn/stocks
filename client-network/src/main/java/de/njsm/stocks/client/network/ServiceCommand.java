@@ -22,24 +22,30 @@
 package de.njsm.stocks.client.network;
 
 
-import de.njsm.stocks.common.api.DataResponse;
+import de.njsm.stocks.client.business.StatusCodeException;
+import de.njsm.stocks.common.api.Response;
+import de.njsm.stocks.common.api.StatusCode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import retrofit2.Call;
 
-abstract class ResultServiceBase<D, T> extends ServiceBase {
+import static de.njsm.stocks.client.network.DataMapper.map;
 
-    private static final Logger LOG = LoggerFactory.getLogger(ResultServiceBase.class);
+abstract class ServiceCommand<T> extends ServiceBase {
 
-    ResultServiceBase(ServerApi api, CallHandler callHandler) {
+    private static final Logger LOG = LoggerFactory.getLogger(ServiceCommand.class);
+
+    ServiceCommand(ServerApi api, CallHandler callHandler) {
         super(api, callHandler);
     }
 
-    D performForResult(T input) {
+    void perform(T input) {
         LOG.debug(input.toString());
-        var call = buildCall(input);
-        return callHandler.executeForResult(call);
+        Call<? extends Response> call = buildCall(input);
+        StatusCode result = callHandler.executeCommand(call);
+        if (result.isFail())
+            throw new StatusCodeException(map(result));
     }
 
-    abstract Call<? extends DataResponse<D>> buildCall(T input);
+    abstract Call<? extends Response> buildCall(T input);
 }

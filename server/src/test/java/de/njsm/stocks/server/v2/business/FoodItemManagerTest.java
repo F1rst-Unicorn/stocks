@@ -94,13 +94,13 @@ public class FoodItemManagerTest {
                 .buys(3)
                 .unit(1)
                 .build();
-        Mockito.when(backend.add(data)).thenReturn(StatusCode.SUCCESS);
+        Mockito.when(backend.addReturningId(data)).thenReturn(Validation.success(1));
         Mockito.when(foodHandler.setToBuyStatus(any(), eq(false))).thenReturn(StatusCode.SUCCESS);
 
-        StatusCode result = uut.add(data);
+        Validation<StatusCode, Integer> result = uut.add(data);
 
         assertTrue(result.isSuccess());
-        Mockito.verify(backend).add(data);
+        Mockito.verify(backend).addReturningId(data);
         Mockito.verify(backend).commit();
         Mockito.verify(foodHandler).setToBuyStatus(any(), eq(false));
     }

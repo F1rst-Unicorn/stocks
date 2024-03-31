@@ -30,7 +30,7 @@ import retrofit2.Call;
 
 import javax.inject.Inject;
 
-public class LocationDeleteServiceImpl extends ServiceBase<Versionable<Location>> implements EntityDeleteService<Location> {
+public class LocationDeleteServiceImpl extends ServiceCommand<Versionable<Location>> implements EntityDeleteService<Location> {
 
     @Inject
     LocationDeleteServiceImpl(ServerApi api, CallHandler callHandler) {

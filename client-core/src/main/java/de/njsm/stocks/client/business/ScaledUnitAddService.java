@@ -21,9 +21,11 @@
 
 package de.njsm.stocks.client.business;
 
+import de.njsm.stocks.client.business.entities.IdImpl;
+import de.njsm.stocks.client.business.entities.ScaledUnit;
 import de.njsm.stocks.client.business.entities.ScaledUnitAddForm;
 
 public interface ScaledUnitAddService {
 
-    void add(ScaledUnitAddForm form);
+    IdImpl<ScaledUnit> add(ScaledUnitAddForm form);
 }

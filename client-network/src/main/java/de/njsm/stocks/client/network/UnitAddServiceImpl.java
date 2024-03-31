@@ -22,13 +22,15 @@
 package de.njsm.stocks.client.network;
 
 import de.njsm.stocks.client.business.UnitAddService;
+import de.njsm.stocks.client.business.entities.IdImpl;
+import de.njsm.stocks.client.business.entities.Unit;
 import de.njsm.stocks.client.business.entities.UnitAddForm;
-import de.njsm.stocks.common.api.Response;
+import de.njsm.stocks.common.api.DataResponse;
 import retrofit2.Call;
 
 import javax.inject.Inject;
 
-class UnitAddServiceImpl extends ServiceBase<UnitAddForm> implements UnitAddService {
+class UnitAddServiceImpl extends ServiceQuery<UnitAddForm, Unit> implements UnitAddService {
 
     @Inject
     UnitAddServiceImpl(ServerApi api, CallHandler callHandler) {
@@ -36,12 +38,12 @@ class UnitAddServiceImpl extends ServiceBase<UnitAddForm> implements UnitAddServ
     }
 
     @Override
-    public void addUnit(UnitAddForm form) {
-        perform(form);
+    public IdImpl<Unit> addUnit(UnitAddForm form) {
+        return retrieve(form);
     }
 
     @Override
-    Call<Response> buildCall(UnitAddForm form) {
+    Call<? extends DataResponse<Integer>> buildCall(UnitAddForm form) {
         return api.addUnit(form.name(), form.abbreviation());
     }
 }

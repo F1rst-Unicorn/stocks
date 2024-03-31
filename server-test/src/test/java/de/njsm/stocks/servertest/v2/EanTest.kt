@@ -59,28 +59,22 @@ class EanTest : Base() {
         val code = uniqueName
         val foodId = foodRepository.createNewFood(uniqueName)
 
-        eanNumberAddService.add(EanNumberAddForm.create(foodId, code))
+        val id = eanNumberAddService.add(EanNumberAddForm.create(foodId, code))
 
         val eanNumbers = updateService.getEanNumbers(Instant.EPOCH)
-        assertThat(eanNumbers).filteredOn(EanNumberForSynchronisation::number, code)
+        assertThat(eanNumbers).filteredOn(EanNumberForSynchronisation::id, id.id())
             .isNotEmpty
             .allMatch { it.identifies() == foodId.id() }
+            .allMatch { it.number() == code }
     }
 
     @Test
     fun removeAnEan() {
         val code = uniqueName
         val foodId = foodRepository.createNewFood(uniqueName)
-        eanNumberAddService.add(EanNumberAddForm.create(foodId, code))
-        val id =
-            updateService.getEanNumbers(Instant.EPOCH)
-                .stream()
-                .filter { it.number() == code }
-                .findFirst()
-                .map { it.id() }
-                .orElseThrow()
+        val id = eanNumberAddService.add(EanNumberAddForm.create(foodId, code))
 
-        eanNumberDeleteService.delete(EanNumberForDeletion.create(id, 0))
+        eanNumberDeleteService.delete(EanNumberForDeletion.create(id.id(), 0))
 
         val eanNumbers = updateService.getEanNumbers(Instant.EPOCH)
         assertThat(eanNumbers).filteredOn(EanNumberForSynchronisation::number, code)

@@ -46,7 +46,7 @@ public class UpdateServiceImpl implements UpdateService {
     private final CallHandler callHandler;
 
     @Inject
-    public UpdateServiceImpl(ServerApi api, CallHandler callHandler) {
+    UpdateServiceImpl(ServerApi api, CallHandler callHandler) {
         this.api = api;
         this.callHandler = callHandler;
     }

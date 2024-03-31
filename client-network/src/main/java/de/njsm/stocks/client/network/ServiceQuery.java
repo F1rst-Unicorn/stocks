@@ -22,24 +22,27 @@
 package de.njsm.stocks.client.network;
 
 
+import de.njsm.stocks.client.business.entities.Entity;
+import de.njsm.stocks.client.business.entities.IdImpl;
 import de.njsm.stocks.common.api.DataResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import retrofit2.Call;
 
-abstract class ResultServiceBase<D, T> extends ServiceBase {
+abstract class ServiceQuery<T, O extends Entity<O>> extends ServiceBase {
 
-    private static final Logger LOG = LoggerFactory.getLogger(ResultServiceBase.class);
+    private static final Logger LOG = LoggerFactory.getLogger(ServiceQuery.class);
 
-    ResultServiceBase(ServerApi api, CallHandler callHandler) {
+    ServiceQuery(ServerApi api, CallHandler callHandler) {
         super(api, callHandler);
     }
 
-    D performForResult(T input) {
+    IdImpl<O> retrieve(T input) {
         LOG.debug(input.toString());
-        var call = buildCall(input);
-        return callHandler.executeForResult(call);
+        Call<? extends DataResponse<Integer>> call = buildCall(input);
+        Integer result = callHandler.executeForResult(call);
+        return IdImpl.create(result);
     }
 
-    abstract Call<? extends DataResponse<D>> buildCall(T input);
+    abstract Call<? extends DataResponse<Integer>> buildCall(T input);
 }

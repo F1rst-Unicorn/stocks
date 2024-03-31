@@ -30,7 +30,7 @@ import javax.inject.Inject;
 
 import static de.njsm.stocks.client.network.DataMapper.map;
 
-class LocationEditServiceImpl extends ServiceBase<LocationForEditing> implements LocationEditService {
+class LocationEditServiceImpl extends ServiceCommand<LocationForEditing> implements LocationEditService {
 
     @Inject
     LocationEditServiceImpl(ServerApi api, CallHandler callHandler) {

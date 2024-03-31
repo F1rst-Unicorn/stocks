@@ -21,19 +21,20 @@
 
 package de.njsm.stocks.servertest.v2;
 
+import de.njsm.stocks.client.business.UserDeviceAddService;
+import de.njsm.stocks.client.business.entities.IdImpl;
+import de.njsm.stocks.client.business.entities.NewClientTicket;
+import de.njsm.stocks.client.business.entities.UserDeviceAddForm;
 import de.njsm.stocks.common.api.*;
 import de.njsm.stocks.servertest.TestSuite;
 import de.njsm.stocks.servertest.v2.repo.RecipeIngredientRepository;
 import de.njsm.stocks.servertest.v2.repo.RecipeProductRepository;
 import de.njsm.stocks.servertest.v2.repo.RecipeRepository;
-import groovy.lang.Tuple2;
 import io.restassured.http.ContentType;
 import io.restassured.path.json.JsonPath;
-import org.junit.jupiter.api.MethodOrderer;
-import org.junit.jupiter.api.Order;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.*;
 
+import javax.inject.Inject;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Iterator;
@@ -46,7 +47,14 @@ import static org.hamcrest.Matchers.equalTo;
 
 @TestMethodOrder(MethodOrderer.MethodName.class)
 @Order(1600)
-public class Cleanup {
+public class Cleanup extends Base {
+
+    private UserDeviceAddService userDeviceAddService;
+
+    @BeforeEach
+    void setUp() {
+        dagger.inject(this);
+    }
 
     @Test
     void clean01Devices() {
@@ -225,13 +233,13 @@ public class Cleanup {
 
     @Test
     void setupOtherTestAccounts() throws IOException {
-        Tuple2<Integer, String> ticket1 = DeviceTest.createNewDevice("cli-client", 1);
-        Tuple2<Integer, String> ticket2 = DeviceTest.createNewDevice("android-client", 1);
+        NewClientTicket ticket1 = userDeviceAddService.add(UserDeviceAddForm.create("cli-client", IdImpl.create(1)));
+        NewClientTicket ticket2 = userDeviceAddService.add(UserDeviceAddForm.create("android-client", IdImpl.create(1)));
 
-        writeToFile("build/01_ticket", ticket1.getSecond());
-        writeToFile("build/01_id", String.valueOf(ticket1.getFirst()));
-        writeToFile("build/02_ticket", ticket2.getSecond());
-        writeToFile("build/02_id", String.valueOf(ticket2.getFirst()));
+        writeToFile("build/01_ticket", ticket1.ticket());
+        writeToFile("build/01_id", String.valueOf(ticket1.id().id()));
+        writeToFile("build/02_ticket", ticket2.ticket());
+        writeToFile("build/02_id", String.valueOf(ticket2.id().id()));
 
     }
 
@@ -262,5 +270,10 @@ public class Cleanup {
             result.add(new VersionedData(it1.next(), it2.next()));
         }
         return result;
+    }
+
+    @Inject
+    void setUserDeviceAddService(UserDeviceAddService userDeviceAddService) {
+        this.userDeviceAddService = userDeviceAddService;
     }
 }

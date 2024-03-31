@@ -27,6 +27,7 @@ import de.njsm.stocks.server.v2.db.RecipeHandler;
 import de.njsm.stocks.server.v2.db.RecipeIngredientHandler;
 import de.njsm.stocks.server.v2.db.RecipeProductHandler;
 import de.njsm.stocks.server.v2.db.jooq.tables.records.RecipeRecord;
+import fj.data.Validation;
 
 public class RecipeManager extends BusinessObject<RecipeRecord, Recipe>
         implements BusinessGettable<RecipeRecord, Recipe>,
@@ -45,17 +46,26 @@ public class RecipeManager extends BusinessObject<RecipeRecord, Recipe>
         this.recipeProductHandler = recipeProductHandler;
     }
 
-    public StatusCode add(FullRecipeForInsertion fullRecipeForInsertion) {
-        return runOperation(() -> dbHandler.addReturningId(fullRecipeForInsertion.recipe())
-                .map(recipeId -> fullRecipeForInsertion.ingredients().stream()
-                        .reduce(StatusCode.SUCCESS,
-                                (code, item) ->
-                                        code.bind(() -> recipeIngredientHandler.add(item.withRecipe(recipeId))),
-                                (x, y) -> x)
-                        .bind(() -> fullRecipeForInsertion.products().stream()
-                                .reduce(StatusCode.SUCCESS,
-                                        (code, item) -> code.bind(() -> recipeProductHandler.add(item.withRecipe(recipeId))),
-                                        (x,y) -> x))).toEither().right().orValue(() -> StatusCode.SUCCESS)
+    public Validation<StatusCode, Integer> add(FullRecipeForInsertion fullRecipeForInsertion) {
+        return runFunction(() -> {
+                    Validation<StatusCode, Integer> id = dbHandler.addReturningId(fullRecipeForInsertion.recipe());
+                    if (id.isFail())
+                        return id;
+                    StatusCode ingredientResult = fullRecipeForInsertion.ingredients().stream()
+                                    .reduce(StatusCode.SUCCESS,
+                                            (code, item) ->
+                                                    code.bind(() -> recipeIngredientHandler.add(item.withRecipe(id.success()))),
+                                            (x, y) -> x);
+                    if (ingredientResult.isFail())
+                        return Validation.fail(ingredientResult);
+                    var productResult = fullRecipeForInsertion.products().stream()
+                                            .reduce(StatusCode.SUCCESS,
+                                                    (code, item) -> code.bind(() -> recipeProductHandler.add(item.withRecipe(id.success()))),
+                                                    (x, y) -> x);
+                    if (productResult.isFail())
+                        return Validation.fail(productResult);
+                    return id;
+                }
         );
     }
 

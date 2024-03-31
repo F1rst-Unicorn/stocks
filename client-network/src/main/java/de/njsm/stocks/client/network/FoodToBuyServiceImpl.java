@@ -28,7 +28,7 @@ import retrofit2.Call;
 
 import javax.inject.Inject;
 
-class FoodToBuyServiceImpl extends ServiceBase<FoodForBuying> implements FoodToBuyService {
+class FoodToBuyServiceImpl extends ServiceCommand<FoodForBuying> implements FoodToBuyService {
 
     @Inject
     FoodToBuyServiceImpl(ServerApi api, CallHandler callHandler) {

@@ -29,7 +29,7 @@ import retrofit2.Call;
 import javax.inject.Inject;
 import java.util.stream.Collectors;
 
-class RecipeEditServiceImpl extends ServiceBase<RecipeEditNetworkData> implements RecipeEditService {
+class RecipeEditServiceImpl extends ServiceCommand<RecipeEditNetworkData> implements RecipeEditService {
 
     @Inject
     RecipeEditServiceImpl(ServerApi api, CallHandler callHandler) {

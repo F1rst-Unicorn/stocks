@@ -22,13 +22,15 @@
 package de.njsm.stocks.client.network;
 
 import de.njsm.stocks.client.business.EanNumberAddService;
+import de.njsm.stocks.client.business.entities.EanNumber;
 import de.njsm.stocks.client.business.entities.EanNumberAddForm;
-import de.njsm.stocks.common.api.Response;
+import de.njsm.stocks.client.business.entities.IdImpl;
+import de.njsm.stocks.common.api.DataResponse;
 import retrofit2.Call;
 
 import javax.inject.Inject;
 
-class EanNumberAddServiceImpl extends ServiceBase<EanNumberAddForm> implements EanNumberAddService {
+class EanNumberAddServiceImpl extends ServiceQuery<EanNumberAddForm, EanNumber> implements EanNumberAddService {
 
     @Inject
     EanNumberAddServiceImpl(ServerApi api, CallHandler callHandler) {
@@ -36,12 +38,12 @@ class EanNumberAddServiceImpl extends ServiceBase<EanNumberAddForm> implements E
     }
 
     @Override
-    public void add(EanNumberAddForm eanNumberAddForm) {
-        perform(eanNumberAddForm);
+    public IdImpl<EanNumber> add(EanNumberAddForm eanNumberAddForm) {
+        return retrieve(eanNumberAddForm);
     }
 
     @Override
-    Call<? extends Response> buildCall(EanNumberAddForm input) {
+    Call<? extends DataResponse<Integer>> buildCall(EanNumberAddForm input) {
         return api.addEanNumber(input.eanNumber(), input.identifies().id());
     }
 }

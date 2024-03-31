@@ -31,15 +31,8 @@ import javax.inject.Inject
 
 class UserRepository
     @Inject
-    constructor(private val userAddService: UserAddService, private val updateService: UpdateService) {
+    constructor(private val userAddService: UserAddService) {
         fun createNewUser(name: String): IdImpl<User> {
-            userAddService.add(UserAddForm.create(name))
-            return updateService.getUsers(Instant.EPOCH)
-                .stream()
-                .filter { it.name() == name }
-                .filter { it.transactionTimeEnd() == INFINITY }
-                .findAny()
-                .map { IdImpl.create<User>(it.id()) }
-                .get()
+            return userAddService.add(UserAddForm.create(name))
         }
     }
