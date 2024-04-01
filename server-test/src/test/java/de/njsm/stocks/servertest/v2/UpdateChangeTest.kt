@@ -33,7 +33,6 @@ import javax.inject.Inject
 
 @Order(400)
 class UpdateChangeTest : Base() {
-
     internal lateinit var locationRepository: LocationRepository
         @Inject set
 

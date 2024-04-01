@@ -20,13 +20,10 @@
  */
 package de.njsm.stocks.servertest.v2.repo
 
-import de.njsm.stocks.client.business.Constants.INFINITY
-import de.njsm.stocks.client.business.UpdateService
 import de.njsm.stocks.client.business.UserAddService
 import de.njsm.stocks.client.business.entities.IdImpl
 import de.njsm.stocks.client.business.entities.User
 import de.njsm.stocks.client.business.entities.UserAddForm
-import java.time.Instant
 import javax.inject.Inject
 
 class UserRepository

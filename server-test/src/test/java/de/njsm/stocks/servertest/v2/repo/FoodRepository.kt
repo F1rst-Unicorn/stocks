@@ -21,12 +21,9 @@
 package de.njsm.stocks.servertest.v2.repo
 
 import de.njsm.stocks.client.business.FoodAddService
-import de.njsm.stocks.client.business.UpdateService
 import de.njsm.stocks.client.business.entities.Food
 import de.njsm.stocks.client.business.entities.FoodAddForm
 import de.njsm.stocks.client.business.entities.IdImpl
-import de.njsm.stocks.servertest.v2.FoodTest
-import java.time.Instant
 import java.time.Period
 import javax.inject.Inject
 

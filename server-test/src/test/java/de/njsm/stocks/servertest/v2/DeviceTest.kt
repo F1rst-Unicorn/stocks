@@ -37,7 +37,6 @@ import javax.inject.Inject
 
 @Order(1400)
 class DeviceTest : Base() {
-
     internal lateinit var userRepository: UserRepository
         @Inject set
 
@@ -61,9 +60,9 @@ class DeviceTest : Base() {
 
         val devices = updateService.getUserDevices(EPOCH)
         assertThat(devices).filteredOn(UserDeviceForSynchronisation::id, newClientTicket.id().id())
-                .isNotEmpty
-                .allMatch { it.name() == name }
-                .allMatch { it.belongsTo() == userId.id() }
+            .isNotEmpty
+            .allMatch { it.name() == name }
+            .allMatch { it.belongsTo() == userId.id() }
     }
 
     @Test
@@ -76,7 +75,7 @@ class DeviceTest : Base() {
 
         val devices = updateService.getUserDevices(EPOCH)
         assertThat(devices).filteredOn(UserDeviceForSynchronisation::id, newUserDeviceTicket.id().id())
-                .isNotEmpty
-                .anyMatch { it.transactionTimeEnd().isBefore(Constants.INFINITY) }
+            .isNotEmpty
+            .anyMatch { it.transactionTimeEnd().isBefore(Constants.INFINITY) }
     }
 }

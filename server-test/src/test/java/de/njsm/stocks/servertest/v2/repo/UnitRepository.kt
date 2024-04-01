@@ -26,7 +26,6 @@ import de.njsm.stocks.client.business.UpdateService
 import de.njsm.stocks.client.business.entities.IdImpl
 import de.njsm.stocks.client.business.entities.Unit
 import de.njsm.stocks.client.business.entities.UnitAddForm
-import de.njsm.stocks.client.business.entities.UnitForSynchronisation
 import java.time.Instant
 import javax.inject.Inject
 

@@ -20,11 +20,7 @@
  */
 package de.njsm.stocks.servertest.v2
 
-import de.njsm.stocks.servertest.TestSuite
-import io.restassured.RestAssured
-import io.restassured.http.ContentType
 import org.assertj.core.api.Assertions.assertThat
-import org.hamcrest.Matchers
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Order
 import org.junit.jupiter.api.Test
@@ -32,7 +28,6 @@ import java.time.Instant
 
 @Order(300)
 class InitialServerTest : Base() {
-
     @BeforeEach
     fun setUp() {
         dagger.inject(this)
@@ -41,36 +36,36 @@ class InitialServerTest : Base() {
     @Test
     fun foodIsEmpty() {
         assertThat(updateService.getFood(Instant.EPOCH))
-                .isEmpty()
+            .isEmpty()
     }
 
     @Test
     fun locationsAreEmpty() {
         assertThat(updateService.getLocations(Instant.EPOCH))
-                .isEmpty()
+            .isEmpty()
     }
 
     @Test
     fun foodItemsAreEmpty() {
         assertThat(updateService.getFoodItems(Instant.EPOCH))
-                .isEmpty()
+            .isEmpty()
     }
 
     @Test
     fun eansAreEmpty() {
         assertThat(updateService.getEanNumbers(Instant.EPOCH))
-                .isEmpty()
+            .isEmpty()
     }
 
     @Test
     fun initialUserAndSystemUserAreOnly() {
         assertThat(updateService.getUsers(Instant.EPOCH))
-                .hasSize(2)
+            .hasSize(2)
     }
 
     @Test
     fun initialDeviceAndSystemUserAreOnly() {
         assertThat(updateService.getUsers(Instant.EPOCH))
-                .hasSize(2)
+            .hasSize(2)
     }
 }

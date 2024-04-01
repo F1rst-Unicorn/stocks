@@ -61,7 +61,7 @@ class UserTest : Base() {
         assertThat(updateService.getUsers(Instant.EPOCH))
             .filteredOn(UserForSynchronisation::id, id.id())
             .isNotEmpty
-                .allMatch { it.name() == name }
+            .allMatch { it.name() == name }
     }
 
     @Test

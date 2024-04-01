@@ -40,12 +40,11 @@ import org.junit.jupiter.api.Order
 import org.junit.jupiter.api.Test
 import java.time.Instant
 import java.time.Period
-import java.util.*
+import java.util.Optional
 import javax.inject.Inject
 
 @Order(800)
 class FoodTest : Base() {
-
     internal lateinit var foodAddService: FoodAddService
         @Inject set
 
@@ -72,12 +71,12 @@ class FoodTest : Base() {
 
         val id = foodAddService.add(input)
 
-        val foods = updateService.getFood(Instant.EPOCH);
+        val foods = updateService.getFood(Instant.EPOCH)
         assertThat(foods).filteredOn(FoodForSynchronisation::id, id.id())
-                .isNotEmpty
-                .allMatch { it.name() == input.name() }
-                .allMatch { it.storeUnit() == input.storeUnit() }
-                .allMatch { it.toBuy() == input.toBuy() }
+            .isNotEmpty
+            .allMatch { it.name() == input.name() }
+            .allMatch { it.storeUnit() == input.storeUnit() }
+            .allMatch { it.toBuy() == input.toBuy() }
     }
 
     @Test
@@ -85,19 +84,29 @@ class FoodTest : Base() {
         val newFood = FoodAddForm.create(uniqueName, false, Period.ofDays(0), null, unitRepository.anyUnitId.id(), "")
         val id = foodAddService.add(newFood)
         val locationId = locationRepository.createNewLocationType(uniqueName)
-        val input = FoodForEditing.create(id.id(), 0, uniqueName, true, newFood.expirationOffset().plusDays(1), Optional.of(locationId.id()), newFood.storeUnit(), uniqueName)
+        val input =
+            FoodForEditing.create(
+                id.id(),
+                0,
+                uniqueName,
+                true,
+                newFood.expirationOffset().plusDays(1),
+                Optional.of(locationId.id()),
+                newFood.storeUnit(),
+                uniqueName,
+            )
 
         foodEditService.edit(input)
 
-        val foods = updateService.getFood(Instant.EPOCH);
+        val foods = updateService.getFood(Instant.EPOCH)
         assertThat(foods).filteredOn(FoodForSynchronisation::id, id.id())
-                .filteredOn(FoodForSynchronisation::version, 1)
-                .isNotEmpty
-                .allMatch { it.name() == input.name() }
-                .allMatch { it.storeUnit() == input.storeUnit() }
-                .allMatch { it.toBuy() == input.toBuy() }
-                .allMatch { it.expirationOffset() == input.expirationOffset() }
-                .allMatch { it.description() == input.description() }
+            .filteredOn(FoodForSynchronisation::version, 1)
+            .isNotEmpty
+            .allMatch { it.name() == input.name() }
+            .allMatch { it.storeUnit() == input.storeUnit() }
+            .allMatch { it.toBuy() == input.toBuy() }
+            .allMatch { it.expirationOffset() == input.expirationOffset() }
+            .allMatch { it.description() == input.description() }
     }
 
     @Test
@@ -108,20 +117,20 @@ class FoodTest : Base() {
         val input = FoodForEditing.create(id.id(), 1, newName, true, Period.ZERO, Optional.empty(), 1, uniqueName)
 
         assertThatExceptionOfType(StatusCodeException::class.java)
-                .isThrownBy {
-                    foodEditService.edit(input)
-                }
-                .matches { it.statusCode == StatusCode.INVALID_DATA_VERSION }
+            .isThrownBy {
+                foodEditService.edit(input)
+            }
+            .matches { it.statusCode == StatusCode.INVALID_DATA_VERSION }
     }
 
     @Test
     fun renamingUnknownIdIsReported() {
         val input = FoodForEditing.create(9999, 0, uniqueName, true, Period.ZERO, Optional.empty(), 1, uniqueName)
         assertThatExceptionOfType(StatusCodeException::class.java)
-                .isThrownBy {
-                    foodEditService.edit(input)
-                }
-                .matches { it.statusCode == StatusCode.NOT_FOUND }
+            .isThrownBy {
+                foodEditService.edit(input)
+            }
+            .matches { it.statusCode == StatusCode.NOT_FOUND }
     }
 
     @Test
@@ -133,8 +142,8 @@ class FoodTest : Base() {
 
         val foods = updateService.getFood(Instant.EPOCH)
         assertThat(foods).filteredOn(FoodForSynchronisation::id, id.id())
-                .isNotEmpty
-                .anyMatch { it.transactionTimeEnd().isBefore(Constants.INFINITY) }
+            .isNotEmpty
+            .anyMatch { it.transactionTimeEnd().isBefore(Constants.INFINITY) }
     }
 
     @Test
@@ -142,18 +151,18 @@ class FoodTest : Base() {
         val newFood = FoodAddForm.create(uniqueName, false, Period.ofDays(0), null, unitRepository.anyUnitId.id(), "")
         val id = foodAddService.add(newFood)
         assertThatExceptionOfType(StatusCodeException::class.java)
-                .isThrownBy {
-                    foodDeleteService.delete(FoodForDeletion.create(id.id(), 9999))
-                }
-                .matches { it.statusCode == StatusCode.INVALID_DATA_VERSION }
+            .isThrownBy {
+                foodDeleteService.delete(FoodForDeletion.create(id.id(), 9999))
+            }
+            .matches { it.statusCode == StatusCode.INVALID_DATA_VERSION }
     }
 
     @Test
     fun deletingUnknownIdIsReported() {
         assertThatExceptionOfType(StatusCodeException::class.java)
-                .isThrownBy {
-                    foodDeleteService.delete(FoodForDeletion.create(9999, 0))
-                }
-                .matches { it.statusCode == StatusCode.NOT_FOUND }
+            .isThrownBy {
+                foodDeleteService.delete(FoodForDeletion.create(9999, 0))
+            }
+            .matches { it.statusCode == StatusCode.NOT_FOUND }
     }
 }

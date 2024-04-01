@@ -25,7 +25,6 @@ import de.njsm.stocks.client.business.UpdateService
 import de.njsm.stocks.client.business.entities.IdImpl
 import de.njsm.stocks.client.business.entities.Location
 import de.njsm.stocks.client.business.entities.LocationAddForm
-import java.time.Instant
 import javax.inject.Inject
 
 class LocationRepository

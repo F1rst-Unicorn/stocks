@@ -25,7 +25,6 @@ import de.njsm.stocks.client.business.EntityDeleteService
 import de.njsm.stocks.client.business.ScaledUnitAddService
 import de.njsm.stocks.client.business.ScaledUnitEditService
 import de.njsm.stocks.client.business.StatusCodeException
-import de.njsm.stocks.client.business.entities.IdImpl
 import de.njsm.stocks.client.business.entities.ScaledUnit
 import de.njsm.stocks.client.business.entities.ScaledUnitAddForm
 import de.njsm.stocks.client.business.entities.ScaledUnitForDeletion
