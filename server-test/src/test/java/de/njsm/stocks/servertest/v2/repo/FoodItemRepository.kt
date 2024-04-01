@@ -22,7 +22,6 @@
 package de.njsm.stocks.servertest.v2.repo
 
 import de.njsm.stocks.client.business.FoodItemAddService
-import de.njsm.stocks.client.business.UpdateService
 import de.njsm.stocks.client.business.entities.Food
 import de.njsm.stocks.client.business.entities.FoodItem
 import de.njsm.stocks.client.business.entities.FoodItemToAdd

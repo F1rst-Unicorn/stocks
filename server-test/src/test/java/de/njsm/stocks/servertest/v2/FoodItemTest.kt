@@ -99,7 +99,9 @@ class FoodItemTest : Base() {
         val editedDate = Instant.ofEpochMilli(15)
         val addedItem = foodItemAddService.add(FoodItemToAdd.create(date, foodId.id(), locationId.id(), unitRepository.anyUnitId.id()))
 
-        foodItemEditService.edit(FoodItemForEditing.create(addedItem.id(), 0, editedDate, movedLocation.id(), unitRepository.anyUnitId.id()))
+        foodItemEditService.edit(
+            FoodItemForEditing.create(addedItem.id(), 0, editedDate, movedLocation.id(), unitRepository.anyUnitId.id()),
+        )
 
         val foodItems =
             updateService.getFoodItems(Instant.EPOCH).stream()

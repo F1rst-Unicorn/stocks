@@ -43,7 +43,6 @@ import javax.inject.Singleton
 @Singleton
 @Component(modules = [NetworkModule::class, CryptoModule::class, TestModule::class])
 interface RootComponent {
-
     fun inject(locationTest: LocationTest)
 
     fun inject(foodItemTest: FoodItemTest)
