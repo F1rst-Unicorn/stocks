@@ -45,6 +45,8 @@ public class RecipeTest extends Base implements Deleter {
 
     private UnitRepository unitRepository;
 
+    private FoodRepository foodRepository;
+
     @BeforeEach
     void setUp() {
         dagger.inject(this);
@@ -169,7 +171,7 @@ public class RecipeTest extends Base implements Deleter {
     }
 
     private String putRecipeWithIngredientAndProduct(String distinguisher) {
-        int foodId = FoodRepository.getAnyFoodId();
+        int foodId = foodRepository.createNewFood(getUniqueName()).id();
         int unitId = unitRepository.getAnyUnitId().id();
 
         String name = getUniqueName(distinguisher);
@@ -236,5 +238,10 @@ public class RecipeTest extends Base implements Deleter {
     @Inject
     void setUnitRepository(UnitRepository unitRepository) {
         this.unitRepository = unitRepository;
+    }
+
+    @Inject
+    void setFoodRepository(FoodRepository foodRepository) {
+        this.foodRepository = foodRepository;
     }
 }

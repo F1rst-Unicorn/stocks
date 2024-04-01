@@ -39,22 +39,4 @@ class FoodRepository
         fun createNewFood(name: String): IdImpl<Food> {
             return foodAddService.add(FoodAddForm.create(name, false, Period.ZERO, null, unitRepository.anyUnitId.id(), ""))
         }
-
-        companion object {
-            @JvmStatic
-            val anyFoodId: Int
-                get() {
-                    val ids =
-                        FoodTest.assertOnFood(false)
-                            .extract()
-                            .jsonPath()
-                            .getList<Int>("data.id")
-
-                    return if (ids.isEmpty()) {
-                        FoodTest.createNewFoodType("getAnyFoodId")
-                    } else {
-                        ids[0]
-                    }
-                }
-        }
     }
