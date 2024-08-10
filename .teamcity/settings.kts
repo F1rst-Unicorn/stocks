@@ -173,4 +173,16 @@ object Build : BuildType({
     cleanup {
         artifacts(builds = 100)
     }
+
+    features {
+        commitStatusPublisher {
+            vcsRootExtId = "${DslContext.settingsRoot.id}"
+            publisher = github {
+                githubUrl = "https://j.njsm.de/git/api/v1"
+                authType = personalToken {
+                    token = "credentialsJSON:557337ec-b35f-4879-a148-11d578a847a4"
+                }
+            }
+        }
+    }
 })
