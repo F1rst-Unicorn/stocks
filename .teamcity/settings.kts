@@ -180,7 +180,7 @@ object Build : BuildType({
             publisher = github {
                 githubUrl = "https://j.njsm.de/git/api/v1"
                 authType = personalToken {
-                    token = "credentialsJSON:557337ec-b35f-4879-a148-11d578a847a4"
+                    token = "credentialsJSON:ce5c2c5e-5f08-45f3-8561-fd13780b9196"
                 }
             }
         }
