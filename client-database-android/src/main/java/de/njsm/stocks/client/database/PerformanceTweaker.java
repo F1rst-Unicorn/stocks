@@ -35,8 +35,13 @@ public class PerformanceTweaker extends Callback {
     @Override
     public void onOpen(@NonNull SupportSQLiteDatabase db) {
         makeCurrentIndicesSelective(db);
-        execSqlAsQuery(db, "pragma analysis_limit=0");
+        execSqlAsQuery(db, "pragma analysis_limit = 0");
         execSqlAsQuery(db, "pragma wal_checkpoint(full)");
+        execSqlAsQuery(db, "pragma journal_mode = WAL");
+        execSqlAsQuery(db, "pragma synchronous = NORMAL");
+        execSqlAsQuery(db, "pragma cache_size = 1000000000");
+        execSqlAsQuery(db, "pragma foreign_keys = true");
+        execSqlAsQuery(db, "pragma temp_store = memory");
         db.execSQL("analyze");
         db.execSQL("pragma optimize");
     }
