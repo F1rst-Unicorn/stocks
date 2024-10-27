@@ -24,7 +24,7 @@ setting.
 
 ## References
 
-* https://j.njsm.de/git/ansible/stocks
+* https://veenj.de/git/ansible/stocks
 
 ## License
 

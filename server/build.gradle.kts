@@ -87,7 +87,7 @@ val profile = if (project.properties["profile"] == "teamcity") {
     val postgresDb = System.getenv("POSTGRESQL_DB")
     val userHome = System.getProperty("user.home")
     mapOf(
-        "de.njsm.stocks.server.v2.db.host" to "eregion.m.njsm.de",
+        "de.njsm.stocks.server.v2.db.host" to "eregion.veenj.de",
         "de.njsm.stocks.server.v2.db.port" to "5432",
         "de.njsm.stocks.server.v2.db.name" to postgresDb,
         "de.njsm.stocks.server.v2.db.postgres.user" to postgresDb,

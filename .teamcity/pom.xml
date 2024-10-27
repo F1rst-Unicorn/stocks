@@ -42,7 +42,7 @@
     </repository>
     <repository>
       <id>teamcity-server</id>
-      <url>https://j.njsm.de/tc/app/dsl-plugins-repository</url>
+      <url>https://veenj.de/tc/app/dsl-plugins-repository</url>
       <snapshots>
         <enabled>true</enabled>
       </snapshots>

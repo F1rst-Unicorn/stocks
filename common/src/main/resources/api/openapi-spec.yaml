@@ -94,7 +94,7 @@ security:
       - mutualTLS
 
 externalDocs:
-  url: https://j.njsm.de/git/veenj/stocks
+  url: https://veenj.de/git/veenj/stocks
 
 components:
   schemas:

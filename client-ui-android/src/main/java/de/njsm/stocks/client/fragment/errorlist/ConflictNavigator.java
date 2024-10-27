@@ -77,7 +77,7 @@ class ConflictNavigator implements ErrorDetailsVisitor.Default<ErrorDescription,
 
     @Override
     public Void recipeEditErrorDetails(RecipeEditForm recipeEditForm, ErrorDescription input) {
-        // https://j.njsm.de/git/veenj/stocks/issues/19
+        // https://veenj.de/git/veenj/stocks/issues/19
         LOG.warn("handling recipe edit conflicts is not supported currently");
         return null;
     }

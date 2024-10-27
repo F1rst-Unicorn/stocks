@@ -16,5 +16,5 @@ See `manual/android/` for the changelog.
 ## Contributing
 
 Get in touch with me, if you are interested in contributing. Issues can be
-reported on [gitea](https://j.njsm.de/git/veenj/stocks/issues/).
+reported on [gitea](https://veenj.de/git/veenj/stocks/issues/).
 
