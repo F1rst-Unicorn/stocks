@@ -35,6 +35,7 @@ import java.util.List;
 import java.util.function.Function;
 
 import static de.njsm.stocks.server.v2.db.jooq.Tables.FOOD;
+import static org.jooq.impl.DSL.val;
 
 
 public class FoodHandler extends CrudDatabaseHandler<FoodRecord, Food> {
@@ -115,7 +116,8 @@ public class FoodHandler extends CrudDatabaseHandler<FoodRecord, Food> {
                     .orElse(FOOD.STORE_UNIT);
 
             Condition locationCondition = item.location()
-                    .map(FOOD.LOCATION::isDistinctFrom)
+                    .map(v -> FOOD.LOCATION.isNull().ne(val(v).isNull())
+                            .or(FOOD.LOCATION.ne(v)))
                     .orElseGet(DSL::falseCondition);
 
             Condition expirationOffsetCondition = item.expirationOffset()
