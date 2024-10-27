@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    stocks is client-server program to manage a household's food stock
+    Copyright (C) 2019  The stocks developers
+
+    This file is part of the stocks program suite.
+
+    stocks is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    stocks is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see https://www.gnu.org/licenses/.
+-->
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd"
+        context="production">
+
+    <changeSet id="1" author="admin">
+        <sql endDelimiter=";;">
+            create index ean_number_initiates on ean_number (initiates);;
+            create index ean_number_identifies on ean_number (identifies);;
+
+            create index food_initiates on food (initiates);;
+            create index food_location on food (location);;
+            create index food_store_unit on food (store_unit);;
+
+            create index food_item_initiates on food_item (initiates);;
+            create index food_item_buys on food_item (buys);;
+            create index food_item_of_type on food_item (of_type);;
+            create index food_item_registers on food_item (registers);;
+            create index food_item_stored_in on food_item (stored_in);;
+            create index food_item_unit on food_item (unit);;
+
+            create index location_initiates on location (initiates);;
+
+            create index recipe_initiates on recipe (initiates);;
+
+            create index recipe_ingredient_initiates on recipe_ingredient (initiates);;
+            create index recipe_ingredient_ingredient on recipe_ingredient (ingredient);;
+            create index recipe_ingredient_recipe on recipe_ingredient (recipe);;
+            create index recipe_ingredient_unit on recipe_ingredient (unit);;
+
+            create index recipe_product_initiates on recipe_product (initiates);;
+            create index recipe_product_product on recipe_product (product);;
+            create index recipe_product_recipe on recipe_product (recipe);;
+            create index recipe_product_unit on recipe_product (unit);;
+
+            create index scaled_unit_initiates on scaled_unit (initiates);;
+            create index scaled_unit_unit on scaled_unit (unit);;
+
+            create index ticket_user_device on ticket (belongs_device);;
+
+            create index unit_initiates on unit (initiates);;
+
+            create index user_initiates on "user" (initiates);;
+
+            create index user_device_initiates on user_device (initiates);;
+            create index user_device_belongs_to on user_device (belongs_to);;
+        </sql>
+        <rollback>
+            <sql endDelimiter=";;">
+                drop index ean_number_initiates;;
+                drop index ean_number_identifies;;
+                drop index food_initiates;;
+                drop index food_location;;
+                drop index food_store_unit;;
+                drop index food_item_initiates;;
+                drop index food_item_buys;;
+                drop index food_item_of_type;;
+                drop index food_item_registers;;
+                drop index food_item_stored_in;;
+                drop index food_item_unit;;
+                drop index location_initiates;;
+                drop index recipe_initiates;;
+                drop index recipe_ingredient_initiates;;
+                drop index recipe_ingredient_ingredient;;
+                drop index recipe_ingredient_recipe;;
+                drop index recipe_ingredient_unit;;
+                drop index recipe_product_initiates;;
+                drop index recipe_product_product;;
+                drop index recipe_product_recipe;;
+                drop index recipe_product_unit;;
+                drop index scaled_unit_initiates;;
+                drop index scaled_unit_unit;;
+                drop index ticket_user_device;;
+                drop index unit_initiates;;
+                drop index user_initiates;;
+                drop index user_device_initiates;;
+                drop index user_device_belongs_to;;
+            </sql>
+        </rollback>
+    </changeSet>
+</databaseChangeLog>
