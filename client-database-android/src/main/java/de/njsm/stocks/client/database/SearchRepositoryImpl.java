@@ -93,6 +93,6 @@ public class SearchRepositoryImpl implements SearchRepository {
     @Override
     public void deleteSearchHistory() {
         searchDao.deleteRecentSearches();
-        searchDao.deleteFoudFood();
+        searchDao.deleteSearchedFood();
     }
 }

@@ -203,5 +203,5 @@ abstract class SearchDao {
     abstract void deleteRecentSearches();
 
     @Query("delete from searched_food")
-    abstract void deleteFoudFood();
+    abstract void deleteSearchedFood();
 }
