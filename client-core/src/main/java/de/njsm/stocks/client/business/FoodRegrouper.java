@@ -52,10 +52,9 @@ class FoodRegrouper {
 
     <O, I extends Id<Food>, U extends Comparable<? super U>>
     List<O> regroup(List<I> food, List<StoredFoodAmount> amounts, ResultFactory<I, O> factory, Function<O, U> sorter) {
-        Map<Integer, List<I>> foodById = food.stream().collect(groupingBy(I::id));
         Map<Integer, List<StoredFoodAmount>> amountsByFoodId = amounts.stream().collect(groupingBy(StoredFoodAmount::foodId));
 
-        return foodById.values().stream().map(v -> v.get(0))
+        return food.stream()
                 .map(v -> regroupSingleFood(v, amountsByFoodId.getOrDefault(v.id(), emptyList()), factory))
                 .sorted(comparing(sorter))
                 .collect(toList());

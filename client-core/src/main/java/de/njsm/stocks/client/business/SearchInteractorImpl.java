@@ -67,7 +67,7 @@ class SearchInteractorImpl implements SearchInteractor {
         return Observable.combineLatest(
                 repository.getFoodBy(query),
                 allAmounts,
-                (v, u) -> foodRegrouper.regroup(v, u, SearchedFoodForListing::create, SearchedFoodForListing::name)
+                (v, u) -> foodRegrouper.regroup(v, u, SearchedFoodForListing::create, w -> 0)
         );
     }
 }
