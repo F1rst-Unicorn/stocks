@@ -18,33 +18,32 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  */
+package de.njsm.stocks.servertest.v2
 
-package de.njsm.stocks.servertest.v2;
-
-import de.njsm.stocks.servertest.TestSuite;
-import org.junit.jupiter.api.Order;
-import org.junit.jupiter.api.Test;
-
-import static io.restassured.RestAssured.when;
+import de.njsm.stocks.servertest.TestSuite
+import io.restassured.RestAssured
+import org.junit.jupiter.api.Order
+import org.junit.jupiter.api.Test
 
 @Order(200)
-public class InvalidAccessTest {
-
+class InvalidAccessTest {
     @Test
-    void cannotAccessServerViaSentry() {
-        when().
-                get("https://" + TestSuite.HOSTNAME + ":" + TestSuite.INIT_PORT + "/v2/location").
-        then()
-                .log().ifValidationFails()
-                .statusCode(404);
+    fun cannotAccessServerViaSentry() {
+        RestAssured
+            .`when`()
+            .get("https://" + TestSuite.HOSTNAME + ":" + TestSuite.INIT_PORT + "/v2/location")
+            .then()
+            .log().ifValidationFails()
+            .statusCode(404)
     }
 
     @Test
-    void cannotAccessSentryViaServer() {
-        when().
-                post(TestSuite.DOMAIN + "/v2/auth/newuser").
-        then()
-                .log().ifValidationFails()
-                .statusCode(404);
+    fun cannotAccessSentryViaServer() {
+        RestAssured
+            .`when`()
+            .post(TestSuite.DOMAIN + "/v2/auth/newuser")
+            .then()
+            .log().ifValidationFails()
+            .statusCode(404)
     }
 }
