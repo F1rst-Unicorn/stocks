@@ -147,6 +147,18 @@ class ListRegrouperTest {
         verify(callback).outerFinished(4, of(4));
     }
 
+    @Test
+    void noMoreOuterWorks() {
+        List<Integer> outer = of(1, 2, 3);
+        List<Integer> inner = of(1, 2, 3, 4);
+
+        test(outer, inner);
+
+        verify(callback).outerFinished(1, of(1));
+        verify(callback).outerFinished(2, of(2));
+        verify(callback).outerFinished(3, of(3));
+    }
+
     private void test(List<Integer> outer, List<Integer> inner) {
         var uut = new ListRegrouper<>(
                 new ListRegrouper.Group<>(outer.iterator(), t -> t),

@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+### Fixed
+
+* A crash after editing a recipe has been fixed
+  ([#107](https://veenj.de/git/veenj/stocks/issues/107)).
+
 ## [4.9.0.1]
 
 ### Fixed

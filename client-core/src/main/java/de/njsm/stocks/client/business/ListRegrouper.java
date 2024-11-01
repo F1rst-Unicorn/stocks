@@ -55,7 +55,7 @@ public class ListRegrouper<E, F> {
                 assert currentInnerKey <= second.index.apply(currentInner);
                 currentInnerKey = second.index.apply(currentInner);
 
-                while (currentInnerKey > currentKey) {
+                while (currentInnerKey > currentKey && first.iterator.hasNext()) {
                     callback.outerFinished(current, inners);
                     current = first.iterator.next();
                     assert currentKey <= first.index.apply(current);
