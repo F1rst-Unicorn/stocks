@@ -18,10 +18,19 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  */
+package de.njsm.stocks.servertest
 
-package de.njsm.stocks.servertest.v2;
+class TestSuite {
+    companion object {
 
-public interface EndpointClient {
+        lateinit var HOSTNAME: String
+        const val CA_PORT: String = "10910"
+        const val INIT_PORT: String = "10911"
+        lateinit var DOMAIN: String
 
-    String getEndpoint();
+        init {
+            HOSTNAME = System.getenv().getOrDefault("DEPLOYMENT_VM", "dp-server")
+            DOMAIN = "https://" + HOSTNAME + ":10912"
+        }
+    }
 }

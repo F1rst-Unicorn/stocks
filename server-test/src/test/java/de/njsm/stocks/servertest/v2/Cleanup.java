@@ -21,14 +21,12 @@
 
 package de.njsm.stocks.servertest.v2;
 
+import de.njsm.stocks.client.business.Constants;
+import de.njsm.stocks.client.business.RecipeDeleteService;
 import de.njsm.stocks.client.business.UserDeviceAddService;
-import de.njsm.stocks.client.business.entities.IdImpl;
-import de.njsm.stocks.client.business.entities.NewClientTicket;
-import de.njsm.stocks.client.business.entities.UserDeviceAddForm;
-import de.njsm.stocks.common.api.*;
+import de.njsm.stocks.client.business.entities.*;
+import de.njsm.stocks.common.api.VersionedData;
 import de.njsm.stocks.servertest.TestSuite;
-import de.njsm.stocks.servertest.v2.repo.RecipeIngredientRepository;
-import de.njsm.stocks.servertest.v2.repo.RecipeProductRepository;
 import de.njsm.stocks.servertest.v2.repo.RecipeRepository;
 import io.restassured.http.ContentType;
 import io.restassured.path.json.JsonPath;
@@ -37,19 +35,23 @@ import org.junit.jupiter.api.*;
 import javax.inject.Inject;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.time.Instant;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
 import static io.restassured.RestAssured.given;
 import static io.restassured.RestAssured.when;
-import static org.hamcrest.Matchers.equalTo;
 
 @TestMethodOrder(MethodOrderer.MethodName.class)
 @Order(1600)
 public class Cleanup extends Base {
 
     private UserDeviceAddService userDeviceAddService;
+
+    private RecipeRepository recipeRepository;
+
+    private RecipeDeleteService recipeDeleteService;
 
     @BeforeEach
     void setUp() {
@@ -115,24 +117,31 @@ public class Cleanup extends Base {
 
     @Test
     void clean04Recipes() {
-        List<RecipeForGetting> data = RecipeRepository.getAll();
+        List<RecipeForSynchronisation> data = recipeRepository.getAll();
 
-        for (RecipeForGetting d : data) {
-            List<RecipeIngredientForGetting> ingredients = RecipeIngredientRepository.getOfRecipe(d);
-            List<RecipeProductForGetting> products = RecipeProductRepository.getOfRecipe(d);
-            FullRecipeForDeletion fullRecipeForDeletion = RecipeRepository.buildDeletionObject(d, ingredients, products);
+        for (RecipeForSynchronisation d : data) {
+            var ingredients = updateService.getRecipeIngredients(Instant.EPOCH);
+            var x = ingredients
+                    .stream()
+                    .filter(it -> it.recipe() == d.id())
+                    .filter(it -> it.transactionTimeEnd().equals(Constants.INFINITY))
+                    .filter(it -> it.validTimeStart().isBefore(Instant.now()))
+                    .filter(it -> it.validTimeEnd().isAfter(Instant.now()))
+                    .map(it -> RecipeIngredientDeleteNetworkData.create(it.id(), it.version()))
+                    .toList();
+            var products = updateService.getRecipeProducts(Instant.EPOCH)
+                    .stream()
+                    .filter(it -> it.recipe() == d.id())
+                    .filter(it -> it.transactionTimeEnd().equals(Constants.INFINITY))
+                    .filter(it -> it.validTimeStart().isBefore(Instant.now()))
+                    .filter(it -> it.validTimeEnd().isAfter(Instant.now()))
+                    .map(it -> RecipeProductDeleteNetworkData.create(it.id(), it.version()))
+                    .toList();
 
-            given()
-                    .log().ifValidationFails()
-                    .contentType(ContentType.JSON)
-                    .body(fullRecipeForDeletion)
-                    .when()
-                    .delete(TestSuite.DOMAIN + "/v2/recipe")
-                    .then()
-                    .log().ifValidationFails()
-                    .statusCode(200)
-                    .contentType(ContentType.JSON)
-                    .body("status", equalTo(0));
+            recipeDeleteService.delete(RecipeDeleteData.create(
+                    VersionedId.create(d.id(), d.version()),
+                    x,
+                    products));
         }
     }
 
@@ -275,5 +284,15 @@ public class Cleanup extends Base {
     @Inject
     void setUserDeviceAddService(UserDeviceAddService userDeviceAddService) {
         this.userDeviceAddService = userDeviceAddService;
+    }
+
+    @Inject
+    void setRecipeRepository(RecipeRepository recipeRepository) {
+        this.recipeRepository = recipeRepository;
+    }
+
+    @Inject
+    void setRecipeDeleteService(RecipeDeleteService recipeDeleteService) {
+        this.recipeDeleteService = recipeDeleteService;
     }
 }
