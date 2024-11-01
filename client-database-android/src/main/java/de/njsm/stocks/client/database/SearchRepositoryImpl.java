@@ -77,17 +77,17 @@ public class SearchRepositoryImpl implements SearchRepository {
 
     @Override
     public Observable<List<SearchedFoodForListingBaseData>> getFoodBy(String query) {
-        return searchDao.getFoodBy(buildContiguousQueryString(query));
+        return searchDao.getFoodBy(query, buildContiguousQueryString(query), buildSubsequenceQueryString(query));
     }
 
     @Override
     public Observable<List<StoredFoodAmount>> getFoodAmountsIn(String query) {
-        return searchDao.getFoodAmountsIn(buildContiguousQueryString(query));
+        return searchDao.getFoodAmountsIn(query, buildContiguousQueryString(query), buildSubsequenceQueryString(query));
     }
 
     @Override
     public Observable<List<StoredFoodAmount>> getFoodDefaultUnitOfFoodWithoutItems(String query) {
-        return searchDao.getFoodAmountsOfAbsentFood(buildContiguousQueryString(query));
+        return searchDao.getFoodAmountsOfAbsentFood(query, buildContiguousQueryString(query), buildSubsequenceQueryString(query));
     }
 
     @Override

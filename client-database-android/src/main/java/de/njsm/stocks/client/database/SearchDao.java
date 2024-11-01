@@ -57,6 +57,43 @@ abstract class SearchDao {
             "'" + ContentResolver.SCHEME_ANDROID_RESOURCE + "://' || :applicationId || '/drawable/ic_menu_recent_history_24dp' as " + SearchManager.SUGGEST_COLUMN_ICON_2 + ", " +
             "null as " + SearchManager.SUGGEST_COLUMN_INTENT_DATA_ID + ", ";
 
+    private static final String FOOD_BY_EXACT_NAME = "0 as type, " +
+            "null as time " +
+            "from current_food f " +
+            "where upper(f.name) = upper(:query) ";
+    private static final String RECENT_FOOD_BY_CONTIGUOUS = "1 as type, " +
+            "s.last_queried as time " +
+            "from searched_food s " +
+            "join current_food f on f.id = s.food " +
+            "where f.name like :contiguousQuery " +
+            "and upper(f.name) != upper(:query) ";
+    private static final String RECENT_FOOD_BY_SUBSEQUENCE = "1 as type, " +
+            "s.last_queried as time " +
+            "from searched_food s " +
+            "join current_food f on f.id = s.food " +
+            "where f.name like :subsequenceQuery " +
+            "and f.name not like :contiguousQuery " +
+            "and upper(f.name) != upper(:query) ";
+    private static final String FOOD_BY_CONTIGUOUS = "3 as type, " +
+            "null as time " +
+            "from current_food f " +
+            "where f.name like :contiguousQuery " +
+            "and upper(f.name) != upper(:query) " +
+            "and f.id not in (" +
+                "select food " +
+                "from searched_food" +
+            ")";
+    private static final String FOOD_BY_SUBSEQUENCE = "4 as type, " +
+            "null as time " +
+            "from current_food f " +
+            "where f.name like :subsequenceQuery " +
+            "and f.name not like :contiguousQuery " +
+            "and upper(f.name) != upper(:query) " +
+                "and f.id not in (" +
+                "select food " +
+                "from searched_food" +
+            ")";
+
     /**
      * There are 7 categories
      * <ul>
@@ -76,27 +113,13 @@ abstract class SearchDao {
     @Query("select * from (" +
                 "select * from ( " +
                 DIRECT_FOOD_SEARCH_COLUMNS +
-                "0 as type, " +
-                "null as time " +
-                "from current_food f " +
-                "where upper(f.name) = upper(:query) " +
+                FOOD_BY_EXACT_NAME +
             ") union all select * from (" +
                 DIRECT_FOOD_SEARCH_COLUMNS +
-                "1 as type, " +
-                "s.last_queried as time " +
-                "from searched_food s " +
-                "join current_food f on f.id = s.food " +
-                "where f.name like :contiguousQuery " +
-                "and upper(f.name) != upper(:query) " +
+                RECENT_FOOD_BY_CONTIGUOUS +
             ") union all select * from (" +
                 DIRECT_FOOD_SEARCH_COLUMNS +
-                "1 as type, " +
-                "s.last_queried as time " +
-                "from searched_food s " +
-                "join current_food f on f.id = s.food " +
-                "where f.name like :subsequenceQuery " +
-                "and f.name not like :contiguousQuery " +
-                "and upper(f.name) != upper(:query) " +
+                RECENT_FOOD_BY_SUBSEQUENCE +
             ") union all select * from (" +
                 UNSPECIFIC_SEARCH_COLUMNS +
                 "1 as type ," +
@@ -112,27 +135,10 @@ abstract class SearchDao {
                 "and s.term not like :contiguousQuery " +
             ") union all select * from (" +
                 DIRECT_FOOD_SEARCH_COLUMNS +
-                "3 as type, " +
-                "null as time " +
-                "from current_food f " +
-                "where f.name like :contiguousQuery " +
-                "and upper(f.name) != upper(:query) " +
-                "and f.id not in (" +
-                    "select food " +
-                    "from searched_food" +
-                ")" +
+                FOOD_BY_CONTIGUOUS +
             ") union all select * from (" +
                 DIRECT_FOOD_SEARCH_COLUMNS +
-                "4 as type, " +
-                "null as time " +
-                "from current_food f " +
-                "where f.name like :subsequenceQuery " +
-                "and f.name not like :contiguousQuery " +
-                "and upper(f.name) != upper(:query) " +
-                "and f.id not in (" +
-                    "select food " +
-                    "from searched_food" +
-                ")" +
+                FOOD_BY_SUBSEQUENCE +
         ")) " +
         "order by type, time desc, length(" + SearchManager.SUGGEST_COLUMN_TEXT_1 + ") desc")
     abstract Cursor search(String applicationId, String query, String contiguousQuery, String subsequenceQuery);
@@ -143,32 +149,47 @@ abstract class SearchDao {
     @Insert(onConflict = REPLACE)
     abstract void store(SearchedFoodDbEntity searchSuggestion);
 
-    @Query("select id, name, to_buy as toBuy " +
-            "from current_food " +
-            "where name like :contiguousQuery")
-    abstract Observable<List<SearchedFoodForListingBaseData>> getFoodBy(String contiguousQuery);
+    private static final String FOOD_SEARCH_QUERY = "select * from ( " +
+                "select id, name, store_unit, to_buy as toBuy," +
+                FOOD_BY_EXACT_NAME +
+            ") union all select * from (" +
+                "select id, name, store_unit, to_buy as toBuy," +
+                RECENT_FOOD_BY_CONTIGUOUS +
+            ") union all select * from (" +
+                "select id, name, store_unit, to_buy as toBuy," +
+                RECENT_FOOD_BY_SUBSEQUENCE +
+            ") union all select * from (" +
+                "select id, name, store_unit, to_buy as toBuy," +
+                FOOD_BY_CONTIGUOUS +
+            ") union all select * from (" +
+                "select id, name, store_unit, to_buy as toBuy," +
+                FOOD_BY_SUBSEQUENCE +
+            ")";
+
+    @Query("select id, name, toBuy from (" +
+            FOOD_SEARCH_QUERY + ") " +
+            "order by type, time desc, length(name) desc")
+    abstract Observable<List<SearchedFoodForListingBaseData>> getFoodBy(String query, String contiguousQuery, String subsequenceQuery);
 
     @Query("select i.of_type as foodId, s.id as scaledUnitId, u.id as unitId, " +
             "count(1) as numberOfFoodItemsWithSameScaledUnit, s.scale as scale, u.abbreviation as abbreviation " +
             "from current_food_item i " +
-            "join current_food f on i.of_type = f.id " +
+            "join (select id from (" + FOOD_SEARCH_QUERY + ")) f on i.of_type = f.id " +
             "join current_scaled_unit s on i.unit = s.id " +
             "join current_unit u on s.unit = u.id " +
-            "where f.name like :contiguousQuery " +
             "group by i.of_type, s.id, u.id, s.scale, u.abbreviation")
-    abstract Observable<List<StoredFoodAmount>> getFoodAmountsIn(String contiguousQuery);
+    abstract Observable<List<StoredFoodAmount>> getFoodAmountsIn(String query, String contiguousQuery, String subsequenceQuery);
 
     @Query("select f.id as foodId, s.id as scaledUnitId, u.id as unitId, " +
             "0 as numberOfFoodItemsWithSameScaledUnit, s.scale as scale, u.abbreviation as abbreviation " +
-            "from current_food f " +
+            "from (select id, store_unit from (" + FOOD_SEARCH_QUERY + ")) f " +
             "join current_scaled_unit s on f.store_unit = s.id " +
             "join current_unit u on s.unit = u.id " +
-            "where f.name like :contiguousQuery " +
             "and f.id not in (" +
                 "select of_type " +
                 "from current_food_item" +
             ")")
-    abstract Observable<List<StoredFoodAmount>> getFoodAmountsOfAbsentFood(String contiguousQuery);
+    abstract Observable<List<StoredFoodAmount>> getFoodAmountsOfAbsentFood(String query, String contiguousQuery, String subsequenceQuery);
 
     @Query("select * " +
             "from recent_search")

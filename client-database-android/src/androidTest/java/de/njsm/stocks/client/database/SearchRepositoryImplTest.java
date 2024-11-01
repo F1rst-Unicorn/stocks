@@ -89,23 +89,39 @@ public class SearchRepositoryImplTest extends DbTestCase {
 
     @Test
     public void gettingFoodBySearchQueryWorks() {
-        var foundFood = standardEntities.foodDbEntityBuilder()
-                .name("found")
+        var foundFoodBySameName = standardEntities.foodDbEntityBuilder()
+                .name("oun")
                 .build();
-        var filteredFOod = standardEntities.foodDbEntityBuilder()
+        var foundFoodByContiguousRange = standardEntities.foodDbEntityBuilder()
+                .name("xxounxx")
+                .build();
+        var foundFoodBySubsequence = standardEntities.foodDbEntityBuilder()
+                .name("xoxuxnx")
+                .build();
+        var filteredFood = standardEntities.foodDbEntityBuilder()
                 .name("filtered")
                 .build();
-        stocksDatabase.synchronisationDao().writeFood(List.of(foundFood, filteredFOod));
+        stocksDatabase.synchronisationDao().writeFood(List.of(
+                foundFoodBySameName,
+                foundFoodByContiguousRange,
+                foundFoodBySubsequence,
+                filteredFood));
 
         var actual = uut.getFoodBy("oun");
 
         testList(actual).assertValue(List.of(
-                SearchedFoodForListingBaseData.create(
-                        foundFood.id(),
-                        foundFood.name(),
-                        foundFood.toBuy()
-                )
+                fromEntity(foundFoodBySameName),
+                fromEntity(foundFoodByContiguousRange),
+                fromEntity(foundFoodBySubsequence)
         ));
+    }
+
+    private static SearchedFoodForListingBaseData fromEntity(FoodDbEntity entity) {
+        return SearchedFoodForListingBaseData.create(
+                entity.id(),
+                entity.name(),
+                entity.toBuy()
+        );
     }
 
     @Test
@@ -116,37 +132,82 @@ public class SearchRepositoryImplTest extends DbTestCase {
                 .unit(unit.id())
                 .build();
         stocksDatabase.synchronisationDao().writeScaledUnits(List.of(scaledUnit));
-        var foundFood = standardEntities.foodDbEntityBuilder()
-                .name("found")
+        var foundFoodBySameName = standardEntities.foodDbEntityBuilder()
+                .name("oun")
+                .storeUnit(scaledUnit.id())
+                .build();
+        var foundFoodByContiguousRange = standardEntities.foodDbEntityBuilder()
+                .name("xxounxx")
+                .storeUnit(scaledUnit.id())
+                .build();
+        var foundFoodBySubsequence = standardEntities.foodDbEntityBuilder()
+                .name("xoxuxnx")
                 .storeUnit(scaledUnit.id())
                 .build();
         var filteredFood = standardEntities.foodDbEntityBuilder()
                 .name("filtered")
                 .storeUnit(scaledUnit.id())
                 .build();
-        stocksDatabase.synchronisationDao().writeFood(List.of(foundFood, filteredFood));
-        var foundFoodItem = standardEntities.foodItemDbEntityBuilder()
-                .ofType(foundFood.id())
+        stocksDatabase.synchronisationDao().writeFood(List.of(
+                foundFoodBySameName,
+                foundFoodByContiguousRange,
+                foundFoodBySubsequence,
+                filteredFood));
+        var foundFoodItemBySameName = standardEntities.foodItemDbEntityBuilder()
+                .ofType(foundFoodBySameName.id())
+                .unit(scaledUnit.id())
+                .build();
+        var foundFoodItemByContiguous = standardEntities.foodItemDbEntityBuilder()
+                .ofType(foundFoodByContiguousRange.id())
+                .unit(scaledUnit.id())
+                .build();
+        var foundFoodItemBySubsequence = standardEntities.foodItemDbEntityBuilder()
+                .ofType(foundFoodBySubsequence.id())
                 .unit(scaledUnit.id())
                 .build();
         var filteredFoodItem = standardEntities.foodItemDbEntityBuilder()
                 .ofType(filteredFood.id())
                 .unit(scaledUnit.id())
                 .build();
-        stocksDatabase.synchronisationDao().writeFoodItems(List.of(foundFoodItem, filteredFoodItem));
+        stocksDatabase.synchronisationDao().writeFoodItems(List.of(
+                foundFoodItemBySameName,
+                foundFoodItemByContiguous,
+                foundFoodItemBySubsequence,
+                filteredFoodItem));
 
-        var actual = uut.getFoodAmountsIn("oun");
+        var actualObservable = uut.getFoodAmountsIn("oun");
 
-        testList(actual).assertValue(List.of(
-                StoredFoodAmount.create(
-                        foundFood.id(),
-                        scaledUnit.id(),
-                        unit.id(),
-                        scaledUnit.scale(),
-                        unit.abbreviation(),
-                        1
-                )
-        ));
+        testList(actualObservable).assertValue(actual ->
+                actual.size() == 3 &&
+                actual.contains(
+                        StoredFoodAmount.create(
+                                foundFoodBySameName.id(),
+                                scaledUnit.id(),
+                                unit.id(),
+                                scaledUnit.scale(),
+                                unit.abbreviation(),
+                                1
+                        )
+                ) &&
+                actual.contains(
+                        StoredFoodAmount.create(
+                                foundFoodByContiguousRange.id(),
+                                scaledUnit.id(),
+                                unit.id(),
+                                scaledUnit.scale(),
+                                unit.abbreviation(),
+                                1
+                        )) &&
+                actual.contains(
+                        StoredFoodAmount.create(
+                                foundFoodBySubsequence.id(),
+                                scaledUnit.id(),
+                                unit.id(),
+                                scaledUnit.scale(),
+                                unit.abbreviation(),
+                                1
+                        ))
+        );
     }
 
     @Test
@@ -157,27 +218,59 @@ public class SearchRepositoryImplTest extends DbTestCase {
                 .unit(unit.id())
                 .build();
         stocksDatabase.synchronisationDao().writeScaledUnits(List.of(scaledUnit));
-        var foundFood = standardEntities.foodDbEntityBuilder()
-                .name("found")
+        var foundFoodBySameName = standardEntities.foodDbEntityBuilder()
+                .name("oun")
+                .storeUnit(scaledUnit.id())
+                .build();
+        var foundFoodByContiguousRange = standardEntities.foodDbEntityBuilder()
+                .name("xxounxx")
+                .storeUnit(scaledUnit.id())
+                .build();
+        var foundFoodBySubsequence = standardEntities.foodDbEntityBuilder()
+                .name("xoxuxnx")
                 .storeUnit(scaledUnit.id())
                 .build();
         var filteredFood = standardEntities.foodDbEntityBuilder()
                 .name("filtered")
                 .storeUnit(scaledUnit.id())
                 .build();
-        stocksDatabase.synchronisationDao().writeFood(List.of(foundFood, filteredFood));
+        stocksDatabase.synchronisationDao().writeFood(List.of(
+                foundFoodBySameName,
+                foundFoodByContiguousRange,
+                foundFoodBySubsequence,
+                filteredFood));
 
-        var actual = uut.getFoodDefaultUnitOfFoodWithoutItems("oun");
+        var actualObservable = uut.getFoodDefaultUnitOfFoodWithoutItems("oun");
 
-        testList(actual).assertValue(List.of(
-                StoredFoodAmount.create(
-                        foundFood.id(),
-                        scaledUnit.id(),
-                        unit.id(),
-                        scaledUnit.scale(),
-                        unit.abbreviation(),
-                        0
-                )
-        ));
+        testList(actualObservable).assertValue(actual ->
+                actual.size() == 3 &&
+                actual.contains(
+                        StoredFoodAmount.create(
+                                foundFoodBySameName.id(),
+                                scaledUnit.id(),
+                                unit.id(),
+                                scaledUnit.scale(),
+                                unit.abbreviation(),
+                                0
+                        )) &&
+                actual.contains(
+                        StoredFoodAmount.create(
+                                foundFoodByContiguousRange.id(),
+                                scaledUnit.id(),
+                                unit.id(),
+                                scaledUnit.scale(),
+                                unit.abbreviation(),
+                                0
+                        )) &&
+                actual.contains(
+                        StoredFoodAmount.create(
+                                foundFoodBySubsequence.id(),
+                                scaledUnit.id(),
+                                unit.id(),
+                                scaledUnit.scale(),
+                                unit.abbreviation(),
+                                0
+                        ))
+        );
     }
 }
