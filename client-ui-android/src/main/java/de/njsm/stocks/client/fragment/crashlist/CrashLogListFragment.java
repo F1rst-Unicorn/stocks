@@ -82,7 +82,7 @@ public class CrashLogListFragment extends BottomToolbarFragment {
             Intent i = new Intent();
             i.setAction(Intent.ACTION_SEND);
             i.putExtra(Intent.EXTRA_TEXT, crashLog.renderedContent());
-            i.putExtra(Intent.EXTRA_EMAIL, new String[] {"stocks" + "@" + "njsm.de"});
+            i.putExtra(Intent.EXTRA_EMAIL, new String[] {"services+stocks.njsm.de.lAkI7ZIzm0Ac" + "@" + "veenj.de"});
             i.putExtra(Intent.EXTRA_SUBJECT, "Stocks Exception Log");
             i.setType("text/plain");
             startActivity(i);

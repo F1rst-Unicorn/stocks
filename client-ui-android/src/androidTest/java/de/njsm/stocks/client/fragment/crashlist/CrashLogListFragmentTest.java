@@ -78,7 +78,7 @@ public class CrashLogListFragmentTest {
         Intents.intended(allOf(
                 IntentMatchers.hasAction(Intent.ACTION_SEND),
                 IntentMatchers.hasExtra(Intent.EXTRA_TEXT, getInput().get(1).renderedContent()),
-                IntentMatchers.hasExtra(Intent.EXTRA_EMAIL, new String[]{"stocks" + "@" + "njsm.de"}),
+                IntentMatchers.hasExtra(Intent.EXTRA_EMAIL, new String[]{"services+stocks.njsm.de.lAkI7ZIzm0Ac" + "@" + "veenj.de"}),
                 IntentMatchers.hasExtra(Intent.EXTRA_SUBJECT, "Stocks Exception Log"),
                 IntentMatchers.hasType("text/plain")
         ));
