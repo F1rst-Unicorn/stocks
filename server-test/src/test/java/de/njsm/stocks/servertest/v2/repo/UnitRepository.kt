@@ -24,7 +24,6 @@ import de.njsm.stocks.client.business.Constants
 import de.njsm.stocks.client.business.UnitAddService
 import de.njsm.stocks.client.business.UpdateService
 import de.njsm.stocks.client.business.entities.IdImpl
-import de.njsm.stocks.client.business.entities.Unit
 import de.njsm.stocks.client.business.entities.UnitAddForm
 import java.time.Instant
 import javax.inject.Inject
@@ -33,22 +32,21 @@ import de.njsm.stocks.client.business.entities.Unit as UnitOfMeasurement
 class UnitRepository
     @Inject
     constructor(private val unitAddService: UnitAddService, private val updateService: UpdateService) {
-        val anyUnitId: IdImpl<Unit>
+        val anyUnitId: IdImpl<UnitOfMeasurement>
             get() =
                 updateService.getUnits(Instant.EPOCH)
                     .stream()
                     .filter { it.transactionTimeEnd() == Constants.INFINITY }
-                    .filter { it.validTimeStart().isBefore(Instant.now()) }
                     .filter { it.validTimeEnd().isAfter(Instant.now()) }
                     .findFirst()
                     .map { it.id() }
-                    .map { IdImpl.create<Unit>(it) }
+                    .map { IdImpl.create<UnitOfMeasurement>(it) }
                     .orElseGet { createNew("getAnyUnitId", "getAnyUnitId") }
 
         fun createNew(
             name: String,
             abbreviation: String?,
-        ): IdImpl<Unit> {
+        ): IdImpl<UnitOfMeasurement> {
             return unitAddService.addUnit(UnitAddForm.create(name, abbreviation))
         }
     }

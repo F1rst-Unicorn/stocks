@@ -168,8 +168,6 @@ class RecipeTest : Base() {
                 .stream()
                 .filter { it.recipe() == id.id() }
                 .filter { it.transactionTimeEnd() == Constants.INFINITY }
-                .filter { it.validTimeStart().isBefore(Instant.now()) }
-                .filter { it.validTimeEnd().isAfter(Instant.now()) }
                 .map {
                     RecipeIngredientEditNetworkData.create(
                         it.id(),
@@ -185,8 +183,6 @@ class RecipeTest : Base() {
                 .stream()
                 .filter { it.recipe() == id.id() }
                 .filter { it.transactionTimeEnd() == Constants.INFINITY }
-                .filter { it.validTimeStart().isBefore(Instant.now()) }
-                .filter { it.validTimeEnd().isAfter(Instant.now()) }
                 .map {
                     RecipeProductEditNetworkData.create(
                         it.id(),
@@ -260,8 +256,6 @@ class RecipeTest : Base() {
                 .stream()
                 .filter { it.recipe() == id.id() }
                 .filter { it.transactionTimeEnd() == Constants.INFINITY }
-                .filter { it.validTimeStart().isBefore(Instant.now()) }
-                .filter { it.validTimeEnd().isAfter(Instant.now()) }
                 .map { RecipeIngredientDeleteNetworkData.create(it.id(), it.version()) }
                 .toList()
         val products =
@@ -269,8 +263,6 @@ class RecipeTest : Base() {
                 .stream()
                 .filter { it.recipe() == id.id() }
                 .filter { it.transactionTimeEnd() == Constants.INFINITY }
-                .filter { it.validTimeStart().isBefore(Instant.now()) }
-                .filter { it.validTimeEnd().isAfter(Instant.now()) }
                 .map { RecipeProductDeleteNetworkData.create(it.id(), it.version()) }
                 .toList()
 

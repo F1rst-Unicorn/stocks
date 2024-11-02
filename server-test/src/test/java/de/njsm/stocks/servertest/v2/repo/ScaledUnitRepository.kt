@@ -52,7 +52,7 @@ class ScaledUnitRepository
 
         fun createNew(
             scale: BigDecimal,
-            unit: IdImpl<Unit> = unitRepository.anyUnitId,
+            unit: IdImpl<UnitOfMeasurement> = unitRepository.anyUnitId,
         ): IdImpl<ScaledUnit> {
             return scaledUnitAddService.add(
                 ScaledUnitAddForm.create(
