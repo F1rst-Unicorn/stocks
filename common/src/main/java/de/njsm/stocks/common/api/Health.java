@@ -21,15 +21,29 @@
 
 package de.njsm.stocks.common.api;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import fj.data.Validation;
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
+@JsonAutoDetect(getterVisibility = JsonAutoDetect.Visibility.PUBLIC_ONLY,
+        setterVisibility = JsonAutoDetect.Visibility.NONE,
+        isGetterVisibility = JsonAutoDetect.Visibility.PUBLIC_ONLY,
+        creatorVisibility = JsonAutoDetect.Visibility.NONE,
+        fieldVisibility = JsonAutoDetect.Visibility.NONE)
 public class Health {
 
     private final boolean database;
 
     private final boolean ca;
 
-    public Health(boolean database, boolean ca) {
+    @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
+    public Health(
+            @JsonProperty("database") boolean database,
+            @JsonProperty("ca") boolean ca) {
+
         this.database = database;
         this.ca = ca;
     }

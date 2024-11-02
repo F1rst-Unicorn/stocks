@@ -19,31 +19,18 @@
  *
  */
 
-package de.njsm.stocks.servertest.v2;
+package de.njsm.stocks.client.business.entities;
 
-import de.njsm.stocks.servertest.TestSuite;
-import io.restassured.http.ContentType;
-import org.junit.jupiter.api.Order;
-import org.junit.jupiter.api.Test;
+import com.google.auto.value.AutoValue;
 
-import static io.restassured.RestAssured.given;
-import static org.hamcrest.Matchers.equalTo;
+@AutoValue
+public abstract class Health {
 
-@Order(500)
-public class HealthTest {
+    public abstract boolean database();
 
-    @Test
-    void testHealth() {
-        given()
-                .log().ifValidationFails().
-        when()
-                .get(TestSuite.DOMAIN + "/stocks/health").
-        then()
-                .log().ifValidationFails()
-                .statusCode(200)
-                .contentType(ContentType.JSON)
-                .body("status", equalTo(0))
-                .body("data.database", equalTo(true))
-                .body("data.ca", equalTo(true));
+    public abstract boolean ca();
+
+    public static Health create(boolean database, boolean ca) {
+        return new AutoValue_Health(database, ca);
     }
 }

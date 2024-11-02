@@ -24,19 +24,7 @@ import dagger.BindsInstance
 import dagger.Component
 import de.njsm.stocks.client.crypto.CryptoModule
 import de.njsm.stocks.client.network.NetworkModule
-import de.njsm.stocks.servertest.v2.Cleanup
-import de.njsm.stocks.servertest.v2.DeviceTest
-import de.njsm.stocks.servertest.v2.EanTest
-import de.njsm.stocks.servertest.v2.FoodItemTest
-import de.njsm.stocks.servertest.v2.FoodTest
-import de.njsm.stocks.servertest.v2.InitialServerTest
-import de.njsm.stocks.servertest.v2.LocationTest
-import de.njsm.stocks.servertest.v2.RecipeTest
-import de.njsm.stocks.servertest.v2.RegistrationTest
-import de.njsm.stocks.servertest.v2.ScaledUnitTest
-import de.njsm.stocks.servertest.v2.UnitTest
-import de.njsm.stocks.servertest.v2.UpdateChangeTest
-import de.njsm.stocks.servertest.v2.UserTest
+import de.njsm.stocks.servertest.v2.*
 import org.junit.jupiter.api.TestInfo
 import javax.inject.Singleton
 
@@ -68,6 +56,8 @@ interface RootComponent {
     fun inject(Cleanup: Cleanup)
 
     fun inject(initialServerTest: InitialServerTest)
+
+    fun inject(healthTest: HealthTest)
 
     @Component.Builder
     interface Builder {

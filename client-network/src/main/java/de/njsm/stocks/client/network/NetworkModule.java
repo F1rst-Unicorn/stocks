@@ -132,6 +132,9 @@ public interface NetworkModule {
     @Binds
     RecipeEditService RecipeEditService(RecipeEditServiceImpl impl);
 
+    @Binds
+    HealthService healthService(HealthServiceImpl impl);
+
     @Provides
     @Singleton
     static ServerApi serverApi(ServerEndpoint serverEndpoint, HostnameInterceptor interceptor) {

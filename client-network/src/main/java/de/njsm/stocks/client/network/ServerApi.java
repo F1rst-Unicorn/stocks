@@ -178,4 +178,7 @@ public interface ServerApi {
 
     @PUT("/v2/recipe/edit")
     Call<Response> editRecipe(@Body FullRecipeForEditing recipe);
+
+    @GET("stocks/health")
+    Call<DataResponse<Health>> getHealth();
 }
