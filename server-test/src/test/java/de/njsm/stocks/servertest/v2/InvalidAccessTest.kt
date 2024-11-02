@@ -31,7 +31,7 @@ class InvalidAccessTest {
     fun cannotAccessServerViaSentry() {
         RestAssured
             .`when`()
-            .get("https://" + TestSuite.HOSTNAME + ":" + TestSuite.INIT_PORT + "/v2/location")
+            .get("https://" + TestSuite.hostname + ":" + TestSuite.INIT_PORT + "/v2/location")
             .then()
             .log().ifValidationFails()
             .statusCode(404)
@@ -41,7 +41,7 @@ class InvalidAccessTest {
     fun cannotAccessSentryViaServer() {
         RestAssured
             .`when`()
-            .post(TestSuite.DOMAIN + "/v2/auth/newuser")
+            .post(TestSuite.domain + "/v2/auth/newuser")
             .then()
             .log().ifValidationFails()
             .statusCode(404)

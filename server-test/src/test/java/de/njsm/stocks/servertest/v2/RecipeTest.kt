@@ -20,27 +20,36 @@
  */
 package de.njsm.stocks.servertest.v2
 
-import de.njsm.stocks.client.business.*
-import de.njsm.stocks.client.business.entities.*
+import de.njsm.stocks.client.business.Constants
+import de.njsm.stocks.client.business.RecipeAddService
+import de.njsm.stocks.client.business.RecipeDeleteService
+import de.njsm.stocks.client.business.RecipeEditService
+import de.njsm.stocks.client.business.StatusCodeException
+import de.njsm.stocks.client.business.entities.IdImpl
 import de.njsm.stocks.client.business.entities.Recipe
+import de.njsm.stocks.client.business.entities.RecipeAddForm
+import de.njsm.stocks.client.business.entities.RecipeDeleteData
+import de.njsm.stocks.client.business.entities.RecipeEditBaseNetworkData
+import de.njsm.stocks.client.business.entities.RecipeEditNetworkData
+import de.njsm.stocks.client.business.entities.RecipeForSynchronisation
+import de.njsm.stocks.client.business.entities.RecipeIngredientDeleteNetworkData
+import de.njsm.stocks.client.business.entities.RecipeIngredientEditNetworkData
+import de.njsm.stocks.client.business.entities.RecipeIngredientToAdd
+import de.njsm.stocks.client.business.entities.RecipeProductDeleteNetworkData
+import de.njsm.stocks.client.business.entities.RecipeProductEditNetworkData
+import de.njsm.stocks.client.business.entities.RecipeProductToAdd
 import de.njsm.stocks.client.business.entities.StatusCode
-import de.njsm.stocks.common.api.*
-import de.njsm.stocks.servertest.TestSuite
-import de.njsm.stocks.servertest.v2.repo.*
+import de.njsm.stocks.client.business.entities.VersionedId
+import de.njsm.stocks.servertest.v2.repo.FoodRepository
 import de.njsm.stocks.servertest.v2.repo.ScaledUnitRepository
 import de.njsm.stocks.servertest.v2.repo.UnitRepository
-import io.restassured.RestAssured
-import io.restassured.http.ContentType
-import io.restassured.response.ValidatableResponse
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatExceptionOfType
-import org.hamcrest.Matchers
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Order
 import org.junit.jupiter.api.Test
 import java.time.Duration
 import java.time.Instant
-import java.util.stream.Collectors
 import javax.inject.Inject
 
 @Order(1300)
@@ -74,13 +83,16 @@ class RecipeTest : Base() {
         val instructions = "instruction"
         val duration = Duration.ofHours(2)
 
-        val id = recipeAddService.add(RecipeAddForm.create(
-            name,
-            instructions,
-            duration,
-            emptyList(),
-            emptyList(),
-        ))
+        val id =
+            recipeAddService.add(
+                RecipeAddForm.create(
+                    name,
+                    instructions,
+                    duration,
+                    emptyList(),
+                    emptyList(),
+                ),
+            )
 
         val recipes = updateService.getRecipes(Instant.EPOCH)
         assertThat(recipes).filteredOn(RecipeForSynchronisation::id, id.id())
@@ -99,40 +111,47 @@ class RecipeTest : Base() {
     fun editingInvalidIdIsReported() {
         assertThatExceptionOfType(StatusCodeException::class.java)
             .isThrownBy {
-                recipeEditService.edit(RecipeEditNetworkData.create(
-                    RecipeEditBaseNetworkData.create(9999, 0, "", "", Duration.ZERO),
-                    emptyList(),
-                    emptyList(),
-                    emptyList(),
-                    emptyList(),
-                    emptyList(),
-                    emptyList(),
-                ))
+                recipeEditService.edit(
+                    RecipeEditNetworkData.create(
+                        RecipeEditBaseNetworkData.create(9999, 0, "", "", Duration.ZERO),
+                        emptyList(),
+                        emptyList(),
+                        emptyList(),
+                        emptyList(),
+                        emptyList(),
+                        emptyList(),
+                    ),
+                )
             }
             .matches { it.statusCode == StatusCode.NOT_FOUND }
     }
 
     @Test
     fun editingInvalidVersionIsReported() {
-        val id = recipeAddService.add(RecipeAddForm.create(
-            uniqueName,
-            "instruction",
-            Duration.ofHours(2),
-            emptyList(),
-            emptyList(),
-        ))
+        val id =
+            recipeAddService.add(
+                RecipeAddForm.create(
+                    uniqueName,
+                    "instruction",
+                    Duration.ofHours(2),
+                    emptyList(),
+                    emptyList(),
+                ),
+            )
 
         assertThatExceptionOfType(StatusCodeException::class.java)
             .isThrownBy {
-                recipeEditService.edit(RecipeEditNetworkData.create(
-                    RecipeEditBaseNetworkData.create(id.id(), 999, "", "", Duration.ZERO),
-                    emptyList(),
-                    emptyList(),
-                    emptyList(),
-                    emptyList(),
-                    emptyList(),
-                    emptyList(),
-                ))
+                recipeEditService.edit(
+                    RecipeEditNetworkData.create(
+                        RecipeEditBaseNetworkData.create(id.id(), 999, "", "", Duration.ZERO),
+                        emptyList(),
+                        emptyList(),
+                        emptyList(),
+                        emptyList(),
+                        emptyList(),
+                        emptyList(),
+                    ),
+                )
             }
             .matches { it.statusCode == StatusCode.INVALID_DATA_VERSION }
     }
@@ -144,74 +163,91 @@ class RecipeTest : Base() {
         val newInstructions = uniqueName
         val newDuration = Duration.ofHours(3)
 
-        val ingredients = updateService.getRecipeIngredients(Instant.EPOCH)
-            .stream()
-            .filter { it.recipe() == id.id() }
-            .filter { it.transactionTimeEnd() == Constants.INFINITY }
-            .filter { it.validTimeStart().isBefore(Instant.now()) }
-            .filter { it.validTimeEnd().isAfter(Instant.now()) }
-            .map { RecipeIngredientEditNetworkData.create(
-                it.id(),
-                it.version(),
-                it.amount() + 2,
-                IdImpl.create(it.unit()),
-                IdImpl.create(it.ingredient())) }
-            .toList()
-        val products = updateService.getRecipeProducts(Instant.EPOCH)
-            .stream()
-            .filter { it.recipe() == id.id() }
-            .filter { it.transactionTimeEnd() == Constants.INFINITY }
-            .filter { it.validTimeStart().isBefore(Instant.now()) }
-            .filter { it.validTimeEnd().isAfter(Instant.now()) }
-            .map { RecipeProductEditNetworkData.create(
-                it.id(),
-                it.version(),
-                it.amount() + 1,
-                IdImpl.create(it.unit()),
-                IdImpl.create(it.product())) }
-            .toList()
+        val ingredients =
+            updateService.getRecipeIngredients(Instant.EPOCH)
+                .stream()
+                .filter { it.recipe() == id.id() }
+                .filter { it.transactionTimeEnd() == Constants.INFINITY }
+                .filter { it.validTimeStart().isBefore(Instant.now()) }
+                .filter { it.validTimeEnd().isAfter(Instant.now()) }
+                .map {
+                    RecipeIngredientEditNetworkData.create(
+                        it.id(),
+                        it.version(),
+                        it.amount() + 2,
+                        IdImpl.create(it.unit()),
+                        IdImpl.create(it.ingredient()),
+                    )
+                }
+                .toList()
+        val products =
+            updateService.getRecipeProducts(Instant.EPOCH)
+                .stream()
+                .filter { it.recipe() == id.id() }
+                .filter { it.transactionTimeEnd() == Constants.INFINITY }
+                .filter { it.validTimeStart().isBefore(Instant.now()) }
+                .filter { it.validTimeEnd().isAfter(Instant.now()) }
+                .map {
+                    RecipeProductEditNetworkData.create(
+                        it.id(),
+                        it.version(),
+                        it.amount() + 1,
+                        IdImpl.create(it.unit()),
+                        IdImpl.create(it.product()),
+                    )
+                }
+                .toList()
 
-        recipeEditService.edit(RecipeEditNetworkData.create(
-            RecipeEditBaseNetworkData.create(id.id(), 0, newName, newInstructions, newDuration),
-            emptyList(),
-            emptyList(),
-            ingredients,
-            emptyList(),
-            emptyList(),
-            products
-        ))
+        recipeEditService.edit(
+            RecipeEditNetworkData.create(
+                RecipeEditBaseNetworkData.create(id.id(), 0, newName, newInstructions, newDuration),
+                emptyList(),
+                emptyList(),
+                ingredients,
+                emptyList(),
+                emptyList(),
+                products,
+            ),
+        )
     }
 
     @Test
     fun deletingInvalidIdIsReported() {
         assertThatExceptionOfType(StatusCodeException::class.java)
             .isThrownBy {
-                recipeDeleteService.delete(RecipeDeleteData.create(
-                    VersionedId.create(9999, 0),
-                    emptyList(),
-                    emptyList(),
-                ))
+                recipeDeleteService.delete(
+                    RecipeDeleteData.create(
+                        VersionedId.create(9999, 0),
+                        emptyList(),
+                        emptyList(),
+                    ),
+                )
             }
             .matches { it.statusCode == StatusCode.NOT_FOUND }
     }
 
     @Test
     fun deletingInvalidVersionIsReported() {
-        val id = recipeAddService.add(RecipeAddForm.create(
-            uniqueName,
-            "instruction",
-            Duration.ofHours(2),
-            emptyList(),
-            emptyList(),
-        ))
+        val id =
+            recipeAddService.add(
+                RecipeAddForm.create(
+                    uniqueName,
+                    "instruction",
+                    Duration.ofHours(2),
+                    emptyList(),
+                    emptyList(),
+                ),
+            )
 
         assertThatExceptionOfType(StatusCodeException::class.java)
             .isThrownBy {
-                recipeDeleteService.delete(RecipeDeleteData.create(
-                    VersionedId.create(id.id(), 999),
-                    emptyList(),
-                    emptyList(),
-                ))
+                recipeDeleteService.delete(
+                    RecipeDeleteData.create(
+                        VersionedId.create(id.id(), 999),
+                        emptyList(),
+                        emptyList(),
+                    ),
+                )
             }
             .matches { it.statusCode == StatusCode.INVALID_DATA_VERSION }
     }
@@ -219,28 +255,32 @@ class RecipeTest : Base() {
     @Test
     fun validDeletionWorks() {
         val id = putRecipeWithIngredientAndProduct()
-        val ingredients = updateService.getRecipeIngredients(Instant.EPOCH)
-            .stream()
-            .filter { it.recipe() == id.id() }
-            .filter { it.transactionTimeEnd() == Constants.INFINITY }
-            .filter { it.validTimeStart().isBefore(Instant.now()) }
-            .filter { it.validTimeEnd().isAfter(Instant.now()) }
-            .map { RecipeIngredientDeleteNetworkData.create(it.id(), it.version()) }
-            .toList()
-        val products = updateService.getRecipeProducts(Instant.EPOCH)
-            .stream()
-            .filter { it.recipe() == id.id() }
-            .filter { it.transactionTimeEnd() == Constants.INFINITY }
-            .filter { it.validTimeStart().isBefore(Instant.now()) }
-            .filter { it.validTimeEnd().isAfter(Instant.now()) }
-            .map { RecipeProductDeleteNetworkData.create(it.id(), it.version()) }
-            .toList()
+        val ingredients =
+            updateService.getRecipeIngredients(Instant.EPOCH)
+                .stream()
+                .filter { it.recipe() == id.id() }
+                .filter { it.transactionTimeEnd() == Constants.INFINITY }
+                .filter { it.validTimeStart().isBefore(Instant.now()) }
+                .filter { it.validTimeEnd().isAfter(Instant.now()) }
+                .map { RecipeIngredientDeleteNetworkData.create(it.id(), it.version()) }
+                .toList()
+        val products =
+            updateService.getRecipeProducts(Instant.EPOCH)
+                .stream()
+                .filter { it.recipe() == id.id() }
+                .filter { it.transactionTimeEnd() == Constants.INFINITY }
+                .filter { it.validTimeStart().isBefore(Instant.now()) }
+                .filter { it.validTimeEnd().isAfter(Instant.now()) }
+                .map { RecipeProductDeleteNetworkData.create(it.id(), it.version()) }
+                .toList()
 
-        recipeDeleteService.delete(RecipeDeleteData.create(
-            VersionedId.create(id.id(), 0),
-            ingredients,
-            products,
-        ))
+        recipeDeleteService.delete(
+            RecipeDeleteData.create(
+                VersionedId.create(id.id(), 0),
+                ingredients,
+                products,
+            ),
+        )
     }
 
     private fun putRecipeWithIngredientAndProduct(): IdImpl<Recipe> {
@@ -248,20 +288,26 @@ class RecipeTest : Base() {
         val name = uniqueName
         val instructions = "instruction"
         val duration = Duration.ofHours(2)
-        return recipeAddService.add(RecipeAddForm.create(
-            name,
-            instructions,
-            duration,
-            listOf(RecipeIngredientToAdd.create(
-                1,
-                foodId,
-                scaledUnitRepository.anyScaledUnitId,
-            )),
-            listOf(RecipeProductToAdd.create(
-                1,
-                foodId,
-                scaledUnitRepository.anyScaledUnitId,
-            )),
-        ))
+        return recipeAddService.add(
+            RecipeAddForm.create(
+                name,
+                instructions,
+                duration,
+                listOf(
+                    RecipeIngredientToAdd.create(
+                        1,
+                        foodId,
+                        scaledUnitRepository.anyScaledUnitId,
+                    ),
+                ),
+                listOf(
+                    RecipeProductToAdd.create(
+                        1,
+                        foodId,
+                        scaledUnitRepository.anyScaledUnitId,
+                    ),
+                ),
+            ),
+        )
     }
 }

@@ -22,9 +22,14 @@ package de.njsm.stocks.servertest.v2
 
 import de.njsm.stocks.client.business.Registrator
 import de.njsm.stocks.client.business.StatusCodeException
-import de.njsm.stocks.client.business.SubsystemException
 import de.njsm.stocks.client.business.UserDeviceAddService
-import de.njsm.stocks.client.business.entities.*
+import de.njsm.stocks.client.business.entities.IdImpl
+import de.njsm.stocks.client.business.entities.RegistrationCsr
+import de.njsm.stocks.client.business.entities.RegistrationEndpoint
+import de.njsm.stocks.client.business.entities.ServerEndpoint
+import de.njsm.stocks.client.business.entities.StatusCode
+import de.njsm.stocks.client.business.entities.User
+import de.njsm.stocks.client.business.entities.UserDeviceAddForm
 import de.njsm.stocks.servertest.TestSuite
 import de.njsm.stocks.servertest.v2.repo.UserRepository
 import io.restassured.RestAssured
@@ -33,9 +38,14 @@ import io.restassured.config.SSLConfig
 import io.restassured.http.ContentType
 import io.restassured.response.ValidatableResponse
 import org.hamcrest.Matchers
-import org.junit.jupiter.api.*
+import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.MethodOrderer.MethodName
+import org.junit.jupiter.api.Order
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.TestMethodOrder
+import org.junit.jupiter.api.fail
 import java.io.File
 import java.security.KeyPair
 import java.security.KeyStore
@@ -75,12 +85,13 @@ class RegistrationTest : Base() {
         dagger.inject(this)
         userName = uniqueName
         userId = userRepository.createNewUser(userName)
-        val ticket = userDeviceAddService.add(
-            UserDeviceAddForm.create(
-                "Laptop",
-                userId
+        val ticket =
+            userDeviceAddService.add(
+                UserDeviceAddForm.create(
+                    "Laptop",
+                    userId,
+                ),
             )
-        )
         this.ticket = ticket.ticket()
         deviceId = ticket.id().id()
 
@@ -109,21 +120,22 @@ class RegistrationTest : Base() {
         tryFailingRegistration(
             deviceId,
             ticket,
-            userName + "$" + userId.id() + "\$Laptop$0"
+            userName + "$" + userId.id() + "\$Laptop$0",
         )
         tryFailingRegistration(
             deviceId,
             ticket,
-            userName + "$" + userId.id() + "\$Lapto$" + deviceId
+            userName + "$" + userId.id() + "\$Lapto$" + deviceId,
         )
         tryFailingRegistration(
             deviceId,
             ticket,
-            "Jack$" + userId.id() + "\$Laptop$" + deviceId
+            "Jack$" + userId.id() + "\$Laptop$" + deviceId,
         )
         tryFailingRegistration(
-            deviceId, ticket,
-            "$userName$0\$Laptop$$deviceId"
+            deviceId,
+            ticket,
+            "$userName$0\$Laptop$$deviceId",
         )
         tryFailingRegistration(deviceId, ticket, "")
     }
@@ -148,7 +160,7 @@ class RegistrationTest : Base() {
             .queryParam("id", deviceId)
             .queryParam("version", 0)
             .`when`()
-            .delete(TestSuite.DOMAIN + "/v2/device")
+            .delete(TestSuite.domain + "/v2/device")
             .then()
             .log().ifValidationFails()
             .statusCode(200)
@@ -163,22 +175,22 @@ class RegistrationTest : Base() {
     private fun tryFailingRegistration(
         deviceId: Int,
         ticket: String,
-        commonName: String
+        commonName: String,
     ) {
         val csr = SetupTest.getCsr(keypair, commonName)
         try {
             registrator.getOwnCertificate(
                 RegistrationEndpoint.create(
-                    TestSuite.HOSTNAME,
+                    TestSuite.hostname,
                     TestSuite.INIT_PORT.toInt(),
                     serverEndpoint.trustManagerFactory(),
-                    serverEndpoint.keyManagerFactory()
+                    serverEndpoint.keyManagerFactory(),
                 ),
                 RegistrationCsr.create(
                     deviceId,
                     ticket,
-                    csr
-                )
+                    csr,
+                ),
             )
             fail("registration was expected to fail, but didn't")
         } catch (e: StatusCodeException) {
@@ -189,21 +201,21 @@ class RegistrationTest : Base() {
     private fun registerSuccessfully(
         deviceId: Int,
         ticket: String,
-        commonName: String
+        commonName: String,
     ): String {
         val csr = SetupTest.getCsr(keypair, commonName)
         return registrator.getOwnCertificate(
             RegistrationEndpoint.create(
-                TestSuite.HOSTNAME,
+                TestSuite.hostname,
                 TestSuite.INIT_PORT.toInt(),
                 serverEndpoint.trustManagerFactory(),
-                serverEndpoint.keyManagerFactory()
+                serverEndpoint.keyManagerFactory(),
             ),
             RegistrationCsr.create(
                 deviceId,
                 ticket,
-                csr
-            )
+                csr,
+            ),
         )
     }
 
@@ -215,11 +227,11 @@ class RegistrationTest : Base() {
                     SSLConfig.sslConfig()
                         .allowAllHostnames()
                         .trustStore(keystore)
-                        .keyStore("keystore_2", SetupTest.PASSWORD)
-                )
+                        .keyStore("keystore_2", SetupTest.PASSWORD),
+                ),
             )
             .`when`()
-            .get(TestSuite.DOMAIN + "/v2/location")
+            .get(TestSuite.domain + "/v2/location")
             .then()
             .log().ifValidationFails()
     }

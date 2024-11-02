@@ -28,6 +28,7 @@ import de.njsm.stocks.client.business.entities.Unit
 import de.njsm.stocks.client.business.entities.UnitAddForm
 import java.time.Instant
 import javax.inject.Inject
+import de.njsm.stocks.client.business.entities.Unit as UnitOfMeasurement
 
 class UnitRepository
     @Inject

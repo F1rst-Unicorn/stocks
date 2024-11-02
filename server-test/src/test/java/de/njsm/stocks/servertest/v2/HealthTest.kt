@@ -21,10 +21,6 @@
 package de.njsm.stocks.servertest.v2
 
 import de.njsm.stocks.client.business.HealthService
-import de.njsm.stocks.servertest.TestSuite
-import io.restassured.RestAssured
-import io.restassured.http.ContentType
-import org.hamcrest.Matchers
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Order
@@ -33,7 +29,6 @@ import javax.inject.Inject
 
 @Order(500)
 class HealthTest : Base() {
-
     internal lateinit var healthService: HealthService
         @Inject set
 

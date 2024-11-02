@@ -41,17 +41,24 @@ open class Base {
 
     @BeforeEach
     fun setup(testInfo: TestInfo) {
-        dagger = DaggerRootComponent.builder()
-            .withTestInfo(testInfo)
-            .build()
+        dagger =
+            DaggerRootComponent.builder()
+                .withTestInfo(testInfo)
+                .build()
     }
 
     val uniqueName: String
-        get() = ((testInfo.testClass
-            .map { obj: Class<*> -> obj.name }
-            .orElse("dummy")
-                + "-" + testInfo.testMethod
-            .map { obj: Method -> obj.name }
-            .orElse("dummy")
-                + counter++)).replace('.', '-')
+        get() =
+            (
+                (
+                    testInfo.testClass
+                        .map { obj: Class<*> -> obj.name }
+                        .orElse("dummy") +
+                        "-" +
+                        testInfo.testMethod
+                            .map { obj: Method -> obj.name }
+                            .orElse("dummy") +
+                        counter++
+                )
+            ).replace('.', '-')
 }

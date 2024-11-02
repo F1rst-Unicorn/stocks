@@ -22,15 +22,14 @@ package de.njsm.stocks.servertest
 
 class TestSuite {
     companion object {
-
-        lateinit var HOSTNAME: String
+        lateinit var hostname: String
         const val CA_PORT: String = "10910"
         const val INIT_PORT: String = "10911"
-        lateinit var DOMAIN: String
+        lateinit var domain: String
 
         init {
-            HOSTNAME = System.getenv().getOrDefault("DEPLOYMENT_VM", "dp-server")
-            DOMAIN = "https://" + HOSTNAME + ":10912"
+            hostname = System.getenv().getOrDefault("DEPLOYMENT_VM", "dp-server")
+            domain = "https://" + hostname + ":10912"
         }
     }
 }

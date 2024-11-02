@@ -20,30 +20,39 @@
  */
 package de.njsm.stocks.servertest.v2
 
-import de.njsm.stocks.client.business.*
-import de.njsm.stocks.client.business.entities.*
+import de.njsm.stocks.client.business.Constants
+import de.njsm.stocks.client.business.EntityDeleteService
+import de.njsm.stocks.client.business.RecipeDeleteService
+import de.njsm.stocks.client.business.UserDeviceAddService
+import de.njsm.stocks.client.business.entities.EanNumber
+import de.njsm.stocks.client.business.entities.Food
+import de.njsm.stocks.client.business.entities.FoodItem
+import de.njsm.stocks.client.business.entities.IdImpl
+import de.njsm.stocks.client.business.entities.Location
+import de.njsm.stocks.client.business.entities.RecipeDeleteData
+import de.njsm.stocks.client.business.entities.RecipeIngredientDeleteNetworkData
+import de.njsm.stocks.client.business.entities.RecipeIngredientForSynchronisation
+import de.njsm.stocks.client.business.entities.RecipeProductDeleteNetworkData
+import de.njsm.stocks.client.business.entities.RecipeProductForSynchronisation
+import de.njsm.stocks.client.business.entities.ScaledUnit
 import de.njsm.stocks.client.business.entities.Unit
-import de.njsm.stocks.common.api.VersionedData
-import de.njsm.stocks.servertest.TestSuite
+import de.njsm.stocks.client.business.entities.User
+import de.njsm.stocks.client.business.entities.UserDevice
+import de.njsm.stocks.client.business.entities.UserDeviceAddForm
+import de.njsm.stocks.client.business.entities.VersionedId
 import de.njsm.stocks.servertest.v2.repo.RecipeRepository
-import io.restassured.RestAssured
-import io.restassured.http.ContentType
-import io.restassured.path.json.JsonPath
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.MethodOrderer.MethodName
 import org.junit.jupiter.api.Order
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestMethodOrder
 import java.io.FileWriter
-import java.io.IOException
 import java.time.Instant
-import java.util.*
 import javax.inject.Inject
 
 @TestMethodOrder(MethodName::class)
 @Order(1600)
 class Cleanup : Base() {
-
     internal lateinit var userDeviceAddService: UserDeviceAddService
         @Inject set
 
@@ -84,11 +93,12 @@ class Cleanup : Base() {
 
     @Test
     fun clean01Devices() {
-        val entities = updateService.getUserDevices(Instant.EPOCH)
-            .filter { it.transactionTimeEnd() == Constants.INFINITY }
-            .filter { it.validTimeStart().isBefore(Instant.now()) }
-            .filter { it.validTimeEnd().isAfter(Instant.now()) }
-            .toList()
+        val entities =
+            updateService.getUserDevices(Instant.EPOCH)
+                .filter { it.transactionTimeEnd() == Constants.INFINITY }
+                .filter { it.validTimeStart().isBefore(Instant.now()) }
+                .filter { it.validTimeEnd().isAfter(Instant.now()) }
+                .toList()
 
         val ignoredDevices = listOf(1, 2)
 
@@ -100,11 +110,12 @@ class Cleanup : Base() {
 
     @Test
     fun clean02Ean() {
-        val entities = updateService.getEanNumbers(Instant.EPOCH)
-            .filter { it.transactionTimeEnd() == Constants.INFINITY }
-            .filter { it.validTimeStart().isBefore(Instant.now()) }
-            .filter { it.validTimeEnd().isAfter(Instant.now()) }
-            .toList()
+        val entities =
+            updateService.getEanNumbers(Instant.EPOCH)
+                .filter { it.transactionTimeEnd() == Constants.INFINITY }
+                .filter { it.validTimeStart().isBefore(Instant.now()) }
+                .filter { it.validTimeEnd().isAfter(Instant.now()) }
+                .toList()
 
         for (entity in entities) {
             eanNumberDeleteService.delete(entity)
@@ -113,11 +124,12 @@ class Cleanup : Base() {
 
     @Test
     fun clean03FoodItems() {
-        val entities = updateService.getFoodItems(Instant.EPOCH)
-            .filter { it.transactionTimeEnd() == Constants.INFINITY }
-            .filter { it.validTimeStart().isBefore(Instant.now()) }
-            .filter { it.validTimeEnd().isAfter(Instant.now()) }
-            .toList()
+        val entities =
+            updateService.getFoodItems(Instant.EPOCH)
+                .filter { it.transactionTimeEnd() == Constants.INFINITY }
+                .filter { it.validTimeStart().isBefore(Instant.now()) }
+                .filter { it.validTimeEnd().isAfter(Instant.now()) }
+                .toList()
 
         for (entity in entities) {
             foodItemDeleteService.delete(entity)
@@ -130,66 +142,69 @@ class Cleanup : Base() {
 
         for (d in data) {
             val ingredients = updateService.getRecipeIngredients(Instant.EPOCH)
-            val x = ingredients
-                .stream()
-                .filter { it: RecipeIngredientForSynchronisation -> it.recipe() == d.id() }
-                .filter { it: RecipeIngredientForSynchronisation -> it.transactionTimeEnd() == Constants.INFINITY }
-                .filter { it: RecipeIngredientForSynchronisation ->
-                    it.validTimeStart().isBefore(
-                        Instant.now()
-                    )
-                }
-                .filter { it: RecipeIngredientForSynchronisation ->
-                    it.validTimeEnd().isAfter(
-                        Instant.now()
-                    )
-                }
-                .map { it: RecipeIngredientForSynchronisation ->
-                    RecipeIngredientDeleteNetworkData.create(
-                        it.id(),
-                        it.version()
-                    )
-                }
-                .toList()
-            val products = updateService.getRecipeProducts(Instant.EPOCH)
-                .stream()
-                .filter { it: RecipeProductForSynchronisation -> it.recipe() == d.id() }
-                .filter { it: RecipeProductForSynchronisation -> it.transactionTimeEnd() == Constants.INFINITY }
-                .filter { it: RecipeProductForSynchronisation ->
-                    it.validTimeStart().isBefore(
-                        Instant.now()
-                    )
-                }
-                .filter { it: RecipeProductForSynchronisation ->
-                    it.validTimeEnd().isAfter(
-                        Instant.now()
-                    )
-                }
-                .map { it: RecipeProductForSynchronisation ->
-                    RecipeProductDeleteNetworkData.create(
-                        it.id(),
-                        it.version()
-                    )
-                }
-                .toList()
+            val x =
+                ingredients
+                    .stream()
+                    .filter { it: RecipeIngredientForSynchronisation -> it.recipe() == d.id() }
+                    .filter { it: RecipeIngredientForSynchronisation -> it.transactionTimeEnd() == Constants.INFINITY }
+                    .filter { it: RecipeIngredientForSynchronisation ->
+                        it.validTimeStart().isBefore(
+                            Instant.now(),
+                        )
+                    }
+                    .filter { it: RecipeIngredientForSynchronisation ->
+                        it.validTimeEnd().isAfter(
+                            Instant.now(),
+                        )
+                    }
+                    .map { it: RecipeIngredientForSynchronisation ->
+                        RecipeIngredientDeleteNetworkData.create(
+                            it.id(),
+                            it.version(),
+                        )
+                    }
+                    .toList()
+            val products =
+                updateService.getRecipeProducts(Instant.EPOCH)
+                    .stream()
+                    .filter { it: RecipeProductForSynchronisation -> it.recipe() == d.id() }
+                    .filter { it: RecipeProductForSynchronisation -> it.transactionTimeEnd() == Constants.INFINITY }
+                    .filter { it: RecipeProductForSynchronisation ->
+                        it.validTimeStart().isBefore(
+                            Instant.now(),
+                        )
+                    }
+                    .filter { it: RecipeProductForSynchronisation ->
+                        it.validTimeEnd().isAfter(
+                            Instant.now(),
+                        )
+                    }
+                    .map { it: RecipeProductForSynchronisation ->
+                        RecipeProductDeleteNetworkData.create(
+                            it.id(),
+                            it.version(),
+                        )
+                    }
+                    .toList()
 
             recipeDeleteService.delete(
                 RecipeDeleteData.create(
                     VersionedId.create(d.id(), d.version()),
                     x,
-                    products
-                )
+                    products,
+                ),
             )
         }
     }
 
     @Test
     fun clean05Food() {
-        val entities = updateService.getFood(Instant.EPOCH)
-            .filter { it.transactionTimeEnd() == Constants.INFINITY }
-            .filter { it.validTimeStart().isBefore(Instant.now()) }
-            .filter { it.validTimeEnd().isAfter(Instant.now()) }
-            .toList()
+        val entities =
+            updateService.getFood(Instant.EPOCH)
+                .filter { it.transactionTimeEnd() == Constants.INFINITY }
+                .filter { it.validTimeStart().isBefore(Instant.now()) }
+                .filter { it.validTimeEnd().isAfter(Instant.now()) }
+                .toList()
 
         for (entity in entities) {
             foodDeleteService.delete(entity)
@@ -198,11 +213,12 @@ class Cleanup : Base() {
 
     @Test
     fun clean06Locations() {
-        val entities = updateService.getLocations(Instant.EPOCH)
-            .filter { it.transactionTimeEnd() == Constants.INFINITY }
-            .filter { it.validTimeStart().isBefore(Instant.now()) }
-            .filter { it.validTimeEnd().isAfter(Instant.now()) }
-            .toList()
+        val entities =
+            updateService.getLocations(Instant.EPOCH)
+                .filter { it.transactionTimeEnd() == Constants.INFINITY }
+                .filter { it.validTimeStart().isBefore(Instant.now()) }
+                .filter { it.validTimeEnd().isAfter(Instant.now()) }
+                .toList()
 
         for (entity in entities) {
             locationDeleteService.delete(entity)
@@ -211,11 +227,12 @@ class Cleanup : Base() {
 
     @Test
     fun clean07ScaledUnits() {
-        val entities = updateService.getScaledUnits(Instant.EPOCH)
-            .filter { it.transactionTimeEnd() == Constants.INFINITY }
-            .filter { it.validTimeStart().isBefore(Instant.now()) }
-            .filter { it.validTimeEnd().isAfter(Instant.now()) }
-            .toList()
+        val entities =
+            updateService.getScaledUnits(Instant.EPOCH)
+                .filter { it.transactionTimeEnd() == Constants.INFINITY }
+                .filter { it.validTimeStart().isBefore(Instant.now()) }
+                .filter { it.validTimeEnd().isAfter(Instant.now()) }
+                .toList()
 
         for (entity in entities) {
             if (entity.id() == 1) continue
@@ -225,11 +242,12 @@ class Cleanup : Base() {
 
     @Test
     fun clean08Units() {
-        val entities = updateService.getUnits(Instant.EPOCH)
-            .filter { it.transactionTimeEnd() == Constants.INFINITY }
-            .filter { it.validTimeStart().isBefore(Instant.now()) }
-            .filter { it.validTimeEnd().isAfter(Instant.now()) }
-            .toList()
+        val entities =
+            updateService.getUnits(Instant.EPOCH)
+                .filter { it.transactionTimeEnd() == Constants.INFINITY }
+                .filter { it.validTimeStart().isBefore(Instant.now()) }
+                .filter { it.validTimeEnd().isAfter(Instant.now()) }
+                .toList()
 
         for (entity in entities) {
             if (entity.id() == 1) continue
@@ -239,11 +257,12 @@ class Cleanup : Base() {
 
     @Test
     fun clean09Users() {
-        val entities = updateService.getUsers(Instant.EPOCH)
-            .filter { it.transactionTimeEnd() == Constants.INFINITY }
-            .filter { it.validTimeStart().isBefore(Instant.now()) }
-            .filter { it.validTimeEnd().isAfter(Instant.now()) }
-            .toList()
+        val entities =
+            updateService.getUsers(Instant.EPOCH)
+                .filter { it.transactionTimeEnd() == Constants.INFINITY }
+                .filter { it.validTimeStart().isBefore(Instant.now()) }
+                .filter { it.validTimeEnd().isAfter(Instant.now()) }
+                .toList()
         val ignoredUsers = listOf(1, 2)
 
         for (entity in entities) {
@@ -254,18 +273,20 @@ class Cleanup : Base() {
 
     @Test
     fun setupOtherTestAccounts() {
-        val ticket1 = userDeviceAddService.add(
-            UserDeviceAddForm.create(
-                "cli-client",
-                IdImpl.create(1)
+        val ticket1 =
+            userDeviceAddService.add(
+                UserDeviceAddForm.create(
+                    "cli-client",
+                    IdImpl.create(1),
+                ),
             )
-        )
-        val ticket2 = userDeviceAddService.add(
-            UserDeviceAddForm.create(
-                "android-client",
-                IdImpl.create(1)
+        val ticket2 =
+            userDeviceAddService.add(
+                UserDeviceAddForm.create(
+                    "android-client",
+                    IdImpl.create(1),
+                ),
             )
-        )
 
         writeToFile("build/01_ticket", ticket1.ticket())
         writeToFile("build/01_id", ticket1.id().id().toString())
@@ -273,7 +294,10 @@ class Cleanup : Base() {
         writeToFile("build/02_id", ticket2.id().id().toString())
     }
 
-    private fun writeToFile(filename: String, content: String) {
+    private fun writeToFile(
+        filename: String,
+        content: String,
+    ) {
         val writer = FileWriter(filename)
         writer.write(content)
         writer.close()

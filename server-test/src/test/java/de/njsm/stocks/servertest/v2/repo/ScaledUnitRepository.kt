@@ -23,19 +23,21 @@ package de.njsm.stocks.servertest.v2.repo
 import de.njsm.stocks.client.business.Constants
 import de.njsm.stocks.client.business.ScaledUnitAddService
 import de.njsm.stocks.client.business.UpdateService
-import de.njsm.stocks.client.business.entities.*
+import de.njsm.stocks.client.business.entities.IdImpl
+import de.njsm.stocks.client.business.entities.ScaledUnit
+import de.njsm.stocks.client.business.entities.ScaledUnitAddForm
 import java.math.BigDecimal
 import java.time.Instant
 import javax.inject.Inject
-import kotlin.Unit as Unit1
+import de.njsm.stocks.client.business.entities.Unit as UnitOfMeasurement
 
 class ScaledUnitRepository
     @Inject
     constructor(
         private val scaledUnitAddService: ScaledUnitAddService,
         private val unitRepository: UnitRepository,
-        private val updateService: UpdateService) {
-
+        private val updateService: UpdateService,
+    ) {
         val anyScaledUnitId: IdImpl<ScaledUnit>
             get() =
                 updateService.getScaledUnits(Instant.EPOCH)
@@ -50,9 +52,13 @@ class ScaledUnitRepository
 
         fun createNew(
             scale: BigDecimal,
-            unit: IdImpl<Unit> = unitRepository.anyUnitId
+            unit: IdImpl<Unit> = unitRepository.anyUnitId,
         ): IdImpl<ScaledUnit> {
-            return scaledUnitAddService.add(ScaledUnitAddForm.create(
-                scale, unit.id()))
+            return scaledUnitAddService.add(
+                ScaledUnitAddForm.create(
+                    scale,
+                    unit.id(),
+                ),
+            )
         }
     }

@@ -23,19 +23,12 @@ package de.njsm.stocks.servertest.v2.repo
 import de.njsm.stocks.client.business.Constants
 import de.njsm.stocks.client.business.UpdateService
 import de.njsm.stocks.client.business.entities.RecipeForSynchronisation
-import de.njsm.stocks.common.api.*
-import de.njsm.stocks.servertest.TestSuite
-import io.restassured.RestAssured
-import io.restassured.common.mapper.TypeRef
-import io.restassured.http.ContentType
-import org.hamcrest.Matchers
 import java.time.Instant
-import java.util.stream.Collectors
 import javax.inject.Inject
 
 class RecipeRepository
-    @Inject constructor(private val updateService: UpdateService) {
-
+    @Inject
+    constructor(private val updateService: UpdateService) {
         fun getAll(): List<RecipeForSynchronisation> {
             return updateService.getRecipes(Instant.EPOCH)
                 .filter { it.transactionTimeEnd() == Constants.INFINITY }
@@ -43,4 +36,4 @@ class RecipeRepository
                 .filter { it.validTimeEnd().isAfter(Instant.now()) }
                 .toList()
         }
-}
+    }

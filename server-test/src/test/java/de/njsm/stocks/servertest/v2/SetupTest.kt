@@ -26,7 +26,6 @@ import io.restassured.config.LogConfig
 import io.restassured.config.SSLConfig
 import io.restassured.http.ContentType
 import io.restassured.response.ValidatableResponse
-import org.bouncycastle.operator.OperatorCreationException
 import org.bouncycastle.operator.jcajce.JcaContentSignerBuilder
 import org.bouncycastle.pkcs.PKCS10CertificationRequestBuilder
 import org.bouncycastle.pkcs.jcajce.JcaPKCS10CertificationRequestBuilder
@@ -40,18 +39,17 @@ import org.junit.jupiter.api.Order
 import org.junit.jupiter.api.Test
 import java.io.ByteArrayInputStream
 import java.io.FileOutputStream
-import java.io.IOException
 import java.io.StringWriter
 import java.nio.charset.StandardCharsets
-import java.security.*
+import java.security.KeyPair
+import java.security.KeyPairGenerator
+import java.security.KeyStore
 import java.security.cert.Certificate
-import java.security.cert.CertificateException
 import java.security.cert.CertificateFactory
 import javax.security.auth.x500.X500Principal
 
 @Order(100)
 class SetupTest {
-
     private val subjectName = "Jack$1\$Device$1"
 
     private lateinit var clientKeys: KeyPair
@@ -59,29 +57,31 @@ class SetupTest {
     @BeforeEach
     fun setup() {
         keystore = firstKeystore
-        RestAssured.config = RestAssured.config().sslConfig(
-            SSLConfig.sslConfig()
-                .allowAllHostnames()
-                .trustStore(keystore)
-        )
-            .logConfig(
-                LogConfig.logConfig()
-                    .enableLoggingOfRequestAndResponseIfValidationFails()
+        RestAssured.config =
+            RestAssured.config().sslConfig(
+                SSLConfig.sslConfig()
+                    .allowAllHostnames()
+                    .trustStore(keystore),
             )
+                .logConfig(
+                    LogConfig.logConfig()
+                        .enableLoggingOfRequestAndResponseIfValidationFails(),
+                )
     }
 
     @AfterEach
     fun tearDown() {
-        RestAssured.config = RestAssured.config().sslConfig(
-            SSLConfig.sslConfig()
-                .allowAllHostnames()
-                .trustStore(keystore)
-                .keyStore("keystore", PASSWORD)
-        )
-            .logConfig(
-                LogConfig.logConfig()
-                    .enableLoggingOfRequestAndResponseIfValidationFails()
+        RestAssured.config =
+            RestAssured.config().sslConfig(
+                SSLConfig.sslConfig()
+                    .allowAllHostnames()
+                    .trustStore(keystore)
+                    .keyStore("keystore", PASSWORD),
             )
+                .logConfig(
+                    LogConfig.logConfig()
+                        .enableLoggingOfRequestAndResponseIfValidationFails(),
+                )
     }
 
     @Test
@@ -96,7 +96,7 @@ class SetupTest {
                 .formParam("token", "0000")
                 .formParam("csr", csr)
                 .`when`()
-                .post("https://" + TestSuite.HOSTNAME + ":" + TestSuite.INIT_PORT + "/v2/auth/newuser")
+                .post("https://" + TestSuite.hostname + ":" + TestSuite.INIT_PORT + "/v2/auth/newuser")
                 .then()
                 .log().ifValidationFails()
                 .statusCode(200)
@@ -106,8 +106,10 @@ class SetupTest {
 
         val rawCert = response.extract().jsonPath().getString("data")
         storeToDisk(
-            keystore, rawCert, "keystore",
-            clientKeys
+            keystore,
+            rawCert,
+            "keystore",
+            clientKeys,
         )
     }
 
@@ -126,7 +128,7 @@ class SetupTest {
             keystore: KeyStore,
             rawCert: String,
             fileName: String,
-            clientKeys: KeyPair
+            clientKeys: KeyPair,
         ) {
             val clientCert = convertToCertificate(rawCert)
             val trustChain = arrayOfNulls<Certificate>(3)
@@ -137,7 +139,7 @@ class SetupTest {
                 "client",
                 clientKeys.private,
                 PASSWORD.toCharArray(),
-                trustChain
+                trustChain,
             )
             keystore.store(FileOutputStream(fileName), PASSWORD.toCharArray())
         }
@@ -147,48 +149,49 @@ class SetupTest {
                 val keystore =
                     KeyStore.getInstance(KeyStore.getDefaultType())
                 keystore.load(null)
-                val ca: String = RestAssured
-                    .`when`()
-                    .get("http://" + TestSuite.HOSTNAME + ":" + TestSuite.CA_PORT + "/ca")
-                    .then()
-                    .extract()
-                    .body()
-                    .asString()
-                val chain: String = RestAssured
-                    .`when`()
-                    .get("http://" + TestSuite.HOSTNAME + ":" + TestSuite.CA_PORT + "/chain")
-                    .then()
-                    .extract()
-                    .body()
-                    .asString()
+                val ca: String =
+                    RestAssured
+                        .`when`()
+                        .get("http://" + TestSuite.hostname + ":" + TestSuite.CA_PORT + "/ca")
+                        .then()
+                        .extract()
+                        .body()
+                        .asString()
+                val chain: String =
+                    RestAssured
+                        .`when`()
+                        .get("http://" + TestSuite.hostname + ":" + TestSuite.CA_PORT + "/chain")
+                        .then()
+                        .extract()
+                        .body()
+                        .asString()
                 keystore.setCertificateEntry(
                     "ca",
-                    convertToCertificate(ca)
+                    convertToCertificate(ca),
                 )
                 keystore.setCertificateEntry(
                     "chain",
-                    convertToCertificate(chain)
+                    convertToCertificate(chain),
                 )
                 return keystore
             }
 
-        @Throws(
-            OperatorCreationException::class,
-            IOException::class
-        )
-        fun getCsr(clientKeys: KeyPair, subjectName: String): String {
+        fun getCsr(
+            clientKeys: KeyPair,
+            subjectName: String,
+        ): String {
             val principal = X500Principal("CN=" + subjectName + ",OU=User,O=stocks")
             val signGen = JcaContentSignerBuilder("SHA256WithRSA").build(clientKeys.private)
             val builder: PKCS10CertificationRequestBuilder =
                 JcaPKCS10CertificationRequestBuilder(
                     principal,
-                    clientKeys.public
+                    clientKeys.public,
                 )
             val csr = builder.build(signGen)
-            val `object` = PemObject("CERTIFICATE REQUEST", csr.encoded)
+            val pemObject = PemObject("CERTIFICATE REQUEST", csr.encoded)
             val writer = StringWriter()
             val pemWriter = PemWriter(writer)
-            pemWriter.writeObject(`object`)
+            pemWriter.writeObject(pemObject)
             pemWriter.close()
             return writer.toString()
         }
@@ -198,9 +201,9 @@ class SetupTest {
             return factory.generateCertificate(
                 ByteArrayInputStream(
                     pemFile.toByteArray(
-                        StandardCharsets.UTF_8
-                    )
-                )
+                        StandardCharsets.UTF_8,
+                    ),
+                ),
             )
         }
     }
