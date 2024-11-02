@@ -29,7 +29,7 @@ import javax.net.ssl.TrustManagerFactory;
 @AutoValue
 public abstract class RegistrationEndpoint extends TlsEndpoint {
 
-    static RegistrationEndpoint create(String hostname, int port, TrustManagerFactory trustManagerFactory, KeyManagerFactory keyManagerFactory) {
+    public static RegistrationEndpoint create(String hostname, int port, TrustManagerFactory trustManagerFactory, KeyManagerFactory keyManagerFactory) {
         return new AutoValue_RegistrationEndpoint(hostname, port, trustManagerFactory, keyManagerFactory);
     }
 }
