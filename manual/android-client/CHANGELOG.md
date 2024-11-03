@@ -4,6 +4,9 @@
 
 ### Fixed
 
+* The search result view now shows the same results as the search-as-you-type
+  dropdown ([#94](https://veenj.de/git/veenj/stocks/issues/94)).
+
 * A crash after editing a recipe has been fixed
   ([#107](https://veenj.de/git/veenj/stocks/issues/107)).
 
