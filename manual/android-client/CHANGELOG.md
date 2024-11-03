@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## [4.9.0.2]
+
 ### Fixed
 
 * The search result view now shows the same results as the search-as-you-type
