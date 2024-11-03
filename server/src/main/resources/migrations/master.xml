@@ -38,4 +38,5 @@
     <include file="0010-accelerate-contiguous-primary-key.xml" relativeToChangelogFile="true"/>
     <include file="0011-limit-constraints-to-changed-records.xml" relativeToChangelogFile="true"/>
     <include file="0012-indices-on-foreign-keys.xml" relativeToChangelogFile="true"/>
+    <include file="0013-transaction-time-clock.xml" relativeToChangelogFile="true"/>
 </databaseChangeLog>

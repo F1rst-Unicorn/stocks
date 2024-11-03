@@ -38,6 +38,8 @@ import java.util.function.Function;
 import java.util.stream.Stream;
 
 import static de.njsm.stocks.common.api.StatusCode.*;
+import static de.njsm.stocks.server.v2.db.jooq.tables.TransactionTimeClock.TRANSACTION_TIME_CLOCK;
+import static org.jooq.impl.DSL.currentOffsetDateTime;
 
 public abstract class CrudDatabaseHandler<T extends TableRecord<T>, N extends Entity<N>>
         extends FailSafeDatabaseHandler
@@ -59,11 +61,25 @@ public abstract class CrudDatabaseHandler<T extends TableRecord<T>, N extends En
 
     public Validation<StatusCode, Integer> addReturningId(Insertable<N> item) {
         return runFunction(context -> {
+
+            var count = context.selectCount()
+                    .from(TRANSACTION_TIME_CLOCK)
+                    .where(TRANSACTION_TIME_CLOCK.LATEST_TRANSACTION_TIME.lt(currentOffsetDateTime()))
+                    .fetchSingle()
+                    .value1();
+            if (count < 1) {
+                return Validation.fail(SERIALISATION_CONFLICT);
+            }
+
             int lastInsertId = new JooqInsertionVisitor<T>()
                     .visit(item, new JooqInsertionVisitor.Input<>(context.insertInto(getTable()), principals))
                     .returning(getIdField())
                     .fetch()
                     .getValue(0, getIdField());
+
+            context.update(TRANSACTION_TIME_CLOCK)
+                    .set(TRANSACTION_TIME_CLOCK.LATEST_TRANSACTION_TIME, currentOffsetDateTime())
+                    .execute();
             return Validation.success(lastInsertId);
         });
     }
@@ -73,6 +89,15 @@ public abstract class CrudDatabaseHandler<T extends TableRecord<T>, N extends En
      */
     public Validation<StatusCode, Stream<N>> get(boolean bitemporal, Instant startingFrom) {
         return runFunction(context -> {
+
+            var count = context.selectCount()
+                    .from(TRANSACTION_TIME_CLOCK)
+                    .where(TRANSACTION_TIME_CLOCK.LATEST_TRANSACTION_TIME.lt(currentOffsetDateTime()))
+                    .fetchSingle()
+                    .value1();
+            if (count < 1) {
+                return Validation.fail(SERIALISATION_CONFLICT);
+            }
 
             Condition bitemporalSelector;
             if (bitemporal)
@@ -91,6 +116,10 @@ public abstract class CrudDatabaseHandler<T extends TableRecord<T>, N extends En
                     .fetchSize(1024)
                     .stream()
                     .map(getDtoMap(bitemporal));
+
+            context.update(TRANSACTION_TIME_CLOCK)
+                    .set(TRANSACTION_TIME_CLOCK.LATEST_TRANSACTION_TIME, currentOffsetDateTime())
+                    .execute();
 
             return Validation.success(result);
         });
@@ -112,7 +141,7 @@ public abstract class CrudDatabaseHandler<T extends TableRecord<T>, N extends En
      */
     StatusCode currentDelete(Condition condition) {
         return runCommand(context -> {
-            Field<OffsetDateTime> now = DSL.currentOffsetDateTime();
+            Field<OffsetDateTime> now = currentOffsetDateTime();
             List<Field<?>> fields = getNontemporalFields();
             List<Field<?>> fieldsWithTime = getFieldsWithTimeAndCreator(fields);
 
@@ -155,7 +184,7 @@ public abstract class CrudDatabaseHandler<T extends TableRecord<T>, N extends En
      * CF 10.7
      */
     StatusCode currentUpdate(DSLContext context, List<Field<?>> valuesToUpdate, Condition condition) {
-        Field<OffsetDateTime> now = DSL.currentOffsetDateTime();
+        Field<OffsetDateTime> now = currentOffsetDateTime();
         List<Field<?>> fields = getNontemporalFields();
         List<Field<?>> fieldsWithTime = getFieldsWithTimeAndCreator(fields);
 
@@ -322,8 +351,8 @@ public abstract class CrudDatabaseHandler<T extends TableRecord<T>, N extends En
     }
 
     protected Condition nowAsBestKnown() {
-        return getValidTimeStartField().lessOrEqual(DSL.currentOffsetDateTime())
-                .and(DSL.currentOffsetDateTime().lessThan(getValidTimeEndField()))
+        return getValidTimeStartField().lessOrEqual(currentOffsetDateTime())
+                .and(currentOffsetDateTime().lessThan(getValidTimeEndField()))
                 .and(getTransactionTimeEndField().eq(INFINITY));
     }
 
