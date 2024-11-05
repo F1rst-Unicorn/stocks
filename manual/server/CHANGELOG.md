@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+### Added
+
+* All creating endpoints now return IDs of the created entity
+  ([#62](https://veenj.de/git/veenj/stocks/issues/62)).
+
 ## [5.7.0.4]
 
 ### Fixed
