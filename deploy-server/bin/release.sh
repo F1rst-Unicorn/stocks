@@ -38,7 +38,7 @@ if git tag | grep "server-$VERSION" >/dev/null ; then
 fi
 
 echo Patching version number
-sed "s/^version =.*/version = \"$VERSION\"" \
+sed "s/^version =.*/version = \"$VERSION\"/" \
         -i "$STOCKS_ROOT"/server/build.gradle.kts
 sed -i "s/pkgver=.*/pkgver=$VERSION/g" "$STOCKS_ROOT"/deploy-server/PKGBUILD
 
