@@ -43,13 +43,12 @@ class FoodEditServiceImpl extends ServiceCommand<FoodForEditing> implements Food
 
     @Override
     Call<Response> buildCall(FoodForEditing input) {
-        int days = input.expirationOffset().getDays();
         return api.editFood(FoodForFullEditing.builder()
                 .id(input.id())
                 .version(input.version())
                 .name(input.name())
                 .toBuy(input.toBuy())
-                .expirationOffset(days > 0 ? days : null)
+                .expirationOffset(input.expirationOffset().getDays())
                 .location(input.location().orElse(0))
                 .description(input.description())
                 .storeUnit(input.storeUnit())

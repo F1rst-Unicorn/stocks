@@ -110,6 +110,36 @@ class FoodTest : Base() {
     }
 
     @Test
+    fun settingFoodExpirationOffsetToZeroWorks() {
+        val newFood = FoodAddForm.create(uniqueName, false, Period.ofDays(5), null, unitRepository.anyUnitId.id(), "")
+        val id = foodAddService.add(newFood)
+        val locationId = locationRepository.createNewLocationType(uniqueName)
+        val input =
+            FoodForEditing.create(
+                id.id(),
+                0,
+                uniqueName,
+                true,
+                Period.ofDays(0),
+                Optional.of(locationId.id()),
+                newFood.storeUnit(),
+                uniqueName,
+            )
+
+        foodEditService.edit(input)
+
+        val foods = updateService.getFood(Instant.EPOCH)
+        assertThat(foods).filteredOn(FoodForSynchronisation::id, id.id())
+            .filteredOn(FoodForSynchronisation::version, 1)
+            .isNotEmpty
+            .allMatch { it.name() == input.name() }
+            .allMatch { it.storeUnit() == input.storeUnit() }
+            .allMatch { it.toBuy() == input.toBuy() }
+            .allMatch { it.expirationOffset() == input.expirationOffset() }
+            .allMatch { it.description() == input.description() }
+    }
+
+    @Test
     fun renamingFailsWithWrongVersion() {
         val newFood = FoodAddForm.create(uniqueName, false, Period.ofDays(0), null, unitRepository.anyUnitId.id(), "")
         val newName = uniqueName
