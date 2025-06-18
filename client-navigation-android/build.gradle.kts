@@ -1,5 +1,3 @@
-import org.jetbrains.kotlin.cli.jvm.main
-
 /* stocks is client-server program to manage a household's food stock
  * Copyright (C) 2019  The stocks developers
  *

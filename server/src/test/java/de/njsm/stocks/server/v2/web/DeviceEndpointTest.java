@@ -80,7 +80,7 @@ public class DeviceEndpointTest {
 
         uut.get(r, 1, "invalid");
 
-        ArgumentCaptor<Response> c = ArgumentCaptor.forClass(StreamResponse.class);
+        ArgumentCaptor<Response> c = ArgumentCaptor.forClass(Response.class);
         verify(r).resume(c.capture());
         assertEquals(StatusCode.INVALID_ARGUMENT, c.getValue().getStatus());
     }

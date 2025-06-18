@@ -1,9 +1,10 @@
 plugins {
     id("com.android.library")
+    id ("org.jetbrains.kotlin.android")
 }
 
 android {
-    compileSdk = 34
+    compileSdk = 35
     defaultConfig {
         minSdk = 24
         multiDexEnabled = true
@@ -22,12 +23,16 @@ android {
 
     compileOptions {
         isCoreLibraryDesugaringEnabled = true
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
+    }
+
+    kotlinOptions {
+        jvmTarget = "17"
     }
 
     testOptions {
-        targetSdk = 34
+        targetSdk = 35
         animationsDisabled = true
         unitTests {
             isIncludeAndroidResources = true
@@ -42,19 +47,21 @@ android {
                 "META-INF/LICENSE.md",
                 "META-INF/LICENSE-notice.md",
                 "META-INF/NOTICE.txt",
+                "META-INF/NOTICE.md",
                 "META-INF/NOTICE",
                 "META-INF/LICENSE",
                 "META-INF/DEPENDENCIES",
                 "META-INF/notice.txt",
                 "META-INF/license.txt",
                 "META-INF/dependencies.txt",
+                "META-INF/versions/9/OSGI-INF/MANIFEST.MF",
                 "META-INF/LGPL2.1"
             )
         }
     }
 
     lint {
-        targetSdk = 34
+        targetSdk = 35
         abortOnError = false
         checkAllWarnings = true
         baseline = project.rootProject.file("config/android-lint/lint.xml")

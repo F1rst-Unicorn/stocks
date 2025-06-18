@@ -27,6 +27,8 @@ import org.junit.Test;
 
 import java.util.List;
 
+import static de.njsm.stocks.client.database.util.Util.test;
+
 public class EanNumberRepositoryImplTest extends DbTestCase {
 
     private EanNumberRepositoryImpl uut;
@@ -43,10 +45,7 @@ public class EanNumberRepositoryImplTest extends DbTestCase {
 
         var actual = uut.lookup(EanNumberForLookup.create(input.number()));
 
-        actual.test()
-                .assertNoErrors()
-                .awaitCount(1)
-                .assertValue(v -> input.identifies() == v.id());
+        test(actual).assertValue(v -> input.identifies() == v.id());
     }
 
     @Test
@@ -56,8 +55,6 @@ public class EanNumberRepositoryImplTest extends DbTestCase {
 
         var actual = uut.lookup(EanNumberForLookup.create(input.number() + " other"));
 
-        actual.test()
-                .assertNoErrors()
-                .assertComplete();
+        test(actual).assertComplete();
     }
 }

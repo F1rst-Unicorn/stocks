@@ -1,5 +1,4 @@
 import com.android.build.gradle.internal.tasks.factory.dependsOn
-import com.android.build.gradle.internal.tasks.factory.registerTask
 import org.gradle.kotlin.dsl.kotlin
 import org.jlleitschuh.gradle.ktlint.reporter.ReporterType
 
@@ -7,6 +6,7 @@ plugins {
     kotlin("jvm")
     kotlin("kapt")
     id("org.jlleitschuh.gradle.ktlint")
+    id("de.njsm.stocks.java")
 }
 
 dependencies {
@@ -18,6 +18,12 @@ tasks.register("format") {
     group = "formatting"
     description = "Format source files"
     dependsOn(tasks.ktlintFormat)
+}
+
+kotlin {
+    jvmToolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+    }
 }
 
 ktlint {

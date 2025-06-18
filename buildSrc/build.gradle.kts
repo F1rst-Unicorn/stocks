@@ -13,6 +13,8 @@ repositories {
 
 dependencies {
     compileOnly(libs.android.gradle.plugin)
+    implementation(libs.kotlin.plugin)
+    implementation(libs.kotlin.android)
     implementation(libs.android.library)
     implementation(libs.android.application)
     implementation(libs.android.navigation.safeargs)

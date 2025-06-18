@@ -36,7 +36,6 @@ dependencies {
     implementation(libs.rxjava)
     implementation(libs.autovalue)
     implementation(libs.android.core.common)
-    implementation(libs.android.core.runtime)
     implementation(libs.android.lifecycle.reactivestreams)
     implementation(libs.android.lifecycle.extensions)
     implementation(libs.android.paging.runtime)

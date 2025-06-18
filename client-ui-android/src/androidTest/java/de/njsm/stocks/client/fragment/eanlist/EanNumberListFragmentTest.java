@@ -21,6 +21,7 @@
 
 package de.njsm.stocks.client.fragment.eanlist;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.Instrumentation;
 import android.content.Intent;
@@ -29,6 +30,7 @@ import androidx.fragment.app.testing.FragmentScenario;
 import androidx.test.espresso.intent.Intents;
 import androidx.test.espresso.intent.matcher.IntentMatchers;
 import androidx.test.platform.app.InstrumentationRegistry;
+import androidx.test.rule.GrantPermissionRule;
 import de.njsm.stocks.client.Application;
 import de.njsm.stocks.client.business.EntityDeleter;
 import de.njsm.stocks.client.business.FakeEanNumberListInteractor;
@@ -41,6 +43,7 @@ import de.njsm.stocks.client.testdata.EanNumbersForListing;
 import de.njsm.stocks.client.ui.R;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 
 import javax.inject.Inject;
@@ -52,6 +55,7 @@ import static androidx.test.espresso.action.ViewActions.swipeRight;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.contrib.RecyclerViewActions.actionOnItemAtPosition;
 import static androidx.test.espresso.matcher.ViewMatchers.*;
+import static androidx.test.rule.GrantPermissionRule.grant;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.mockito.ArgumentMatchers.any;
@@ -68,6 +72,9 @@ public class EanNumberListFragmentTest {
     private EntityDeleter<EanNumber> eanNumberDeleter;
 
     private Synchroniser synchroniser;
+
+    @Rule
+    public final GrantPermissionRule mGrantPermissionRule = grant(Manifest.permission.CAMERA);
 
     @Before
     public void setUp() {

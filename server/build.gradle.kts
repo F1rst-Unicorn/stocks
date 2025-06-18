@@ -51,7 +51,6 @@ dependencies {
     implementation(libs.guava)
     implementation(libs.bouncycastle.pkix)
     implementation(libs.functionaljava)
-    implementation(libs.functionaljava.java8)
     implementation(libs.prometheus)
     implementation(libs.prometheus.servlet)
     implementation(libs.quartz)

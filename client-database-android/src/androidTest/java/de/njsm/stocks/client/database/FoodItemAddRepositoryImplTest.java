@@ -82,13 +82,13 @@ public class FoodItemAddRepositoryImplTest extends DbTestCase {
     }
 
     @Test
-    public void missingFoodItemsAffectPresentPrediction() {
+    public void missingFoodItemsAffectPresentPrediction() throws InterruptedException {
         FoodDbEntity food = standardEntities.foodDbEntity();
         stocksDatabase.synchronisationDao().writeFood(singletonList(food));
 
         Maybe<Instant> actual = uut.getMaxEatByOfPresentItemsOf(food::id);
 
-        actual.test().assertComplete().assertNoValues();
+        actual.test().await().assertComplete().assertNoValues();
     }
 
     @Test
@@ -152,13 +152,13 @@ public class FoodItemAddRepositoryImplTest extends DbTestCase {
     }
 
     @Test
-    public void missingFoodItemsAffectEverPrediction() {
+    public void missingFoodItemsAffectEverPrediction() throws InterruptedException {
         FoodDbEntity food = standardEntities.foodDbEntity();
         stocksDatabase.synchronisationDao().writeFood(singletonList(food));
 
         Maybe<Instant> actual = uut.getMaxEatByEverOf(food::id);
 
-        actual.test().assertComplete().assertNoValues();
+        actual.test().await().assertComplete().assertNoValues();
     }
 
     @Test
@@ -211,13 +211,13 @@ public class FoodItemAddRepositoryImplTest extends DbTestCase {
     }
 
     @Test
-    public void missingFoodItemsAffectLocationPrediction() {
+    public void missingFoodItemsAffectLocationPrediction() throws InterruptedException {
         FoodDbEntity food = standardEntities.foodDbEntity();
         stocksDatabase.synchronisationDao().writeFood(singletonList(food));
 
         var actual = uut.getLocationWithMostItemsOfType(food::id);
 
-        actual.test().assertComplete().assertNoValues();
+        actual.test().await().assertComplete().assertNoValues();
     }
 
     @Test
