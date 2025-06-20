@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## [4.9.0.4]
+
 ### Fixed
 
 * Prevent the app bar from disappearing below the android status bar.
