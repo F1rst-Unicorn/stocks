@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+## [4.9.0.3]
+
+### Fixed
+
+* Setting a food's default expiration offset to 0 works now
+  ([#108](https://veenj.de/git/veenj/stocks/issues/108)).
+
 ## [4.9.0.2]
 
 ### Fixed

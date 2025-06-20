@@ -32,7 +32,7 @@ android {
 
         applicationId = "de.njsm.stocks"
         versionCode = 1
-        versionName = "4.9.0.2"
+        versionName = "4.9.0.3"
     }
 
     sourceSets {
