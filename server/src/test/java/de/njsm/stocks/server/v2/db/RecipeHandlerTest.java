@@ -33,6 +33,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static de.njsm.stocks.server.v2.db.CrudDatabaseHandler.INFINITY;
 import static de.njsm.stocks.server.v2.web.PrincipalFilterTest.TEST_USER;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -52,7 +53,7 @@ public class RecipeHandlerTest extends DbTestCase implements CrudOperationsTest<
     @Test
     public void bitemporalDataIsPresentWhenDesired() {
 
-        Validation<StatusCode, Stream<Recipe>> result = uut.get(Instant.EPOCH);
+        Validation<StatusCode, Stream<Recipe>> result = uut.get(Instant.EPOCH, INFINITY.toInstant());
 
         BitemporalRecipe sample = (BitemporalRecipe) result.success().findAny().get();
         assertNotNull(sample.validTimeStart());
@@ -63,7 +64,7 @@ public class RecipeHandlerTest extends DbTestCase implements CrudOperationsTest<
 
     @Test
     public void gettingBitemporalWorks() {
-        Validation<StatusCode, Stream<Recipe>> result = uut.get(Instant.EPOCH);
+        Validation<StatusCode, Stream<Recipe>> result = uut.get(Instant.EPOCH, INFINITY.toInstant());
 
         assertTrue(result.isSuccess());
         List<BitemporalRecipe> data = result.success()

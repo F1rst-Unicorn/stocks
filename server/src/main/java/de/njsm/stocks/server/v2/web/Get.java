@@ -46,14 +46,20 @@ public interface Get<U extends TableRecord<U>, T extends Entity<T>> {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     default void get(@Suspended AsyncResponse response,
-                    @QueryParam("startingFrom") String startingFromParameter) {
+                    @QueryParam("startingFrom") String startingFromParameter,
+                     @QueryParam("upUntil") String upUntilParameter) {
         Optional<Instant> startingFrom = parseToInstant(startingFromParameter, "startingFrom");
-        if (startingFrom.isPresent()) {
-            Validation<StatusCode, Stream<T>> result = getManager().get(response, startingFrom.get());
-            response.resume(new StreamResponse<>(result));
-        } else {
+        Optional<Instant> upUntil = parseToInstant(upUntilParameter, "upUntil");
+        if (startingFrom.isEmpty() || upUntil.isEmpty()) {
             response.resume(new Response(StatusCode.INVALID_ARGUMENT));
+            return;
         }
+
+        Validation<StatusCode, Stream<T>> result = getManager().get(
+                response,
+                startingFrom.get(),
+                upUntil.get());
+        response.resume(new StreamResponse<>(result));
     }
 
     BusinessGettable<U, T> getManager();

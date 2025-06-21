@@ -34,6 +34,7 @@ import java.util.stream.Stream;
 
 import static de.njsm.stocks.common.api.StatusCode.INVALID_DATA_VERSION;
 import static de.njsm.stocks.common.api.StatusCode.NOT_FOUND;
+import static de.njsm.stocks.server.v2.db.CrudDatabaseHandler.INFINITY;
 import static de.njsm.stocks.server.v2.web.PrincipalFilterTest.TEST_USER;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.CoreMatchers.is;
@@ -66,7 +67,7 @@ public class RecipeIngredientHandlerTest
     @Test
     public void bitemporalDataIsPresentWhenDesired() {
 
-        Validation<StatusCode, Stream<RecipeIngredient>> result = uut.get(Instant.EPOCH);
+        Validation<StatusCode, Stream<RecipeIngredient>> result = uut.get(Instant.EPOCH, INFINITY.toInstant());
 
         BitemporalRecipeIngredient sample = (BitemporalRecipeIngredient) result.success().findAny().get();
         assertNotNull(sample.validTimeStart());
@@ -77,7 +78,7 @@ public class RecipeIngredientHandlerTest
 
     @Test
     public void gettingBitemporalWorks() {
-        Validation<StatusCode, Stream<RecipeIngredient>> result = uut.get(Instant.EPOCH);
+        Validation<StatusCode, Stream<RecipeIngredient>> result = uut.get(Instant.EPOCH, INFINITY.toInstant());
 
         assertTrue(result.isSuccess());
         List<BitemporalRecipeIngredient> data = result.success()

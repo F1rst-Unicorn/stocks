@@ -32,6 +32,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static de.njsm.stocks.server.v2.db.CrudDatabaseHandler.INFINITY;
 import static de.njsm.stocks.server.v2.web.PrincipalFilterTest.TEST_USER;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -56,7 +57,7 @@ public class UnitHandlerTest extends DbTestCase implements CrudOperationsTest<Un
     @Test
     public void bitemporalDataIsPresentWhenDesired() {
 
-        Validation<StatusCode, Stream<Unit>> result = uut.get(Instant.EPOCH);
+        Validation<StatusCode, Stream<Unit>> result = uut.get(Instant.EPOCH, INFINITY.toInstant());
 
         BitemporalUnit sample = (BitemporalUnit) result.success().findAny().get();
         assertNotNull(sample.validTimeStart());
@@ -91,6 +92,33 @@ public class UnitHandlerTest extends DbTestCase implements CrudOperationsTest<Un
         StatusCode result = uut.rename(data);
 
         assertEditingWorked(data, result);
+    }
+
+    @Test
+    void gettingDataUpUntilWorks() {
+        var updateBackend = new UpdateBackend(getConnectionFactory());
+        var unitTimestamp = updateBackend.get().success()
+                .filter(v -> v.table().equals("unit"))
+                .findFirst()
+                .orElseThrow();
+
+        var dataBeforeUpdate = uut.get(Instant.EPOCH, unitTimestamp.lastUpdate());
+        assertTrue(dataBeforeUpdate.isSuccess());
+        var dataBefore = dataBeforeUpdate.success().toList();
+        assertEquals(3, dataBefore.size());
+
+        uut.rename(UnitForRenaming.builder().id(1).version(0).name("new name").abbreviation("new").build());
+        var unitTimestampAfterUpdate = updateBackend.get().success()
+                .filter(v -> v.table().equals("unit"))
+                .findFirst()
+                .orElseThrow();
+        assertTrue(unitTimestampAfterUpdate.lastUpdate().isAfter(unitTimestamp.lastUpdate()));
+
+        var dataAfterUpdate = uut.get(unitTimestamp.lastUpdate(), unitTimestampAfterUpdate.lastUpdate());
+        assertTrue(dataAfterUpdate.isSuccess());
+        var dataAfter = dataAfterUpdate.success().toList();
+        assertEquals(3, dataAfter.size());
+        assertNotEquals(dataBefore, dataAfter);
     }
 
     @Test
@@ -137,7 +165,7 @@ public class UnitHandlerTest extends DbTestCase implements CrudOperationsTest<Un
 
     @Test
     public void gettingBitemporalWorks() {
-        Validation<StatusCode, Stream<Unit>> result = uut.get(Instant.EPOCH);
+        Validation<StatusCode, Stream<Unit>> result = uut.get(Instant.EPOCH, INFINITY.toInstant());
 
         assertTrue(result.isSuccess());
         List<BitemporalUnit> data = result.success()
@@ -153,7 +181,7 @@ public class UnitHandlerTest extends DbTestCase implements CrudOperationsTest<Un
 
     @Test
     public void gettingWorks() {
-        Validation<StatusCode, Stream<Unit>> result = uut.get(Instant.EPOCH);
+        Validation<StatusCode, Stream<Unit>> result = uut.get(Instant.EPOCH, INFINITY.toInstant());
 
         assertTrue(result.isSuccess());
         List<Unit> data = result.success().collect(Collectors.toList());

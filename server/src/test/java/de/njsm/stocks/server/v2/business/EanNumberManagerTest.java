@@ -64,13 +64,13 @@ public class EanNumberManagerTest {
     @Test
     public void gettingItemsIsForwarded() {
         AsyncResponse r = Mockito.mock(AsyncResponse.class);
-        Mockito.when(backend.get(Instant.EPOCH)).thenReturn(Validation.success(Stream.empty()));
+        Mockito.when(backend.get(Instant.EPOCH, Instant.EPOCH)).thenReturn(Validation.success(Stream.empty()));
         when(backend.setReadOnly()).thenReturn(StatusCode.SUCCESS);
 
-        Validation<StatusCode, Stream<EanNumber>> result = uut.get(r, Instant.EPOCH);
+        Validation<StatusCode, Stream<EanNumber>> result = uut.get(r, Instant.EPOCH, Instant.EPOCH);
 
         assertTrue(result.isSuccess());
-        Mockito.verify(backend).get(Instant.EPOCH);
+        Mockito.verify(backend).get(Instant.EPOCH, Instant.EPOCH);
         Mockito.verify(backend).setReadOnly();
     }
 

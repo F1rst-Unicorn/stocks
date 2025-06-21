@@ -30,6 +30,7 @@ import org.junit.jupiter.api.Test;
 import java.time.Instant;
 import java.util.stream.Stream;
 
+import static de.njsm.stocks.server.v2.db.CrudDatabaseHandler.INFINITY;
 import static de.njsm.stocks.server.v2.web.PrincipalFilterTest.TEST_USER;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -74,7 +75,7 @@ public class UserHandlerTest extends DbTestCase implements CrudOperationsTest<Us
     @Test
     public void bitemporalDataIsPresentWhenDesired() {
 
-        Validation<StatusCode, Stream<User>> result = uut.get(Instant.EPOCH);
+        Validation<StatusCode, Stream<User>> result = uut.get(Instant.EPOCH, INFINITY.toInstant());
 
         BitemporalUser sample = (BitemporalUser) result.success().findAny().get();
         assertNotNull(sample.validTimeStart());

@@ -131,22 +131,22 @@ public class EanNumberEndpointTest {
                 .identifiesFood(4)
                 .eanNumber("CODE")
                 .build());
-        when(manager.get(r, Instant.EPOCH)).thenReturn(Validation.success(data.stream()));
+        when(manager.get(r, Instant.EPOCH, Instant.EPOCH)).thenReturn(Validation.success(data.stream()));
 
-        uut.get(r, InstantSerialiser.serialize(Instant.EPOCH));
+        uut.get(r, InstantSerialiser.serialize(Instant.EPOCH), InstantSerialiser.serialize(Instant.EPOCH));
 
         ArgumentCaptor<StreamResponse<EanNumber>> c = ArgumentCaptor.forClass(StreamResponse.class);
         verify(r).resume(c.capture());
         assertEquals(SUCCESS, c.getValue().getStatus());
         assertEquals(data, c.getValue().data.collect(Collectors.toList()));
-        verify(manager).get(r, Instant.EPOCH);
+        verify(manager).get(r, Instant.EPOCH, Instant.EPOCH);
     }
 
     @Test
     public void getEanNumbersFromInvalidStartingPoint() {
         AsyncResponse r = Mockito.mock(AsyncResponse.class);
 
-        uut.get(r, "invalid");
+        uut.get(r, "invalid", "invalid");
 
         ArgumentCaptor<Response> c = ArgumentCaptor.forClass(Response.class);
         verify(r).resume(c.capture());

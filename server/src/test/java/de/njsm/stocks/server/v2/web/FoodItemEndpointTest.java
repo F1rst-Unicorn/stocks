@@ -69,22 +69,22 @@ public class FoodItemEndpointTest {
     @Test
     public void testGettingItems() {
         AsyncResponse r = Mockito.mock(AsyncResponse.class);
-        Mockito.when(manager.get(r, Instant.EPOCH)).thenReturn(Validation.success(Stream.of()));
+        Mockito.when(manager.get(r, Instant.EPOCH, Instant.EPOCH)).thenReturn(Validation.success(Stream.of()));
 
-        uut.get(r, InstantSerialiser.serialize(Instant.EPOCH));
+        uut.get(r, InstantSerialiser.serialize(Instant.EPOCH), InstantSerialiser.serialize(Instant.EPOCH));
 
         ArgumentCaptor<StreamResponse<FoodItem>> c = ArgumentCaptor.forClass(StreamResponse.class);
         verify(r).resume(c.capture());
         assertEquals(StatusCode.SUCCESS, c.getValue().getStatus());
         assertEquals(0, c.getValue().data.count());
-        Mockito.verify(manager).get(r, Instant.EPOCH);
+        Mockito.verify(manager).get(r, Instant.EPOCH, Instant.EPOCH);
     }
 
     @Test
     public void getItemsFromInvalidStartingPoint() {
         AsyncResponse r = Mockito.mock(AsyncResponse.class);
 
-        uut.get(r, "invalid");
+        uut.get(r, "invalid", "invalid");
 
         ArgumentCaptor<Response> c = ArgumentCaptor.forClass(Response.class);
         verify(r).resume(c.capture());

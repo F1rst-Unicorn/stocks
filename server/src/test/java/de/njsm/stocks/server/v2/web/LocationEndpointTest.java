@@ -146,22 +146,22 @@ public class LocationEndpointTest {
                 .description("")
                 .build();
         List<Location> data = Collections.singletonList(item);
-        when(businessLayer.get(r, Instant.EPOCH)).thenReturn(Validation.success(data.stream()));
+        when(businessLayer.get(r, Instant.EPOCH, Instant.EPOCH)).thenReturn(Validation.success(data.stream()));
 
-        uut.get(r, InstantSerialiser.serialize(Instant.EPOCH));
+        uut.get(r, InstantSerialiser.serialize(Instant.EPOCH), InstantSerialiser.serialize(Instant.EPOCH));
 
         ArgumentCaptor<StreamResponse<Location>> c = ArgumentCaptor.forClass(StreamResponse.class);
         verify(r).resume(c.capture());
         assertEquals(SUCCESS, c.getValue().getStatus());
         assertEquals(data, c.getValue().data.collect(Collectors.toList()));
-        verify(businessLayer).get(r, Instant.EPOCH);
+        verify(businessLayer).get(r, Instant.EPOCH, Instant.EPOCH);
     }
 
     @Test
     public void getLocationsFromInvalidStartingPoint() {
         AsyncResponse r = Mockito.mock(AsyncResponse.class);
 
-        uut.get(r, "invalid");
+        uut.get(r, "invalid", "invalid");
 
         ArgumentCaptor<Response> c = ArgumentCaptor.forClass(Response.class);
         verify(r).resume(c.capture());

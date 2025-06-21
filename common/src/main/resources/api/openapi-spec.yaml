@@ -388,6 +388,16 @@ components:
         A timestamp stating that a GET response shall only include entities
         younger or equal to this value in transaction time. This is used to only
         get the latest changes to a table relative to an earlier query.
+    upUntil:
+      name: upUntil
+      in: query
+      required: true
+      schema:
+        type: string
+      description: |
+        A timestamp stating that a GET response shall only include entities
+        older or equal to this value in transaction time. This is used to only
+        get the latest changes to a table relative to an earlier query.
     principalName:
       name: name
       in: query
@@ -430,7 +440,7 @@ components:
                       The ID referencing the main entity of the request, which
                       is understood from the context.
     "GET-400":
-      description: No `startingFrom` given.
+      description: No `startingFrom` or `upUntil` given.
       content:
         application/json:
           schema:
@@ -520,6 +530,7 @@ paths:
     get:
       parameters:
         - $ref: '#/components/parameters/startingFrom'
+        - $ref: '#/components/parameters/upUntil'
       responses:
         "200":
           description: Return all users of the system
@@ -604,6 +615,7 @@ paths:
     get:
       parameters:
         - $ref: '#/components/parameters/startingFrom'
+        - $ref: '#/components/parameters/upUntil'
       responses:
         "200":
           description: Return all user devices of the system
@@ -653,6 +665,7 @@ paths:
     get:
       parameters:
         - $ref: '#/components/parameters/startingFrom'
+        - $ref: '#/components/parameters/upUntil'
       responses:
         "200":
           description: Return all locations of the system
@@ -753,6 +766,7 @@ paths:
     get:
       parameters:
         - $ref: '#/components/parameters/startingFrom'
+        - $ref: '#/components/parameters/upUntil'
       responses:
         "200":
           description: Return all food types of the system
@@ -885,6 +899,7 @@ paths:
     get:
       parameters:
         - $ref: '#/components/parameters/startingFrom'
+        - $ref: '#/components/parameters/upUntil'
       responses:
         "200":
           description: Return all food types of the system
@@ -996,6 +1011,7 @@ paths:
     get:
       parameters:
         - $ref: '#/components/parameters/startingFrom'
+        - $ref: '#/components/parameters/upUntil'
       responses:
         "200":
           description: Return all EAN numbers of the system
@@ -1080,6 +1096,7 @@ paths:
     get:
       parameters:
         - $ref: '#/components/parameters/startingFrom'
+        - $ref: '#/components/parameters/upUntil'
       responses:
         "200":
           description: Return all units of measure of the system
@@ -1163,6 +1180,7 @@ paths:
     get:
       parameters:
         - $ref: '#/components/parameters/startingFrom'
+        - $ref: '#/components/parameters/upUntil'
       responses:
         "200":
           description: Return all scaled units of measure of the system
@@ -1227,6 +1245,7 @@ paths:
     get:
       parameters:
         - $ref: '#/components/parameters/startingFrom'
+        - $ref: '#/components/parameters/upUntil'
       responses:
         "200":
           description: Return all recipes of the system
@@ -1354,6 +1373,7 @@ paths:
     get:
       parameters:
         - $ref: '#/components/parameters/startingFrom'
+        - $ref: '#/components/parameters/upUntil'
       responses:
         "200":
           description: Return all recipe ingredients of the system
@@ -1382,6 +1402,7 @@ paths:
     get:
       parameters:
         - $ref: '#/components/parameters/startingFrom'
+        - $ref: '#/components/parameters/upUntil'
       responses:
         "200":
           description: Return all recipe products of the system

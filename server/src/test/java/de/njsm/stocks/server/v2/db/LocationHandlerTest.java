@@ -33,6 +33,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static de.njsm.stocks.server.v2.db.CrudDatabaseHandler.INFINITY;
 import static de.njsm.stocks.server.v2.web.PrincipalFilterTest.TEST_USER;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -55,7 +56,7 @@ public class LocationHandlerTest extends DbTestCase implements CrudOperationsTes
     @Test
     public void gettingBitemporalWorks() {
 
-        Validation<StatusCode, Stream<Location>> result = uut.get(Instant.EPOCH);
+        Validation<StatusCode, Stream<Location>> result = uut.get(Instant.EPOCH, INFINITY.toInstant());
 
         assertTrue(result.isSuccess());
         List<BitemporalLocation> data = result.success()
@@ -79,7 +80,7 @@ public class LocationHandlerTest extends DbTestCase implements CrudOperationsTes
     @Test
     public void gettingWorks() {
 
-        Validation<StatusCode, Stream<Location>> result = uut.get(Instant.EPOCH);
+        Validation<StatusCode, Stream<Location>> result = uut.get(Instant.EPOCH, INFINITY.toInstant());
 
         assertTrue(result.isSuccess());
         List<Location> data = result.success().collect(Collectors.toList());
@@ -160,7 +161,7 @@ public class LocationHandlerTest extends DbTestCase implements CrudOperationsTes
     @Test
     public void bitemporalDataIsPresentWhenDesired() {
 
-        Validation<StatusCode, Stream<Location>> result = uut.get(Instant.EPOCH);
+        Validation<StatusCode, Stream<Location>> result = uut.get(Instant.EPOCH, INFINITY.toInstant());
 
         BitemporalLocation sample = (BitemporalLocation) result.success().findAny().get();
         assertNotNull(sample.validTimeStart());

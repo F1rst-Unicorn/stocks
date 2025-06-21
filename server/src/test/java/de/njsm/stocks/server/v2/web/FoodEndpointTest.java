@@ -170,22 +170,22 @@ public class FoodEndpointTest {
                 .storeUnit(1)
                 .build();
         List<Food> data = Collections.singletonList(food);
-        when(manager.get(any(), eq(Instant.EPOCH))).thenReturn(Validation.success(data.stream()));
+        when(manager.get(any(), eq(Instant.EPOCH), eq(Instant.EPOCH))).thenReturn(Validation.success(data.stream()));
 
-        uut.get(r, InstantSerialiser.serialize(Instant.EPOCH));
+        uut.get(r, InstantSerialiser.serialize(Instant.EPOCH), InstantSerialiser.serialize(Instant.EPOCH));
 
         ArgumentCaptor<StreamResponse<Food>> c = ArgumentCaptor.forClass(StreamResponse.class);
         verify(r).resume(c.capture());
         assertEquals(SUCCESS, c.getValue().getStatus());
         assertEquals(data, c.getValue().data.collect(Collectors.toList()));
-        verify(manager).get(r, Instant.EPOCH);
+        verify(manager).get(r, Instant.EPOCH, Instant.EPOCH);
     }
 
     @Test
     public void getFoodFromInvalidStartingPoint() {
         AsyncResponse r = Mockito.mock(AsyncResponse.class);
 
-        uut.get(r, "invalid");
+        uut.get(r, "invalid", "invalid");
 
         ArgumentCaptor<Response> c = ArgumentCaptor.forClass(Response.class);
         verify(r).resume(c.capture());

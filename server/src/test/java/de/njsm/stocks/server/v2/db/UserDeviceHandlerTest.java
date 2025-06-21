@@ -32,6 +32,7 @@ import java.time.Instant;
 import java.util.List;
 import java.util.stream.Stream;
 
+import static de.njsm.stocks.server.v2.db.CrudDatabaseHandler.INFINITY;
 import static de.njsm.stocks.server.v2.web.PrincipalFilterTest.TEST_USER;
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -89,7 +90,7 @@ public class UserDeviceHandlerTest extends DbTestCase implements CrudOperationsT
     @Test
     public void bitemporalDataIsPresentWhenDesired() {
 
-        Validation<StatusCode, Stream<UserDevice>> result = uut.get(Instant.EPOCH);
+        Validation<StatusCode, Stream<UserDevice>> result = uut.get(Instant.EPOCH, INFINITY.toInstant());
 
         BitemporalUserDevice sample = (BitemporalUserDevice) result.success().findAny().get();
         assertNotNull(sample.validTimeStart());

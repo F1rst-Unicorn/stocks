@@ -67,22 +67,22 @@ public class UserEndpointTest {
     @Test
     public void getUsers() {
         AsyncResponse r = Mockito.mock(AsyncResponse.class);
-        Mockito.when(userManager.get(r, Instant.EPOCH)).thenReturn(Validation.success(Stream.empty()));
+        Mockito.when(userManager.get(r, Instant.EPOCH, Instant.EPOCH)).thenReturn(Validation.success(Stream.empty()));
 
-        uut.get(r, InstantSerialiser.serialize(Instant.EPOCH));
+        uut.get(r, InstantSerialiser.serialize(Instant.EPOCH), InstantSerialiser.serialize(Instant.EPOCH));
 
         ArgumentCaptor<StreamResponse<User>> c = ArgumentCaptor.forClass(StreamResponse.class);
         verify(r).resume(c.capture());
         assertEquals(StatusCode.SUCCESS, c.getValue().getStatus());
         assertEquals(0, c.getValue().data.count());
-        Mockito.verify(userManager).get(r, Instant.EPOCH);
+        Mockito.verify(userManager).get(r, Instant.EPOCH, Instant.EPOCH);
     }
 
     @Test
     public void getUsersFromInvalidStartingPoint() {
         AsyncResponse r = Mockito.mock(AsyncResponse.class);
 
-        uut.get(r, "invalid");
+        uut.get(r, "invalid", "invalid");
 
         ArgumentCaptor<Response> c = ArgumentCaptor.forClass(Response.class);
         verify(r).resume(c.capture());

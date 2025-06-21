@@ -33,6 +33,7 @@ import java.time.Instant;
 import java.util.Arrays;
 import java.util.stream.Stream;
 
+import static de.njsm.stocks.server.v2.db.CrudDatabaseHandler.INFINITY;
 import static de.njsm.stocks.server.v2.web.PrincipalFilterTest.TEST_USER;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -65,7 +66,7 @@ public class FoodItemHandlerTest extends DbTestCase implements CrudOperationsTes
     @Test
     public void bitemporalDataIsPresentWhenDesired() {
 
-        Validation<StatusCode, Stream<FoodItem>> result = uut.get(Instant.EPOCH);
+        Validation<StatusCode, Stream<FoodItem>> result = uut.get(Instant.EPOCH, INFINITY.toInstant());
 
         BitemporalFoodItem sample = (BitemporalFoodItem) result.success().findAny().get();
         assertNotNull(sample.validTimeStart());

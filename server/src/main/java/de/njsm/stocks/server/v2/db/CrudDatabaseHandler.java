@@ -71,17 +71,22 @@ public abstract class CrudDatabaseHandler<T extends TableRecord<T>, N extends En
     /**
      * CF 10.23
      */
-    public Validation<StatusCode, Stream<N>> get(Instant startingFrom) {
+    public Validation<StatusCode, Stream<N>> get(Instant startingFrom, Instant upUntil) {
         return runFunction(context -> {
 
-            OffsetDateTime startingFromWithOffset = OffsetDateTime.from(startingFrom.atOffset(ZoneOffset.UTC));
-            var bitemporalSelector = getTransactionTimeStartField().greaterThan(startingFromWithOffset)
+            OffsetDateTime startingFromWithOffset = startingFrom.atOffset(ZoneOffset.UTC);
+            OffsetDateTime upUntilWithOffset = upUntil.atOffset(ZoneOffset.UTC);
+            var greaterThanStartingFrom = getTransactionTimeStartField().greaterThan(startingFromWithOffset)
                     .or(getTransactionTimeEndField().greaterThan(startingFromWithOffset)
+                            .and(getTransactionTimeEndField().lessThan(INFINITY)));
+            var lessThanUpUntil = getTransactionTimeStartField().lessOrEqual(upUntilWithOffset)
+                    .or(getTransactionTimeEndField().lessOrEqual(upUntilWithOffset)
                             .and(getTransactionTimeEndField().lessThan(INFINITY)));
 
             Stream<N> result = context
                     .selectFrom(getTable())
-                    .where(bitemporalSelector)
+                    .where(greaterThanStartingFrom
+                            .and(lessThanUpUntil))
                     .fetchSize(1024)
                     .stream()
                     .map(getDtoMap());
