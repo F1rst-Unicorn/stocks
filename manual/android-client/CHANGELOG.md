@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+### Fixed
+
+* Adapt to a new server version 
+  ([#47](https://veenj.de/git/veenj/stocks/issues/47)).  
+
 ## [4.9.0.4]
 
 ### Fixed

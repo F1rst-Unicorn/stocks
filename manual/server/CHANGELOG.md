@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+### Fixed
+
+* Clients must pass an `upUntil` parameter when getting updates to ensure they
+  know the state of the data they receive
+  ([#47](https://veenj.de/git/veenj/stocks/issues/47)).
+
 ## [5.7.0.5]
 
 ### Added
