@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## [5.7.0.6]
+
 ### Fixed
 
 * Clients must pass an `upUntil` parameter when getting updates to ensure they
