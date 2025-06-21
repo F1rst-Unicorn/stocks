@@ -21,12 +21,7 @@
 
 package de.njsm.stocks.server.v2.web;
 
-import de.njsm.stocks.common.api.EanNumber;
-import de.njsm.stocks.common.api.Response;
-import de.njsm.stocks.common.api.StreamResponse;
-import de.njsm.stocks.common.api.EanNumberForDeletion;
-import de.njsm.stocks.common.api.EanNumberForGetting;
-import de.njsm.stocks.common.api.EanNumberForInsertion;
+import de.njsm.stocks.common.api.*;
 import de.njsm.stocks.common.api.serialisers.InstantSerialiser;
 import de.njsm.stocks.server.v2.business.EanNumberManager;
 import fj.data.Validation;
@@ -125,10 +120,15 @@ public class EanNumberEndpointTest {
     @Test
     public void getEanNumberReturnsList() {
         AsyncResponse r = Mockito.mock(AsyncResponse.class);
-        List<EanNumber> data = Collections.singletonList(EanNumberForGetting.builder()
+        List<EanNumber> data = Collections.singletonList(BitemporalEanNumber.builder()
                 .id(1)
                 .version(2)
-                .identifiesFood(2)
+                .validTimeStart(Instant.EPOCH)
+                .validTimeEnd(Instant.EPOCH)
+                .transactionTimeStart(Instant.EPOCH)
+                .transactionTimeEnd(Instant.EPOCH)
+                .initiates(3)
+                .identifiesFood(4)
                 .eanNumber("CODE")
                 .build());
         when(manager.get(r, Instant.EPOCH)).thenReturn(Validation.success(data.stream()));

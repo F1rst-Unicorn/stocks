@@ -23,7 +23,7 @@ package de.njsm.stocks.common.api.serialisers;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import de.njsm.stocks.common.api.FoodForGetting;
+import de.njsm.stocks.common.api.BitemporalFood;
 import org.junit.jupiter.api.Test;
 
 import java.time.Period;
@@ -34,10 +34,15 @@ public class PeriodDeserialiserTest {
 
     @Test
     public void deserialisingWorks() throws JsonProcessingException {
-        String input = "{\"id\":1,\"version\":0,\"name\":\"name\",\"toBuy\":false," +
-                "\"expirationOffset\":2,\"location\":1,\"description\":\"\",\"storeUnit\":1}";
+        String input = "{\"id\":1,\"version\":0,\"validTimeStart\":" +
+                "\"1970.01.01-00:00:00.000000-+0000\",\"validTimeEnd\":" +
+                "\"1970.01.01-00:00:00.000000-+0000\",\"transactionTimeStart\":" +
+                "\"1970.01.01-00:00:00.000000-+0000\",\"transactionTimeEnd\":" +
+                "\"1970.01.01-00:00:00.000000-+0000\",\"name\":\"name\"," +
+                "\"toBuy\":false,\"expirationOffset\":2,\"location\":1," +
+                "\"description\":\"\",\"storeUnit\":1,\"initiates\":1}";
 
-        FoodForGetting output = new ObjectMapper().readValue(input, FoodForGetting.class);
+        BitemporalFood output = new ObjectMapper().readValue(input, BitemporalFood.class);
 
         assertEquals(Period.ZERO.plusDays(2), output.expirationOffset());
     }

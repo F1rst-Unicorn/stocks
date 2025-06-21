@@ -154,9 +154,14 @@ public class FoodEndpointTest {
     @Test
     public void getFoodReturnsList() {
         AsyncResponse r = Mockito.mock(AsyncResponse.class);
-        FoodForGetting food = FoodForGetting.builder()
+        BitemporalFood food = BitemporalFood.builder()
                 .id(2)
                 .version(2)
+                .validTimeStart(Instant.EPOCH)
+                .validTimeEnd(Instant.EPOCH)
+                .transactionTimeStart(Instant.EPOCH)
+                .transactionTimeEnd(Instant.EPOCH)
+                .initiates(3)
                 .name("Banana")
                 .toBuy(true)
                 .expirationOffset(Period.ZERO)

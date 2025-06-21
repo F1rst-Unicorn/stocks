@@ -23,7 +23,7 @@ package de.njsm.stocks.common.api.serialisers;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import de.njsm.stocks.common.api.RecipeForGetting;
+import de.njsm.stocks.common.api.BitemporalRecipe;
 import org.junit.jupiter.api.Test;
 
 import java.time.Duration;
@@ -34,10 +34,14 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class DurationDeserialiserTest {
     @Test
     public void deserialisingWorks() throws JsonProcessingException {
-        String input = "{\"id\":1,\"version\":0,\"name\":\"name\"," +
-                "\"duration\":\"PT2H\",\"instructions\":\"\"}";
+        String input = "{\"id\":1,\"version\":0,\"name\":\"name\",\"duration\":" +
+                "\"PT2H\",\"instructions\":\"\",\"validTimeStart\":" +
+                "\"1970.01.01-00:00:00.000000-+0000\",\"validTimeEnd\":" +
+                "\"1970.01.01-00:00:00.000000-+0000\",\"transactionTimeStart\":" +
+                "\"1970.01.01-00:00:00.000000-+0000\",\"transactionTimeEnd\":" +
+                "\"1970.01.01-00:00:00.000000-+0000\",\"initiates\":1}";
 
-        RecipeForGetting output = new ObjectMapper().readValue(input, RecipeForGetting.class);
+        BitemporalRecipe output = new ObjectMapper().readValue(input, BitemporalRecipe.class);
 
         assertEquals(Duration.ZERO.plusHours(2), output.duration());
     }

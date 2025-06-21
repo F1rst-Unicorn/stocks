@@ -134,9 +134,14 @@ public class LocationEndpointTest {
     @Test
     public void getLocationReturnsList() {
         AsyncResponse r = Mockito.mock(AsyncResponse.class);
-        LocationForGetting item = LocationForGetting.builder()
+        BitemporalLocation item = BitemporalLocation.builder()
                 .id(2)
                 .version(3)
+                .validTimeStart(Instant.EPOCH)
+                .validTimeEnd(Instant.EPOCH)
+                .transactionTimeStart(Instant.EPOCH)
+                .transactionTimeEnd(Instant.EPOCH)
+                .initiates(3)
                 .name("Banana")
                 .description("")
                 .build();
