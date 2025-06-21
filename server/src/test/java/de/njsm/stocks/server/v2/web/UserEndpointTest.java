@@ -27,6 +27,7 @@ import de.njsm.stocks.common.api.StreamResponse;
 import de.njsm.stocks.common.api.User;
 import de.njsm.stocks.common.api.UserForDeletion;
 import de.njsm.stocks.common.api.UserForInsertion;
+import de.njsm.stocks.common.api.serialisers.InstantSerialiser;
 import de.njsm.stocks.server.v2.business.UserManager;
 import fj.data.Validation;
 import org.junit.jupiter.api.AfterEach;
@@ -66,22 +67,22 @@ public class UserEndpointTest {
     @Test
     public void getUsers() {
         AsyncResponse r = Mockito.mock(AsyncResponse.class);
-        Mockito.when(userManager.get(r, false, Instant.EPOCH)).thenReturn(Validation.success(Stream.empty()));
+        Mockito.when(userManager.get(r, Instant.EPOCH)).thenReturn(Validation.success(Stream.empty()));
 
-        uut.get(r, 0, null);
+        uut.get(r, InstantSerialiser.serialize(Instant.EPOCH));
 
         ArgumentCaptor<StreamResponse<User>> c = ArgumentCaptor.forClass(StreamResponse.class);
         verify(r).resume(c.capture());
         assertEquals(StatusCode.SUCCESS, c.getValue().getStatus());
         assertEquals(0, c.getValue().data.count());
-        Mockito.verify(userManager).get(r, false, Instant.EPOCH);
+        Mockito.verify(userManager).get(r, Instant.EPOCH);
     }
 
     @Test
     public void getUsersFromInvalidStartingPoint() {
         AsyncResponse r = Mockito.mock(AsyncResponse.class);
 
-        uut.get(r, 1, "invalid");
+        uut.get(r, "invalid");
 
         ArgumentCaptor<Response> c = ArgumentCaptor.forClass(Response.class);
         verify(r).resume(c.capture());

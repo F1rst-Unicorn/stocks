@@ -33,13 +33,13 @@ import java.util.stream.Stream;
 
 public interface BusinessGettable<U extends TableRecord<U>, T extends Entity<T>> extends BusinessOperations {
 
-    default Validation<StatusCode, Stream<T>> get(AsyncResponse r, boolean bitemporal, Instant startingFrom) {
+    default Validation<StatusCode, Stream<T>> get(AsyncResponse r, Instant startingFrom) {
         return runAsynchronously(r, () -> {
             var result = getDbHandler().setReadOnly();
             if (result.isFail()) {
                 return Validation.fail(result);
             }
-            return getDbHandler().get(bitemporal, startingFrom);
+            return getDbHandler().get(startingFrom);
         });
     }
 

@@ -55,7 +55,7 @@ public class LocationHandlerTest extends DbTestCase implements CrudOperationsTes
     @Test
     public void gettingBitemporalWorks() {
 
-        Validation<StatusCode, Stream<Location>> result = uut.get(true, Instant.EPOCH);
+        Validation<StatusCode, Stream<Location>> result = uut.get(Instant.EPOCH);
 
         assertTrue(result.isSuccess());
         List<BitemporalLocation> data = result.success()
@@ -79,7 +79,7 @@ public class LocationHandlerTest extends DbTestCase implements CrudOperationsTes
     @Test
     public void gettingWorks() {
 
-        Validation<StatusCode, Stream<Location>> result = uut.get(false, Instant.EPOCH);
+        Validation<StatusCode, Stream<Location>> result = uut.get(Instant.EPOCH);
 
         assertTrue(result.isSuccess());
         List<Location> data = result.success().collect(Collectors.toList());
@@ -160,7 +160,7 @@ public class LocationHandlerTest extends DbTestCase implements CrudOperationsTes
     @Test
     public void bitemporalDataIsPresentWhenDesired() {
 
-        Validation<StatusCode, Stream<Location>> result = uut.get(true, Instant.EPOCH);
+        Validation<StatusCode, Stream<Location>> result = uut.get(Instant.EPOCH);
 
         BitemporalLocation sample = (BitemporalLocation) result.success().findAny().get();
         assertNotNull(sample.validTimeStart());
@@ -180,8 +180,7 @@ public class LocationHandlerTest extends DbTestCase implements CrudOperationsTes
         StatusCode result = uut.setDescription(data);
 
         assertEquals(StatusCode.SUCCESS, result);
-        assertTrue(uut.get(false, Instant.EPOCH)
-                        .success()
+        assertTrue(getCurrentData().stream()
                         .anyMatch(f -> f.id() == data.id() &&
                                 data.version() + 1 == f.version() &&
                                 data.description().equals(f.description())),

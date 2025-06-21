@@ -31,8 +31,6 @@ import org.mockito.Mockito;
 
 import java.time.Instant;
 import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static de.njsm.stocks.server.v2.web.PrincipalFilterTest.TEST_USER;
@@ -67,7 +65,7 @@ public class FoodItemHandlerTest extends DbTestCase implements CrudOperationsTes
     @Test
     public void bitemporalDataIsPresentWhenDesired() {
 
-        Validation<StatusCode, Stream<FoodItem>> result = uut.get(true, Instant.EPOCH);
+        Validation<StatusCode, Stream<FoodItem>> result = uut.get(Instant.EPOCH);
 
         BitemporalFoodItem sample = (BitemporalFoodItem) result.success().findAny().get();
         assertNotNull(sample.validTimeStart());
@@ -79,41 +77,36 @@ public class FoodItemHandlerTest extends DbTestCase implements CrudOperationsTes
     @Test
     public void testGettingItems() {
 
-        Validation<StatusCode, Stream<FoodItem>> result = uut.get(false, Instant.EPOCH);
+        var data = getCurrentData();
 
-        assertTrue(result.isSuccess());
-        List<FoodItem> list = result.success().collect(Collectors.toList());
-        assertEquals(3, list.size());
-        assertEquals(FoodItemForGetting.builder()
-                .id(1)
-                .version(0)
-                .eatByDate(Instant.EPOCH)
-                .ofType(2)
-                .storedIn(1)
-                .registers(3)
-                .buys(2)
-                .unit(1)
-                .build(), list.get(0));
-        assertEquals(FoodItemForGetting.builder()
-                .id(2)
-                .version(0)
-                .eatByDate(Instant.EPOCH)
-                .ofType(2)
-                .storedIn(1)
-                .registers(3)
-                .buys(2)
-                .unit(1)
-                .build(), list.get(1));
-        assertEquals(FoodItemForGetting.builder()
-                .id(3)
-                .version(0)
-                .eatByDate(Instant.EPOCH)
-                .ofType(2)
-                .storedIn(1)
-                .registers(3)
-                .buys(2)
-                .unit(1)
-                .build(), list.get(2));
+        assertEquals(3, data.size());
+        assertTrue(data.stream().anyMatch(v ->
+                v.id() == 1 &&
+                v.version() == 0 &&
+                v.eatByDate().equals(Instant.EPOCH) &&
+                v.ofType() == 2 &&
+                v.storedIn() == 1 &&
+                v.registers() == 3 &&
+                v.buys() == 2 &&
+                v.unit() == 1));
+        assertTrue(data.stream().anyMatch(v ->
+                v.id() == 2 &&
+                v.version() == 0 &&
+                v.eatByDate().equals(Instant.EPOCH) &&
+                v.ofType() == 2 &&
+                v.storedIn() == 1 &&
+                v.registers() == 3 &&
+                v.buys() == 2 &&
+                v.unit() == 1));
+        assertTrue(data.stream().anyMatch(v ->
+                v.id() == 3 &&
+                v.version() == 0 &&
+                v.eatByDate().equals(Instant.EPOCH) &&
+                v.ofType() == 2 &&
+                v.storedIn() == 1 &&
+                v.registers() == 3 &&
+                v.buys() == 2 &&
+                v.unit() == 1));
     }
 
     @Test
@@ -230,7 +223,7 @@ public class FoodItemHandlerTest extends DbTestCase implements CrudOperationsTes
 
         StatusCode result = uut.transferFoodItems(from, to);
 
-        Stream<FoodItem> items = uut.get(false, Instant.EPOCH).success();
+        Stream<FoodItem> items = getCurrentData().stream();
         assertEquals(StatusCode.SUCCESS, result);
         assertTrue(items.allMatch(item -> (item.version() == 1) == (item.registers() == to.id())));
         Mockito.verify(userDevicePresenceChecker).isCurrentlyMissing(eq(from), any());
@@ -326,7 +319,7 @@ public class FoodItemHandlerTest extends DbTestCase implements CrudOperationsTes
 
         StatusCode result = uut.transferFoodItems(from, to, Arrays.asList(from1, from2), toDevice);
 
-        Stream<FoodItem> items = uut.get(false, Instant.EPOCH).success();
+        Stream<FoodItem> items = getCurrentData().stream();
         assertEquals(StatusCode.SUCCESS, result);
         assertTrue(items.allMatch(item -> (item.version() == 1) == (item.registers() == to.id())));
         Mockito.verify(userPresenceChecker).isCurrentlyMissing(eq(from), any());
@@ -342,11 +335,10 @@ public class FoodItemHandlerTest extends DbTestCase implements CrudOperationsTes
 
         StatusCode deleteResult = uut.deleteItemsStoredIn(input);
 
-        Validation<StatusCode, Stream<FoodItem>> items = uut.get(false, Instant.EPOCH);
+        Stream<FoodItem> items = getCurrentData().stream();
 
         assertEquals(StatusCode.SUCCESS, deleteResult);
-        assertTrue(items.isSuccess());
-        assertEquals(0, items.success().count());
+        assertEquals(0, items.count());
     }
 
     @Test
@@ -374,7 +366,7 @@ public class FoodItemHandlerTest extends DbTestCase implements CrudOperationsTes
 
     @Test
     public void deletingCodesWorks() {
-        long entities = uut.get(false, Instant.EPOCH).success().count();
+        long entities = getCurrentData().size();
         assertEquals(3, entities);
 
         StatusCode result = uut.deleteItemsOfType(FoodForDeletion.builder()
@@ -383,7 +375,7 @@ public class FoodItemHandlerTest extends DbTestCase implements CrudOperationsTes
                 .build());
 
         assertEquals(StatusCode.SUCCESS, result);
-        entities = uut.get(false, Instant.EPOCH).success().count();
+        entities = getCurrentData().size();
         assertEquals(0, entities);
     }
 

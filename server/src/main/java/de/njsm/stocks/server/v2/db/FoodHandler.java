@@ -211,34 +211,22 @@ public class FoodHandler extends CrudDatabaseHandler<FoodRecord, Food> {
     }
 
     @Override
-    protected Function<FoodRecord, Food> getDtoMap(boolean bitemporal) {
-        if (bitemporal)
-            return cursor -> BitemporalFood.builder()
-                    .id(cursor.getId())
-                    .version(cursor.getVersion())
-                    .validTimeStart(cursor.getValidTimeStart().toInstant())
-                    .validTimeEnd(cursor.getValidTimeEnd().toInstant())
-                    .transactionTimeStart(cursor.getTransactionTimeStart().toInstant())
-                    .transactionTimeEnd(cursor.getTransactionTimeEnd().toInstant())
-                    .initiates(cursor.getInitiates())
-                    .name(cursor.getName())
-                    .toBuy(cursor.getToBuy())
-                    .expirationOffset(cursor.getExpirationOffset())
-                    .location(cursor.getLocation())
-                    .description(cursor.getDescription())
-                    .storeUnit(cursor.getStoreUnit())
-                    .build();
-        else
-            return cursor -> FoodForGetting.builder()
-                    .id(cursor.getId())
-                    .version(cursor.getVersion())
-                    .name(cursor.getName())
-                    .toBuy(cursor.getToBuy())
-                    .expirationOffset(cursor.getExpirationOffset())
-                    .location(cursor.getLocation())
-                    .description(cursor.getDescription())
-                    .storeUnit(cursor.getStoreUnit())
-                    .build();
+    protected Function<FoodRecord, Food> getDtoMap() {
+        return cursor -> BitemporalFood.builder()
+                .id(cursor.getId())
+                .version(cursor.getVersion())
+                .validTimeStart(cursor.getValidTimeStart().toInstant())
+                .validTimeEnd(cursor.getValidTimeEnd().toInstant())
+                .transactionTimeStart(cursor.getTransactionTimeStart().toInstant())
+                .transactionTimeEnd(cursor.getTransactionTimeEnd().toInstant())
+                .initiates(cursor.getInitiates())
+                .name(cursor.getName())
+                .toBuy(cursor.getToBuy())
+                .expirationOffset(cursor.getExpirationOffset())
+                .location(cursor.getLocation())
+                .description(cursor.getDescription())
+                .storeUnit(cursor.getStoreUnit())
+                .build();
     }
 
     @Override

@@ -56,7 +56,7 @@ public class UnitHandlerTest extends DbTestCase implements CrudOperationsTest<Un
     @Test
     public void bitemporalDataIsPresentWhenDesired() {
 
-        Validation<StatusCode, Stream<Unit>> result = uut.get(true, Instant.EPOCH);
+        Validation<StatusCode, Stream<Unit>> result = uut.get(Instant.EPOCH);
 
         BitemporalUnit sample = (BitemporalUnit) result.success().findAny().get();
         assertNotNull(sample.validTimeStart());
@@ -137,7 +137,7 @@ public class UnitHandlerTest extends DbTestCase implements CrudOperationsTest<Un
 
     @Test
     public void gettingBitemporalWorks() {
-        Validation<StatusCode, Stream<Unit>> result = uut.get(true, Instant.EPOCH);
+        Validation<StatusCode, Stream<Unit>> result = uut.get(Instant.EPOCH);
 
         assertTrue(result.isSuccess());
         List<BitemporalUnit> data = result.success()
@@ -153,7 +153,7 @@ public class UnitHandlerTest extends DbTestCase implements CrudOperationsTest<Un
 
     @Test
     public void gettingWorks() {
-        Validation<StatusCode, Stream<Unit>> result = uut.get(false, Instant.EPOCH);
+        Validation<StatusCode, Stream<Unit>> result = uut.get(Instant.EPOCH);
 
         assertTrue(result.isSuccess());
         List<Unit> data = result.success().collect(Collectors.toList());

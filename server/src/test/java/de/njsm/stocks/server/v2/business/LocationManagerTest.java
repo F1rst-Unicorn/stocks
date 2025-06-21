@@ -88,15 +88,15 @@ public class LocationManagerTest {
     @Test
     public void gettingIsDelegated() {
         AsyncResponse r = Mockito.mock(AsyncResponse.class);
-        Mockito.when(dbLayer.get(false, Instant.EPOCH)).thenReturn(Validation.success(Stream.empty()));
+        Mockito.when(dbLayer.get(Instant.EPOCH)).thenReturn(Validation.success(Stream.empty()));
         Mockito.when(dbLayer.commit()).thenReturn(StatusCode.SUCCESS);
         when(dbLayer.setReadOnly()).thenReturn(StatusCode.SUCCESS);
 
-        Validation<StatusCode, Stream<Location>> result = uut.get(r, false, Instant.EPOCH);
+        Validation<StatusCode, Stream<Location>> result = uut.get(r, Instant.EPOCH);
 
         assertTrue(result.isSuccess());
         assertEquals(0, result.success().count());
-        Mockito.verify(dbLayer).get(false, Instant.EPOCH);
+        Mockito.verify(dbLayer).get(Instant.EPOCH);
         Mockito.verify(dbLayer).setReadOnly();
     }
 

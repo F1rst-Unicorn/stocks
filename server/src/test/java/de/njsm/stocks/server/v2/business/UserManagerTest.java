@@ -77,14 +77,14 @@ public class UserManagerTest {
     @Test
     public void getUsersWorks() {
         AsyncResponse r = Mockito.mock(AsyncResponse.class);
-        Mockito.when(userDbHandler.get(false, Instant.EPOCH)).thenReturn(Validation.success(Stream.empty()));
+        Mockito.when(userDbHandler.get(Instant.EPOCH)).thenReturn(Validation.success(Stream.empty()));
         Mockito.when(userDbHandler.commit()).thenReturn(StatusCode.SUCCESS);
         when(userDbHandler.setReadOnly()).thenReturn(StatusCode.SUCCESS);
 
-        Validation<StatusCode, Stream<User>> result = uut.get(r, false, Instant.EPOCH);
+        Validation<StatusCode, Stream<User>> result = uut.get(r, Instant.EPOCH);
 
         assertTrue(result.isSuccess());
-        Mockito.verify(userDbHandler).get(false, Instant.EPOCH);
+        Mockito.verify(userDbHandler).get(Instant.EPOCH);
         Mockito.verify(userDbHandler).setReadOnly();
     }
 

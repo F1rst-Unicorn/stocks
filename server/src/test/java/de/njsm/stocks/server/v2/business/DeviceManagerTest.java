@@ -143,14 +143,14 @@ public class DeviceManagerTest {
     @Test
     public void gettingDevicesWorks() {
         AsyncResponse r = Mockito.mock(AsyncResponse.class);
-        Mockito.when(dbHandler.get(false, Instant.EPOCH)).thenReturn(Validation.success(Stream.empty()));
+        Mockito.when(dbHandler.get(Instant.EPOCH)).thenReturn(Validation.success(Stream.empty()));
         Mockito.when(dbHandler.commit()).thenReturn(StatusCode.SUCCESS);
         when(dbHandler.setReadOnly()).thenReturn(StatusCode.SUCCESS);
 
-        Validation<StatusCode, Stream<UserDevice>> result = uut.get(r, false, Instant.EPOCH);
+        Validation<StatusCode, Stream<UserDevice>> result = uut.get(r, Instant.EPOCH);
 
         assertTrue(result.isSuccess());
-        Mockito.verify(dbHandler).get(false, Instant.EPOCH);
+        Mockito.verify(dbHandler).get(Instant.EPOCH);
         Mockito.verify(dbHandler).setReadOnly();
     }
 

@@ -57,7 +57,7 @@ public class ScaledUnitHandlerTest extends DbTestCase implements CrudOperationsT
     @Test
     public void bitemporalDataIsPresentWhenDesired() {
 
-        Validation<StatusCode, Stream<ScaledUnit>> result = uut.get(true, Instant.EPOCH);
+        Validation<StatusCode, Stream<ScaledUnit>> result = uut.get(Instant.EPOCH);
 
         BitemporalScaledUnit sample = (BitemporalScaledUnit) result.success().findAny().get();
         assertNotNull(sample.validTimeStart());
@@ -68,7 +68,7 @@ public class ScaledUnitHandlerTest extends DbTestCase implements CrudOperationsT
 
     @Test
     public void gettingBitemporalWorks() {
-        Validation<StatusCode, Stream<ScaledUnit>> result = uut.get(true, Instant.EPOCH);
+        Validation<StatusCode, Stream<ScaledUnit>> result = uut.get(Instant.EPOCH);
 
         assertTrue(result.isSuccess());
         List<BitemporalScaledUnit> data = result.success()
@@ -83,17 +83,11 @@ public class ScaledUnitHandlerTest extends DbTestCase implements CrudOperationsT
     }
 
     @Test
-    public void gettingWorks() {
-        Validation<StatusCode, Stream<ScaledUnit>> result = uut.get(false, Instant.EPOCH);
+    void countingWorks() {
+        Validation<StatusCode, Integer> result = uut.countCurrent();
 
         assertTrue(result.isSuccess());
-        List<ScaledUnit> data = result.success().collect(Collectors.toList());
-
-        assertTrue(data.stream().anyMatch(l ->
-                l.id() == 2 &&
-                l.version() == 0 &&
-                l.scale().equals(new BigDecimal(3)) &&
-                l.unit() == 2));
+        assertEquals(3, result.success());
     }
 
     @Test

@@ -48,6 +48,6 @@ public interface EditingTest<T extends TableRecord<T>, N extends Entity<N>> exte
 
     private List<N> getDbData(StatusCode result) {
         assertEquals(StatusCode.SUCCESS, result);
-        return getData();
+        return getCurrentData();
     }
 }

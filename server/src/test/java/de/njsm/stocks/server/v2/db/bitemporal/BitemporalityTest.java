@@ -39,6 +39,7 @@ import java.util.stream.Stream;
 
 import static de.njsm.stocks.server.v2.db.CrudDatabaseHandler.INFINITY;
 import static de.njsm.stocks.server.v2.db.jooq.Tables.USER_DEVICE;
+import static de.njsm.stocks.server.v2.db.jooq.tables.CurrentLocation.CURRENT_LOCATION;
 import static de.njsm.stocks.server.v2.db.jooq.tables.Location.LOCATION;
 import static de.njsm.stocks.server.v2.web.PrincipalFilterTest.TEST_USER;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -81,12 +82,12 @@ public class BitemporalityTest extends DbTestCase {
 
         uut.cleanDataOlderThan(oldData);
 
-        long currentRows = uut.get(false, Instant.EPOCH)
-                .success()
-                .count();
+        long currentRows = getDSLContext().selectCount()
+                        .from(CURRENT_LOCATION)
+                                .fetchOne(0, Long.class);
         assertEquals(3, currentRows);
 
-        long allRows = uut.get(true, Instant.EPOCH)
+        long allRows = uut.get(Instant.EPOCH)
                 .success()
                 .count();
         assertEquals(5, allRows);
@@ -122,8 +123,8 @@ public class BitemporalityTest extends DbTestCase {
                 .execute();
 
 
-        //                                             DB only tracks at microsecond precision -----v
-        Validation<StatusCode, Stream<Location>> result = uut.get(true, now.minusDays(3).minusNanos(1000).toInstant());
+        //                                            DB tracks at microsecond precision -----v
+        Validation<StatusCode, Stream<Location>> result = uut.get(now.minusDays(3).minusNanos(1000).toInstant());
 
         long retrievedRows = result
                 .success()
@@ -162,7 +163,7 @@ public class BitemporalityTest extends DbTestCase {
         uut.rename(input);
         getConnectionFactory().getConnection().commit();
 
-        Validation<StatusCode, Stream<Location>> dbData = uut.get(true, Instant.EPOCH);
+        Validation<StatusCode, Stream<Location>> dbData = uut.get(Instant.EPOCH);
         assertTrue(dbData.isSuccess());
         assertTrue(dbData.success().map(v -> (BitemporalLocation) v).anyMatch(f -> f.name().equals(input.name())
                 && f.id() == input.id()
@@ -202,7 +203,7 @@ public class BitemporalityTest extends DbTestCase {
         uut.delete(input);
         getConnectionFactory().getConnection().commit();
 
-        Validation<StatusCode, Stream<Location>> dbData = uut.get(true, Instant.EPOCH);
+        Validation<StatusCode, Stream<Location>> dbData = uut.get(Instant.EPOCH);
         assertTrue(dbData.isSuccess());
         assertTrue(dbData.success().map(v -> (BitemporalLocation) v).anyMatch(f -> f.name().equals("Cupboard")
                 && f.id() == input.id()

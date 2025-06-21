@@ -56,7 +56,7 @@ public interface InsertionTest<T extends TableRecord<T>, N extends Entity<N>> ex
         assertTrue(result.isSuccess());
         assertEquals(Integer.valueOf(expectedId), result.success());
 
-        List<N> list = getData();
+        List<N> list = getCurrentData();
         assertEquals(expectedNumberOfEntities, list.size());
         assertThat(list, hasItem(matchesInsertable(data)));
     }

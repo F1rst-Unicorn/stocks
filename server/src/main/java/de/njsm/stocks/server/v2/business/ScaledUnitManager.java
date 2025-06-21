@@ -29,8 +29,6 @@ import de.njsm.stocks.common.api.StatusCode;
 import de.njsm.stocks.server.v2.db.ScaledUnitHandler;
 import de.njsm.stocks.server.v2.db.jooq.tables.records.ScaledUnitRecord;
 
-import java.time.Instant;
-
 public class ScaledUnitManager extends BusinessObject<ScaledUnitRecord, ScaledUnit>
         implements BusinessGettable<ScaledUnitRecord, ScaledUnit>,
                    BusinessAddable<ScaledUnitRecord, ScaledUnit>,
@@ -49,12 +47,12 @@ public class ScaledUnitManager extends BusinessObject<ScaledUnitRecord, ScaledUn
 
     public StatusCode delete(ScaledUnitForDeletion ScaledUnit) {
         return runOperation(() -> {
-            var currentScaledUnitsResult = dbHandler.get(false, Instant.EPOCH);
+            var currentScaledUnitsResult = dbHandler.countCurrent();
             if (currentScaledUnitsResult.isFail())
                 return currentScaledUnitsResult.fail();
 
             var currentScaledUnits = currentScaledUnitsResult.success();
-            if (currentScaledUnits.count() == 1)
+            if (currentScaledUnits == 1)
                 return StatusCode.ACCESS_DENIED;
 
             return dbHandler.delete(ScaledUnit);

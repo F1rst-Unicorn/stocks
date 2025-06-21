@@ -23,8 +23,7 @@ info:
     in the given state. This interval of validity is encoded using two timestamps,
     `validTimeStart` and `validTimeEnd`. The interval contains the starting
     timestamp while the ending timestamp is the first moment which is no longer
-    included (closed-open notation, `[start, end)` using mathematical notation). See
-    also the `bitemporal` flag.
+    included (closed-open notation, `[start, end)` using mathematical notation).
 
     #### Transaction Time
 
@@ -34,14 +33,12 @@ info:
     encoded using two timestamps, `transactionTimeStart` and `transactionTimeEnd`.
     The interval contains the starting timestamp while the ending timestamp is the
     first moment which is no longer included (closed-open notation, `[start, end)`
-    using mathematical notation). See also the `bitemporal` flag.
+    using mathematical notation).
 
     #### Change Initiators
 
     Each entity record in the database stores, which user device initiated
-    that change. This is indicated by the `initiates` field, which is only
-    present if `bitemporal` data is requested, just as the timestamps
-    described before.
+    that change. This is indicated by the `initiates` field.
 
     #### Timestamps
 
@@ -381,26 +378,16 @@ components:
       schema:
         $ref: '#/components/schemas/version'
       description: the version of the entity on which the request operates
-    bitemporal:
-      name: bitemporal
-      in: query
-      schema:
-        type: integer
-        minimum: 0
-        maximum: 1
-      description: |
-        Whether the response to a GET shall contain the bitemporal kind of the
-        requested entity
     startingFrom:
       name: startingFrom
       in: query
+      required: true
       schema:
         type: string
       description: |
         A timestamp stating that a GET response shall only include entities
         younger or equal to this value in transaction time. This is used to only
-        get the latest changes to a table relative to an earlier query. Must be
-        present if `bitemporal` is 1.
+        get the latest changes to a table relative to an earlier query.
     principalName:
       name: name
       in: query
@@ -532,7 +519,6 @@ paths:
           $ref: '#/components/responses/500'
     get:
       parameters:
-        - $ref: '#/components/parameters/bitemporal'
         - $ref: '#/components/parameters/startingFrom'
       responses:
         "200":
@@ -617,7 +603,6 @@ paths:
           $ref: '#/components/responses/500'
     get:
       parameters:
-        - $ref: '#/components/parameters/bitemporal'
         - $ref: '#/components/parameters/startingFrom'
       responses:
         "200":
@@ -667,7 +652,6 @@ paths:
   /v2/location:
     get:
       parameters:
-        - $ref: '#/components/parameters/bitemporal'
         - $ref: '#/components/parameters/startingFrom'
       responses:
         "200":
@@ -768,7 +752,6 @@ paths:
   /v2/food:
     get:
       parameters:
-        - $ref: '#/components/parameters/bitemporal'
         - $ref: '#/components/parameters/startingFrom'
       responses:
         "200":
@@ -901,7 +884,6 @@ paths:
   /v2/fooditem:
     get:
       parameters:
-        - $ref: '#/components/parameters/bitemporal'
         - $ref: '#/components/parameters/startingFrom'
       responses:
         "200":
@@ -1013,7 +995,6 @@ paths:
   /v2/ean:
     get:
       parameters:
-        - $ref: '#/components/parameters/bitemporal'
         - $ref: '#/components/parameters/startingFrom'
       responses:
         "200":
@@ -1098,7 +1079,6 @@ paths:
           $ref: '#/components/responses/500'
     get:
       parameters:
-        - $ref: '#/components/parameters/bitemporal'
         - $ref: '#/components/parameters/startingFrom'
       responses:
         "200":
@@ -1182,7 +1162,6 @@ paths:
           $ref: '#/components/responses/500'
     get:
       parameters:
-        - $ref: '#/components/parameters/bitemporal'
         - $ref: '#/components/parameters/startingFrom'
       responses:
         "200":
@@ -1247,7 +1226,6 @@ paths:
   /v2/recipe:
     get:
       parameters:
-        - $ref: '#/components/parameters/bitemporal'
         - $ref: '#/components/parameters/startingFrom'
       responses:
         "200":
@@ -1375,7 +1353,6 @@ paths:
   /v2/recipe-ingredient:
     get:
       parameters:
-        - $ref: '#/components/parameters/bitemporal'
         - $ref: '#/components/parameters/startingFrom'
       responses:
         "200":
@@ -1404,7 +1381,6 @@ paths:
   /v2/recipe-product:
     get:
       parameters:
-        - $ref: '#/components/parameters/bitemporal'
         - $ref: '#/components/parameters/startingFrom'
       responses:
         "200":

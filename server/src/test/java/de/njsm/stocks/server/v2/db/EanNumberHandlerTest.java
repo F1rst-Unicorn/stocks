@@ -46,7 +46,7 @@ public class EanNumberHandlerTest extends DbTestCase implements CrudOperationsTe
     @Test
     public void bitemporalDataIsPresentWhenDesired() {
 
-        Validation<StatusCode, Stream<EanNumber>> result = uut.get(true, Instant.EPOCH);
+        Validation<StatusCode, Stream<EanNumber>> result = uut.get(Instant.EPOCH);
 
         BitemporalEanNumber sample = (BitemporalEanNumber) result.success().findAny().get();
         assertNotNull(sample.validTimeStart());
@@ -71,7 +71,7 @@ public class EanNumberHandlerTest extends DbTestCase implements CrudOperationsTe
 
     @Test
     public void deletingCodesWorks() {
-        long codes = uut.get(false, Instant.EPOCH).success().count();
+        long codes = getCurrentData().size();
         assertEquals(1, codes);
 
         StatusCode result = uut.deleteOwnedByFood(FoodForDeletion.builder()
@@ -80,7 +80,7 @@ public class EanNumberHandlerTest extends DbTestCase implements CrudOperationsTe
                         .build());
 
         assertEquals(StatusCode.SUCCESS, result);
-        codes = uut.get(false, Instant.EPOCH).success().count();
+        codes = getCurrentData().size();
         assertEquals(0, codes);
     }
 

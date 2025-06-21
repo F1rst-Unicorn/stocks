@@ -75,12 +75,12 @@ public class FoodItemManagerTest {
     public void gettingItemsIsForwarded() {
         AsyncResponse r = Mockito.mock(AsyncResponse.class);
         when(backend.setReadOnly()).thenReturn(StatusCode.SUCCESS);
-        Mockito.when(backend.get(false, Instant.EPOCH)).thenReturn(Validation.success(Stream.empty()));
+        Mockito.when(backend.get(Instant.EPOCH)).thenReturn(Validation.success(Stream.empty()));
 
-        Validation<StatusCode, Stream<FoodItem>> result = uut.get(r, false, Instant.EPOCH);
+        Validation<StatusCode, Stream<FoodItem>> result = uut.get(r, Instant.EPOCH);
 
         assertTrue(result.isSuccess());
-        Mockito.verify(backend).get(false, Instant.EPOCH);
+        Mockito.verify(backend).get(Instant.EPOCH);
         Mockito.verify(backend).setReadOnly();
     }
 

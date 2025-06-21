@@ -22,6 +22,7 @@
 package de.njsm.stocks.server.v2.web;
 
 import de.njsm.stocks.common.api.*;
+import de.njsm.stocks.common.api.serialisers.InstantSerialiser;
 import de.njsm.stocks.server.v2.business.FoodManager;
 import fj.data.Validation;
 import org.junit.jupiter.api.AfterEach;
@@ -164,22 +165,22 @@ public class FoodEndpointTest {
                 .storeUnit(1)
                 .build();
         List<Food> data = Collections.singletonList(food);
-        when(manager.get(any(), eq(false), eq(Instant.EPOCH))).thenReturn(Validation.success(data.stream()));
+        when(manager.get(any(), eq(Instant.EPOCH))).thenReturn(Validation.success(data.stream()));
 
-        uut.get(r, 0, null);
+        uut.get(r, InstantSerialiser.serialize(Instant.EPOCH));
 
         ArgumentCaptor<StreamResponse<Food>> c = ArgumentCaptor.forClass(StreamResponse.class);
         verify(r).resume(c.capture());
         assertEquals(SUCCESS, c.getValue().getStatus());
         assertEquals(data, c.getValue().data.collect(Collectors.toList()));
-        verify(manager).get(r, false, Instant.EPOCH);
+        verify(manager).get(r, Instant.EPOCH);
     }
 
     @Test
     public void getFoodFromInvalidStartingPoint() {
         AsyncResponse r = Mockito.mock(AsyncResponse.class);
 
-        uut.get(r, 1, "invalid");
+        uut.get(r, "invalid");
 
         ArgumentCaptor<Response> c = ArgumentCaptor.forClass(Response.class);
         verify(r).resume(c.capture());

@@ -46,24 +46,17 @@ public class UserHandler extends CrudDatabaseHandler<UserRecord, User> {
     }
 
     @Override
-    protected Function<UserRecord, User> getDtoMap(boolean bitemporal) {
-        if (bitemporal)
-            return cursor -> BitemporalUser.builder()
-                    .id(cursor.getId())
-                    .version(cursor.getVersion())
-                    .validTimeStart(cursor.getValidTimeStart().toInstant())
-                    .validTimeEnd(cursor.getValidTimeEnd().toInstant())
-                    .transactionTimeStart(cursor.getTransactionTimeStart().toInstant())
-                    .transactionTimeEnd(cursor.getTransactionTimeEnd().toInstant())
-                    .initiates(cursor.getInitiates())
-                    .name(cursor.getName())
-                    .build();
-        else
-            return cursor -> UserForGetting.builder()
-                    .id(cursor.getId())
-                    .version(cursor.getVersion())
-                    .name(cursor.getName())
-                    .build();
+    protected Function<UserRecord, User> getDtoMap() {
+        return cursor -> BitemporalUser.builder()
+                .id(cursor.getId())
+                .version(cursor.getVersion())
+                .validTimeStart(cursor.getValidTimeStart().toInstant())
+                .validTimeEnd(cursor.getValidTimeEnd().toInstant())
+                .transactionTimeStart(cursor.getTransactionTimeStart().toInstant())
+                .transactionTimeEnd(cursor.getTransactionTimeEnd().toInstant())
+                .initiates(cursor.getInitiates())
+                .name(cursor.getName())
+                .build();
     }
 
     @Override

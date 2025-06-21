@@ -83,26 +83,18 @@ public class UserDeviceHandler extends CrudDatabaseHandler<UserDeviceRecord, Use
     }
 
     @Override
-    protected Function<UserDeviceRecord, UserDevice> getDtoMap(boolean bitemporal) {
-        if (bitemporal)
-            return cursor -> BitemporalUserDevice.builder()
-                    .id(cursor.getId())
-                    .version(cursor.getVersion())
-                    .validTimeStart(cursor.getValidTimeStart().toInstant())
-                    .validTimeEnd(cursor.getValidTimeEnd().toInstant())
-                    .transactionTimeStart(cursor.getTransactionTimeStart().toInstant())
-                    .transactionTimeEnd(cursor.getTransactionTimeEnd().toInstant())
-                    .initiates(cursor.getInitiates())
-                    .name(cursor.getName())
-                    .belongsTo(cursor.getBelongsTo())
-                    .build();
-        else
-            return cursor -> UserDeviceForGetting.builder()
-                    .id(cursor.getId())
-                    .version(cursor.getVersion())
-                    .name(cursor.getName())
-                    .belongsTo(cursor.getBelongsTo())
-                    .build();
+    protected Function<UserDeviceRecord, UserDevice> getDtoMap() {
+        return cursor -> BitemporalUserDevice.builder()
+                .id(cursor.getId())
+                .version(cursor.getVersion())
+                .validTimeStart(cursor.getValidTimeStart().toInstant())
+                .validTimeEnd(cursor.getValidTimeEnd().toInstant())
+                .transactionTimeStart(cursor.getTransactionTimeStart().toInstant())
+                .transactionTimeEnd(cursor.getTransactionTimeEnd().toInstant())
+                .initiates(cursor.getInitiates())
+                .name(cursor.getName())
+                .belongsTo(cursor.getBelongsTo())
+                .build();
     }
 
     @Override

@@ -44,7 +44,7 @@ public interface DeletionTest<T extends TableRecord<T>, N extends Entity<N>> ext
         StatusCode result = getDbHandler().delete(data);
 
         assertEquals(StatusCode.SUCCESS, result);
-        List<N> currentEntities = getData();
+        List<N> currentEntities = getCurrentData();
         assertThat(currentEntities, not(hasItem(matchesVersionableExactly(data))));
         assertThat(currentEntities.size(), equalTo(getNumberOfEntities() - 1));
 
@@ -62,7 +62,7 @@ public interface DeletionTest<T extends TableRecord<T>, N extends Entity<N>> ext
         StatusCode result = getDbHandler().delete(data);
 
         assertEquals(StatusCode.INVALID_DATA_VERSION, result);
-        assertThat(getData().size(), equalTo(getNumberOfEntities()));
+        assertThat(getCurrentData().size(), equalTo(getNumberOfEntities()));
     }
 
     @Test
@@ -72,7 +72,7 @@ public interface DeletionTest<T extends TableRecord<T>, N extends Entity<N>> ext
         StatusCode result = getDbHandler().delete(data);
 
         assertEquals(StatusCode.NOT_FOUND, result);
-        assertThat(getData().size(), equalTo(getNumberOfEntities()));
+        assertThat(getCurrentData().size(), equalTo(getNumberOfEntities()));
     }
 
     Versionable<N> getUnknownEntity();

@@ -30,7 +30,6 @@ import org.junit.jupiter.api.Test;
 
 import java.time.Instant;
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static de.njsm.stocks.server.v2.web.PrincipalFilterTest.TEST_USER;
@@ -52,53 +51,45 @@ public class UserDeviceHandlerTest extends DbTestCase implements CrudOperationsT
     @Test
     public void getDevicesWorks() {
 
-        Validation<StatusCode, Stream<UserDevice>> devices = uut.get(false, Instant.EPOCH);
+        var list = getCurrentData();
 
-        assertTrue(devices.isSuccess());
-        List<UserDevice> list = devices.success().collect(Collectors.toList());
         assertEquals(6, list.size());
-        assertThat(list, hasItem(UserDeviceForGetting.builder()
-                .id(1)
-                .version(0)
-                .name("Default")
-                .belongsTo(1)
-                .build()));
-        assertThat(list, hasItem(UserDeviceForGetting.builder()
-                .id(2)
-                .version(0)
-                .name("Job Runner")
-                .belongsTo(2)
-                .build()));
-        assertThat(list, hasItem(UserDeviceForGetting.builder()
-                .id(3)
-                .version(0)
-                .name("mobile")
-                .belongsTo(3)
-                .build()));
-        assertThat(list, hasItem(UserDeviceForGetting.builder()
-                .id(4)
-                .version(0)
-                .name("mobile2")
-                .belongsTo(3)
-                .build()));
-        assertThat(list, hasItem(UserDeviceForGetting.builder()
-                .id(5)
-                .version(0)
-                .name("laptop")
-                .belongsTo(4)
-                .build()));
-        assertThat(list, hasItem(UserDeviceForGetting.builder()
-                .id(6)
-                .version(0)
-                .name("pending_device")
-                .belongsTo(4)
-                .build()));
+        assertTrue(list.stream().anyMatch(v ->
+                v.id() == 1 &&
+                v.version() == 0 &&
+                v.name().equals("Default") &&
+                v.belongsTo() == 1));
+        assertTrue(list.stream().anyMatch(v ->
+                v.id() == 2 &&
+                v.version() == 0 &&
+                v.name().equals("Job Runner") &&
+                v.belongsTo() == 2));
+        assertTrue(list.stream().anyMatch(v ->
+                v.id() == 3 &&
+                v.version() == 0 &&
+                v.name().equals("mobile") &&
+                v.belongsTo() == 3));
+        assertTrue(list.stream().anyMatch(v ->
+                v.id() == 4 &&
+                v.version() == 0 &&
+                v.name().equals("mobile2") &&
+                v.belongsTo() == 3));
+        assertTrue(list.stream().anyMatch(v ->
+                v.id() == 5 &&
+                v.version() == 0 &&
+                v.name().equals("laptop") &&
+                v.belongsTo() == 4));
+        assertTrue(list.stream().anyMatch(v ->
+                v.id() == 6 &&
+                v.version() == 0 &&
+                v.name().equals("pending_device") &&
+                v.belongsTo() == 4));
     }
 
     @Test
     public void bitemporalDataIsPresentWhenDesired() {
 
-        Validation<StatusCode, Stream<UserDevice>> result = uut.get(true, Instant.EPOCH);
+        Validation<StatusCode, Stream<UserDevice>> result = uut.get(Instant.EPOCH);
 
         BitemporalUserDevice sample = (BitemporalUserDevice) result.success().findAny().get();
         assertNotNull(sample.validTimeStart());

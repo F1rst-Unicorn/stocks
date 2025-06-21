@@ -71,26 +71,20 @@ public abstract class CrudDatabaseHandler<T extends TableRecord<T>, N extends En
     /**
      * CF 10.23
      */
-    public Validation<StatusCode, Stream<N>> get(boolean bitemporal, Instant startingFrom) {
+    public Validation<StatusCode, Stream<N>> get(Instant startingFrom) {
         return runFunction(context -> {
 
-            Condition bitemporalSelector;
-            if (bitemporal)
-                bitemporalSelector = DSL.trueCondition();
-            else
-                bitemporalSelector = nowAsBestKnown();
-
             OffsetDateTime startingFromWithOffset = OffsetDateTime.from(startingFrom.atOffset(ZoneOffset.UTC));
-            bitemporalSelector = bitemporalSelector.and(getTransactionTimeStartField().greaterThan(startingFromWithOffset)
+            var bitemporalSelector = getTransactionTimeStartField().greaterThan(startingFromWithOffset)
                     .or(getTransactionTimeEndField().greaterThan(startingFromWithOffset)
-                            .and(getTransactionTimeEndField().lessThan(INFINITY))));
+                            .and(getTransactionTimeEndField().lessThan(INFINITY)));
 
             Stream<N> result = context
                     .selectFrom(getTable())
                     .where(bitemporalSelector)
                     .fetchSize(1024)
                     .stream()
-                    .map(getDtoMap(bitemporal));
+                    .map(getDtoMap());
 
             return Validation.success(result);
         });
@@ -293,7 +287,7 @@ public abstract class CrudDatabaseHandler<T extends TableRecord<T>, N extends En
 
     protected abstract Table<T> getTable();
 
-    protected abstract Function<T, N> getDtoMap(boolean bitemporal);
+    protected abstract Function<T, N> getDtoMap();
 
     protected abstract TableField<T, Integer> getIdField();
 

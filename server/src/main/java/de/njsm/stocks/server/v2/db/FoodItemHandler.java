@@ -21,11 +21,8 @@
 
 package de.njsm.stocks.server.v2.db;
 
-import de.njsm.stocks.common.api.User;
 import de.njsm.stocks.common.api.*;
-import de.njsm.stocks.common.api.BitemporalFoodItem;
-import de.njsm.stocks.common.api.FoodItemForEditing;
-import de.njsm.stocks.common.api.FoodItemForGetting;
+import de.njsm.stocks.common.api.User;
 import de.njsm.stocks.server.v2.db.jooq.tables.records.FoodItemRecord;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -197,34 +194,22 @@ public class FoodItemHandler extends CrudDatabaseHandler<FoodItemRecord, FoodIte
     }
 
     @Override
-    protected Function<FoodItemRecord, FoodItem> getDtoMap(boolean bitemporal) {
-        if (bitemporal)
-            return cursor -> BitemporalFoodItem.builder()
-                    .id(cursor.getId())
-                    .version(cursor.getVersion())
-                    .validTimeStart(cursor.getValidTimeStart().toInstant())
-                    .validTimeEnd(cursor.getValidTimeEnd().toInstant())
-                    .transactionTimeStart(cursor.getTransactionTimeStart().toInstant())
-                    .transactionTimeEnd(cursor.getTransactionTimeEnd().toInstant())
-                    .initiates(cursor.getInitiates())
-                    .eatByDate(cursor.getEatBy().toInstant())
-                    .ofType(cursor.getOfType())
-                    .storedIn(cursor.getStoredIn())
-                    .registers(cursor.getRegisters())
-                    .buys(cursor.getBuys())
-                    .unit(cursor.getUnit())
-                    .build();
-        else
-            return cursor -> FoodItemForGetting.builder()
-                    .id(cursor.getId())
-                    .version(cursor.getVersion())
-                    .eatByDate(cursor.getEatBy().toInstant())
-                    .ofType(cursor.getOfType())
-                    .storedIn(cursor.getStoredIn())
-                    .registers(cursor.getRegisters())
-                    .buys(cursor.getBuys())
-                    .unit(cursor.getUnit())
-                    .build();
+    protected Function<FoodItemRecord, FoodItem> getDtoMap() {
+        return cursor -> BitemporalFoodItem.builder()
+                .id(cursor.getId())
+                .version(cursor.getVersion())
+                .validTimeStart(cursor.getValidTimeStart().toInstant())
+                .validTimeEnd(cursor.getValidTimeEnd().toInstant())
+                .transactionTimeStart(cursor.getTransactionTimeStart().toInstant())
+                .transactionTimeEnd(cursor.getTransactionTimeEnd().toInstant())
+                .initiates(cursor.getInitiates())
+                .eatByDate(cursor.getEatBy().toInstant())
+                .ofType(cursor.getOfType())
+                .storedIn(cursor.getStoredIn())
+                .registers(cursor.getRegisters())
+                .buys(cursor.getBuys())
+                .unit(cursor.getUnit())
+                .build();
     }
 
     @Override

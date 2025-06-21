@@ -24,6 +24,7 @@ package de.njsm.stocks.server.v2.web;
 import de.njsm.stocks.common.api.*;
 import de.njsm.stocks.common.api.UserDeviceForDeletion;
 import de.njsm.stocks.common.api.UserDeviceForInsertion;
+import de.njsm.stocks.common.api.serialisers.InstantSerialiser;
 import de.njsm.stocks.server.v2.business.DeviceManager;
 import de.njsm.stocks.server.v2.business.data.NewDeviceTicket;
 import fj.data.Validation;
@@ -63,22 +64,22 @@ public class DeviceEndpointTest {
     @Test
     public void getDevices() {
         AsyncResponse r = Mockito.mock(AsyncResponse.class);
-        Mockito.when(businessObject.get(r, false, Instant.EPOCH)).thenReturn(Validation.success(Stream.empty()));
+        Mockito.when(businessObject.get(r, Instant.EPOCH)).thenReturn(Validation.success(Stream.empty()));
 
-        uut.get(r, 0, null);
+        uut.get(r, InstantSerialiser.serialize(Instant.EPOCH));
 
         ArgumentCaptor<StreamResponse<UserDevice>> c = ArgumentCaptor.forClass(StreamResponse.class);
         verify(r).resume(c.capture());
         assertEquals(StatusCode.SUCCESS, c.getValue().getStatus());
         assertEquals(0, c.getValue().data.count());
-        Mockito.verify(businessObject).get(r, false, Instant.EPOCH);
+        Mockito.verify(businessObject).get(r, Instant.EPOCH);
     }
 
     @Test
     public void getDevicesFromInvalidStartingPoint() {
         AsyncResponse r = Mockito.mock(AsyncResponse.class);
 
-        uut.get(r, 1, "invalid");
+        uut.get(r, "invalid");
 
         ArgumentCaptor<Response> c = ArgumentCaptor.forClass(Response.class);
         verify(r).resume(c.capture());

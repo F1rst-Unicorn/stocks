@@ -52,7 +52,7 @@ public class RecipeHandlerTest extends DbTestCase implements CrudOperationsTest<
     @Test
     public void bitemporalDataIsPresentWhenDesired() {
 
-        Validation<StatusCode, Stream<Recipe>> result = uut.get(true, Instant.EPOCH);
+        Validation<StatusCode, Stream<Recipe>> result = uut.get(Instant.EPOCH);
 
         BitemporalRecipe sample = (BitemporalRecipe) result.success().findAny().get();
         assertNotNull(sample.validTimeStart());
@@ -63,7 +63,7 @@ public class RecipeHandlerTest extends DbTestCase implements CrudOperationsTest<
 
     @Test
     public void gettingBitemporalWorks() {
-        Validation<StatusCode, Stream<Recipe>> result = uut.get(true, Instant.EPOCH);
+        Validation<StatusCode, Stream<Recipe>> result = uut.get(Instant.EPOCH);
 
         assertTrue(result.isSuccess());
         List<BitemporalRecipe> data = result.success()
@@ -76,21 +76,6 @@ public class RecipeHandlerTest extends DbTestCase implements CrudOperationsTest<
                         l.instructions().equals("Mix flour and sugar. Bake directly") &&
                         l.duration().equals(Duration.ofHours(1)) &&
                         l.initiates() == 1));
-    }
-
-    @Test
-    public void gettingWorks() {
-        Validation<StatusCode, Stream<Recipe>> result = uut.get(false, Instant.EPOCH);
-
-        assertTrue(result.isSuccess());
-        List<Recipe> data = result.success().collect(Collectors.toList());
-
-        assertTrue(data.stream().anyMatch(l ->
-                l.id() == 1 &&
-                        l.version() == 0 &&
-                        l.name().equals("Cake") &&
-                        l.instructions().equals("Mix flour and sugar. Bake directly") &&
-                        l.duration().equals(Duration.ofHours(1))));
     }
 
     @Test

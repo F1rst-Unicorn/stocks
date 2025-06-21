@@ -28,6 +28,7 @@ import de.njsm.stocks.common.api.StreamResponse;
 import de.njsm.stocks.common.api.FoodItemForDeletion;
 import de.njsm.stocks.common.api.FoodItemForEditing;
 import de.njsm.stocks.common.api.FoodItemForInsertion;
+import de.njsm.stocks.common.api.serialisers.InstantSerialiser;
 import de.njsm.stocks.server.v2.business.FoodItemManager;
 import fj.data.Validation;
 import org.junit.jupiter.api.AfterEach;
@@ -68,22 +69,22 @@ public class FoodItemEndpointTest {
     @Test
     public void testGettingItems() {
         AsyncResponse r = Mockito.mock(AsyncResponse.class);
-        Mockito.when(manager.get(r, false, Instant.EPOCH)).thenReturn(Validation.success(Stream.of()));
+        Mockito.when(manager.get(r, Instant.EPOCH)).thenReturn(Validation.success(Stream.of()));
 
-        uut.get(r, 0, null);
+        uut.get(r, InstantSerialiser.serialize(Instant.EPOCH));
 
         ArgumentCaptor<StreamResponse<FoodItem>> c = ArgumentCaptor.forClass(StreamResponse.class);
         verify(r).resume(c.capture());
         assertEquals(StatusCode.SUCCESS, c.getValue().getStatus());
         assertEquals(0, c.getValue().data.count());
-        Mockito.verify(manager).get(r, false, Instant.EPOCH);
+        Mockito.verify(manager).get(r, Instant.EPOCH);
     }
 
     @Test
     public void getItemsFromInvalidStartingPoint() {
         AsyncResponse r = Mockito.mock(AsyncResponse.class);
 
-        uut.get(r, 1, "invalid");
+        uut.get(r, "invalid");
 
         ArgumentCaptor<Response> c = ArgumentCaptor.forClass(Response.class);
         verify(r).resume(c.capture());

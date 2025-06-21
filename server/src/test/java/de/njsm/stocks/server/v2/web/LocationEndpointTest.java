@@ -22,6 +22,7 @@
 package de.njsm.stocks.server.v2.web;
 
 import de.njsm.stocks.common.api.*;
+import de.njsm.stocks.common.api.serialisers.InstantSerialiser;
 import de.njsm.stocks.server.v2.business.LocationManager;
 import fj.data.Validation;
 import org.junit.jupiter.api.AfterEach;
@@ -140,22 +141,22 @@ public class LocationEndpointTest {
                 .description("")
                 .build();
         List<Location> data = Collections.singletonList(item);
-        when(businessLayer.get(r, false, Instant.EPOCH)).thenReturn(Validation.success(data.stream()));
+        when(businessLayer.get(r, Instant.EPOCH)).thenReturn(Validation.success(data.stream()));
 
-        uut.get(r, 0, null);
+        uut.get(r, InstantSerialiser.serialize(Instant.EPOCH));
 
         ArgumentCaptor<StreamResponse<Location>> c = ArgumentCaptor.forClass(StreamResponse.class);
         verify(r).resume(c.capture());
         assertEquals(SUCCESS, c.getValue().getStatus());
         assertEquals(data, c.getValue().data.collect(Collectors.toList()));
-        verify(businessLayer).get(r, false, Instant.EPOCH);
+        verify(businessLayer).get(r, Instant.EPOCH);
     }
 
     @Test
     public void getLocationsFromInvalidStartingPoint() {
         AsyncResponse r = Mockito.mock(AsyncResponse.class);
 
-        uut.get(r, 1, "invalid");
+        uut.get(r, "invalid");
 
         ArgumentCaptor<Response> c = ArgumentCaptor.forClass(Response.class);
         verify(r).resume(c.capture());

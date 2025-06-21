@@ -63,7 +63,7 @@ public class RecipeProductHandlerTest extends DbTestCase
     @Test
     public void bitemporalDataIsPresentWhenDesired() {
 
-        Validation<StatusCode, Stream<RecipeProduct>> result = uut.get(true, Instant.EPOCH);
+        Validation<StatusCode, Stream<RecipeProduct>> result = uut.get(Instant.EPOCH);
 
         BitemporalRecipeProduct sample = (BitemporalRecipeProduct) result.success().findAny().get();
         assertNotNull(sample.validTimeStart());
@@ -74,7 +74,7 @@ public class RecipeProductHandlerTest extends DbTestCase
 
     @Test
     public void gettingBitemporalWorks() {
-        Validation<StatusCode, Stream<RecipeProduct>> result = uut.get(true, Instant.EPOCH);
+        Validation<StatusCode, Stream<RecipeProduct>> result = uut.get(Instant.EPOCH);
 
         assertTrue(result.isSuccess());
         List<BitemporalRecipeProduct> data = result.success()
@@ -89,23 +89,6 @@ public class RecipeProductHandlerTest extends DbTestCase
                         l.unit() == 2 &&
                         l.initiates() == 1));
     }
-
-    @Test
-    public void gettingWorks() {
-        Validation<StatusCode, Stream<RecipeProduct>> result = uut.get(false, Instant.EPOCH);
-
-        assertTrue(result.isSuccess());
-        List<RecipeProduct> data = result.success().collect(Collectors.toList());
-
-        assertTrue(data.stream().anyMatch(l ->
-                l.id() == 1 &&
-                        l.version() == 0 &&
-                        l.amount() == 2 &&
-                        l.product() == 3 &&
-                        l.recipe() == 1 &&
-                        l.unit() == 2));
-    }
-
 
     @Test
     void editingMissingIsRejected() {
@@ -245,9 +228,7 @@ public class RecipeProductHandlerTest extends DbTestCase
         StatusCode result = uut.delete(input);
 
         assertEquals(StatusCode.SUCCESS, result);
-        Validation<StatusCode, Stream<RecipeProduct>> stream = uut.get(false, Instant.EPOCH);
-        assertTrue(stream.isSuccess());
-        assertEquals(0, stream.success().count());
+        assertEquals(0, getCurrentData().size());
     }
 
     @Test
@@ -260,9 +241,7 @@ public class RecipeProductHandlerTest extends DbTestCase
         StatusCode result = uut.deleteAllOf(recipe);
 
         assertEquals(StatusCode.SUCCESS, result);
-        Validation<StatusCode, Stream<RecipeProduct>> stream = uut.get(false, Instant.EPOCH);
-        assertTrue(stream.isSuccess());
-        assertEquals(0, stream.success().count());
+        assertEquals(0, getCurrentData().size());
     }
 
     @Test
@@ -275,9 +254,7 @@ public class RecipeProductHandlerTest extends DbTestCase
         StatusCode result = uut.deleteAllOf(recipe);
 
         assertEquals(StatusCode.SUCCESS, result);
-        Validation<StatusCode, Stream<RecipeProduct>> stream = uut.get(false, Instant.EPOCH);
-        assertTrue(stream.isSuccess());
-        assertEquals(1, stream.success().count());
+        assertEquals(1, getCurrentData().size());
     }
 
     @Override

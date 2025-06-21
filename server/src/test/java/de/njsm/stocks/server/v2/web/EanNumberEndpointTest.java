@@ -27,6 +27,7 @@ import de.njsm.stocks.common.api.StreamResponse;
 import de.njsm.stocks.common.api.EanNumberForDeletion;
 import de.njsm.stocks.common.api.EanNumberForGetting;
 import de.njsm.stocks.common.api.EanNumberForInsertion;
+import de.njsm.stocks.common.api.serialisers.InstantSerialiser;
 import de.njsm.stocks.server.v2.business.EanNumberManager;
 import fj.data.Validation;
 import org.junit.jupiter.api.AfterEach;
@@ -130,22 +131,22 @@ public class EanNumberEndpointTest {
                 .identifiesFood(2)
                 .eanNumber("CODE")
                 .build());
-        when(manager.get(r, false, Instant.EPOCH)).thenReturn(Validation.success(data.stream()));
+        when(manager.get(r, Instant.EPOCH)).thenReturn(Validation.success(data.stream()));
 
-        uut.get(r, 0, null);
+        uut.get(r, InstantSerialiser.serialize(Instant.EPOCH));
 
         ArgumentCaptor<StreamResponse<EanNumber>> c = ArgumentCaptor.forClass(StreamResponse.class);
         verify(r).resume(c.capture());
         assertEquals(SUCCESS, c.getValue().getStatus());
         assertEquals(data, c.getValue().data.collect(Collectors.toList()));
-        verify(manager).get(r, false, Instant.EPOCH);
+        verify(manager).get(r, Instant.EPOCH);
     }
 
     @Test
     public void getEanNumbersFromInvalidStartingPoint() {
         AsyncResponse r = Mockito.mock(AsyncResponse.class);
 
-        uut.get(r, 1, "invalid");
+        uut.get(r, "invalid");
 
         ArgumentCaptor<Response> c = ArgumentCaptor.forClass(Response.class);
         verify(r).resume(c.capture());

@@ -32,21 +32,28 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static de.njsm.stocks.server.v2.db.CrudDatabaseHandler.INFINITY;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public interface EntityDbTestCase<T extends TableRecord<T>, N extends Entity<N>> extends UutGetter<T, N> {
 
-    default List<N> getData() {
-        Validation<StatusCode, Stream<N>> units = getDbHandler().get(false, Instant.EPOCH);
-        assertTrue(units.isSuccess());
-        return units.success().collect(Collectors.toList());
+    default List<N> getCurrentData() {
+        Validation<StatusCode, Stream<N>> entities = getDbHandler().get(Instant.EPOCH);
+        assertTrue(entities.isSuccess());
+        return entities.success()
+                .map(v -> (Bitemporal<N>) v)
+                .filter(v -> v.transactionTimeEnd().equals(INFINITY.toInstant()))
+                .filter(v -> v.validTimeStart().isBefore(Instant.now()))
+                .filter(v -> v.validTimeEnd().isAfter(Instant.now()))
+                .map(v -> (N) v)
+                .collect(Collectors.toList());
     }
 
     default List<Bitemporal<N>> getBitemporalData() {
-        Validation<StatusCode, Stream<N>> units = getDbHandler().get(true, Instant.EPOCH);
+        Validation<StatusCode, Stream<N>> units = getDbHandler().get(Instant.EPOCH);
         assertTrue(units.isSuccess());
         return units.success()
                 .map(v -> (Bitemporal<N>) v)
-                .collect(Collectors.toList());
+                .toList();
     }
 }

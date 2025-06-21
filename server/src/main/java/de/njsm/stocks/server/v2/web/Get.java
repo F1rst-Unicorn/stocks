@@ -46,12 +46,10 @@ public interface Get<U extends TableRecord<U>, T extends Entity<T>> {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     default void get(@Suspended AsyncResponse response,
-                    @QueryParam("bitemporal") int bitemporalParameter,
                     @QueryParam("startingFrom") String startingFromParameter) {
-        boolean bitemporal = bitemporalParameter == 1;
         Optional<Instant> startingFrom = parseToInstant(startingFromParameter, "startingFrom");
         if (startingFrom.isPresent()) {
-            Validation<StatusCode, Stream<T>> result = getManager().get(response, bitemporal, startingFrom.get());
+            Validation<StatusCode, Stream<T>> result = getManager().get(response, startingFrom.get());
             response.resume(new StreamResponse<>(result));
         } else {
             response.resume(new Response(StatusCode.INVALID_ARGUMENT));

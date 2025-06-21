@@ -21,12 +21,12 @@
 
 package de.njsm.stocks.server.v2.db;
 
-import de.njsm.stocks.common.api.ScaledUnit;
-import de.njsm.stocks.common.api.StatusCode;
 import de.njsm.stocks.common.api.BitemporalScaledUnit;
+import de.njsm.stocks.common.api.ScaledUnit;
 import de.njsm.stocks.common.api.ScaledUnitForEditing;
-import de.njsm.stocks.common.api.ScaledUnitForGetting;
+import de.njsm.stocks.common.api.StatusCode;
 import de.njsm.stocks.server.v2.db.jooq.tables.records.ScaledUnitRecord;
+import fj.data.Validation;
 import org.jooq.Field;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -34,6 +34,7 @@ import org.jooq.impl.DSL;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Function;
 
 import static de.njsm.stocks.server.v2.db.jooq.Tables.SCALED_UNIT;
@@ -68,6 +69,19 @@ public class ScaledUnitHandler extends CrudDatabaseHandler<ScaledUnitRecord, Sca
         });
     }
 
+    public Validation<StatusCode, Integer> countCurrent() {
+        return runFunction(context -> {
+            Optional<Integer> count = context.selectCount()
+                    .from(SCALED_UNIT)
+                    .where(nowAsBestKnown())
+                    .fetchOptional(0, Integer.class);
+
+            return count
+                    .map(Validation::<StatusCode, Integer>success)
+                    .orElse(Validation.fail(StatusCode.NOT_FOUND));
+        });
+    }
+
     @Override
     protected Table<ScaledUnitRecord> getTable() {
         return SCALED_UNIT;
@@ -84,26 +98,18 @@ public class ScaledUnitHandler extends CrudDatabaseHandler<ScaledUnitRecord, Sca
     }
 
     @Override
-    protected Function<ScaledUnitRecord, ScaledUnit> getDtoMap(boolean bitemporal) {
-        if (bitemporal)
-            return cursor -> BitemporalScaledUnit.builder()
-                    .id(cursor.getId())
-                    .version(cursor.getVersion())
-                    .validTimeStart(cursor.getValidTimeStart().toInstant())
-                    .validTimeEnd(cursor.getValidTimeEnd().toInstant())
-                    .transactionTimeStart(cursor.getTransactionTimeStart().toInstant())
-                    .transactionTimeEnd(cursor.getTransactionTimeEnd().toInstant())
-                    .initiates(cursor.getInitiates())
-                    .scale(cursor.getScale())
-                    .unit(cursor.getUnit())
-                    .build();
-        else
-            return cursor -> ScaledUnitForGetting.builder()
-                    .id(cursor.getId())
-                    .version(cursor.getVersion())
-                    .scale(cursor.getScale())
-                    .unit(cursor.getUnit())
-                    .build();
+    protected Function<ScaledUnitRecord, ScaledUnit> getDtoMap() {
+        return cursor -> BitemporalScaledUnit.builder()
+                .id(cursor.getId())
+                .version(cursor.getVersion())
+                .validTimeStart(cursor.getValidTimeStart().toInstant())
+                .validTimeEnd(cursor.getValidTimeEnd().toInstant())
+                .transactionTimeStart(cursor.getTransactionTimeStart().toInstant())
+                .transactionTimeEnd(cursor.getTransactionTimeEnd().toInstant())
+                .initiates(cursor.getInitiates())
+                .scale(cursor.getScale())
+                .unit(cursor.getUnit())
+                .build();
     }
 
     @Override

@@ -28,13 +28,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.time.Instant;
-import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static de.njsm.stocks.server.v2.web.PrincipalFilterTest.TEST_USER;
-import static org.hamcrest.CoreMatchers.hasItem;
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class UserHandlerTest extends DbTestCase implements CrudOperationsTest<UserRecord, User> {
@@ -50,42 +46,35 @@ public class UserHandlerTest extends DbTestCase implements CrudOperationsTest<Us
     @Test
     public void gettingUsersWorks() {
 
-        Validation<StatusCode, Stream<User>> result = uut.get(false, Instant.EPOCH);
+        var list = getCurrentData();
 
-        assertTrue(result.isSuccess());
-        List<User> list = result.success().collect(Collectors.toList());
         assertEquals(getNumberOfEntities(), list.size());
-        assertThat(list, hasItem(UserForGetting.builder()
-                .id(1)
-                .version(0)
-                .name("Default")
-                .build()));
-        assertThat(list, hasItem(UserForGetting.builder()
-                .id(2)
-                .version(0)
-                .name("Stocks")
-                .build()));
-        assertThat(list, hasItem(UserForGetting.builder()
-                .id(3)
-                .version(0)
-                .name("Bob")
-                .build()));
-        assertThat(list, hasItem(UserForGetting.builder()
-                .id(4)
-                .version(0)
-                .name("Alice")
-                .build()));
-        assertThat(list, hasItem(UserForGetting.builder()
-                .id(5)
-                .version(0)
-                .name("Jack")
-                .build()));
+        assertTrue(list.stream().anyMatch(v ->
+                v.id() == 1 &&
+                v.version() == 0 &&
+                v.name().equals("Default")));
+        assertTrue(list.stream().anyMatch(v ->
+                v.id() == 2 &&
+                v.version() == 0 &&
+                v.name().equals("Stocks")));
+        assertTrue(list.stream().anyMatch(v ->
+                v.id() == 3 &&
+                v.version() == 0 &&
+                v.name().equals("Bob")));
+        assertTrue(list.stream().anyMatch(v ->
+                v.id() == 4 &&
+                v.version() == 0 &&
+                v.name().equals("Alice")));
+        assertTrue(list.stream().anyMatch(v ->
+                v.id() == 5 &&
+                v.version() == 0 &&
+                v.name().equals("Jack")));
     }
 
     @Test
     public void bitemporalDataIsPresentWhenDesired() {
 
-        Validation<StatusCode, Stream<User>> result = uut.get(true, Instant.EPOCH);
+        Validation<StatusCode, Stream<User>> result = uut.get(Instant.EPOCH);
 
         BitemporalUser sample = (BitemporalUser) result.success().findAny().get();
         assertNotNull(sample.validTimeStart());

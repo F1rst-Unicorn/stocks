@@ -46,7 +46,7 @@ public class FoodHandlerTest extends DbTestCase implements CrudOperationsTest<Fo
     @Test
     public void bitemporalDataIsPresentWhenDesired() {
 
-        Validation<StatusCode, Stream<Food>> result = uut.get(true, Instant.EPOCH);
+        Validation<StatusCode, Stream<Food>> result = uut.get(Instant.EPOCH);
 
         BitemporalFood sample = (BitemporalFood) result.success().findAny().get();
         assertNotNull(sample.validTimeStart());
@@ -265,7 +265,7 @@ public class FoodHandlerTest extends DbTestCase implements CrudOperationsTest<Fo
         StatusCode result = uut.setToBuyStatus(data, false);
 
         assertEquals(StatusCode.SUCCESS, result);
-        Food changedData = uut.get(false, Instant.EPOCH).success().filter(f -> f.id() == data.id()).findFirst().get();
+        Food changedData = getCurrentData().stream().filter(f -> f.id() == data.id()).findFirst().get();
         assertFalse(changedData.toBuy());
     }
 
@@ -304,7 +304,7 @@ public class FoodHandlerTest extends DbTestCase implements CrudOperationsTest<Fo
         StatusCode result = uut.unregisterDefaultLocation(l);
 
         assertEquals(StatusCode.SUCCESS, result);
-        Food changedFood = uut.get(false, Instant.EPOCH).success().filter(f -> f.id() == 3).findAny().get();
+        Food changedFood = getCurrentData().stream().filter(f -> f.id() == 3).findAny().get();
         assertNull(changedFood.location());
     }
 
@@ -319,8 +319,7 @@ public class FoodHandlerTest extends DbTestCase implements CrudOperationsTest<Fo
         StatusCode result = uut.setDescription(data);
 
         assertEquals(StatusCode.SUCCESS, result);
-        assertTrue(uut.get(false, Instant.EPOCH)
-                .success()
+        assertTrue(getCurrentData().stream()
                 .anyMatch(f -> f.id() == data.id() &&
                         data.version() + 1 == f.version() &&
                         data.description().equals(f.description())),

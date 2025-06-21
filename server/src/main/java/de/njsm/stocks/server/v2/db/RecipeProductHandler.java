@@ -100,30 +100,20 @@ public class RecipeProductHandler extends CrudDatabaseHandler<RecipeProductRecor
     }
 
     @Override
-    protected Function<RecipeProductRecord, RecipeProduct> getDtoMap(boolean bitemporal) {
-        if (bitemporal)
-            return cursor -> BitemporalRecipeProduct.builder()
-                    .id(cursor.getId())
-                    .version(cursor.getVersion())
-                    .validTimeStart(cursor.getValidTimeStart().toInstant())
-                    .validTimeEnd(cursor.getValidTimeEnd().toInstant())
-                    .transactionTimeStart(cursor.getTransactionTimeStart().toInstant())
-                    .transactionTimeEnd(cursor.getTransactionTimeEnd().toInstant())
-                    .initiates(cursor.getInitiates())
-                    .amount(cursor.getAmount())
-                    .product(cursor.getProduct())
-                    .recipe(cursor.getRecipe())
-                    .unit(cursor.getUnit())
-                    .build();
-        else
-            return cursor -> RecipeProductForGetting.builder()
-                    .id(cursor.getId())
-                    .version(cursor.getVersion())
-                    .amount(cursor.getAmount())
-                    .product(cursor.getProduct())
-                    .recipe(cursor.getRecipe())
-                    .unit(cursor.getUnit())
-                    .build();
+    protected Function<RecipeProductRecord, RecipeProduct> getDtoMap() {
+        return cursor -> BitemporalRecipeProduct.builder()
+                .id(cursor.getId())
+                .version(cursor.getVersion())
+                .validTimeStart(cursor.getValidTimeStart().toInstant())
+                .validTimeEnd(cursor.getValidTimeEnd().toInstant())
+                .transactionTimeStart(cursor.getTransactionTimeStart().toInstant())
+                .transactionTimeEnd(cursor.getTransactionTimeEnd().toInstant())
+                .initiates(cursor.getInitiates())
+                .amount(cursor.getAmount())
+                .product(cursor.getProduct())
+                .recipe(cursor.getRecipe())
+                .unit(cursor.getUnit())
+                .build();
     }
 
     @Override
