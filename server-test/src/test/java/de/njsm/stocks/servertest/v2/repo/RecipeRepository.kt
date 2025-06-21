@@ -30,7 +30,7 @@ class RecipeRepository
     @Inject
     constructor(private val updateService: UpdateService) {
         fun getAll(): List<RecipeForSynchronisation> {
-            return updateService.getRecipes(Instant.EPOCH)
+            return updateService.getRecipes(Instant.EPOCH, Constants.INFINITY)
                 .filter { it.transactionTimeEnd() == Constants.INFINITY }
                 .filter { it.validTimeStart().isBefore(Instant.now()) }
                 .filter { it.validTimeEnd().isAfter(Instant.now()) }

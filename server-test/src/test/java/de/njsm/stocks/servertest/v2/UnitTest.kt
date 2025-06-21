@@ -63,7 +63,7 @@ class UnitTest : Base() {
 
         unitAddService.addUnit(input)
 
-        val units = updateService.getUnits(Instant.EPOCH)
+        val units = updateService.getUnits(Instant.EPOCH, Constants.INFINITY)
         Assertions.assertThat(units).filteredOn(UnitForSynchronisation::name, input.name())
             .isNotEmpty
             .allMatch { it.abbreviation() == input.abbreviation() }
@@ -84,7 +84,7 @@ class UnitTest : Base() {
                 .build(),
         )
 
-        val units = updateService.getUnits(Instant.EPOCH)
+        val units = updateService.getUnits(Instant.EPOCH, Constants.INFINITY)
         Assertions.assertThat(units).filteredOn(UnitForSynchronisation::name, newName)
             .isNotEmpty
             .allMatch { it.abbreviation() == newAbbreviation }
@@ -133,7 +133,7 @@ class UnitTest : Base() {
 
         unitDeleteService.delete(UnitForDeletion.create(id.id(), 0))
 
-        val locations = updateService.getUnits(Instant.EPOCH)
+        val locations = updateService.getUnits(Instant.EPOCH, Constants.INFINITY)
         Assertions.assertThat(locations).filteredOn(UnitForSynchronisation::name, name)
             .isNotEmpty
             .anyMatch { it.transactionTimeEnd().isBefore(Constants.INFINITY) }

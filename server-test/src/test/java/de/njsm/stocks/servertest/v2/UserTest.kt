@@ -58,7 +58,7 @@ class UserTest : Base() {
 
         val id = userAddService.add(UserAddForm.create(name))
 
-        assertThat(updateService.getUsers(Instant.EPOCH))
+        assertThat(updateService.getUsers(Instant.EPOCH, Constants.INFINITY))
             .filteredOn(UserForSynchronisation::id, id.id())
             .isNotEmpty
             .allMatch { it.name() == name }
@@ -98,7 +98,7 @@ class UserTest : Base() {
 
         userDeleteService.delete(UserForDeletion.create(userId.id(), 0))
 
-        assertThat(updateService.getUsers(Instant.EPOCH))
+        assertThat(updateService.getUsers(Instant.EPOCH, Constants.INFINITY))
             .filteredOn { it.name() == name }
             .isNotEmpty
             .anyMatch { it.transactionTimeEnd().isBefore(Constants.INFINITY) }

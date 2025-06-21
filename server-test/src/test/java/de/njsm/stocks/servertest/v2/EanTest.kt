@@ -61,7 +61,7 @@ class EanTest : Base() {
 
         val id = eanNumberAddService.add(EanNumberAddForm.create(foodId, code))
 
-        val eanNumbers = updateService.getEanNumbers(Instant.EPOCH)
+        val eanNumbers = updateService.getEanNumbers(Instant.EPOCH, Constants.INFINITY)
         assertThat(eanNumbers).filteredOn(EanNumberForSynchronisation::id, id.id())
             .isNotEmpty
             .allMatch { it.identifies() == foodId.id() }
@@ -76,7 +76,7 @@ class EanTest : Base() {
 
         eanNumberDeleteService.delete(EanNumberForDeletion.create(id.id(), 0))
 
-        val eanNumbers = updateService.getEanNumbers(Instant.EPOCH)
+        val eanNumbers = updateService.getEanNumbers(Instant.EPOCH, Constants.INFINITY)
         assertThat(eanNumbers).filteredOn(EanNumberForSynchronisation::number, code)
             .filteredOn { it.validTimeEnd() != Constants.INFINITY }
             .hasSize(1)

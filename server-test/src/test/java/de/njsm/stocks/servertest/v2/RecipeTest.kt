@@ -94,7 +94,7 @@ class RecipeTest : Base() {
                 ),
             )
 
-        val recipes = updateService.getRecipes(Instant.EPOCH)
+        val recipes = updateService.getRecipes(Instant.EPOCH, Constants.INFINITY)
         assertThat(recipes).filteredOn(RecipeForSynchronisation::id, id.id())
             .isNotEmpty()
             .allMatch { it.name() == name }
@@ -164,7 +164,7 @@ class RecipeTest : Base() {
         val newDuration = Duration.ofHours(3)
 
         val ingredients =
-            updateService.getRecipeIngredients(Instant.EPOCH)
+            updateService.getRecipeIngredients(Instant.EPOCH, Constants.INFINITY)
                 .stream()
                 .filter { it.recipe() == id.id() }
                 .filter { it.transactionTimeEnd() == Constants.INFINITY }
@@ -179,7 +179,7 @@ class RecipeTest : Base() {
                 }
                 .toList()
         val products =
-            updateService.getRecipeProducts(Instant.EPOCH)
+            updateService.getRecipeProducts(Instant.EPOCH, Constants.INFINITY)
                 .stream()
                 .filter { it.recipe() == id.id() }
                 .filter { it.transactionTimeEnd() == Constants.INFINITY }
@@ -252,14 +252,14 @@ class RecipeTest : Base() {
     fun validDeletionWorks() {
         val id = putRecipeWithIngredientAndProduct()
         val ingredients =
-            updateService.getRecipeIngredients(Instant.EPOCH)
+            updateService.getRecipeIngredients(Instant.EPOCH, Constants.INFINITY)
                 .stream()
                 .filter { it.recipe() == id.id() }
                 .filter { it.transactionTimeEnd() == Constants.INFINITY }
                 .map { RecipeIngredientDeleteNetworkData.create(it.id(), it.version()) }
                 .toList()
         val products =
-            updateService.getRecipeProducts(Instant.EPOCH)
+            updateService.getRecipeProducts(Instant.EPOCH, Constants.INFINITY)
                 .stream()
                 .filter { it.recipe() == id.id() }
                 .filter { it.transactionTimeEnd() == Constants.INFINITY }

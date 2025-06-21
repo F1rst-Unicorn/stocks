@@ -71,7 +71,7 @@ class LocationTest : Base() {
 
         val id = locationAddService.add(LocationAddForm.create(name, uniqueName))
 
-        val locations = updateService.getLocations(Instant.EPOCH)
+        val locations = updateService.getLocations(Instant.EPOCH, Constants.INFINITY)
         assertThat(locations).filteredOn(LocationForSynchronisation::id, id.id())
             .isNotEmpty()
             .allMatch { it.initiates() == 1 }
@@ -93,7 +93,7 @@ class LocationTest : Base() {
 
         locationEditService.editLocation(input)
 
-        val locations = updateService.getLocations(Instant.EPOCH)
+        val locations = updateService.getLocations(Instant.EPOCH, Constants.INFINITY)
         assertThat(locations).filteredOn(LocationForSynchronisation::name, newName)
             .isNotEmpty()
             .allMatch { it.description() == input.description() }
@@ -147,7 +147,7 @@ class LocationTest : Base() {
                 .build(),
         )
 
-        val locations = updateService.getLocations(Instant.EPOCH)
+        val locations = updateService.getLocations(Instant.EPOCH, Constants.INFINITY)
         assertThat(locations).filteredOn(LocationForSynchronisation::name, name)
             .isNotEmpty
             .anyMatch { it.transactionTimeEnd().isBefore(Constants.INFINITY) }

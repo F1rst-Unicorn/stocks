@@ -34,7 +34,7 @@ class UnitRepository
     constructor(private val unitAddService: UnitAddService, private val updateService: UpdateService) {
         val anyUnitId: IdImpl<UnitOfMeasurement>
             get() =
-                updateService.getUnits(Instant.EPOCH)
+                updateService.getUnits(Instant.EPOCH, Constants.INFINITY)
                     .stream()
                     .filter { it.transactionTimeEnd() == Constants.INFINITY }
                     .filter { it.validTimeEnd().isAfter(Instant.now()) }

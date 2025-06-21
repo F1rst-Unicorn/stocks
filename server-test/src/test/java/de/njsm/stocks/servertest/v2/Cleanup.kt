@@ -94,7 +94,7 @@ class Cleanup : Base() {
     @Test
     fun clean01Devices() {
         val entities =
-            updateService.getUserDevices(Instant.EPOCH)
+            updateService.getUserDevices(Instant.EPOCH, Constants.INFINITY)
                 .filter { it.transactionTimeEnd() == Constants.INFINITY }
                 .filter { it.validTimeStart().isBefore(Instant.now()) }
                 .filter { it.validTimeEnd().isAfter(Instant.now()) }
@@ -111,7 +111,7 @@ class Cleanup : Base() {
     @Test
     fun clean02Ean() {
         val entities =
-            updateService.getEanNumbers(Instant.EPOCH)
+            updateService.getEanNumbers(Instant.EPOCH, Constants.INFINITY)
                 .filter { it.transactionTimeEnd() == Constants.INFINITY }
                 .filter { it.validTimeStart().isBefore(Instant.now()) }
                 .filter { it.validTimeEnd().isAfter(Instant.now()) }
@@ -125,7 +125,7 @@ class Cleanup : Base() {
     @Test
     fun clean03FoodItems() {
         val entities =
-            updateService.getFoodItems(Instant.EPOCH)
+            updateService.getFoodItems(Instant.EPOCH, Constants.INFINITY)
                 .filter { it.transactionTimeEnd() == Constants.INFINITY }
                 .filter { it.validTimeStart().isBefore(Instant.now()) }
                 .filter { it.validTimeEnd().isAfter(Instant.now()) }
@@ -141,7 +141,7 @@ class Cleanup : Base() {
         val data = recipeRepository.getAll()
 
         for (d in data) {
-            val ingredients = updateService.getRecipeIngredients(Instant.EPOCH)
+            val ingredients = updateService.getRecipeIngredients(Instant.EPOCH, Constants.INFINITY)
             val x =
                 ingredients
                     .stream()
@@ -165,7 +165,7 @@ class Cleanup : Base() {
                     }
                     .toList()
             val products =
-                updateService.getRecipeProducts(Instant.EPOCH)
+                updateService.getRecipeProducts(Instant.EPOCH, Constants.INFINITY)
                     .stream()
                     .filter { it: RecipeProductForSynchronisation -> it.recipe() == d.id() }
                     .filter { it: RecipeProductForSynchronisation -> it.transactionTimeEnd() == Constants.INFINITY }
@@ -200,7 +200,7 @@ class Cleanup : Base() {
     @Test
     fun clean05Food() {
         val entities =
-            updateService.getFood(Instant.EPOCH)
+            updateService.getFood(Instant.EPOCH, Constants.INFINITY)
                 .filter { it.transactionTimeEnd() == Constants.INFINITY }
                 .filter { it.validTimeStart().isBefore(Instant.now()) }
                 .filter { it.validTimeEnd().isAfter(Instant.now()) }
@@ -214,7 +214,7 @@ class Cleanup : Base() {
     @Test
     fun clean06Locations() {
         val entities =
-            updateService.getLocations(Instant.EPOCH)
+            updateService.getLocations(Instant.EPOCH, Constants.INFINITY)
                 .filter { it.transactionTimeEnd() == Constants.INFINITY }
                 .filter { it.validTimeStart().isBefore(Instant.now()) }
                 .filter { it.validTimeEnd().isAfter(Instant.now()) }
@@ -228,7 +228,7 @@ class Cleanup : Base() {
     @Test
     fun clean07ScaledUnits() {
         val entities =
-            updateService.getScaledUnits(Instant.EPOCH)
+            updateService.getScaledUnits(Instant.EPOCH, Constants.INFINITY)
                 .filter { it.transactionTimeEnd() == Constants.INFINITY }
                 .filter { it.validTimeStart().isBefore(Instant.now()) }
                 .filter { it.validTimeEnd().isAfter(Instant.now()) }
@@ -243,7 +243,7 @@ class Cleanup : Base() {
     @Test
     fun clean08Units() {
         val entities =
-            updateService.getUnits(Instant.EPOCH)
+            updateService.getUnits(Instant.EPOCH, Constants.INFINITY)
                 .filter { it.transactionTimeEnd() == Constants.INFINITY }
                 .filter { it.validTimeStart().isBefore(Instant.now()) }
                 .filter { it.validTimeEnd().isAfter(Instant.now()) }
@@ -258,7 +258,7 @@ class Cleanup : Base() {
     @Test
     fun clean09Users() {
         val entities =
-            updateService.getUsers(Instant.EPOCH)
+            updateService.getUsers(Instant.EPOCH, Constants.INFINITY)
                 .filter { it.transactionTimeEnd() == Constants.INFINITY }
                 .filter { it.validTimeStart().isBefore(Instant.now()) }
                 .filter { it.validTimeEnd().isAfter(Instant.now()) }

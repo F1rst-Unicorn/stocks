@@ -20,6 +20,7 @@
  */
 package de.njsm.stocks.servertest.v2
 
+import de.njsm.stocks.client.business.Constants
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Order
@@ -35,37 +36,37 @@ class InitialServerTest : Base() {
 
     @Test
     fun foodIsEmpty() {
-        assertThat(updateService.getFood(Instant.EPOCH))
+        assertThat(updateService.getFood(Instant.EPOCH, Constants.INFINITY))
             .isEmpty()
     }
 
     @Test
     fun locationsAreEmpty() {
-        assertThat(updateService.getLocations(Instant.EPOCH))
+        assertThat(updateService.getLocations(Instant.EPOCH, Constants.INFINITY))
             .isEmpty()
     }
 
     @Test
     fun foodItemsAreEmpty() {
-        assertThat(updateService.getFoodItems(Instant.EPOCH))
+        assertThat(updateService.getFoodItems(Instant.EPOCH, Constants.INFINITY))
             .isEmpty()
     }
 
     @Test
     fun eansAreEmpty() {
-        assertThat(updateService.getEanNumbers(Instant.EPOCH))
+        assertThat(updateService.getEanNumbers(Instant.EPOCH, Constants.INFINITY))
             .isEmpty()
     }
 
     @Test
     fun initialUserAndSystemUserAreOnly() {
-        assertThat(updateService.getUsers(Instant.EPOCH))
+        assertThat(updateService.getUsers(Instant.EPOCH, Constants.INFINITY))
             .hasSize(2)
     }
 
     @Test
     fun initialDeviceAndSystemUserAreOnly() {
-        assertThat(updateService.getUsers(Instant.EPOCH))
+        assertThat(updateService.getUsers(Instant.EPOCH, Constants.INFINITY))
             .hasSize(2)
     }
 }

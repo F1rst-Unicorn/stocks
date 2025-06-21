@@ -30,25 +30,25 @@ public interface UpdateService {
 
     List<Update> getUpdates();
 
-    List<LocationForSynchronisation> getLocations(Instant startingFrom);
+    List<LocationForSynchronisation> getLocations(Instant startingFrom, Instant upUntil);
 
-    List<UserForSynchronisation> getUsers(Instant startingFrom);
+    List<UserForSynchronisation> getUsers(Instant startingFrom, Instant upUntil);
 
-    List<UserDeviceForSynchronisation> getUserDevices(Instant startingFrom);
+    List<UserDeviceForSynchronisation> getUserDevices(Instant startingFrom, Instant upUntil);
 
-    List<FoodForSynchronisation> getFood(Instant startingFrom);
+    List<FoodForSynchronisation> getFood(Instant startingFrom, Instant upUntil);
 
-    List<EanNumberForSynchronisation> getEanNumbers(Instant startingFrom);
+    List<EanNumberForSynchronisation> getEanNumbers(Instant startingFrom, Instant upUntil);
 
-    List<FoodItemForSynchronisation> getFoodItems(Instant startingFrom);
+    List<FoodItemForSynchronisation> getFoodItems(Instant startingFrom, Instant upUntil);
 
-    List<UnitForSynchronisation> getUnits(Instant startingFrom);
+    List<UnitForSynchronisation> getUnits(Instant startingFrom, Instant upUntil);
 
-    List<ScaledUnitForSynchronisation> getScaledUnits(Instant startingFrom);
+    List<ScaledUnitForSynchronisation> getScaledUnits(Instant startingFrom, Instant upUntil);
 
-    List<RecipeForSynchronisation> getRecipes(Instant startingFrom);
+    List<RecipeForSynchronisation> getRecipes(Instant startingFrom, Instant upUntil);
 
-    List<RecipeIngredientForSynchronisation> getRecipeIngredients(Instant startingFrom);
+    List<RecipeIngredientForSynchronisation> getRecipeIngredients(Instant startingFrom, Instant upUntil);
 
-    List<RecipeProductForSynchronisation> getRecipeProducts(Instant startingFrom);
+    List<RecipeProductForSynchronisation> getRecipeProducts(Instant startingFrom, Instant upUntil);
 }

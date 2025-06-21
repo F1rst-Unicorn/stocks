@@ -58,7 +58,7 @@ class DeviceTest : Base() {
 
         val newClientTicket = userDeviceAddService.add(UserDeviceAddForm.create(name, userId))
 
-        val devices = updateService.getUserDevices(EPOCH)
+        val devices = updateService.getUserDevices(EPOCH, Constants.INFINITY)
         assertThat(devices).filteredOn(UserDeviceForSynchronisation::id, newClientTicket.id().id())
             .isNotEmpty
             .allMatch { it.name() == name }
@@ -73,7 +73,7 @@ class DeviceTest : Base() {
 
         userDeviceDeleteService.delete(UserDeviceForDeletion.create(newUserDeviceTicket.id().id(), 0))
 
-        val devices = updateService.getUserDevices(EPOCH)
+        val devices = updateService.getUserDevices(EPOCH, Constants.INFINITY)
         assertThat(devices).filteredOn(UserDeviceForSynchronisation::id, newUserDeviceTicket.id().id())
             .isNotEmpty
             .anyMatch { it.transactionTimeEnd().isBefore(Constants.INFINITY) }

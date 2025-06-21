@@ -64,89 +64,89 @@ public class UpdateServiceImpl implements UpdateService {
     }
 
     @Override
-    public List<LocationForSynchronisation> getLocations(Instant startingFrom) {
+    public List<LocationForSynchronisation> getLocations(Instant startingFrom, Instant upUntil) {
         LOG.debug("getting locations from " + startingFrom);
-        Call<ListResponse<BitemporalLocation>> call = api.getLocations(InstantSerialiser.serialize(startingFrom));
+        Call<ListResponse<BitemporalLocation>> call = api.getLocations(InstantSerialiser.serialize(startingFrom), InstantSerialiser.serialize(upUntil));
         return callHandler.executeForResult(call)
                 .stream().map(DataMapper::map).collect(toList());
     }
 
     @Override
-    public List<UserForSynchronisation> getUsers(Instant startingFrom) {
+    public List<UserForSynchronisation> getUsers(Instant startingFrom, Instant upUntil) {
         LOG.debug("getting users from " + startingFrom);
-        Call<ListResponse<BitemporalUser>> call = api.getUsers(InstantSerialiser.serialize(startingFrom));
+        Call<ListResponse<BitemporalUser>> call = api.getUsers(InstantSerialiser.serialize(startingFrom), InstantSerialiser.serialize(upUntil));
         return callHandler.executeForResult(call)
                 .stream().map(DataMapper::map).collect(toList());
     }
 
     @Override
-    public List<UserDeviceForSynchronisation> getUserDevices(Instant startingFrom) {
+    public List<UserDeviceForSynchronisation> getUserDevices(Instant startingFrom, Instant upUntil) {
         LOG.debug("getting user devices from " + startingFrom);
-        Call<ListResponse<BitemporalUserDevice>> call = api.getUserDevices(InstantSerialiser.serialize(startingFrom));
+        Call<ListResponse<BitemporalUserDevice>> call = api.getUserDevices(InstantSerialiser.serialize(startingFrom), InstantSerialiser.serialize(upUntil));
         return callHandler.executeForResult(call)
                 .stream().map(DataMapper::map).collect(toList());
     }
 
     @Override
-    public List<FoodForSynchronisation> getFood(Instant startingFrom) {
+    public List<FoodForSynchronisation> getFood(Instant startingFrom, Instant upUntil) {
         LOG.debug("getting food from " + startingFrom);
-        Call<ListResponse<BitemporalFood>> call = api.getFood(InstantSerialiser.serialize(startingFrom));
+        Call<ListResponse<BitemporalFood>> call = api.getFood(InstantSerialiser.serialize(startingFrom), InstantSerialiser.serialize(upUntil));
         return callHandler.executeForResult(call)
                 .stream().map(DataMapper::map).collect(toList());
     }
 
     @Override
-    public List<EanNumberForSynchronisation> getEanNumbers(Instant startingFrom) {
+    public List<EanNumberForSynchronisation> getEanNumbers(Instant startingFrom, Instant upUntil) {
         LOG.debug("getting ean numbers from " + startingFrom);
-        Call<ListResponse<BitemporalEanNumber>> call = api.getEanNumbers(InstantSerialiser.serialize(startingFrom));
+        Call<ListResponse<BitemporalEanNumber>> call = api.getEanNumbers(InstantSerialiser.serialize(startingFrom), InstantSerialiser.serialize(upUntil));
         return callHandler.executeForResult(call)
                 .stream().map(DataMapper::map).collect(toList());
     }
 
     @Override
-    public List<FoodItemForSynchronisation> getFoodItems(Instant startingFrom) {
+    public List<FoodItemForSynchronisation> getFoodItems(Instant startingFrom, Instant upUntil) {
         LOG.debug("getting food items from " + startingFrom);
-        Call<ListResponse<BitemporalFoodItem>> call = api.getFoodItems(InstantSerialiser.serialize(startingFrom));
+        Call<ListResponse<BitemporalFoodItem>> call = api.getFoodItems(InstantSerialiser.serialize(startingFrom), InstantSerialiser.serialize(upUntil));
         return callHandler.executeForResult(call)
                 .stream().map(DataMapper::map).collect(toList());
     }
 
     @Override
-    public List<UnitForSynchronisation> getUnits(Instant startingFrom) {
+    public List<UnitForSynchronisation> getUnits(Instant startingFrom, Instant upUntil) {
         LOG.debug("getting units from " + startingFrom);
-        Call<ListResponse<BitemporalUnit>> call = api.getUnits(InstantSerialiser.serialize(startingFrom));
+        Call<ListResponse<BitemporalUnit>> call = api.getUnits(InstantSerialiser.serialize(startingFrom), InstantSerialiser.serialize(upUntil));
         return callHandler.executeForResult(call)
                 .stream().map(DataMapper::map).collect(toList());
     }
 
     @Override
-    public List<ScaledUnitForSynchronisation> getScaledUnits(Instant startingFrom) {
+    public List<ScaledUnitForSynchronisation> getScaledUnits(Instant startingFrom, Instant upUntil) {
         LOG.debug("getting scaled units from " + startingFrom);
-        Call<ListResponse<BitemporalScaledUnit>> call = api.getScaledUnits(InstantSerialiser.serialize(startingFrom));
+        Call<ListResponse<BitemporalScaledUnit>> call = api.getScaledUnits(InstantSerialiser.serialize(startingFrom), InstantSerialiser.serialize(upUntil));
         return callHandler.executeForResult(call)
                 .stream().map(DataMapper::map).collect(toList());
     }
 
     @Override
-    public List<RecipeForSynchronisation> getRecipes(Instant startingFrom) {
+    public List<RecipeForSynchronisation> getRecipes(Instant startingFrom, Instant upUntil) {
         LOG.debug("getting recipes from " + startingFrom);
-        Call<ListResponse<BitemporalRecipe>> call = api.getRecipes(InstantSerialiser.serialize(startingFrom));
+        Call<ListResponse<BitemporalRecipe>> call = api.getRecipes(InstantSerialiser.serialize(startingFrom), InstantSerialiser.serialize(upUntil));
         return callHandler.executeForResult(call)
                 .stream().map(DataMapper::map).collect(toList());
     }
 
     @Override
-    public List<RecipeIngredientForSynchronisation> getRecipeIngredients(Instant startingFrom) {
+    public List<RecipeIngredientForSynchronisation> getRecipeIngredients(Instant startingFrom, Instant upUntil) {
         LOG.debug("getting recipe ingredients from " + startingFrom);
-        Call<ListResponse<BitemporalRecipeIngredient>> call = api.getRecipeIngredients(InstantSerialiser.serialize(startingFrom));
+        Call<ListResponse<BitemporalRecipeIngredient>> call = api.getRecipeIngredients(InstantSerialiser.serialize(startingFrom), InstantSerialiser.serialize(upUntil));
         return callHandler.executeForResult(call)
                 .stream().map(DataMapper::map).collect(toList());
     }
 
     @Override
-    public List<RecipeProductForSynchronisation> getRecipeProducts(Instant startingFrom) {
+    public List<RecipeProductForSynchronisation> getRecipeProducts(Instant startingFrom, Instant upUntil) {
         LOG.debug("getting recipe products from " + startingFrom);
-        Call<ListResponse<BitemporalRecipeProduct>> call = api.getRecipeProducts(InstantSerialiser.serialize(startingFrom));
+        Call<ListResponse<BitemporalRecipeProduct>> call = api.getRecipeProducts(InstantSerialiser.serialize(startingFrom), InstantSerialiser.serialize(upUntil));
         return callHandler.executeForResult(call)
                 .stream().map(DataMapper::map).collect(toList());
     }

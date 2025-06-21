@@ -40,7 +40,7 @@ class ScaledUnitRepository
     ) {
         val anyScaledUnitId: IdImpl<ScaledUnit>
             get() =
-                updateService.getScaledUnits(Instant.EPOCH)
+                updateService.getScaledUnits(Instant.EPOCH, Constants.INFINITY)
                     .stream()
                     .filter { it.transactionTimeEnd() == Constants.INFINITY }
                     .filter { it.validTimeStart().isBefore(Instant.now()) }

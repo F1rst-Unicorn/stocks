@@ -67,7 +67,7 @@ class ScaledUnitTest : Base() {
 
         val id = scaledUnitAddService.add(input)
 
-        val scaledUnits = updateService.getScaledUnits(Instant.EPOCH)
+        val scaledUnits = updateService.getScaledUnits(Instant.EPOCH, Constants.INFINITY)
         assertThat(scaledUnits).filteredOn(ScaledUnitForSynchronisation::id, id.id())
             .isNotEmpty
             .allMatch { it.scale() == input.scale() }
@@ -83,7 +83,7 @@ class ScaledUnitTest : Base() {
 
         scaledUnitEditService.edit(input)
 
-        val scaledUnits = updateService.getScaledUnits(Instant.EPOCH)
+        val scaledUnits = updateService.getScaledUnits(Instant.EPOCH, Constants.INFINITY)
         assertThat(scaledUnits).filteredOn(ScaledUnitForSynchronisation::unit, modifiedUnit.id())
             .isNotEmpty
             .allMatch { it.scale() == input.scale() }
@@ -122,7 +122,7 @@ class ScaledUnitTest : Base() {
 
         scaledUnitDeleteService.delete(ScaledUnitForDeletion.create(id.id(), 0))
 
-        val scaledUnits = updateService.getScaledUnits(Instant.EPOCH)
+        val scaledUnits = updateService.getScaledUnits(Instant.EPOCH, Constants.INFINITY)
         assertThat(scaledUnits).filteredOn(ScaledUnitForSynchronisation::unit, unit.id())
             .isNotEmpty
             .anyMatch { it.transactionTimeEnd().isBefore(Constants.INFINITY) }

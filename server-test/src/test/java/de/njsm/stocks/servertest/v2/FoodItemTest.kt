@@ -80,7 +80,7 @@ class FoodItemTest : Base() {
 
         val id = foodItemAddService.add(FoodItemToAdd.create(date, foodId.id(), locationId.id(), unitRepository.anyUnitId.id()))
 
-        val foodItems = updateService.getFoodItems(Instant.EPOCH)
+        val foodItems = updateService.getFoodItems(Instant.EPOCH, Constants.INFINITY)
         assertThat(foodItems).filteredOn(FoodItemForSynchronisation::id, id.id())
             .isNotEmpty()
             .allMatch { it.eatBy() == date }
@@ -104,7 +104,7 @@ class FoodItemTest : Base() {
         )
 
         val foodItems =
-            updateService.getFoodItems(Instant.EPOCH).stream()
+            updateService.getFoodItems(Instant.EPOCH, Constants.INFINITY).stream()
                 .filter { it.ofType() == foodId.id() }
                 .toList()
         assertThat(foodItems).filteredOn(FoodItemForSynchronisation::ofType, foodId.id())
@@ -150,7 +150,7 @@ class FoodItemTest : Base() {
 
         foodItemDeleteService.delete(FoodItemForDeletion.create(id.id(), 0))
 
-        val foodItems = updateService.getFoodItems(Instant.EPOCH)
+        val foodItems = updateService.getFoodItems(Instant.EPOCH, Constants.INFINITY)
         Assertions.assertThat(foodItems).filteredOn(FoodItemForSynchronisation::id, id.id())
             .isNotEmpty
             .anyMatch { it.transactionTimeEnd().isBefore(Constants.INFINITY) }

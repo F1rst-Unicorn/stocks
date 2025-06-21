@@ -71,7 +71,7 @@ class FoodTest : Base() {
 
         val id = foodAddService.add(input)
 
-        val foods = updateService.getFood(Instant.EPOCH)
+        val foods = updateService.getFood(Instant.EPOCH, Constants.INFINITY)
         assertThat(foods).filteredOn(FoodForSynchronisation::id, id.id())
             .isNotEmpty
             .allMatch { it.name() == input.name() }
@@ -98,7 +98,7 @@ class FoodTest : Base() {
 
         foodEditService.edit(input)
 
-        val foods = updateService.getFood(Instant.EPOCH)
+        val foods = updateService.getFood(Instant.EPOCH, Constants.INFINITY)
         assertThat(foods).filteredOn(FoodForSynchronisation::id, id.id())
             .filteredOn(FoodForSynchronisation::version, 1)
             .isNotEmpty
@@ -128,7 +128,7 @@ class FoodTest : Base() {
 
         foodEditService.edit(input)
 
-        val foods = updateService.getFood(Instant.EPOCH)
+        val foods = updateService.getFood(Instant.EPOCH, Constants.INFINITY)
         assertThat(foods).filteredOn(FoodForSynchronisation::id, id.id())
             .filteredOn(FoodForSynchronisation::version, 1)
             .isNotEmpty
@@ -170,7 +170,7 @@ class FoodTest : Base() {
 
         foodDeleteService.delete(FoodForDeletion.create(id.id(), 0))
 
-        val foods = updateService.getFood(Instant.EPOCH)
+        val foods = updateService.getFood(Instant.EPOCH, Constants.INFINITY)
         assertThat(foods).filteredOn(FoodForSynchronisation::id, id.id())
             .isNotEmpty
             .anyMatch { it.transactionTimeEnd().isBefore(Constants.INFINITY) }

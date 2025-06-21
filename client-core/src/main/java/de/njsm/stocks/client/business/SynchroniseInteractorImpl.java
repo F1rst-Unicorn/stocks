@@ -90,181 +90,199 @@ class SynchroniseInteractorImpl implements SynchroniseInteractor {
             Instant serverState = serverUpdates.get(entityType);
 
             if (localState.equals(Instant.MIN))
-                entityInitialiser.visit(entityType, localState);
+                entityInitialiser.visit(entityType, new InstantInterval(localState, serverState));
             else if (localState.isBefore(serverState))
-                entitySynchroniser.visit(entityType, localState);
+                entitySynchroniser.visit(entityType, new InstantInterval(localState, serverState));
         }
 
         synchronisationRepository.writeUpdates(serverUpdateList);
     }
 
-    private final class EntitySynchroniser implements EntityType.Visitor<Instant, Void> {
+    private static final class InstantInterval {
+        private final Instant startingFrom;
+        private final Instant upUntil;
+
+        private InstantInterval(Instant startingFrom, Instant upUntil) {
+            this.startingFrom = startingFrom;
+            this.upUntil = upUntil;
+        }
+
+        private Instant startingFrom() {
+            return startingFrom;
+        }
+
+        private Instant upUntil() {
+            return upUntil;
+        }
+    }
+
+    private final class EntitySynchroniser implements EntityType.Visitor<InstantInterval, Void> {
 
         @Override
-        public Void visit(EntityType item, Instant input) {
+        public Void visit(EntityType item, InstantInterval input) {
             LOG.info("synchronising " + item);
             return EntityType.Visitor.super.visit(item, input);
         }
 
         @Override
-        public Void location(Instant startingFrom) {
-            List<LocationForSynchronisation> items = updateService.getLocations(startingFrom);
+        public Void location(InstantInterval input) {
+            List<LocationForSynchronisation> items = updateService.getLocations(input.startingFrom(), input.upUntil());
             synchronisationRepository.writeLocations(items);
             return null;
         }
 
         @Override
-        public Void user(Instant input) {
-            List<UserForSynchronisation> items = updateService.getUsers(input);
+        public Void user(InstantInterval input) {
+            List<UserForSynchronisation> items = updateService.getUsers(input.startingFrom(), input.upUntil());
             synchronisationRepository.writeUsers(items);
             return null;
         }
 
         @Override
-        public Void userDevice(Instant input) {
-            List<UserDeviceForSynchronisation> items = updateService.getUserDevices(input);
+        public Void userDevice(InstantInterval input) {
+            List<UserDeviceForSynchronisation> items = updateService.getUserDevices(input.startingFrom(), input.upUntil());
             synchronisationRepository.writeUserDevices(items);
             return null;
         }
 
         @Override
-        public Void food(Instant input) {
-            List<FoodForSynchronisation> items = updateService.getFood(input);
+        public Void food(InstantInterval input) {
+            List<FoodForSynchronisation> items = updateService.getFood(input.startingFrom(), input.upUntil());
             synchronisationRepository.writeFood(items);
             return null;
         }
 
         @Override
-        public Void eanNumber(Instant input) {
-            List<EanNumberForSynchronisation> items = updateService.getEanNumbers(input);
+        public Void eanNumber(InstantInterval input) {
+            List<EanNumberForSynchronisation> items = updateService.getEanNumbers(input.startingFrom(), input.upUntil());
             synchronisationRepository.writeEanNumbers(items);
             return null;
         }
 
         @Override
-        public Void foodItem(Instant input) {
-            List<FoodItemForSynchronisation> items = updateService.getFoodItems(input);
+        public Void foodItem(InstantInterval input) {
+            List<FoodItemForSynchronisation> items = updateService.getFoodItems(input.startingFrom(), input.upUntil());
             synchronisationRepository.writeFoodItems(items);
             return null;
         }
 
         @Override
-        public Void unit(Instant input) {
-            List<UnitForSynchronisation> items = updateService.getUnits(input);
+        public Void unit(InstantInterval input) {
+            List<UnitForSynchronisation> items = updateService.getUnits(input.startingFrom(), input.upUntil());
             synchronisationRepository.writeUnits(items);
             return null;
         }
 
         @Override
-        public Void scaledUnit(Instant input) {
-            List<ScaledUnitForSynchronisation> items = updateService.getScaledUnits(input);
+        public Void scaledUnit(InstantInterval input) {
+            List<ScaledUnitForSynchronisation> items = updateService.getScaledUnits(input.startingFrom(), input.upUntil());
             synchronisationRepository.writeScaledUnits(items);
             return null;
         }
 
         @Override
-        public Void recipe(Instant input) {
-            List<RecipeForSynchronisation> items = updateService.getRecipes(input);
+        public Void recipe(InstantInterval input) {
+            List<RecipeForSynchronisation> items = updateService.getRecipes(input.startingFrom(), input.upUntil());
             synchronisationRepository.writeRecipes(items);
             return null;
         }
 
         @Override
-        public Void recipeIngredient(Instant input) {
-            List<RecipeIngredientForSynchronisation> items = updateService.getRecipeIngredients(input);
+        public Void recipeIngredient(InstantInterval input) {
+            List<RecipeIngredientForSynchronisation> items = updateService.getRecipeIngredients(input.startingFrom(), input.upUntil());
             synchronisationRepository.writeRecipeIngredients(items);
             return null;
         }
 
         @Override
-        public Void recipeProduct(Instant input) {
-            List<RecipeProductForSynchronisation> items = updateService.getRecipeProducts(input);
+        public Void recipeProduct(InstantInterval input) {
+            List<RecipeProductForSynchronisation> items = updateService.getRecipeProducts(input.startingFrom(), input.upUntil());
             synchronisationRepository.writeRecipeProducts(items);
             return null;
         }
     }
 
-    private final class EntityInitialiser implements EntityType.Visitor<Instant, Void> {
+    private final class EntityInitialiser implements EntityType.Visitor<InstantInterval, Void> {
 
         @Override
-        public Void visit(EntityType item, Instant input) {
+        public Void visit(EntityType item, InstantInterval input) {
             LOG.info("initialising " + item);
             return EntityType.Visitor.super.visit(item, input);
         }
 
         @Override
-        public Void location(Instant startingFrom) {
-            List<LocationForSynchronisation> items = updateService.getLocations(startingFrom);
+        public Void location(InstantInterval input) {
+            List<LocationForSynchronisation> items = updateService.getLocations(input.startingFrom(), input.upUntil());
             synchronisationRepository.initialiseLocations(items);
             return null;
         }
 
         @Override
-        public Void user(Instant input) {
-            List<UserForSynchronisation> items = updateService.getUsers(input);
+        public Void user(InstantInterval input) {
+            List<UserForSynchronisation> items = updateService.getUsers(input.startingFrom(), input.upUntil());
             synchronisationRepository.initialiseUsers(items);
             return null;
         }
 
         @Override
-        public Void userDevice(Instant input) {
-            List<UserDeviceForSynchronisation> items = updateService.getUserDevices(input);
+        public Void userDevice(InstantInterval input) {
+            List<UserDeviceForSynchronisation> items = updateService.getUserDevices(input.startingFrom(), input.upUntil());
             synchronisationRepository.initialiseUserDevices(items);
             return null;
         }
 
         @Override
-        public Void food(Instant input) {
-            List<FoodForSynchronisation> items = updateService.getFood(input);
+        public Void food(InstantInterval input) {
+            List<FoodForSynchronisation> items = updateService.getFood(input.startingFrom(), input.upUntil());
             synchronisationRepository.initialiseFood(items);
             return null;
         }
 
         @Override
-        public Void eanNumber(Instant input) {
-            List<EanNumberForSynchronisation> items = updateService.getEanNumbers(input);
+        public Void eanNumber(InstantInterval input) {
+            List<EanNumberForSynchronisation> items = updateService.getEanNumbers(input.startingFrom(), input.upUntil());
             synchronisationRepository.initialiseEanNumbers(items);
             return null;
         }
 
         @Override
-        public Void foodItem(Instant input) {
-            List<FoodItemForSynchronisation> items = updateService.getFoodItems(input);
+        public Void foodItem(InstantInterval input) {
+            List<FoodItemForSynchronisation> items = updateService.getFoodItems(input.startingFrom(), input.upUntil());
             synchronisationRepository.initialiseFoodItems(items);
             return null;
         }
 
         @Override
-        public Void unit(Instant input) {
-            List<UnitForSynchronisation> items = updateService.getUnits(input);
+        public Void unit(InstantInterval input) {
+            List<UnitForSynchronisation> items = updateService.getUnits(input.startingFrom(), input.upUntil());
             synchronisationRepository.initialiseUnits(items);
             return null;
         }
 
         @Override
-        public Void scaledUnit(Instant input) {
-            List<ScaledUnitForSynchronisation> items = updateService.getScaledUnits(input);
+        public Void scaledUnit(InstantInterval input) {
+            List<ScaledUnitForSynchronisation> items = updateService.getScaledUnits(input.startingFrom(), input.upUntil());
             synchronisationRepository.initialiseScaledUnits(items);
             return null;
         }
 
         @Override
-        public Void recipe(Instant input) {
-            List<RecipeForSynchronisation> items = updateService.getRecipes(input);
+        public Void recipe(InstantInterval input) {
+            List<RecipeForSynchronisation> items = updateService.getRecipes(input.startingFrom(), input.upUntil());
             synchronisationRepository.initialiseRecipes(items);
             return null;
         }
 
         @Override
-        public Void recipeIngredient(Instant input) {
-            List<RecipeIngredientForSynchronisation> items = updateService.getRecipeIngredients(input);
+        public Void recipeIngredient(InstantInterval input) {
+            List<RecipeIngredientForSynchronisation> items = updateService.getRecipeIngredients(input.startingFrom(), input.upUntil());
             synchronisationRepository.initialiseRecipeIngredients(items);
             return null;
         }
 
         @Override
-        public Void recipeProduct(Instant input) {
-            List<RecipeProductForSynchronisation> items = updateService.getRecipeProducts(input);
+        public Void recipeProduct(InstantInterval input) {
+            List<RecipeProductForSynchronisation> items = updateService.getRecipeProducts(input.startingFrom(), input.upUntil());
             synchronisationRepository.initialiseRecipeProducts(items);
             return null;
         }

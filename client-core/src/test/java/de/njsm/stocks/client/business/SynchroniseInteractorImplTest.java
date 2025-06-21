@@ -84,20 +84,20 @@ class SynchroniseInteractorImplTest {
         }
 
         @Override
-        void prepareMocks(List<RecipeProductForSynchronisation> entities, Instant startingFrom) {
-            when(updateService.getRecipeProducts(startingFrom)).thenReturn(entities);
+        void prepareMocks(List<RecipeProductForSynchronisation> entities, Instant startingFrom, Instant upUntil) {
+            when(updateService.getRecipeProducts(startingFrom, upUntil)).thenReturn(entities);
         }
 
         @Override
-        void verifyInitialisationMocks(List<RecipeProductForSynchronisation> entities, Instant startingFrom) {
-            verify(updateService).getRecipeProducts(startingFrom);
+        void verifyInitialisationMocks(List<RecipeProductForSynchronisation> entities, Instant startingFrom, Instant upUntil) {
+            verify(updateService).getRecipeProducts(startingFrom, upUntil);
             verify(synchronisationRepository).initialiseRecipeProducts(entities);
 
         }
 
         @Override
-        void verifyMocks(List<RecipeProductForSynchronisation> entities, Instant startingFrom) {
-            verify(updateService).getRecipeProducts(startingFrom);
+        void verifyMocks(List<RecipeProductForSynchronisation> entities, Instant startingFrom, Instant upUntil) {
+            verify(updateService).getRecipeProducts(startingFrom, upUntil);
             verify(synchronisationRepository).writeRecipeProducts(entities);
         }
     }
@@ -121,20 +121,20 @@ class SynchroniseInteractorImplTest {
         }
 
         @Override
-        void prepareMocks(List<RecipeIngredientForSynchronisation> entities, Instant startingFrom) {
-            when(updateService.getRecipeIngredients(startingFrom)).thenReturn(entities);
+        void prepareMocks(List<RecipeIngredientForSynchronisation> entities, Instant startingFrom, Instant upUntil) {
+            when(updateService.getRecipeIngredients(startingFrom, upUntil)).thenReturn(entities);
         }
 
         @Override
-        void verifyInitialisationMocks(List<RecipeIngredientForSynchronisation> entities, Instant startingFrom) {
-            verify(updateService).getRecipeIngredients(startingFrom);
+        void verifyInitialisationMocks(List<RecipeIngredientForSynchronisation> entities, Instant startingFrom, Instant upUntil) {
+            verify(updateService).getRecipeIngredients(startingFrom, upUntil);
             verify(synchronisationRepository).initialiseRecipeIngredients(entities);
 
         }
 
         @Override
-        void verifyMocks(List<RecipeIngredientForSynchronisation> entities, Instant startingFrom) {
-            verify(updateService).getRecipeIngredients(startingFrom);
+        void verifyMocks(List<RecipeIngredientForSynchronisation> entities, Instant startingFrom, Instant upUntil) {
+            verify(updateService).getRecipeIngredients(startingFrom, upUntil);
             verify(synchronisationRepository).writeRecipeIngredients(entities);
         }
     }
@@ -157,20 +157,20 @@ class SynchroniseInteractorImplTest {
         }
 
         @Override
-        void prepareMocks(List<RecipeForSynchronisation> entities, Instant startingFrom) {
-            when(updateService.getRecipes(startingFrom)).thenReturn(entities);
+        void prepareMocks(List<RecipeForSynchronisation> entities, Instant startingFrom, Instant upUntil) {
+            when(updateService.getRecipes(startingFrom, upUntil)).thenReturn(entities);
         }
 
         @Override
-        void verifyInitialisationMocks(List<RecipeForSynchronisation> entities, Instant startingFrom) {
-            verify(updateService).getRecipes(startingFrom);
+        void verifyInitialisationMocks(List<RecipeForSynchronisation> entities, Instant startingFrom, Instant upUntil) {
+            verify(updateService).getRecipes(startingFrom, upUntil);
             verify(synchronisationRepository).initialiseRecipes(entities);
 
         }
 
         @Override
-        void verifyMocks(List<RecipeForSynchronisation> entities, Instant startingFrom) {
-            verify(updateService).getRecipes(startingFrom);
+        void verifyMocks(List<RecipeForSynchronisation> entities, Instant startingFrom, Instant upUntil) {
+            verify(updateService).getRecipes(startingFrom, upUntil);
             verify(synchronisationRepository).writeRecipes(entities);
         }
     }
@@ -192,20 +192,20 @@ class SynchroniseInteractorImplTest {
         }
 
         @Override
-        void prepareMocks(List<ScaledUnitForSynchronisation> entities, Instant startingFrom) {
-            when(updateService.getScaledUnits(startingFrom)).thenReturn(entities);
+        void prepareMocks(List<ScaledUnitForSynchronisation> entities, Instant startingFrom, Instant upUntil) {
+            when(updateService.getScaledUnits(startingFrom, upUntil)).thenReturn(entities);
         }
 
         @Override
-        void verifyInitialisationMocks(List<ScaledUnitForSynchronisation> entities, Instant startingFrom) {
-            verify(updateService).getScaledUnits(startingFrom);
+        void verifyInitialisationMocks(List<ScaledUnitForSynchronisation> entities, Instant startingFrom, Instant upUntil) {
+            verify(updateService).getScaledUnits(startingFrom, upUntil);
             verify(synchronisationRepository).initialiseScaledUnits(entities);
 
         }
 
         @Override
-        void verifyMocks(List<ScaledUnitForSynchronisation> entities, Instant startingFrom) {
-            verify(updateService).getScaledUnits(startingFrom);
+        void verifyMocks(List<ScaledUnitForSynchronisation> entities, Instant startingFrom, Instant upUntil) {
+            verify(updateService).getScaledUnits(startingFrom, upUntil);
             verify(synchronisationRepository).writeScaledUnits(entities);
         }
     }
@@ -227,20 +227,20 @@ class SynchroniseInteractorImplTest {
         }
 
         @Override
-        void prepareMocks(List<UnitForSynchronisation> entities, Instant startingFrom) {
-            when(updateService.getUnits(startingFrom)).thenReturn(entities);
+        void prepareMocks(List<UnitForSynchronisation> entities, Instant startingFrom, Instant upUntil) {
+            when(updateService.getUnits(startingFrom, upUntil)).thenReturn(entities);
         }
 
         @Override
-        void verifyInitialisationMocks(List<UnitForSynchronisation> entities, Instant startingFrom) {
-            verify(updateService).getUnits(startingFrom);
+        void verifyInitialisationMocks(List<UnitForSynchronisation> entities, Instant startingFrom, Instant upUntil) {
+            verify(updateService).getUnits(startingFrom, upUntil);
             verify(synchronisationRepository).initialiseUnits(entities);
 
         }
 
         @Override
-        void verifyMocks(List<UnitForSynchronisation> entities, Instant startingFrom) {
-            verify(updateService).getUnits(startingFrom);
+        void verifyMocks(List<UnitForSynchronisation> entities, Instant startingFrom, Instant upUntil) {
+            verify(updateService).getUnits(startingFrom, upUntil);
             verify(synchronisationRepository).writeUnits(entities);
         }
     }
@@ -266,20 +266,20 @@ class SynchroniseInteractorImplTest {
         }
 
         @Override
-        void prepareMocks(List<FoodItemForSynchronisation> entities, Instant startingFrom) {
-            when(updateService.getFoodItems(startingFrom)).thenReturn(entities);
+        void prepareMocks(List<FoodItemForSynchronisation> entities, Instant startingFrom, Instant upUntil) {
+            when(updateService.getFoodItems(startingFrom, upUntil)).thenReturn(entities);
         }
 
         @Override
-        void verifyInitialisationMocks(List<FoodItemForSynchronisation> entities, Instant startingFrom) {
-            verify(updateService).getFoodItems(startingFrom);
+        void verifyInitialisationMocks(List<FoodItemForSynchronisation> entities, Instant startingFrom, Instant upUntil) {
+            verify(updateService).getFoodItems(startingFrom, upUntil);
             verify(synchronisationRepository).initialiseFoodItems(entities);
 
         }
 
         @Override
-        void verifyMocks(List<FoodItemForSynchronisation> entities, Instant startingFrom) {
-            verify(updateService).getFoodItems(startingFrom);
+        void verifyMocks(List<FoodItemForSynchronisation> entities, Instant startingFrom, Instant upUntil) {
+            verify(updateService).getFoodItems(startingFrom, upUntil);
             verify(synchronisationRepository).writeFoodItems(entities);
         }
     }
@@ -301,20 +301,20 @@ class SynchroniseInteractorImplTest {
         }
 
         @Override
-        void prepareMocks(List<EanNumberForSynchronisation> entities, Instant startingFrom) {
-            when(updateService.getEanNumbers(startingFrom)).thenReturn(entities);
+        void prepareMocks(List<EanNumberForSynchronisation> entities, Instant startingFrom, Instant upUntil) {
+            when(updateService.getEanNumbers(startingFrom, upUntil)).thenReturn(entities);
         }
 
         @Override
-        void verifyInitialisationMocks(List<EanNumberForSynchronisation> entities, Instant startingFrom) {
-            verify(updateService).getEanNumbers(startingFrom);
+        void verifyInitialisationMocks(List<EanNumberForSynchronisation> entities, Instant startingFrom, Instant upUntil) {
+            verify(updateService).getEanNumbers(startingFrom, upUntil);
             verify(synchronisationRepository).initialiseEanNumbers(entities);
 
         }
 
         @Override
-        void verifyMocks(List<EanNumberForSynchronisation> entities, Instant startingFrom) {
-            verify(updateService).getEanNumbers(startingFrom);
+        void verifyMocks(List<EanNumberForSynchronisation> entities, Instant startingFrom, Instant upUntil) {
+            verify(updateService).getEanNumbers(startingFrom, upUntil);
             verify(synchronisationRepository).writeEanNumbers(entities);
         }
     }
@@ -340,20 +340,20 @@ class SynchroniseInteractorImplTest {
         }
 
         @Override
-        void prepareMocks(List<FoodForSynchronisation> entities, Instant startingFrom) {
-            when(updateService.getFood(startingFrom)).thenReturn(entities);
+        void prepareMocks(List<FoodForSynchronisation> entities, Instant startingFrom, Instant upUntil) {
+            when(updateService.getFood(startingFrom, upUntil)).thenReturn(entities);
         }
 
         @Override
-        void verifyInitialisationMocks(List<FoodForSynchronisation> entities, Instant startingFrom) {
-            verify(updateService).getFood(startingFrom);
+        void verifyInitialisationMocks(List<FoodForSynchronisation> entities, Instant startingFrom, Instant upUntil) {
+            verify(updateService).getFood(startingFrom, upUntil);
             verify(synchronisationRepository).initialiseFood(entities);
 
         }
 
         @Override
-        void verifyMocks(List<FoodForSynchronisation> entities, Instant startingFrom) {
-            verify(updateService).getFood(startingFrom);
+        void verifyMocks(List<FoodForSynchronisation> entities, Instant startingFrom, Instant upUntil) {
+            verify(updateService).getFood(startingFrom, upUntil);
             verify(synchronisationRepository).writeFood(entities);
         }
     }
@@ -374,20 +374,20 @@ class SynchroniseInteractorImplTest {
         }
 
         @Override
-        void prepareMocks(List<UserForSynchronisation> entities, Instant startingFrom) {
-            when(updateService.getUsers(startingFrom)).thenReturn(entities);
+        void prepareMocks(List<UserForSynchronisation> entities, Instant startingFrom, Instant upUntil) {
+            when(updateService.getUsers(startingFrom, upUntil)).thenReturn(entities);
         }
 
         @Override
-        void verifyInitialisationMocks(List<UserForSynchronisation> entities, Instant startingFrom) {
-            verify(updateService).getUsers(startingFrom);
+        void verifyInitialisationMocks(List<UserForSynchronisation> entities, Instant startingFrom, Instant upUntil) {
+            verify(updateService).getUsers(startingFrom, upUntil);
             verify(synchronisationRepository).initialiseUsers(entities);
 
         }
 
         @Override
-        void verifyMocks(List<UserForSynchronisation> entities, Instant startingFrom) {
-            verify(updateService).getUsers(startingFrom);
+        void verifyMocks(List<UserForSynchronisation> entities, Instant startingFrom, Instant upUntil) {
+            verify(updateService).getUsers(startingFrom, upUntil);
             verify(synchronisationRepository).writeUsers(entities);
         }
     }
@@ -409,20 +409,20 @@ class SynchroniseInteractorImplTest {
         }
 
         @Override
-        void prepareMocks(List<UserDeviceForSynchronisation> entities, Instant startingFrom) {
-            when(updateService.getUserDevices(startingFrom)).thenReturn(entities);
+        void prepareMocks(List<UserDeviceForSynchronisation> entities, Instant startingFrom, Instant upUntil) {
+            when(updateService.getUserDevices(startingFrom, upUntil)).thenReturn(entities);
         }
 
         @Override
-        void verifyInitialisationMocks(List<UserDeviceForSynchronisation> entities, Instant startingFrom) {
-            verify(updateService).getUserDevices(startingFrom);
+        void verifyInitialisationMocks(List<UserDeviceForSynchronisation> entities, Instant startingFrom, Instant upUntil) {
+            verify(updateService).getUserDevices(startingFrom, upUntil);
             verify(synchronisationRepository).initialiseUserDevices(entities);
 
         }
 
         @Override
-        void verifyMocks(List<UserDeviceForSynchronisation> entities, Instant startingFrom) {
-            verify(updateService).getUserDevices(startingFrom);
+        void verifyMocks(List<UserDeviceForSynchronisation> entities, Instant startingFrom, Instant upUntil) {
+            verify(updateService).getUserDevices(startingFrom, upUntil);
             verify(synchronisationRepository).writeUserDevices(entities);
         }
     }
@@ -444,19 +444,19 @@ class SynchroniseInteractorImplTest {
         }
 
         @Override
-        void prepareMocks(List<LocationForSynchronisation> entities, Instant startingFrom) {
-            when(updateService.getLocations(startingFrom)).thenReturn(entities);
+        void prepareMocks(List<LocationForSynchronisation> entities, Instant startingFrom, Instant upUntil) {
+            when(updateService.getLocations(startingFrom, upUntil)).thenReturn(entities);
         }
 
         @Override
-        void verifyInitialisationMocks(List<LocationForSynchronisation> entities, Instant startingFrom) {
-            verify(updateService).getLocations(startingFrom);
+        void verifyInitialisationMocks(List<LocationForSynchronisation> entities, Instant startingFrom, Instant upUntil) {
+            verify(updateService).getLocations(startingFrom, upUntil);
             verify(synchronisationRepository).initialiseLocations(entities);
         }
 
         @Override
-        void verifyMocks(List<LocationForSynchronisation> entities, Instant startingFrom) {
-            verify(updateService).getLocations(startingFrom);
+        void verifyMocks(List<LocationForSynchronisation> entities, Instant startingFrom, Instant upUntil) {
+            verify(updateService).getLocations(startingFrom, upUntil);
             verify(synchronisationRepository).writeLocations(entities);
         }
     }
@@ -467,11 +467,11 @@ class SynchroniseInteractorImplTest {
 
         abstract EntityType getEntityType();
 
-        abstract void prepareMocks(List<E> entities, Instant startingFrom);
+        abstract void prepareMocks(List<E> entities, Instant startingFrom, Instant upUntil);
 
-        abstract void verifyInitialisationMocks(List<E> entities, Instant startingFrom);
+        abstract void verifyInitialisationMocks(List<E> entities, Instant startingFrom, Instant upUntil);
 
-        abstract void verifyMocks(List<E> entities, Instant startingFrom);
+        abstract void verifyMocks(List<E> entities, Instant startingFrom, Instant upUntil);
 
         <T extends Bitemporal.Builder<T>> T initialiseEntity(T builder) {
             return builder
@@ -491,13 +491,13 @@ class SynchroniseInteractorImplTest {
             when(updateService.getUpdates()).thenReturn(singletonList(serverUpdate));
             when(synchronisationRepository.getUpdates()).thenReturn(singletonList(localUpdate));
             List<E> entities = singletonList(getEntity());
-            prepareMocks(entities, localUpdate.lastUpdate());
+            prepareMocks(entities, localUpdate.lastUpdate(), serverUpdate.lastUpdate());
 
             uut.synchronise();
 
             verify(updateService).getUpdates();
             verify(synchronisationRepository).getUpdates();
-            verifyMocks(entities, localUpdate.lastUpdate());
+            verifyMocks(entities, localUpdate.lastUpdate(), serverUpdate.lastUpdate());
             verify(synchronisationRepository).writeUpdates(singletonList(serverUpdate));
         }
 
@@ -507,13 +507,13 @@ class SynchroniseInteractorImplTest {
             when(updateService.getUpdates()).thenReturn(singletonList(serverUpdate));
             when(synchronisationRepository.getUpdates()).thenReturn(emptyList());
             List<E> entities = singletonList(getEntity());
-            prepareMocks(entities, Instant.MIN);
+            prepareMocks(entities, Instant.MIN, serverUpdate.lastUpdate());
 
             uut.synchronise();
 
             verify(updateService).getUpdates();
             verify(synchronisationRepository).getUpdates();
-            verifyInitialisationMocks(entities, Instant.MIN);
+            verifyInitialisationMocks(entities, Instant.MIN, serverUpdate.lastUpdate());
             verify(synchronisationRepository).writeUpdates(singletonList(serverUpdate));
         }
     }

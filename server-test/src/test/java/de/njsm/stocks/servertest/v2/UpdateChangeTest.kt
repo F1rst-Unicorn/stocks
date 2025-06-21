@@ -20,6 +20,7 @@
  */
 package de.njsm.stocks.servertest.v2
 
+import de.njsm.stocks.client.business.Constants
 import de.njsm.stocks.client.business.entities.EntityType
 import de.njsm.stocks.client.business.entities.LocationForSynchronisation
 import de.njsm.stocks.servertest.v2.repo.LocationRepository
@@ -66,7 +67,7 @@ class UpdateChangeTest : Base() {
     }
 
     private fun getDataYoungerThan(date: Instant): List<LocationForSynchronisation> {
-        return updateService.getLocations(date)
+        return updateService.getLocations(date, Constants.INFINITY)
     }
 
     private val locationChangeDate: Instant

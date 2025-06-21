@@ -31,7 +31,9 @@ public interface ServerApi {
     Call<ListResponse<Update>> getUpdates();
 
     @GET("/v2/location")
-    Call<ListResponse<BitemporalLocation>> getLocations(@Query("startingFrom") String startingFrom);
+    Call<ListResponse<BitemporalLocation>> getLocations(
+            @Query("startingFrom") String startingFrom,
+            @Query("upUntil") String upUntil);
 
     @DELETE("/v2/location")
     Call<Response> deleteLocation(@Query("id") int id,
@@ -45,34 +47,54 @@ public interface ServerApi {
     Call<Response> editLocation(@Body LocationForEditing location);
 
     @GET("/v2/user")
-    Call<ListResponse<BitemporalUser>> getUsers(@Query("startingFrom") String startingFrom);
+    Call<ListResponse<BitemporalUser>> getUsers(
+            @Query("startingFrom") String startingFrom,
+            @Query("upUntil") String upUntil);
 
     @GET("/v2/device")
-    Call<ListResponse<BitemporalUserDevice>> getUserDevices(@Query("startingFrom") String startingFrom);
+    Call<ListResponse<BitemporalUserDevice>> getUserDevices(
+            @Query("startingFrom") String startingFrom,
+            @Query("upUntil") String upUntil);
 
     @GET("/v2/food")
-    Call<ListResponse<BitemporalFood>> getFood(@Query("startingFrom") String startingFrom);
+    Call<ListResponse<BitemporalFood>> getFood(
+            @Query("startingFrom") String startingFrom,
+            @Query("upUntil") String upUntil);
 
     @GET("/v2/ean")
-    Call<ListResponse<BitemporalEanNumber>> getEanNumbers(@Query("startingFrom") String startingFrom);
+    Call<ListResponse<BitemporalEanNumber>> getEanNumbers(
+            @Query("startingFrom") String startingFrom,
+            @Query("upUntil") String upUntil);
 
     @GET("/v2/fooditem")
-    Call<ListResponse<BitemporalFoodItem>> getFoodItems(@Query("startingFrom") String startingFrom);
+    Call<ListResponse<BitemporalFoodItem>> getFoodItems(
+            @Query("startingFrom") String startingFrom,
+            @Query("upUntil") String upUntil);
 
     @GET("/v2/unit")
-    Call<ListResponse<BitemporalUnit>> getUnits(@Query("startingFrom") String startingFrom);
+    Call<ListResponse<BitemporalUnit>> getUnits(
+            @Query("startingFrom") String startingFrom,
+            @Query("upUntil") String upUntil);
 
     @GET("/v2/scaled-unit")
-    Call<ListResponse<BitemporalScaledUnit>> getScaledUnits(@Query("startingFrom") String startingFrom);
+    Call<ListResponse<BitemporalScaledUnit>> getScaledUnits(
+            @Query("startingFrom") String startingFrom,
+            @Query("upUntil") String upUntil);
 
     @GET("/v2/recipe")
-    Call<ListResponse<BitemporalRecipe>> getRecipes(@Query("startingFrom") String startingFrom);
+    Call<ListResponse<BitemporalRecipe>> getRecipes(
+            @Query("startingFrom") String startingFrom,
+            @Query("upUntil") String upUntil);
 
     @GET("/v2/recipe-ingredient")
-    Call<ListResponse<BitemporalRecipeIngredient>> getRecipeIngredients(@Query("startingFrom") String startingFrom);
+    Call<ListResponse<BitemporalRecipeIngredient>> getRecipeIngredients(
+            @Query("startingFrom") String startingFrom,
+            @Query("upUntil") String upUntil);
 
     @GET("/v2/recipe-product")
-    Call<ListResponse<BitemporalRecipeProduct>> getRecipeProducts(@Query("startingFrom") String startingFrom);
+    Call<ListResponse<BitemporalRecipeProduct>> getRecipeProducts(
+            @Query("startingFrom") String startingFrom,
+            @Query("upUntil") String upUntil);
 
 
     @PUT("/v2/unit")
