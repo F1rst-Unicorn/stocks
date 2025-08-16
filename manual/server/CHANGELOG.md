@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+## [6.0.0.0]
+
+### Changed
+
+* Moved to tomcat10 and Jakarta EE
+  ([#109](https://veenj.de/git/veenj/stocks/issues/109)).
+
 ## [5.7.0.6]
 
 ### Fixed
