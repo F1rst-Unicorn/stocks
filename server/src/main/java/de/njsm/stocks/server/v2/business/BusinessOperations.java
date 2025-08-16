@@ -24,15 +24,9 @@ package de.njsm.stocks.server.v2.business;
 import de.njsm.stocks.common.api.StatusCode;
 import de.njsm.stocks.server.util.Principals;
 import fj.data.Validation;
-import io.prometheus.client.Summary;
 import org.glassfish.jersey.internal.util.Producer;
 
 public interface BusinessOperations extends AsyncRunner {
-
-    Summary OPERATION_REPETITIONS = Summary.build()
-            .name("stocks_operation_repetitions")
-            .help("Count number of repetitions for operation due to serialisation")
-            .register();
 
     default <O> Validation<StatusCode, O> runFunction(Producer<Validation<StatusCode, O>> operation) {
         return runTransactionUntilSerialisable(operation);
@@ -46,13 +40,10 @@ public interface BusinessOperations extends AsyncRunner {
     default <O> Validation<StatusCode, O> runTransactionUntilSerialisable(Producer<Validation<StatusCode, O>> operation) {
         assertPrincipalsAreSet();
         Validation<StatusCode, O> result;
-        int repetitions = 0;
         do {
             result = operation.call();
-            repetitions++;
             result = finishTransaction(result);
         } while (result.isFail() && result.fail() == StatusCode.SERIALISATION_CONFLICT);
-        OPERATION_REPETITIONS.observe(repetitions);
         return result;
     }
 

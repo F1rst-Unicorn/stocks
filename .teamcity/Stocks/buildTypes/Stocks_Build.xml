@@ -43,14 +43,14 @@
       </runner>
       <runner id="RUNNER_3" name="Clean server" type="simpleRunner">
         <parameters>
-          <param name="command.executable" value="server-test/bin/clean-up.sh" />
+          <param name="command.executable" value="server-test/scripts/clean-up.sh" />
           <param name="teamcity.step.mode" value="execute_always" />
           <param name="use.custom.script" value="" />
         </parameters>
       </runner>
       <runner id="RUNNER_4" name="Server Installation" type="simpleRunner">
         <parameters>
-          <param name="command.executable" value="server-test/bin/vm-deployment-test.sh" />
+          <param name="command.executable" value="server-test/scripts/vm-deployment-test.sh" />
           <param name="teamcity.step.mode" value="default" />
           <param name="use.custom.script" value="" />
         </parameters>
@@ -73,7 +73,7 @@
       </runner>
       <runner id="RUNNER_6" name="Server Log collection" type="simpleRunner">
         <parameters>
-          <param name="command.executable" value="server-test/bin/collect-log.sh" />
+          <param name="command.executable" value="server-test/scripts/collect-log.sh" />
           <param name="teamcity.step.mode" value="execute_always" />
           <param name="use.custom.script" value="" />
         </parameters>

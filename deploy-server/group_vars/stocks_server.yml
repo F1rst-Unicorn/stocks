@@ -23,7 +23,7 @@ stocks_package_directory: "{{ playbook_dir }}"
 stocks_nginx_managed: False
 stocks_nginx_enable_site: True
 
-stocks_tomcat_root: "/usr/share/tomcat8/webapp"
+stocks_tomcat_root: "/usr/share/tomcat10/webapp"
 stocks_circuit_breaker_timeout: 30000
 
 stocks_postgresql_options:

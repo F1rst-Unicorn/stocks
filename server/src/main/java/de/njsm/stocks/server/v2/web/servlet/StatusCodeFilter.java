@@ -25,10 +25,10 @@ import de.njsm.stocks.common.api.Response;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import javax.ws.rs.container.ContainerRequestContext;
-import javax.ws.rs.container.ContainerResponseContext;
-import javax.ws.rs.container.ContainerResponseFilter;
-import javax.ws.rs.ext.Provider;
+import jakarta.ws.rs.container.ContainerRequestContext;
+import jakarta.ws.rs.container.ContainerResponseContext;
+import jakarta.ws.rs.container.ContainerResponseFilter;
+import jakarta.ws.rs.ext.Provider;
 
 @Provider
 public class StatusCodeFilter implements ContainerResponseFilter {
@@ -41,7 +41,7 @@ public class StatusCodeFilter implements ContainerResponseFilter {
         Object entity = responseContext.getEntity();
         if (entity instanceof Response) {
             Response r = (Response) entity;
-            javax.ws.rs.core.Response.Status code = r.getStatus().toHttpStatus();
+            jakarta.ws.rs.core.Response.Status code = r.getStatus().toHttpStatus();
             if (code.getStatusCode() != responseContext.getStatus()) {
                 LOG.debug("HTTP status set from {} to {}", responseContext.getStatus(), code);
             }

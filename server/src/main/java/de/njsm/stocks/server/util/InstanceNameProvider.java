@@ -21,9 +21,8 @@
 
 package de.njsm.stocks.server.util;
 
+import jakarta.servlet.ServletContext;
 import org.springframework.core.io.FileSystemResource;
-
-import javax.servlet.ServletContext;
 
 import static de.njsm.stocks.server.util.InstanceInitialiser.INSTANCE_NAME_KEY;
 

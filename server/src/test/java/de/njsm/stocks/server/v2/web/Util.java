@@ -24,7 +24,7 @@ package de.njsm.stocks.server.v2.web;
 import de.njsm.stocks.server.v2.web.servlet.PrincipalFilter;
 import org.mockito.Mockito;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 public class Util {
 

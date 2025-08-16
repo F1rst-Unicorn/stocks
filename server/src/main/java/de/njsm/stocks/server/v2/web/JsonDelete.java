@@ -26,14 +26,14 @@ import de.njsm.stocks.common.api.Response;
 import de.njsm.stocks.common.api.StatusCode;
 import de.njsm.stocks.common.api.Versionable;
 import de.njsm.stocks.server.v2.business.BusinessDeletable;
+import jakarta.servlet.http.HttpServletRequest;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.validation.constraints.NotNull;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
+import jakarta.validation.constraints.NotNull;
+import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.DELETE;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.core.Context;
+import jakarta.ws.rs.core.MediaType;
 
 import static de.njsm.stocks.server.v2.web.Endpoint.getPrincipals;
 

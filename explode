@@ -1,0 +1,27 @@
+#!/bin/sh
+
+rm -rf ${1}-contents
+mkdir ${1}-contents
+
+echo "Unpacking ${1} to ${1}-contents"
+unzip -d ${1}-contents ${1}
+
+cd ${1}-contents
+
+FILES_TO_PROCESS=`find . -type f \( -name "*.ear" -or -name "*.war" -or -name "*.jar" \)`
+
+until [ "$FILES_TO_PROCESS" == "" ] ; do
+
+    for myFile in $FILES_TO_PROCESS ; do
+
+        mkdir ${myFile}-contents
+        echo "Unpacking ${myFile} to ${myFile}-contents"
+        unzip -d ${myFile}-contents ${myFile}
+        rm $myFile
+
+    done
+
+
+    FILES_TO_PROCESS=`find . -type f \( -name "*.ear" -or -name "*.war" -or -name "*.jar" \)`
+    echo "recursing to process files: $FILES_TO_PROCESS"
+done

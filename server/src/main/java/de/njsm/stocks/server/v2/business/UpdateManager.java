@@ -28,7 +28,7 @@ import de.njsm.stocks.server.v2.db.FailSafeDatabaseHandler;
 import de.njsm.stocks.server.v2.db.UpdateBackend;
 import fj.data.Validation;
 
-import javax.ws.rs.container.AsyncResponse;
+import jakarta.ws.rs.container.AsyncResponse;
 import java.util.stream.Stream;
 
 public class UpdateManager implements AsyncRunner {

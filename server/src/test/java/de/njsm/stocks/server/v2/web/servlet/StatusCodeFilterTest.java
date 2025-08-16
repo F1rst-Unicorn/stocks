@@ -27,7 +27,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
-import javax.ws.rs.container.ContainerResponseContext;
+import jakarta.ws.rs.container.ContainerResponseContext;
 import java.io.IOException;
 
 public class StatusCodeFilterTest {

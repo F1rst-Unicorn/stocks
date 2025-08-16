@@ -23,16 +23,16 @@ package de.njsm.stocks.server.v2.web;
 
 
 import de.njsm.stocks.common.api.DataResponse;
-import de.njsm.stocks.common.api.StatusCode;
 import de.njsm.stocks.common.api.Health;
+import de.njsm.stocks.common.api.StatusCode;
 import de.njsm.stocks.server.v2.business.HealthManager;
 import fj.data.Validation;
 
-import javax.inject.Inject;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
+import jakarta.inject.Inject;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.core.MediaType;
 
 @Path("/health")
 public class HealthEndpoint {

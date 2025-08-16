@@ -51,8 +51,6 @@ dependencies {
     implementation(libs.guava)
     implementation(libs.bouncycastle.pkix)
     implementation(libs.functionaljava)
-    implementation(libs.prometheus)
-    implementation(libs.prometheus.servlet)
     implementation(libs.quartz)
     implementation(libs.liquibase) {
         exclude(group = "ch.qos.logback", module = "logback-classic")
@@ -75,7 +73,7 @@ dependencies {
     }
     liquibaseRuntime(libs.postgresql)
     liquibaseRuntime(libs.picocli)
-    liquibaseRuntime(libs.jaxb.api)
+    liquibaseRuntime(libs.jakarta.xml.api)
 
     testImplementation(libs.junit5)
     testImplementation(libs.hamcrest)

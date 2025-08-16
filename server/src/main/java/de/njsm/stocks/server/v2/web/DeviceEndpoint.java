@@ -21,23 +21,18 @@
 
 package de.njsm.stocks.server.v2.web;
 
-import de.njsm.stocks.common.api.DataResponse;
-import de.njsm.stocks.common.api.Response;
-import de.njsm.stocks.common.api.StatusCode;
-import de.njsm.stocks.common.api.UserDevice;
-import de.njsm.stocks.common.api.UserDeviceForDeletion;
-import de.njsm.stocks.common.api.UserDeviceForInsertion;
+import de.njsm.stocks.common.api.*;
 import de.njsm.stocks.server.v2.business.BusinessGettable;
 import de.njsm.stocks.server.v2.business.DeviceManager;
 import de.njsm.stocks.server.v2.business.data.NewDeviceTicket;
 import de.njsm.stocks.server.v2.db.jooq.tables.records.UserDeviceRecord;
 import fj.data.Validation;
+import jakarta.servlet.http.HttpServletRequest;
 
-import javax.inject.Inject;
-import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.*;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
+import jakarta.inject.Inject;
+import jakarta.ws.rs.*;
+import jakarta.ws.rs.core.Context;
+import jakarta.ws.rs.core.MediaType;
 
 @Path("v2/device")
 public class DeviceEndpoint extends Endpoint implements Get<UserDeviceRecord, UserDevice> {

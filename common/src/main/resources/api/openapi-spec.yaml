@@ -80,12 +80,6 @@ info:
     User and device names are part of the so called principals. They must not
     contain `=` or `$`.
 
-    ### Prometheus
-
-    Stocks exposes Prometheus metrics on the path `/stocks/metrics`. It gives
-    information about request durations, circuit breaker events and command
-    retries due to serialisation conflicts.
-
 security:
   - type:
       - mutualTLS

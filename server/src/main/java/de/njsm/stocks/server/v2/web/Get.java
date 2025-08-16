@@ -29,12 +29,12 @@ import de.njsm.stocks.server.v2.business.BusinessGettable;
 import fj.data.Validation;
 import org.jooq.TableRecord;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
-import javax.ws.rs.container.AsyncResponse;
-import javax.ws.rs.container.Suspended;
-import javax.ws.rs.core.MediaType;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.QueryParam;
+import jakarta.ws.rs.container.AsyncResponse;
+import jakarta.ws.rs.container.Suspended;
+import jakarta.ws.rs.core.MediaType;
 import java.time.Instant;
 import java.util.Optional;
 import java.util.stream.Stream;

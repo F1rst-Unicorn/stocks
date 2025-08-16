@@ -23,7 +23,7 @@ package de.njsm.stocks.common.api;
 
 import fj.data.Validation;
 
-import javax.ws.rs.core.Response;
+import jakarta.ws.rs.core.Response;
 import java.util.function.Function;
 import java.util.function.Supplier;
 

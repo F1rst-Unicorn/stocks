@@ -21,10 +21,9 @@
 
 package de.njsm.stocks.server.util;
 
+import jakarta.servlet.ServletContextEvent;
+import jakarta.servlet.ServletContextListener;
 import org.apache.logging.log4j.web.Log4jWebSupport;
-
-import javax.servlet.ServletContextEvent;
-import javax.servlet.ServletContextListener;
 
 public class InstanceInitialiser implements ServletContextListener {
 

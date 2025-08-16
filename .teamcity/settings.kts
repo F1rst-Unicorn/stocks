@@ -120,11 +120,11 @@ object Build : BuildType({
         exec {
             name = "Clean server"
             executionMode = BuildStep.ExecutionMode.ALWAYS
-            path = "server-test/bin/clean-up.sh"
+            path = "server-test/scripts/clean-up.sh"
         }
         exec {
             name = "Server Installation"
-            path = "server-test/bin/vm-deployment-test.sh"
+            path = "server-test/scripts/vm-deployment-test.sh"
         }
         gradle {
             name = "Server System Test"
@@ -137,7 +137,7 @@ object Build : BuildType({
         exec {
             name = "Server Log collection"
             executionMode = BuildStep.ExecutionMode.ALWAYS
-            path = "server-test/bin/collect-log.sh"
+            path = "server-test/scripts/collect-log.sh"
         }
     }
 

@@ -20,15 +20,15 @@
 
 DEPLOYMENT_VM="${DEPLOYMENT_VM:-dp-server}"
 
-ssh $DEPLOYMENT_VM "sudo rm -rf /var/lib/tomcat8/webapp/stocks.war;
-        while [ -d /usr/share/tomcat8/webapp/stocks ] ; do sleep 1 ; done;
-        sudo systemctl restart tomcat8;
-        sudo pacman -Rsn stocks-server --noconfirm;
+ssh $DEPLOYMENT_VM "sudo rm -rf /var/lib/tomcat10/webapp/stocks.war;
+        while [ -d /usr/share/tomcat10/webapp/stocks ] ; do sleep 1 ; done;
+        sudo systemctl restart tomcat10;
+        sudo pacman -Rn stocks-server --noconfirm;
         sudo rm -rf /usr/share/stocks-server;
-        sudo rm -rf /var/log/tomcat8/stocks-stocks.log;
-        sudo touch /var/log/tomcat8/stocks-stocks.log;
-        sudo chown tomcat8:tomcat8 /var/log/tomcat8/stocks-stocks.log
-        sudo setfacl -m u:jan:r /var/log/tomcat8/stocks-stocks.log
+        sudo rm -rf /var/log/tomcat10/stocks-stocks.log;
+        sudo touch /var/log/tomcat10/stocks-stocks.log;
+        sudo chown tomcat10:tomcat10 /var/log/tomcat10/stocks-stocks.log
+        sudo setfacl -m u:jan:r /var/log/tomcat10/stocks-stocks.log
         pgrep -U postgres -f 'postgres: .* stocks' | sudo xargs kill || true;
         sudo -u postgres dropdb stocks;
         sudo -u postgres dropuser stocks;"

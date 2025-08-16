@@ -26,8 +26,8 @@ import de.njsm.stocks.server.v2.db.FailSafeDatabaseHandler;
 import fj.data.Validation;
 import org.glassfish.jersey.internal.util.Producer;
 
-import javax.ws.rs.container.AsyncResponse;
-import javax.ws.rs.container.CompletionCallback;
+import jakarta.ws.rs.container.AsyncResponse;
+import jakarta.ws.rs.container.CompletionCallback;
 
 public interface AsyncRunner {
 

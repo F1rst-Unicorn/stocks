@@ -21,8 +21,8 @@
 
 package de.njsm.stocks.server.util;
 
-import javax.servlet.ServletContextEvent;
-import javax.servlet.ServletContextListener;
+import jakarta.servlet.ServletContextEvent;
+import jakarta.servlet.ServletContextListener;
 
 public class LiquibaseFixer implements ServletContextListener {
 

@@ -24,10 +24,10 @@ package de.njsm.stocks.server.v2.web;
 import de.njsm.stocks.common.api.serialisers.InstantDeserialiser;
 import de.njsm.stocks.server.util.Principals;
 import de.njsm.stocks.server.v2.web.servlet.PrincipalFilter;
+import jakarta.servlet.http.HttpServletRequest;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.time.Instant;
 import java.util.Optional;

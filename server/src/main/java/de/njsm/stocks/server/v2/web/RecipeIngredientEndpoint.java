@@ -25,8 +25,8 @@ import de.njsm.stocks.common.api.RecipeIngredient;
 import de.njsm.stocks.server.v2.business.RecipeIngredientManager;
 import de.njsm.stocks.server.v2.db.jooq.tables.records.RecipeIngredientRecord;
 
-import javax.inject.Inject;
-import javax.ws.rs.Path;
+import jakarta.inject.Inject;
+import jakarta.ws.rs.Path;
 
 @Path("v2/recipe-ingredient")
 public class RecipeIngredientEndpoint extends Endpoint implements Get<RecipeIngredientRecord, RecipeIngredient> {

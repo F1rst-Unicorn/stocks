@@ -55,12 +55,6 @@
     </listener>
 
     <servlet>
-        <servlet-name>prometheus</servlet-name>
-        <servlet-class>io.prometheus.client.exporter.MetricsServlet</servlet-class>
-        <async-supported>true</async-supported>
-    </servlet>
-
-    <servlet>
         <servlet-name>stocks-server</servlet-name>
         <servlet-class>org.glassfish.jersey.servlet.ServletContainer</servlet-class>
         <init-param>
@@ -81,10 +75,6 @@
         <async-supported>true</async-supported>
     </servlet>
     <servlet-mapping>
-        <servlet-name>prometheus</servlet-name>
-        <url-pattern>/metrics</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
         <servlet-name>stocks-server</servlet-name>
         <url-pattern>/*</url-pattern>
     </servlet-mapping>
@@ -93,24 +83,6 @@
         <exception-type>java.lang.Throwable</exception-type>
         <location>/v2/error</location>
     </error-page>
-
-    <filter>
-        <filter-name>prometheusFilter</filter-name>
-        <filter-class>io.prometheus.client.filter.MetricsFilter</filter-class>
-        <async-supported>true</async-supported>
-        <init-param>
-            <param-name>metric-name</param-name>
-            <param-value>stocks_request_time</param-value>
-        </init-param>
-        <init-param>
-            <param-name>buckets</param-name>
-            <param-value>0.005,0.01,0.025,0.05,0.075,0.1,0.25,0.5,0.75,1,2.5,5,7.5,10</param-value>
-        </init-param>
-        <init-param>
-            <param-name>path-components</param-name>
-            <param-value>0</param-value>
-        </init-param>
-    </filter>
 
     <filter>
         <filter-name>log4jServletFilter</filter-name>
@@ -126,10 +98,5 @@
         <dispatcher>INCLUDE</dispatcher>
         <dispatcher>ERROR</dispatcher>
         <dispatcher>ASYNC</dispatcher>
-    </filter-mapping>
-
-    <filter-mapping>
-        <filter-name>prometheusFilter</filter-name>
-        <url-pattern>/*</url-pattern>
     </filter-mapping>
 </web-app>

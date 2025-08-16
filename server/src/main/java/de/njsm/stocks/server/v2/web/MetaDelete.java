@@ -26,9 +26,8 @@ import de.njsm.stocks.common.api.Response;
 import de.njsm.stocks.common.api.StatusCode;
 import de.njsm.stocks.common.api.Versionable;
 import de.njsm.stocks.server.v2.business.BusinessDeletable;
+import jakarta.servlet.http.HttpServletRequest;
 import org.glassfish.jersey.internal.util.Producer;
-
-import javax.servlet.http.HttpServletRequest;
 
 import static de.njsm.stocks.server.v2.web.Endpoint.getPrincipals;
 

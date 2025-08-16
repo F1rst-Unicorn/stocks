@@ -27,7 +27,7 @@ import de.njsm.stocks.server.v2.db.CrudDatabaseHandler;
 import fj.data.Validation;
 import org.jooq.TableRecord;
 
-import javax.ws.rs.container.AsyncResponse;
+import jakarta.ws.rs.container.AsyncResponse;
 import java.time.Instant;
 import java.util.stream.Stream;
 

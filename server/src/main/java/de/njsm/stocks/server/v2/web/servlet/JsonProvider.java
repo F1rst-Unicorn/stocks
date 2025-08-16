@@ -23,15 +23,16 @@ package de.njsm.stocks.server.v2.web.servlet;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
-import com.fasterxml.jackson.jaxrs.json.JacksonJaxbJsonProvider;
 
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.ext.Provider;
+import com.fasterxml.jackson.jakarta.rs.json.JacksonJsonProvider;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.ext.Provider;
+
 
 @Provider
 @Produces(MediaType.APPLICATION_JSON)
-public class JsonProvider extends JacksonJaxbJsonProvider {
+public class JsonProvider extends JacksonJsonProvider {
 
     public JsonProvider() {
         ObjectMapper mapper = new ObjectMapper();

@@ -26,7 +26,7 @@ url="https://github.com/F1rst-Unicorn/stocks"
 license=('GPL3')
 depends=('nginx'
          'openssl'
-         'tomcat8')
+         'tomcat10')
 makedepends=('git'
              'maven')
 install=stocks-server.install

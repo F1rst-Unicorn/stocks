@@ -22,21 +22,15 @@
 package de.njsm.stocks.server.v2.web;
 
 
-import de.njsm.stocks.common.api.Location;
-import de.njsm.stocks.common.api.Response;
-import de.njsm.stocks.common.api.StatusCode;
-import de.njsm.stocks.common.api.LocationForDeletion;
-import de.njsm.stocks.common.api.LocationForInsertion;
-import de.njsm.stocks.common.api.LocationForRenaming;
-import de.njsm.stocks.common.api.LocationForSetDescription;
+import de.njsm.stocks.common.api.*;
 import de.njsm.stocks.server.v2.business.LocationManager;
 import de.njsm.stocks.server.v2.db.jooq.tables.records.LocationRecord;
+import jakarta.servlet.http.HttpServletRequest;
 
-import javax.inject.Inject;
-import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.*;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
+import jakarta.inject.Inject;
+import jakarta.ws.rs.*;
+import jakarta.ws.rs.core.Context;
+import jakarta.ws.rs.core.MediaType;
 
 @Path("v2/location")
 public class LocationEndpoint extends Endpoint implements
