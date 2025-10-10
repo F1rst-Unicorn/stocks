@@ -24,11 +24,14 @@ package de.njsm.stocks.client.fragment.recipeadd;
 import androidx.annotation.NonNull;
 import de.njsm.stocks.client.business.entities.*;
 import de.njsm.stocks.client.databind.RecipeFoodAdapter;
+import de.njsm.stocks.client.databind.RecipeFoodDataChanged;
 import de.njsm.stocks.client.databind.RecipeFoodViewHolder;
 
 import static de.njsm.stocks.client.business.ListSearcher.searchFirst;
 
-public class RecipeProductFoodAddAdapter extends RecipeFoodAdapter<RecipeProductToAdd> {
+public class RecipeProductFoodAddAdapter
+        extends RecipeFoodAdapter<RecipeProductToAdd>
+        implements RecipeFoodDataChanged {
 
     public RecipeProductFoodAddAdapter(RecipeAddData data) {
         super(data.availableFood(), data.availableUnits());
@@ -47,16 +50,41 @@ public class RecipeProductFoodAddAdapter extends RecipeFoodAdapter<RecipeProduct
         holder.setAmount(data.amount());
         searchFirst(this.foodForSelection, data.product()).ifPresent(holder::setSelectedFood);
         searchFirst(this.unitsForSelection, data.unit()).ifPresent(holder::setSelectedUnit);
-        holder.setCallback(this::onItemEdit);
+        holder.setCallback(this);
     }
 
-    public void onItemEdit(int position, int amount, int foodPosition, int unitPosition) {
+    @Override
+    public void onAmountChanged(int position, int amount) {
         RecipeProductToAdd current = list.get(position);
-        Id<Food> food = foodForSelection.get(foodPosition);
-        Id<ScaledUnit> unit = unitsForSelection.get(unitPosition);
-        if (amount != current.amount() || food.id() != current.product().id() ||
-                unit.id() != current.unit().id()) {
-            RecipeProductToAdd newData = RecipeProductToAdd.create(amount, food, unit);
+        if (amount != current.amount()) {
+            RecipeProductToAdd newData = RecipeProductToAdd.create(
+                    amount,
+                    current.product(),
+                    current.unit());
+            list.set(position, newData);
+        }
+    }
+
+    @Override
+    public void onFoodChanged(int position, Id<Food> food) {
+        RecipeProductToAdd current = list.get(position);
+        if (food.id() != current.product().id()) {
+            RecipeProductToAdd newData = RecipeProductToAdd.create(
+                    current.amount(),
+                    food,
+                    current.unit());
+            list.set(position, newData);
+        }
+    }
+
+    @Override
+    public void onUnitChanged(int position, Id<ScaledUnit> scaledUnit, int itemPosition) {
+        RecipeProductToAdd current = list.get(position);
+        if (scaledUnit.id() != current.unit().id()) {
+            RecipeProductToAdd newData = RecipeProductToAdd.create(
+                    current.amount(),
+                    current.product(),
+                    scaledUnit);
             list.set(position, newData);
         }
     }

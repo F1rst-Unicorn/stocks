@@ -26,6 +26,7 @@ import android.text.TextWatcher;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Spinner;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -39,7 +40,9 @@ import de.njsm.stocks.client.ui.R;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
+import java.util.Set;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toList;
 
@@ -47,7 +50,7 @@ public class RecipeFoodViewHolder extends RecyclerView.ViewHolder {
 
     private final TextInputLayout amount;
 
-    private final Spinner foodSpinner;
+    private final TextInputLayout foodTextField;
 
     private final Spinner unitSpinner;
 
@@ -56,19 +59,18 @@ public class RecipeFoodViewHolder extends RecyclerView.ViewHolder {
     public RecipeFoodViewHolder(@NonNull View itemView, List<FoodForSelection> availableFood, List<ScaledUnitForSelection> availableUnits) {
         super(itemView);
         amount = itemView.findViewById(R.id.item_recipe_food_amount);
-        foodSpinner = itemView.findViewById(R.id.item_recipe_food_food);
+        foodTextField = itemView.findViewById(R.id.item_recipe_food_food);
         unitSpinner = itemView.findViewById(R.id.item_recipe_food_unit);
 
-        setupAdapter(itemView, availableFood, foodSpinner, FoodForSelection::name);
-        setupAdapter(itemView, availableUnits, unitSpinner, new UnitAmountRenderStrategy()::render);
+        setupAutocompleteAdapter(itemView, availableFood, foodTextField, FoodForSelection::name);
+        setupUnitAdapter(itemView, availableUnits, unitSpinner, new UnitAmountRenderStrategy()::render);
         ViewUtility.onEditorOf(this.amount, e -> e.addTextChangedListener(new TextWatcher() {
             @Override
             public void afterTextChanged(Editable s) {
                 if (callback != null) {
-                    callback.update(RecipeFoodViewHolder.this.getAbsoluteAdapterPosition(),
-                            getParsedAmount(),
-                            foodSpinner.getSelectedItemPosition(),
-                            unitSpinner.getSelectedItemPosition());
+                    callback.onAmountChanged(
+                            RecipeFoodViewHolder.this.getAbsoluteAdapterPosition(),
+                            getParsedAmount());
                 }
             }
             @Override
@@ -78,8 +80,8 @@ public class RecipeFoodViewHolder extends RecyclerView.ViewHolder {
         }));
     }
 
-    private <T> void setupAdapter(@NotNull View itemView, List<T> data, Spinner spinner, Function<T, String> displayMapper) {
-        ArrayAdapter<EntityStringDisplayWrapper<T>> adapter = new ArrayAdapter<>(itemView.getContext(),
+    private void setupUnitAdapter(@NotNull View itemView, List<ScaledUnitForSelection> data, Spinner spinner, Function<ScaledUnitForSelection, String> displayMapper) {
+        ArrayAdapter<EntityStringDisplayWrapper<ScaledUnitForSelection>> adapter = new ArrayAdapter<>(itemView.getContext(),
                 android.R.layout.simple_list_item_1, android.R.id.text1);
         adapter.addAll(data.stream()
                 .map(v -> new EntityStringDisplayWrapper<>(v, displayMapper))
@@ -90,16 +92,66 @@ public class RecipeFoodViewHolder extends RecyclerView.ViewHolder {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 if (callback != null) {
-                    callback.update(getAbsoluteAdapterPosition(),
-                            getParsedAmount(),
-                            foodSpinner.getSelectedItemPosition(),
-                            unitSpinner.getSelectedItemPosition());
+                    EntityStringDisplayWrapper<ScaledUnitForSelection> item = adapter.getItem(position);
+                    callback.onUnitChanged(
+                            getAbsoluteAdapterPosition(),
+                            item.delegate(),
+                            position);
                 }
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
-                throw new UnsupportedOperationException("not allowed");
+            }
+        });
+    }
+
+    private void setupAutocompleteAdapter(@NotNull View itemView, List<FoodForSelection> data, TextInputLayout textField, Function<FoodForSelection, String> displayMapper) {
+        ArrayAdapter<EntityStringDisplayWrapper<FoodForSelection>> adapter = new ArrayAdapter<>(itemView.getContext(),
+                android.R.layout.simple_list_item_1, android.R.id.text1);
+        List<EntityStringDisplayWrapper<FoodForSelection>> displayedFood = data.stream()
+                .map(v -> new EntityStringDisplayWrapper<>(v, displayMapper))
+                .collect(toList());
+        adapter.addAll(displayedFood);
+        adapter.notifyDataSetChanged();
+        AutoCompleteTextView textView = (AutoCompleteTextView) textField.getEditText();
+        textView.setAdapter(adapter);
+        textView.setOnClickListener(v -> textView.setText(""));
+        textView.setOnItemClickListener((parent, view, position, id) -> {
+            if (callback != null) {
+                EntityStringDisplayWrapper<FoodForSelection> item = adapter.getItem(position);
+                callback.onFoodChanged(
+                        getAbsoluteAdapterPosition(),
+                        item.delegate());
+            }
+        });
+        textView.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if (callback != null) {
+                    EntityStringDisplayWrapper<FoodForSelection> item = adapter.getItem(position);
+                    callback.onFoodChanged(
+                            getAbsoluteAdapterPosition(),
+                            item.delegate());
+                }
+            }
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
+        });
+
+        Set<String> validValues = displayedFood.stream()
+                .map(Object::toString)
+                .collect(Collectors.toSet());
+        textView.setValidator(new AutoCompleteTextView.Validator() {
+            @Override
+            public boolean isValid(CharSequence text) {
+                return validValues.contains(text.toString());
+            }
+
+            @Override
+            public CharSequence fixText(CharSequence invalidText) {
+                return null;
             }
         });
     }
@@ -121,7 +173,8 @@ public class RecipeFoodViewHolder extends RecyclerView.ViewHolder {
     }
 
     public void setSelectedFood(int position) {
-        foodSpinner.setSelection(position);
+        AutoCompleteTextView textView = (AutoCompleteTextView) foodTextField.getEditText();
+        textView.setText(textView.getAdapter().getItem(position).toString());
     }
 
     public void setCallback(RecipeFoodDataChanged callback) {

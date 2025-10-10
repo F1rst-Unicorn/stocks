@@ -36,7 +36,7 @@ public final class EntityStringDisplayWrapper<T> {
         this.stringDisplayer = stringDisplayer;
     }
 
-    T delegate() {
+    public T delegate() {
         return delegate;
     }
 

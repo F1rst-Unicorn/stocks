@@ -21,6 +21,12 @@
 
 package de.njsm.stocks.client.databind;
 
+import de.njsm.stocks.client.business.entities.Food;
+import de.njsm.stocks.client.business.entities.Id;
+import de.njsm.stocks.client.business.entities.ScaledUnit;
+
 public interface RecipeFoodDataChanged {
-    void update(int position, int amount, int foodPosition, int unitPosition);
+    void onAmountChanged(int position, int amount);
+    void onFoodChanged(int position, Id<Food> food);
+    void onUnitChanged(int position, Id<ScaledUnit> scaledUnit, int itemPosition);
 }

@@ -24,6 +24,7 @@ package de.njsm.stocks.client.fragment.recipeedit;
 import android.os.Bundle;
 import androidx.annotation.IdRes;
 import androidx.fragment.app.testing.FragmentScenario;
+import androidx.test.espresso.matcher.RootMatchers;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.platform.app.InstrumentationRegistry;
 import com.google.android.material.textfield.TextInputEditText;
@@ -225,8 +226,10 @@ public class RecipeEditFragmentTest {
                 withClassName(is(TextInputEditText.class.getName()))))
                 .perform(replaceText("3"));
         onView(recyclerView(list)
-                .atPositionOnView(position, R.id.item_recipe_food_food)).perform(click());
-        onData(anything()).atPosition(1).perform(scrollTo(), click());
+                .atPositionOnView(position, R.id.item_recipe_food_food_text)).perform(
+                scrollTo(),
+                typeText("Fl"));
+        onView(withText("Flour")).inRoot(RootMatchers.isPlatformPopup()).perform(click());
         onView(recyclerView(list)
                 .atPositionOnView(position, R.id.item_recipe_food_unit)).perform(click());
         onData(anything()).atPosition(1).perform(scrollTo(), click());

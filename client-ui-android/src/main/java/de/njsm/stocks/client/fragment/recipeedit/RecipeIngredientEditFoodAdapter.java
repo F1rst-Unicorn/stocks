@@ -22,13 +22,17 @@
 package de.njsm.stocks.client.fragment.recipeedit;
 
 import androidx.annotation.NonNull;
+import de.njsm.stocks.client.business.ListSearcher;
 import de.njsm.stocks.client.business.entities.*;
 import de.njsm.stocks.client.databind.RecipeFoodAdapter;
+import de.njsm.stocks.client.databind.RecipeFoodDataChanged;
 import de.njsm.stocks.client.databind.RecipeFoodViewHolder;
 
 import java.util.List;
 
-public class RecipeIngredientEditFoodAdapter extends RecipeFoodAdapter<RecipeIngredientEditFormData> {
+public class RecipeIngredientEditFoodAdapter
+        extends RecipeFoodAdapter<RecipeIngredientEditFormData>
+        implements RecipeFoodDataChanged {
 
     public RecipeIngredientEditFoodAdapter(RecipeEditFormData data) {
         super(data.availableFood(), data.availableUnits());
@@ -56,22 +60,54 @@ public class RecipeIngredientEditFoodAdapter extends RecipeFoodAdapter<RecipeIng
         holder.setAmount(data.amount());
         holder.setSelectedFood(data.ingredientListItemPosition());
         holder.setSelectedUnit(data.unitListItemPosition());
-        holder.setCallback(this::onItemEdit);
+        holder.setCallback(this);
     }
 
-    public void onItemEdit(int position, int amount, int foodPosition, int unitPosition) {
+    @Override
+    public void onAmountChanged(int position, int amount) {
         RecipeIngredientEditFormData current = list.get(position);
-        Id<Food> food = foodForSelection.get(foodPosition);
-        Id<ScaledUnit> unit = unitsForSelection.get(unitPosition);
-        if (amount != current.amount() || food.id() != current.ingredient().id() ||
-                unit.id() != current.unit().id()) {
+        if (amount != current.amount()) {
             RecipeIngredientEditFormData newData = RecipeIngredientEditFormData.create(
                     current.id(),
                     amount,
-                    unitPosition,
-                    unit,
-                    foodPosition,
+                    current.unitListItemPosition(),
+                    current.unit(),
+                    current.ingredientListItemPosition(),
+                    current.ingredient());
+            list.set(position, newData);
+        }
+    }
+
+    @Override
+    public void onFoodChanged(int position, Id<Food> food) {
+        RecipeIngredientEditFormData current = list.get(position);
+        if (food.id() != current.ingredient().id()) {
+            int newFoodPosition = ListSearcher.findFirst(
+                    foodForSelection,
+                    food
+            );
+            RecipeIngredientEditFormData newData = RecipeIngredientEditFormData.create(
+                    current.id(),
+                    current.amount(),
+                    current.unitListItemPosition(),
+                    current.unit(),
+                    newFoodPosition,
                     food);
+            list.set(position, newData);
+        }
+    }
+
+    @Override
+    public void onUnitChanged(int position, Id<ScaledUnit> scaledUnit, int itemPosition) {
+        RecipeIngredientEditFormData current = list.get(position);
+        if (scaledUnit.id() != current.unit().id()) {
+            RecipeIngredientEditFormData newData = RecipeIngredientEditFormData.create(
+                    current.id(),
+                    current.amount(),
+                    itemPosition,
+                    scaledUnit,
+                    current.ingredientListItemPosition(),
+                    current.ingredient());
             list.set(position, newData);
         }
     }

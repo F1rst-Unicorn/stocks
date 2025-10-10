@@ -24,6 +24,7 @@ package de.njsm.stocks.client.fragment.recipeadd;
 import android.os.Bundle;
 import androidx.annotation.IdRes;
 import androidx.fragment.app.testing.FragmentScenario;
+import androidx.test.espresso.matcher.RootMatchers;
 import androidx.test.espresso.matcher.ViewMatchers;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.platform.app.InstrumentationRegistry;
@@ -56,7 +57,6 @@ import static org.hamcrest.CoreMatchers.allOf;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.Matchers.anything;
 import static org.mockito.Mockito.*;
-import static org.mockito.Mockito.verify;
 
 @RunWith(AndroidJUnit4.class)
 public class RecipeAddFragmentTest {
@@ -182,14 +182,16 @@ public class RecipeAddFragmentTest {
     }
 
     private static void addFood(int addButton, int list) {
-        onView(withId(addButton)).perform(click());
+        onView(withId(addButton)).perform(scrollTo(), click());
         onView(allOf(isDescendantOfA(recyclerView(list)
                 .atPositionOnView(0, R.id.item_recipe_food_amount)),
                 withClassName(is(TextInputEditText.class.getName()))))
                 .perform(replaceText("3"));
         onView(recyclerView(list)
-                .atPositionOnView(0, R.id.item_recipe_food_food)).perform(click());
-        onData(anything()).atPosition(1).perform(click());
+                .atPositionOnView(0, R.id.item_recipe_food_food_text)).perform(
+                        scrollTo(),
+                        typeText("Fl"));
+        onView(withText("Flour")).inRoot(RootMatchers.isPlatformPopup()).perform(click());
         onView(recyclerView(list)
                 .atPositionOnView(0, R.id.item_recipe_food_unit)).perform(click());
         onData(anything()).atPosition(1).perform(click());
