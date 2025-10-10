@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+### Added
+
+* Recipe food can now be selected using an autocompleting text field
+  ([#99](https://veenj.de/git/veenj/stocks/issues/99)).
+
 ## [4.9.0.5]
 
 ### Fixed
