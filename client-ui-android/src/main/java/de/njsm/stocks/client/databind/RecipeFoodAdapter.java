@@ -61,8 +61,10 @@ public abstract class RecipeFoodAdapter<T> extends RecyclerView.Adapter<RecipeFo
     }
 
     public void delete(int listItemPosition) {
-        list.remove(listItemPosition);
-        notifyItemRemoved(listItemPosition);
+        if (0 <= listItemPosition && listItemPosition < list.size()) {
+            list.remove(listItemPosition);
+            notifyItemRemoved(listItemPosition);
+        }
     }
 
     public List<T> get() {
