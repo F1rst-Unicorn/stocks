@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## [4.10.0.0]
+
 ### Added
 
 * Recipe food can now be selected using an autocompleting text field
