@@ -24,6 +24,7 @@ package de.njsm.stocks.client.business;
 import de.njsm.stocks.client.business.entities.*;
 import org.junit.jupiter.api.Test;
 
+import static de.njsm.stocks.client.business.RecipeFoodEditMatcher.FRESHLY_CREATED_ENTITY_ID;
 import static de.njsm.stocks.client.business.entities.IdImpl.create;
 import static java.util.List.of;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -39,7 +40,7 @@ class RecipeIngredientEditMatcherTest {
     @Test
     void singleIngredientIsAdded() {
         RecipeIngredientEditFormData formItem = RecipeIngredientEditFormData.create(
-                1, 2, 3, create(4), 5, create(6)
+                FRESHLY_CREATED_ENTITY_ID, 2, 3, create(4), 5, create(6)
         );
 
         uut = new RecipeIngredientEditMatcher(of(), of(formItem),
@@ -128,6 +129,9 @@ class RecipeIngredientEditMatcherTest {
     }
 
     private Versionable<RecipeIngredient> dummyVersion(Id<RecipeIngredient> v) {
+        if (v.id() == FRESHLY_CREATED_ENTITY_ID) {
+            throw new IllegalArgumentException("id of fresh ingredient");
+        }
         return dummyVersion;
     }
 }

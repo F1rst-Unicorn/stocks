@@ -25,7 +25,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-abstract class RecipeFoodEditMatcher<Present, ToAdd, ToDelete, ToEdit, ToEditNetwork> {
+public abstract class RecipeFoodEditMatcher<Present, ToAdd, ToDelete, ToEdit, ToEditNetwork> {
+
+    public static final int FRESHLY_CREATED_ENTITY_ID = -1;
 
     private final List<Present> present;
 

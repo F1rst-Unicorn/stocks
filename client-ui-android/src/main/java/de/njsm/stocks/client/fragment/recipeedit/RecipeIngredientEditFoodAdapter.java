@@ -30,6 +30,8 @@ import de.njsm.stocks.client.databind.RecipeFoodViewHolder;
 
 import java.util.List;
 
+import static de.njsm.stocks.client.business.RecipeFoodEditMatcher.FRESHLY_CREATED_ENTITY_ID;
+
 public class RecipeIngredientEditFoodAdapter
         extends RecipeFoodAdapter<RecipeIngredientEditFormData>
         implements RecipeFoodDataChanged {
@@ -45,7 +47,7 @@ public class RecipeIngredientEditFoodAdapter
     }
 
     public void add() {
-        list.add(RecipeIngredientEditFormData.create(-1,
+        list.add(RecipeIngredientEditFormData.create(FRESHLY_CREATED_ENTITY_ID,
                 1,
                 0,
                 unitsForSelection.get(0),
