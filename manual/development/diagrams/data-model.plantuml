@@ -142,6 +142,38 @@ package Recipes <<Frame>> {
     }
 }
 
+package Stores <<Frame>> {
+    class grocery_chain {
+        {static} id: int
+        version: int
+        valid_time_start: OffsetDateTime
+        valid_time_end: OffsetDateTime
+        transaction_time_start: OffsetDateTime
+        transaction_time_end: OffsetDateTime
+        name: String
+    }
+    class grocery_store {
+        {static} id: int
+        version: int
+        valid_time_start: OffsetDateTime
+        valid_time_end: OffsetDateTime
+        transaction_time_start: OffsetDateTime
+        transaction_time_end: OffsetDateTime
+        name: String
+    }
+    class price  {
+        {static} id: int
+        version: int
+        valid_time_start: OffsetDateTime
+        valid_time_end: OffsetDateTime
+        transaction_time_start: OffsetDateTime
+        transaction_time_end: OffsetDateTime
+        purchase_date: OffsetDateTime
+        price: BigDecimal
+        scale: BigDecimal
+    }
+}
+
 class updates {
     {static} id: int
     table_name: String
@@ -174,6 +206,9 @@ recipe_ingredient --> user_device : initiates
 recipe_product --> user_device : initiates
 unit --> user_device : initiates
 scaled_unit --> user_device : initiates
+grocery_store --> user_device : initiates
+grocery_chain --> user_device : initiates
+price --> user_device : initiates
 
 user_device -[dashed]-> user : belongs_to
 
@@ -199,5 +234,10 @@ recipe_product --> scaled_unit : unit
 scaled_unit --> unit : unit
 
 ticket -[dashed]-> user_device : belongs_device
+
+grocery_store -[dashed]-> grocery_chain : grocery_chain
+price -[dashed]-> grocery_store : grocery_store
+price --> food : food
+price --> unit : scaled_unit
 
 @enduml

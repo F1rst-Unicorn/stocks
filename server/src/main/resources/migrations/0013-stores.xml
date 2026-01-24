@@ -1,0 +1,473 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    stocks is client-server program to manage a household's food stock
+    Copyright (C) 2019  The stocks developers
+
+    This file is part of the stocks program suite.
+
+    stocks is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    stocks is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see https://www.gnu.org/licenses/.
+-->
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd"
+        context="production">
+
+    <changeSet id="1" author="admin">
+        <sql endDelimiter=";;">
+            create table grocery_chain (
+                id serial not null,
+                version int not null default 0,
+                valid_time_start timestamp(6) with time zone not null default current_timestamp,
+                valid_time_end timestamp(6) with time zone not null default 'infinity',
+                transaction_time_start timestamp(6) with time zone not null default current_timestamp,
+                transaction_time_end timestamp (6) with time zone not null default 'infinity',
+                name text not null,
+                initiates int not null
+            );;
+
+            create index grocery_chain_pkey on grocery_chain (id);;
+            create index grocery_chain_transaction_time_start on grocery_chain (transaction_time_start);;
+            create index grocery_chain_transaction_time_end on grocery_chain (transaction_time_end);;
+
+            create index grocery_chain_current
+            on grocery_chain (id asc, valid_time_start asc, valid_time_end asc)
+            where transaction_time_end = 'infinity';;
+
+            create constraint trigger "grocery_chain_bitemporal_primary_key"
+                after insert or update of id, valid_time_start, valid_time_end, transaction_time_start, transaction_time_end or delete
+                on grocery_chain
+                deferrable initially deferred
+                for each row
+            execute function bitemporal_primary_key();;
+
+            create constraint trigger "grocery_chain_contiguous_primary_key"
+                after insert or update of id, valid_time_start, valid_time_end, transaction_time_start, transaction_time_end or delete
+                on grocery_chain
+                deferrable initially deferred
+                for each row
+            execute function contiguous_primary_key();;
+        </sql>
+        <rollback>
+            <sql endDelimiter=";;">
+                drop table grocery_chain;;
+            </sql>
+        </rollback>
+    </changeSet>
+    <changeSet id="2" author="admin">
+        <sql endDelimiter=";;">
+            create table grocery_store (
+                id serial not null,
+                version int not null default 0,
+                valid_time_start timestamp(6) with time zone not null default current_timestamp,
+                valid_time_end timestamp(6) with time zone not null default 'infinity',
+                transaction_time_start timestamp(6) with time zone not null default current_timestamp,
+                transaction_time_end timestamp (6) with time zone not null default 'infinity',
+                name text not null,
+                grocery_chain int not null,
+                initiates int not null
+            );;
+
+            create index grocery_store_pkey on grocery_store (id);;
+            create index grocery_store_transaction_time_start on grocery_store (transaction_time_start);;
+            create index grocery_store_transaction_time_end on grocery_store (transaction_time_end);;
+
+            create index grocery_store_current
+            on grocery_store (id asc, valid_time_start asc, valid_time_end asc)
+            where transaction_time_end = 'infinity';;
+
+            create constraint trigger "grocery_store_bitemporal_primary_key"
+                after insert or update of id, valid_time_start, valid_time_end, transaction_time_start, transaction_time_end or delete
+                                on grocery_store
+                                    deferrable initially deferred
+                                    for each row
+                                    execute function bitemporal_primary_key();;
+
+            create constraint trigger "grocery_store_contiguous_primary_key"
+                after insert or update of id, valid_time_start, valid_time_end, transaction_time_start, transaction_time_end or delete
+                                on grocery_store
+                                    deferrable initially deferred
+                                    for each row
+                                    execute function contiguous_primary_key();;
+        </sql>
+        <rollback>
+            <sql endDelimiter=";;">
+                drop table grocery_store;;
+            </sql>
+        </rollback>
+    </changeSet>
+    <changeSet id="3" author="admin">
+        <sql endDelimiter=";;">
+            create table price (
+                id serial not null,
+                version int not null default 0,
+                valid_time_start timestamp(6) with time zone not null default current_timestamp,
+                valid_time_end timestamp(6) with time zone not null default 'infinity',
+                transaction_time_start timestamp(6) with time zone not null default current_timestamp,
+                transaction_time_end timestamp (6) with time zone not null default 'infinity',
+                purchase_date timestamp(6) with time zone not null default current_timestamp,
+                amount numeric not null,
+                scale numeric not null,
+                grocery_store int not null,
+                food int not null,
+                scaled_unit int not null,
+                initiates int not null
+            );;
+
+            create index price_pkey on price (id);;
+            create index price_transaction_time_start on price (transaction_time_start);;
+            create index price_transaction_time_end on price (transaction_time_end);;
+
+            create index price_current
+            on price (id asc, valid_time_start asc, valid_time_end asc)
+            where transaction_time_end = 'infinity';;
+
+            create constraint trigger "price_bitemporal_primary_key"
+                after insert or update of id, valid_time_start, valid_time_end, transaction_time_start, transaction_time_end or delete
+                on price
+                deferrable initially deferred
+                for each row
+            execute function bitemporal_primary_key();;
+
+            create constraint trigger "price_contiguous_primary_key"
+                after insert or update of id, valid_time_start, valid_time_end, transaction_time_start, transaction_time_end or delete
+                on price
+                deferrable initially deferred
+                for each row
+            execute function contiguous_primary_key();;
+        </sql>
+        <rollback>
+            <sql endDelimiter=";;">
+                drop table price;;
+            </sql>
+        </rollback>
+    </changeSet>
+    <changeSet id="4" author="admin">
+        <sql>
+            create constraint trigger grocery_store_grocery_chain_ref_grocery_chain
+                after insert or update of id, valid_time_start, valid_time_end, transaction_time_start, transaction_time_end
+                on grocery_store
+                deferrable initially deferred
+                for each row
+            execute function bitemporal_foreign_key('grocery_store', 'grocery_chain', 'grocery_chain');
+
+            create constraint trigger grocery_store_grocery_chain_ref_grocery_chain
+                after update of id, valid_time_start, valid_time_end, transaction_time_start, transaction_time_end or delete
+                on grocery_chain
+                deferrable initially deferred
+                for each row
+            execute function bitemporal_foreign_key('grocery_store', 'grocery_chain', 'grocery_chain');
+        </sql>
+        <rollback>
+            drop trigger grocery_store_grocery_chain_ref_grocery_chain on grocery_store;
+            drop trigger grocery_store_grocery_chain_ref_grocery_chain on grocery_chain;
+        </rollback>
+    </changeSet>
+    <changeSet id="5" author="admin">
+        <sql>
+            create constraint trigger price_grocery_store_ref_grocery_store
+                after insert or update of id, valid_time_start, valid_time_end, transaction_time_start, transaction_time_end
+                on grocery_store
+                deferrable initially deferred
+                for each row
+            execute function bitemporal_foreign_key('price', 'grocery_store', 'grocery_store');
+
+            create constraint trigger price_grocery_store_ref_grocery_store
+                after update of id, valid_time_start, valid_time_end, transaction_time_start, transaction_time_end or delete
+                on price
+                deferrable initially deferred
+                for each row
+            execute function bitemporal_foreign_key('price', 'grocery_store', 'grocery_store');
+        </sql>
+        <rollback>
+            drop trigger price_grocery_store_ref_grocery_store on grocery_store;
+            drop trigger price_grocery_store_ref_grocery_store on price;
+        </rollback>
+    </changeSet>
+    <changeSet id="6" author="admin">
+        <sql>
+            create constraint trigger price_food_ref_food
+                after insert or update of id, valid_time_start, valid_time_end, transaction_time_start, transaction_time_end
+                on price
+                deferrable initially deferred
+                for each row
+            execute function bitemporal_foreign_key('price', 'food', 'food');
+
+            create constraint trigger price_food_ref_food
+                after update of id, valid_time_start, valid_time_end, transaction_time_start, transaction_time_end or delete
+                on food
+                deferrable initially deferred
+                for each row
+            execute function bitemporal_foreign_key('price', 'food', 'food');
+        </sql>
+        <rollback>
+            drop trigger price_food_ref_food on price;
+            drop trigger price_food_ref_food on food;
+        </rollback>
+    </changeSet>
+    <changeSet id="7" author="admin">
+        <sql>
+            create constraint trigger price_scaled_unit_ref_scaled_unit
+                after insert or update of id, valid_time_start, valid_time_end, transaction_time_start, transaction_time_end
+                on price
+                deferrable initially deferred
+                for each row
+            execute function bitemporal_foreign_key('price', 'scaled_unit', 'scaled_unit');
+
+            create constraint trigger price_scaled_unit_ref_scaled_unit
+                after update of id, valid_time_start, valid_time_end, transaction_time_start, transaction_time_end or delete
+                on scaled_unit
+                deferrable initially deferred
+                for each row
+            execute function bitemporal_foreign_key('price', 'scaled_unit', 'scaled_unit');
+        </sql>
+        <rollback>
+            drop trigger price_scaled_unit_ref_scaled_unit on price;
+            drop trigger price_scaled_unit_ref_scaled_unit on food;
+        </rollback>
+    </changeSet>
+    <changeSet id="8" author="admin">
+        <sql>
+            create constraint trigger grocery_chain_initiates_ref_user_device
+                after insert or update of id, valid_time_start, valid_time_end, transaction_time_start, transaction_time_end
+                on grocery_chain
+                deferrable initially deferred
+                for each row
+            execute function bitemporal_initiates_foreign_key('grocery_chain');
+
+            create constraint trigger grocery_chain_initiates_ref_user_device
+                after update of id, valid_time_start, valid_time_end, transaction_time_start, transaction_time_end or delete
+                on user_device
+                deferrable initially deferred
+                for each row
+            execute function bitemporal_initiates_foreign_key('grocery_chain');
+        </sql>
+        <rollback>
+            drop trigger grocery_chain_initiates_ref_user_device on grocery_chain;
+            drop trigger grocery_chain_initiates_ref_user_device on user_device;
+        </rollback>
+    </changeSet>
+    <changeSet id="9" author="admin">
+        <sql>
+            create constraint trigger grocery_store_initiates_ref_user_device
+                after insert or update of id, valid_time_start, valid_time_end, transaction_time_start, transaction_time_end
+                on grocery_store
+                deferrable initially deferred
+                for each row
+            execute function bitemporal_initiates_foreign_key('grocery_store');
+
+            create constraint trigger grocery_store_initiates_ref_user_device
+                after update of id, valid_time_start, valid_time_end, transaction_time_start, transaction_time_end or delete
+                on user_device
+                deferrable initially deferred
+                for each row
+            execute function bitemporal_initiates_foreign_key('grocery_store');
+        </sql>
+        <rollback>
+            drop trigger grocery_store_initiates_ref_user_device on grocery_store;
+            drop trigger grocery_store_initiates_ref_user_device on user_device;
+        </rollback>
+    </changeSet>
+    <changeSet id="10" author="admin">
+        <sql>
+            create constraint trigger price_initiates_ref_user_device
+                after insert or update of id, valid_time_start, valid_time_end, transaction_time_start, transaction_time_end
+                on price
+                deferrable initially deferred
+                for each row
+            execute function bitemporal_initiates_foreign_key('price');
+
+            create constraint trigger price_initiates_ref_user_device
+                after update of id, valid_time_start, valid_time_end, transaction_time_start, transaction_time_end or delete
+                on user_device
+                deferrable initially deferred
+                for each row
+            execute function bitemporal_initiates_foreign_key('price');
+        </sql>
+        <rollback>
+            drop trigger price_initiates_ref_user_device on price;
+            drop trigger price_initiates_ref_user_device on user_device;
+        </rollback>
+    </changeSet>
+    <changeSet id="11" author="admin">
+        <sql>
+            create or replace view updates (id, table_name, last_update) as
+            select 1,
+                   'Location',
+                   coalesce(max(transaction_time_start), current_timestamp)
+            from location
+            union
+            select 2,
+                   'User',
+                   coalesce(max(transaction_time_start), current_timestamp)
+            from "user"
+            union
+            select 3,
+                   'User_device',
+                   coalesce(max(transaction_time_start), current_timestamp)
+            from user_device
+            union
+            select 4,
+                   'Food',
+                   coalesce(max(transaction_time_start), current_timestamp)
+            from food
+            union
+            select 5,
+                   'Food_item',
+                   coalesce(max(transaction_time_start), current_timestamp)
+            from food_item
+            union
+            select 6,
+                   'EAN_number',
+                   coalesce(max(transaction_time_start), current_timestamp)
+            from ean_number
+            union
+            select 7,
+                   'recipe_product',
+                   coalesce(max(transaction_time_start), current_timestamp)
+            from recipe_product
+            union
+            select 8,
+                   'recipe_ingredient',
+                   coalesce(max(transaction_time_start), current_timestamp)
+            from recipe_ingredient
+            union
+            select 9,
+                   'scaled_unit',
+                   coalesce(max(transaction_time_start), current_timestamp)
+            from scaled_unit
+            union
+            select 10,
+                   'recipe',
+                   coalesce(max(transaction_time_start), current_timestamp)
+            from recipe
+            union
+            select 11,
+                   'unit',
+                   coalesce(max(transaction_time_start), current_timestamp)
+            from unit
+            union
+            select 12,
+                   'grocery_chain',
+                   coalesce(max(transaction_time_start), current_timestamp)
+            from unit
+            union
+            select 13,
+                   'grocery_store',
+                   coalesce(max(transaction_time_start), current_timestamp)
+            from unit
+            union
+            select 14,
+                   'price',
+                   coalesce(max(transaction_time_start), current_timestamp)
+            from unit;
+        </sql>
+        <rollback>
+            create or replace view updates (id, table_name, last_update) as
+            select 1,
+                   'Location',
+                   coalesce(max(transaction_time_start), current_timestamp)
+            from location
+            union
+            select 2,
+                   'User',
+                   coalesce(max(transaction_time_start), current_timestamp)
+            from "user"
+            union
+            select 3,
+                   'User_device',
+                   coalesce(max(transaction_time_start), current_timestamp)
+            from user_device
+            union
+            select 4,
+                   'Food',
+                   coalesce(max(transaction_time_start), current_timestamp)
+            from food
+            union
+            select 5,
+                   'Food_item',
+                   coalesce(max(transaction_time_start), current_timestamp)
+            from food_item
+            union
+            select 6,
+                   'EAN_number',
+                   coalesce(max(transaction_time_start), current_timestamp)
+            from ean_number
+            union
+            select 7,
+                   'recipe_product',
+                   coalesce(max(transaction_time_start), current_timestamp)
+            from recipe_product
+            union
+            select 8,
+                   'recipe_ingredient',
+                   coalesce(max(transaction_time_start), current_timestamp)
+            from recipe_ingredient
+            union
+            select 9,
+                   'scaled_unit',
+                   coalesce(max(transaction_time_start), current_timestamp)
+            from scaled_unit
+            union
+            select 10,
+                   'recipe',
+                   coalesce(max(transaction_time_start), current_timestamp)
+            from recipe
+            union
+            select 11,
+                   'unit',
+                   coalesce(max(transaction_time_start), current_timestamp)
+            from unit;
+        </rollback>
+    </changeSet>
+    <changeSet id="12" author="admin">
+        <sql>
+            create view current_grocery_chain as
+            select *
+            from grocery_chain
+            where valid_time_start &lt;= current_timestamp
+            and current_timestamp &lt; valid_time_end
+            and transaction_time_end = 'infinity';
+        </sql>
+        <rollback>
+            drop view current_grocery_chain;
+        </rollback>
+    </changeSet>
+    <changeSet id="13" author="admin">
+        <sql>
+            create view current_grocery_store as
+            select *
+            from grocery_store
+            where valid_time_start &lt;= current_timestamp
+            and current_timestamp &lt; valid_time_end
+            and transaction_time_end = 'infinity';
+        </sql>
+        <rollback>
+            drop view current_grocery_store;
+        </rollback>
+    </changeSet>
+    <changeSet id="14" author="admin">
+        <sql>
+            create view current_price as
+            select *
+            from price
+            where valid_time_start &lt;= current_timestamp
+            and current_timestamp &lt; valid_time_end
+            and transaction_time_end = 'infinity';
+        </sql>
+        <rollback>
+            drop view current_price;
+        </rollback>
+    </changeSet>
+</databaseChangeLog>
