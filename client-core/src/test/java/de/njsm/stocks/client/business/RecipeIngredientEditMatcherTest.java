@@ -128,6 +128,24 @@ class RecipeIngredientEditMatcherTest {
         assertThat(uut.getToAdd(), is(empty()));
     }
 
+    @Test
+    void removingExistingItemAndAddingNewOneIsMatched() {
+        RecipeIngredientEditData presentItem = RecipeIngredientEditData.create(
+                1, 2, create(3), create(4)
+        );
+        RecipeIngredientEditFormData newItem = RecipeIngredientEditFormData.create(
+                FRESHLY_CREATED_ENTITY_ID, 2, 3, create(4), 5, create(6)
+        );
+
+        uut = new RecipeIngredientEditMatcher(of(presentItem), of(newItem),
+                this::dummyVersion);
+
+        assertThat(uut.getToAdd(), is(empty()));
+        assertThat(uut.getToEdit(), is(of(RecipeIngredientEditNetworkData.create(
+                presentItem.id(), dummyVersion.version(), newItem.amount(), newItem.unit(), newItem.ingredient()))));
+        assertThat(uut.getToDelete(), is(empty()));
+    }
+
     private Versionable<RecipeIngredient> dummyVersion(Id<RecipeIngredient> v) {
         if (v.id() == FRESHLY_CREATED_ENTITY_ID) {
             throw new IllegalArgumentException("id of fresh ingredient");

@@ -54,7 +54,7 @@ class RecipeProductEditMatcher extends RecipeFoodEditMatcher<
     RecipeProductEditNetworkData createToEdit(RecipeProductEditData presentItem, RecipeProductEditFormData formItem) {
         return RecipeProductEditNetworkData.create(
                 presentItem.id(),
-                versionProvider.apply(formItem).version(),
+                versionProvider.apply(presentItem).version(),
                 formItem.amount(),
                 formItem.unit(),
                 formItem.product()
