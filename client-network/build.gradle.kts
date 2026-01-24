@@ -24,9 +24,14 @@ plugins {
 dependencies {
     implementation(libs.inject)
     implementation(libs.bundles.retrofit)
-    implementation(libs.jackson.datatype.jdk8)
+    implementation(libs.jackson.android.core)
+    implementation(libs.jackson.android.annotations)
+    implementation(libs.jackson.android.databind)
+    implementation(libs.jackson.android.datatype.jdk8)
     implementation(project(":client-core"))
-    api(project(":common"))
+    api(project(":common")) {
+        exclude("com.fasterxml.jackson.core")
+    }
     implementation(libs.slf4j)
     implementation(libs.rxjava)
     implementation(libs.dagger)

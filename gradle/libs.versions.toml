@@ -9,6 +9,7 @@ dagger = "2.56.2"
 functionaljava = "4.8.1"
 hamcrest = "2.2"
 jackson = "2.19.2"
+jackson-android = "2.13.1"
 jersey = "3.1.11"
 jooq = "3.19.6"
 kotlin-jvm = "2.1.21"
@@ -70,6 +71,10 @@ hamcrest-core = { module = "org.hamcrest:hamcrest-core", version.ref = "hamcrest
 inject = "jakarta.inject:jakarta.inject-api:2.0.1"
 jaxb-api = "javax.xml.bind:jaxb-api:2.3.1"
 jakarta-xml-api = "jakarta.xml.bind:jakarta.xml.bind-api:4.0.1"
+jackson-android-annotations = { module = "com.fasterxml.jackson.core:jackson-annotations", version.ref = "jackson-android" }
+jackson-android-core = { module = "com.fasterxml.jackson.core:jackson-core", version.ref = "jackson-android" }
+jackson-android-databind = { module = "com.fasterxml.jackson.core:jackson-databind", version.ref = "jackson-android" }
+jackson-android-datatype-jdk8 = { module = "com.fasterxml.jackson.datatype:jackson-datatype-jdk8", version.ref = "jackson-android" }
 jackson-annotations = { module = "com.fasterxml.jackson.core:jackson-annotations", version.ref = "jackson" }
 jackson-core = { module = "com.fasterxml.jackson.core:jackson-core", version.ref = "jackson" }
 jackson-databind = { module = "com.fasterxml.jackson.core:jackson-databind", version.ref = "jackson" }
