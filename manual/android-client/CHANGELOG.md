@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+## [4.10.0.1]
+
+### Fixed
+
+* A bug preventing some recipe edits to be saved was fixed
+  ([#111](https://veenj.de/git/veenj/stocks/issues/111)).
+
 ## [4.10.0.0]
 
 ### Added
