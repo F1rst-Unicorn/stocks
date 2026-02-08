@@ -98,6 +98,41 @@ class HistoryCleanerConfig {
     }
 
     @Bean
+    UnitHandler historyCleanerUnitHandler(
+            @Qualifier("historyCleanerConnectionFactory") ConnectionFactory c
+    ) {
+        return new UnitHandler(c);
+    }
+
+    @Bean
+    ScaledUnitHandler historyCleanerScaledUnitHandler(
+            @Qualifier("historyCleanerConnectionFactory") ConnectionFactory c
+    ) {
+        return new ScaledUnitHandler(c);
+    }
+
+    @Bean
+    RecipeIngredientHandler historyCleanerRecipeIngredientHandler(
+            @Qualifier("historyCleanerConnectionFactory") ConnectionFactory c
+    ) {
+        return new RecipeIngredientHandler(c);
+    }
+
+    @Bean
+    RecipeProductHandler historyCleanerRecipeProductHandlerHandler(
+            @Qualifier("historyCleanerConnectionFactory") ConnectionFactory c
+    ) {
+        return new RecipeProductHandler(c);
+    }
+
+    @Bean
+    RecipeHandler historyCleanerRecipeHandler(
+            @Qualifier("historyCleanerConnectionFactory") ConnectionFactory c
+    ) {
+        return new RecipeHandler(c);
+    }
+
+    @Bean
     Period maxHistory(
             @Value("${de.njsm.stocks.server.history-max-period}") String maxHistory
     ) {
@@ -119,6 +154,11 @@ class HistoryCleanerConfig {
             @Qualifier("historyCleanerLocationHandler") LocationHandler locationHandler,
             @Qualifier("historyCleanerEanNumberHandler") EanNumberHandler eanNumberHandler,
             @Qualifier("historyCleanerFoodHandler") FoodHandler foodHandler,
+            @Qualifier("historyCleanerUnitHandler") UnitHandler unitHandler,
+            @Qualifier("historyCleanerScaledUnitHandler") ScaledUnitHandler scaledUnitHandler,
+            @Qualifier("historyCleanerRecipeIngredientHandler") RecipeIngredientHandler recipeIngredientHandler,
+            @Qualifier("historyCleanerRecipeProductHandlerHandler") RecipeProductHandler recipeProductHandler,
+            @Qualifier("historyCleanerRecipeHandler") RecipeHandler recipeHandler,
             AuthenticationManager authenticationManager
     ) {
         return new HistoryCleaner(
@@ -130,7 +170,12 @@ class HistoryCleanerConfig {
                         foodHandler,
                         foodItemHandler,
                         locationHandler,
-                        eanNumberHandler
+                        eanNumberHandler,
+                        unitHandler,
+                        scaledUnitHandler,
+                        recipeIngredientHandler,
+                        recipeProductHandler,
+                        recipeHandler
                 ),
                 authenticationManager
         );

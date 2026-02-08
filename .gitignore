@@ -8,6 +8,7 @@ target
 build
 .gradle
 local.properties
+.kotlin
 
 # Archlinux packaging
 pkg
