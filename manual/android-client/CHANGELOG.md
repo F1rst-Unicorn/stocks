@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+### Fixed
+
+* If some action fails, the spinner of running actions doesn't keep spinning
+  ([#114](https://veenj.de/git/veenj/stocks/issues/114)).
+
 ## [4.10.0.1]
 
 ### Fixed

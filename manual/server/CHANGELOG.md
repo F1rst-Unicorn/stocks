@@ -2,6 +2,16 @@
 
 ## Unreleased
 
+### Changed
+
+* Move to Spring Boot
+  ([#112](https://veenj.de/git/veenj/stocks/issues/112)).
+
+### Fixed
+
+* Also recipe related tables are now cleaned by history cleanup
+  ([#113](https://veenj.de/git/veenj/stocks/issues/113)).
+
 ## [6.0.0.0]
 
 ### Changed
