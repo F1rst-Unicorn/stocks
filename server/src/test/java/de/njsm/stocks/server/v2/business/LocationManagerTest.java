@@ -31,11 +31,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
-import jakarta.ws.rs.container.AsyncResponse;
 import java.time.Instant;
-import java.util.stream.Stream;
+import java.util.List;
 
-import static de.njsm.stocks.server.v2.web.PrincipalFilterTest.TEST_USER;
+import static java.util.Collections.emptyList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
@@ -57,14 +56,10 @@ public class LocationManagerTest {
         foodHandler = Mockito.mock(FoodHandler.class);
 
         uut = new LocationManager(dbLayer, foodHandler, foodItemDbLayer);
-        uut.setPrincipals(TEST_USER);
     }
 
     @AfterEach
     public void tearDown() {
-        Mockito.verify(dbLayer).setPrincipals(TEST_USER);
-        Mockito.verify(foodItemDbLayer).setPrincipals(TEST_USER);
-        Mockito.verify(foodHandler).setPrincipals(TEST_USER);
         Mockito.verifyNoMoreInteractions(dbLayer);
         Mockito.verifyNoMoreInteractions(foodHandler);
         Mockito.verifyNoMoreInteractions(foodItemDbLayer);
@@ -87,17 +82,17 @@ public class LocationManagerTest {
 
     @Test
     public void gettingIsDelegated() {
-        AsyncResponse r = Mockito.mock(AsyncResponse.class);
-        Mockito.when(dbLayer.get(Instant.EPOCH, Instant.EPOCH)).thenReturn(Validation.success(Stream.empty()));
+        Mockito.when(dbLayer.get(Instant.EPOCH, Instant.EPOCH)).thenReturn(Validation.success(emptyList()));
         Mockito.when(dbLayer.commit()).thenReturn(StatusCode.SUCCESS);
         when(dbLayer.setReadOnly()).thenReturn(StatusCode.SUCCESS);
 
-        Validation<StatusCode, Stream<Location>> result = uut.get(r, Instant.EPOCH, Instant.EPOCH);
+        Validation<StatusCode, List<Location>> result = uut.get(Instant.EPOCH, Instant.EPOCH);
 
         assertTrue(result.isSuccess());
-        assertEquals(0, result.success().count());
+        assertEquals(0, result.success().size());
         Mockito.verify(dbLayer).get(Instant.EPOCH, Instant.EPOCH);
         Mockito.verify(dbLayer).setReadOnly();
+        Mockito.verify(dbLayer).commit();
     }
 
     @Test

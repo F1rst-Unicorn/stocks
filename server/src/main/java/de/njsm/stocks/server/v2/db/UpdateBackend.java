@@ -21,25 +21,29 @@
 
 package de.njsm.stocks.server.v2.db;
 
-import de.njsm.stocks.common.api.*;
+import de.njsm.stocks.common.api.StatusCode;
+import de.njsm.stocks.common.api.Update;
 import fj.data.Validation;
+import org.springframework.stereotype.Repository;
+import org.springframework.web.context.annotation.RequestScope;
 
-import java.util.stream.Stream;
+import java.util.List;
 
 import static de.njsm.stocks.server.v2.db.jooq.Tables.UPDATES;
 
+@Repository
+@RequestScope
 public class UpdateBackend extends FailSafeDatabaseHandler {
 
     public UpdateBackend(ConnectionFactory connectionFactory) {
         super(connectionFactory);
     }
 
-    public Validation<StatusCode, Stream<Update>> get() {
+    public Validation<StatusCode, List<Update>> get() {
         return runFunction(context -> {
-            Stream<Update> dbResult = context
+            List<Update> dbResult = context
                     .selectFrom(UPDATES)
-                    .stream()
-                    .map(record -> Update.builder()
+                    .fetch(record -> Update.builder()
                             .table(record.getTableName())
                             .lastUpdate(record.getLastUpdate().toInstant())
                             .build());

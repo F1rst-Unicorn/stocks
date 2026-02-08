@@ -30,11 +30,8 @@ import org.junit.jupiter.api.Test;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static de.njsm.stocks.server.v2.db.CrudDatabaseHandler.INFINITY;
-import static de.njsm.stocks.server.v2.web.PrincipalFilterTest.TEST_USER;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -47,15 +44,14 @@ public class RecipeHandlerTest extends DbTestCase implements CrudOperationsTest<
     @BeforeEach
     public void setup() {
         uut = new RecipeHandler(getConnectionFactory());
-        uut.setPrincipals(TEST_USER);
     }
 
     @Test
     public void bitemporalDataIsPresentWhenDesired() {
 
-        Validation<StatusCode, Stream<Recipe>> result = uut.get(Instant.EPOCH, INFINITY.toInstant());
+        Validation<StatusCode, List<Recipe>> result = uut.get(Instant.EPOCH, INFINITY.toInstant());
 
-        BitemporalRecipe sample = (BitemporalRecipe) result.success().findAny().get();
+        BitemporalRecipe sample = (BitemporalRecipe) result.success().stream().findAny().get();
         assertNotNull(sample.validTimeStart());
         assertNotNull(sample.validTimeEnd());
         assertNotNull(sample.transactionTimeStart());
@@ -64,11 +60,12 @@ public class RecipeHandlerTest extends DbTestCase implements CrudOperationsTest<
 
     @Test
     public void gettingBitemporalWorks() {
-        Validation<StatusCode, Stream<Recipe>> result = uut.get(Instant.EPOCH, INFINITY.toInstant());
+        Validation<StatusCode, List<Recipe>> result = uut.get(Instant.EPOCH, INFINITY.toInstant());
 
         assertTrue(result.isSuccess());
         List<BitemporalRecipe> data = result.success()
-                .map(v -> (BitemporalRecipe) v).collect(Collectors.toList());
+                .stream()
+                .map(v -> (BitemporalRecipe) v).toList();
 
         assertTrue(data.stream().anyMatch(l ->
                         l.id() == 1 &&

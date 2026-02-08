@@ -21,12 +21,12 @@
 
 package de.njsm.stocks.server.v2.db.jooq;
 
+import java.time.Duration;
+
 import org.jooq.Converter;
 import org.jooq.types.DayToSecond;
 import org.jooq.types.YearToMonth;
 import org.jooq.types.YearToSecond;
-
-import java.time.Duration;
 
 /**
  * Only supports `INTERVAL DAY HOUR MINUTE SECOND` type

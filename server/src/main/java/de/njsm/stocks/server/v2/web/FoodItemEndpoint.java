@@ -24,55 +24,49 @@ package de.njsm.stocks.server.v2.web;
 
 import de.njsm.stocks.common.api.*;
 import de.njsm.stocks.common.api.serialisers.InstantDeserialiser;
-import de.njsm.stocks.server.util.Principals;
 import de.njsm.stocks.server.v2.business.FoodItemManager;
 import de.njsm.stocks.server.v2.db.jooq.tables.records.FoodItemRecord;
 import fj.data.Validation;
-import jakarta.servlet.http.HttpServletRequest;
-
-import jakarta.inject.Inject;
-import jakarta.ws.rs.PUT;
-import jakarta.ws.rs.Path;
-import jakarta.ws.rs.Produces;
-import jakarta.ws.rs.QueryParam;
-import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.context.annotation.RequestScope;
+
 import java.io.IOException;
 import java.time.Instant;
 
-@Path("v2/fooditem")
+@RequestMapping("v2/fooditem")
+@RestController
+@RequestScope
 public class FoodItemEndpoint extends Endpoint implements
         Get<FoodItemRecord, FoodItem>,
         Delete<FoodItemForDeletion, FoodItem> {
 
     private final FoodItemManager manager;
 
-    @Inject
     public FoodItemEndpoint(FoodItemManager manager) {
         this.manager = manager;
     }
 
-    @PUT
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response putItem(@Context HttpServletRequest request,
-                            @QueryParam("eatByDate") String expirationDate,
-                            @QueryParam("storedIn") int storedIn,
-                            @QueryParam("ofType") int ofType,
-                            @QueryParam("unit") Integer unit) throws IOException {
+    @PutMapping(produces = MediaType.APPLICATION_JSON)
+    public Response putItem(@RequestParam("eatByDate") String expirationDate,
+                            @RequestParam("storedIn") int storedIn,
+                            @RequestParam("ofType") int ofType,
+                            @RequestParam("unit") Integer unit) throws IOException {
 
         if (isValid(storedIn, "storedIn") &&
                 isValid(ofType, "ofType") &&
                 isValidInstant(expirationDate, "eatByDate")) {
 
             Instant eatByDate = InstantDeserialiser.parseString(expirationDate);
-            Principals user = getPrincipals(request);
-            manager.setPrincipals(user);
             Validation<StatusCode, Integer> status = manager.add(FoodItemForInsertion.builder()
                     .eatByDate(eatByDate)
                     .ofType(ofType)
                     .storedIn(storedIn)
-                    .registers(user.getDid())
-                    .buys(user.getUid())
+                    .registers(getPrincipals().getDid())
+                    .buys(getPrincipals().getUid())
                     .unit(unit)
                     .build());
             return new DataResponse<>(status);
@@ -82,23 +76,18 @@ public class FoodItemEndpoint extends Endpoint implements
         }
     }
 
-    @PUT
-    @Path("edit")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response editItem(@Context HttpServletRequest request,
-                             @QueryParam("id") int id,
-                             @QueryParam("version") int version,
-                             @QueryParam("eatByDate") String expirationDate,
-                             @QueryParam("storedIn") int storedIn,
-                             @QueryParam("unit") Integer unit) throws IOException {
+    @PutMapping(path = "edit", produces = MediaType.APPLICATION_JSON)
+    public Response editItem(@RequestParam("id") int id,
+                             @RequestParam("version") int version,
+                             @RequestParam("eatByDate") String expirationDate,
+                             @RequestParam("storedIn") int storedIn,
+                             @RequestParam("unit") Integer unit) throws IOException {
         if (isValid(id, "id") &&
                 isValidVersion(version, "version") &&
                 isValidInstant(expirationDate, "eatByDate") &&
                 isValid(storedIn, "storedIn")) {
 
             Instant eatByDate = InstantDeserialiser.parseString(expirationDate);
-            Principals user = getPrincipals(request);
-            manager.setPrincipals(user);
             StatusCode result = manager.edit(FoodItemForEditing.builder()
                     .id(id)
                     .version(version)

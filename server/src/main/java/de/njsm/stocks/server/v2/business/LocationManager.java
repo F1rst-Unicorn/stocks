@@ -21,14 +21,22 @@
 
 package de.njsm.stocks.server.v2.business;
 
-
-import de.njsm.stocks.common.api.*;
-import de.njsm.stocks.server.util.Principals;
+import org.springframework.stereotype.Service;
+import org.springframework.web.context.annotation.RequestScope;
+import de.njsm.stocks.common.api.Location;
+import de.njsm.stocks.common.api.LocationForDeletion;
+import de.njsm.stocks.common.api.LocationForEditing;
+import de.njsm.stocks.common.api.LocationForInsertion;
+import de.njsm.stocks.common.api.LocationForRenaming;
+import de.njsm.stocks.common.api.LocationForSetDescription;
+import de.njsm.stocks.common.api.StatusCode;
 import de.njsm.stocks.server.v2.db.FoodHandler;
 import de.njsm.stocks.server.v2.db.FoodItemHandler;
 import de.njsm.stocks.server.v2.db.LocationHandler;
 import de.njsm.stocks.server.v2.db.jooq.tables.records.LocationRecord;
 
+@Service
+@RequestScope
 public class LocationManager extends BusinessObject<LocationRecord, Location> implements
         BusinessGettable<LocationRecord, Location>,
         BusinessAddable<LocationRecord, Location>,
@@ -41,7 +49,8 @@ public class LocationManager extends BusinessObject<LocationRecord, Location> im
     private final FoodHandler foodHandler;
 
     public LocationManager(LocationHandler locationHandler,
-                           FoodHandler foodHandler, FoodItemHandler foodItemHandler) {
+                           FoodHandler foodHandler,
+        FoodItemHandler foodItemHandler) {
         super(locationHandler);
         this.locationHandler = locationHandler;
         this.foodHandler = foodHandler;
@@ -72,13 +81,6 @@ public class LocationManager extends BusinessObject<LocationRecord, Location> im
             return foodHandler.unregisterDefaultLocation(l)
                     .bind(() -> locationHandler.delete(l));
         });
-    }
-
-    @Override
-    public void setPrincipals(Principals principals) {
-        super.setPrincipals(principals);
-        foodHandler.setPrincipals(principals);
-        foodItemHandler.setPrincipals(principals);
     }
 
     public StatusCode setDescription(LocationForSetDescription data) {

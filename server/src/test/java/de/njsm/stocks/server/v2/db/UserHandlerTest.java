@@ -28,10 +28,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.time.Instant;
-import java.util.stream.Stream;
+import java.util.List;
 
 import static de.njsm.stocks.server.v2.db.CrudDatabaseHandler.INFINITY;
-import static de.njsm.stocks.server.v2.web.PrincipalFilterTest.TEST_USER;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class UserHandlerTest extends DbTestCase implements CrudOperationsTest<UserRecord, User> {
@@ -41,7 +40,6 @@ public class UserHandlerTest extends DbTestCase implements CrudOperationsTest<Us
     @BeforeEach
     public void setup() {
         uut = new UserHandler(getConnectionFactory());
-        uut.setPrincipals(TEST_USER);
     }
 
     @Test
@@ -75,9 +73,9 @@ public class UserHandlerTest extends DbTestCase implements CrudOperationsTest<Us
     @Test
     public void bitemporalDataIsPresentWhenDesired() {
 
-        Validation<StatusCode, Stream<User>> result = uut.get(Instant.EPOCH, INFINITY.toInstant());
+        Validation<StatusCode, List<User>> result = uut.get(Instant.EPOCH, INFINITY.toInstant());
 
-        BitemporalUser sample = (BitemporalUser) result.success().findAny().get();
+        BitemporalUser sample = (BitemporalUser) result.success().get(0);
         assertNotNull(sample.validTimeStart());
         assertNotNull(sample.validTimeEnd());
         assertNotNull(sample.transactionTimeStart());

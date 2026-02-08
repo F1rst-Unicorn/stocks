@@ -28,7 +28,11 @@ import de.njsm.stocks.common.api.ScaledUnitForEditing;
 import de.njsm.stocks.common.api.StatusCode;
 import de.njsm.stocks.server.v2.db.ScaledUnitHandler;
 import de.njsm.stocks.server.v2.db.jooq.tables.records.ScaledUnitRecord;
+import org.springframework.stereotype.Service;
+import org.springframework.web.context.annotation.RequestScope;
 
+@Service
+@RequestScope
 public class ScaledUnitManager extends BusinessObject<ScaledUnitRecord, ScaledUnit>
         implements BusinessGettable<ScaledUnitRecord, ScaledUnit>,
                    BusinessAddable<ScaledUnitRecord, ScaledUnit>,

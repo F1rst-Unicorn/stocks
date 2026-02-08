@@ -31,10 +31,10 @@ import org.mockito.Mockito;
 
 import java.time.Instant;
 import java.util.Arrays;
+import java.util.List;
 import java.util.stream.Stream;
 
 import static de.njsm.stocks.server.v2.db.CrudDatabaseHandler.INFINITY;
-import static de.njsm.stocks.server.v2.web.PrincipalFilterTest.TEST_USER;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -55,7 +55,6 @@ public class FoodItemHandlerTest extends DbTestCase implements CrudOperationsTes
         uut = new FoodItemHandler(getConnectionFactory(),
                 userDevicePresenceChecker,
                 userPresenceChecker);
-        uut.setPrincipals(TEST_USER);
     }
 
     @AfterEach
@@ -66,9 +65,9 @@ public class FoodItemHandlerTest extends DbTestCase implements CrudOperationsTes
     @Test
     public void bitemporalDataIsPresentWhenDesired() {
 
-        Validation<StatusCode, Stream<FoodItem>> result = uut.get(Instant.EPOCH, INFINITY.toInstant());
+        Validation<StatusCode, List<FoodItem>> result = uut.get(Instant.EPOCH, INFINITY.toInstant());
 
-        BitemporalFoodItem sample = (BitemporalFoodItem) result.success().findAny().get();
+        BitemporalFoodItem sample = (BitemporalFoodItem) result.success().stream().findAny().get();
         assertNotNull(sample.validTimeStart());
         assertNotNull(sample.validTimeEnd());
         assertNotNull(sample.transactionTimeStart());

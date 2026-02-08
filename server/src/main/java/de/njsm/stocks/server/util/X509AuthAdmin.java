@@ -21,16 +21,17 @@
 
 package de.njsm.stocks.server.util;
 
+import de.njsm.stocks.common.api.StatusCode;
 import de.njsm.stocks.common.util.FunctionWithExceptions;
 import de.njsm.stocks.common.util.ProducerWithExceptions;
-import de.njsm.stocks.common.api.*;
-import de.njsm.stocks.server.v2.web.servlet.PrincipalFilter;
 import fj.data.Validation;
 import org.apache.commons.io.IOUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bouncycastle.openssl.PEMParser;
 import org.bouncycastle.pkcs.PKCS10CertificationRequest;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
 import java.io.*;
 import java.nio.charset.Charset;
@@ -38,6 +39,9 @@ import java.nio.charset.StandardCharsets;
 import java.util.HashSet;
 import java.util.Set;
 
+import static de.njsm.stocks.server.v2.web.security.HeaderAuthenticator.parseSubjectName;
+
+@Component
 public class X509AuthAdmin implements AuthAdmin, FallibleOperationWrapper<Void, Exception> {
 
     private static final Logger LOG = LogManager.getLogger(X509AuthAdmin.class);
@@ -50,12 +54,23 @@ public class X509AuthAdmin implements AuthAdmin, FallibleOperationWrapper<Void, 
 
     private final String reloadCommand;
 
-    public X509AuthAdmin(String caRootDirectory,
-                         String reloadCommand) {
-        this.caRootDirectory = caRootDirectory;
+    public X509AuthAdmin(
+            @Value("${de.njsm.stocks.server.auth.ca-root}") String caRoot,
+            @Value("${de.njsm.stocks.server.instance}") String instance,
+            @Value("${de.njsm.stocks.server.auth.reload-command}") String reloadCommand
+    ) {
+        this.caRootDirectory = getInstanceCaDirectory(caRoot, instance);
         this.csrFormatString = caRootDirectory + "/intermediate/csr/%s.csr.pem";
         this.certFormatString = caRootDirectory + "/intermediate/certs/%s.cert.pem";
         this.reloadCommand = reloadCommand;
+    }
+
+    private static String getInstanceCaDirectory(String caRoot, String instance) {
+        if ("".equals(instance)) {
+            return caRoot;
+        } else {
+            return caRoot + File.separatorChar + instance + File.separatorChar + "CA";
+        }
     }
 
     @Override
@@ -116,7 +131,7 @@ public class X509AuthAdmin implements AuthAdmin, FallibleOperationWrapper<Void, 
             Object csrRaw = parser.readObject();
             if (csrRaw instanceof PKCS10CertificationRequest) {
                 PKCS10CertificationRequest csr = (PKCS10CertificationRequest) csrRaw;
-                return PrincipalFilter.parseSubjectName(csr.getSubject().toString());
+                return parseSubjectName(csr.getSubject().toString());
             } else {
                 LOG.warn("Could not parse CSR");
                 return Validation.fail(StatusCode.INVALID_ARGUMENT);
@@ -191,7 +206,7 @@ public class X509AuthAdmin implements AuthAdmin, FallibleOperationWrapper<Void, 
         if (line.matches("^(.*/)?CN=stocks server(/.*)?$"))
             return null;
 
-        Validation<StatusCode, Principals> result = PrincipalFilter.parseSubjectName(fields[5]);
+        Validation<StatusCode, Principals> result = parseSubjectName(fields[5]);
         return result.isSuccess() ? result.success() : null;
     }
 
@@ -211,7 +226,7 @@ public class X509AuthAdmin implements AuthAdmin, FallibleOperationWrapper<Void, 
             IOUtils.copy(new FileInputStream(caRootDirectory + "/intermediate/crl/intermediate.crl.pem"), out);
             out.close();
 
-            Runtime.getRuntime().exec(reloadCommand).waitFor();
+            executeSystemCommand(reloadCommand);
             return null;
         });
     }

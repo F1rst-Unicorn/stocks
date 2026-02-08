@@ -28,18 +28,22 @@ import de.njsm.stocks.common.api.StatusCode;
 import de.njsm.stocks.server.v2.db.jooq.tables.records.ScaledUnitRecord;
 import fj.data.Validation;
 import org.jooq.Field;
+import org.jooq.RecordMapper;
 import org.jooq.Table;
 import org.jooq.TableField;
 import org.jooq.impl.DSL;
+import org.springframework.stereotype.Repository;
+import org.springframework.web.context.annotation.RequestScope;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Function;
 
 import static de.njsm.stocks.server.v2.db.jooq.Tables.SCALED_UNIT;
 
 
+@Repository
+@RequestScope
 public class ScaledUnitHandler extends CrudDatabaseHandler<ScaledUnitRecord, ScaledUnit> {
 
 
@@ -98,7 +102,7 @@ public class ScaledUnitHandler extends CrudDatabaseHandler<ScaledUnitRecord, Sca
     }
 
     @Override
-    protected Function<ScaledUnitRecord, ScaledUnit> getDtoMap() {
+    protected RecordMapper<ScaledUnitRecord, ScaledUnit> getDtoMap() {
         return cursor -> BitemporalScaledUnit.builder()
                 .id(cursor.getId())
                 .version(cursor.getVersion())

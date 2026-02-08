@@ -21,35 +21,41 @@
 
 package de.njsm.stocks.server.v2.web;
 
-
-import de.njsm.stocks.common.api.*;
-import de.njsm.stocks.server.v2.business.LocationManager;
-import de.njsm.stocks.server.v2.db.jooq.tables.records.LocationRecord;
-import jakarta.servlet.http.HttpServletRequest;
-
-import jakarta.inject.Inject;
-import jakarta.ws.rs.*;
-import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 
-@Path("v2/location")
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.context.annotation.RequestScope;
+import de.njsm.stocks.common.api.Location;
+import de.njsm.stocks.common.api.LocationForDeletion;
+import de.njsm.stocks.common.api.LocationForInsertion;
+import de.njsm.stocks.common.api.LocationForRenaming;
+import de.njsm.stocks.common.api.LocationForSetDescription;
+import de.njsm.stocks.common.api.Response;
+import de.njsm.stocks.common.api.StatusCode;
+import de.njsm.stocks.server.v2.business.LocationManager;
+import de.njsm.stocks.server.v2.db.jooq.tables.records.LocationRecord;
+
+@RequestMapping("/v2/location")
+@RestController
+@RequestScope
 public class LocationEndpoint extends Endpoint implements
-        Get<LocationRecord, Location>,
-        MetaDelete<LocationForDeletion, Location>{
+	Get<LocationRecord, Location>,
+        MetaDelete<LocationForDeletion, Location> {
 
     private final LocationManager manager;
 
-    @Inject
     public LocationEndpoint(LocationManager manager) {
         this.manager = manager;
     }
 
-    @PUT
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response putLocation(@Context HttpServletRequest request,
-                                @QueryParam("name") String name) {
+    @PutMapping(produces = MediaType.APPLICATION_JSON)
+    public Response putLocation(@RequestParam("name") String name) {
         if (isValid(name, "name")) {
-            manager.setPrincipals(getPrincipals(request));
             StatusCode status = manager.put(LocationForInsertion.builder()
                     .name(name)
                     .build());
@@ -59,18 +65,14 @@ public class LocationEndpoint extends Endpoint implements
         }
     }
 
-    @PUT
-    @Path("rename")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response renameLocation(@Context HttpServletRequest request,
-                                   @QueryParam("id") int id,
-                                   @QueryParam("version") int version,
-                                   @QueryParam("new") String newName) {
+    @PutMapping(path = "rename", produces = MediaType.APPLICATION_JSON)
+    public Response renameLocation(@RequestParam("id") int id,
+                                   @RequestParam("version") int version,
+                                   @RequestParam("new") String newName) {
 
         if (isValid(id, "id") &&
                 isValidVersion(version, "version") &&
                 isValid(newName, "new")) {
-            manager.setPrincipals(getPrincipals(request));
             StatusCode status = manager.rename(LocationForRenaming.builder()
                     .id(id)
                     .version(version)
@@ -82,15 +84,13 @@ public class LocationEndpoint extends Endpoint implements
         }
     }
 
-    @DELETE
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response deleteLocation(@Context HttpServletRequest request,
-                                   @QueryParam("id") int id,
-                                   @QueryParam("version") int version,
-                                   @QueryParam("cascade") int cascadeParameter) {
+    @DeleteMapping(produces = MediaType.APPLICATION_JSON)
+    public Response deleteLocation(@RequestParam("id") int id,
+                                   @RequestParam("version") int version,
+                                   @RequestParam("cascade") int cascadeParameter) {
         if (isValid(id, "id") &&
                 isValidVersion(version, "version")) {
-            return delete(request, () -> LocationForDeletion.builder()
+            return delete(() -> LocationForDeletion.builder()
                     .id(id)
                     .version(version)
                     .cascade(cascadeParameter == 1)
@@ -100,16 +100,14 @@ public class LocationEndpoint extends Endpoint implements
         }
     }
 
-    @POST
-    @Path("description")
-    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response setDescription(@Context HttpServletRequest request,
-                                   @QueryParam("id") int id,
-                                   @QueryParam("version") int version,
-                                   @FormParam("description") String description) {
+    @PostMapping(
+        path = "description",
+        consumes = MediaType.APPLICATION_FORM_URLENCODED,
+        produces = MediaType.APPLICATION_JSON)
+    public Response setDescription(@RequestParam("id") int id,
+                                   @RequestParam("version") int version,
+                                   @RequestParam("description") String description) {
         if (isValid(id, "id") && isValidVersion(version, "version") && isValidOrEmpty(description, "description")) {
-            manager.setPrincipals(getPrincipals(request));
             StatusCode result = manager.setDescription(LocationForSetDescription.builder()
                     .id(id)
                     .version(version)

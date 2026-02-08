@@ -1,0 +1,31 @@
+[Unit]
+Description="Stocks management %i"
+After=network.target network-online.target nss-lookup.target
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/java \
+    -Dorg.jooq.no-logo=true \
+    -Dorg.jooq.no-tips=true \
+    -jar /usr/lib/stocks-server/server.jar \
+    --spring.config.import=file:/etc/stocks-server/stocks-%i.yml \
+    --spring.profiles.active=production \
+    --de.njsm.stocks.server.instance=%i
+User=stocks-server
+Group=stocks-server
+WorkingDirectory=/var/lib/stocks-server
+Restart=on-failure
+RestartSec=5
+
+TimeoutStopSec=30s
+
+ProtectSystem=full
+ReadWritePaths=/usr/share/stocks-server/instances/%i/CA
+ProtectHome=true
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+SystemCallFilter=~@cpu-emulation @keyring @module @obsolete @raw-io
+
+[Install]
+WantedBy=multi-user.target

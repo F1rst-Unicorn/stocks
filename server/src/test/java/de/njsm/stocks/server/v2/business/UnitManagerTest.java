@@ -29,7 +29,6 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static de.njsm.stocks.server.v2.web.PrincipalFilterTest.TEST_USER;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
@@ -44,12 +43,10 @@ public class UnitManagerTest {
         dbHandler = mock(UnitHandler.class);
         when(dbHandler.commit()).thenReturn(StatusCode.SUCCESS);
         uut = new UnitManager(dbHandler);
-        uut.setPrincipals(TEST_USER);
     }
 
     @AfterEach
     public void tearDown() {
-        verify(dbHandler).setPrincipals(TEST_USER);
         verifyNoMoreInteractions(dbHandler);
     }
 

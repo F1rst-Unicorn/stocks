@@ -21,20 +21,27 @@
 
 package de.njsm.stocks.server.v2.db;
 
-import de.njsm.stocks.common.api.*;
+import de.njsm.stocks.common.api.BitemporalRecipe;
+import de.njsm.stocks.common.api.Recipe;
+import de.njsm.stocks.common.api.RecipeForEditing;
+import de.njsm.stocks.common.api.StatusCode;
 import de.njsm.stocks.server.v2.db.jooq.tables.records.RecipeRecord;
 import org.jooq.Field;
+import org.jooq.RecordMapper;
 import org.jooq.Table;
 import org.jooq.TableField;
 import org.jooq.impl.DSL;
+import org.springframework.stereotype.Repository;
+import org.springframework.web.context.annotation.RequestScope;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.function.Function;
 
 import static de.njsm.stocks.server.v2.db.jooq.Tables.RECIPE;
 
 
+@Repository
+@RequestScope
 public class RecipeHandler extends CrudDatabaseHandler<RecipeRecord, Recipe> {
 
 
@@ -80,7 +87,7 @@ public class RecipeHandler extends CrudDatabaseHandler<RecipeRecord, Recipe> {
     }
 
     @Override
-    protected Function<RecipeRecord, Recipe> getDtoMap() {
+    protected RecordMapper<RecipeRecord, Recipe> getDtoMap() {
         return cursor -> BitemporalRecipe.builder()
                 .id(cursor.getId())
                 .version(cursor.getVersion())

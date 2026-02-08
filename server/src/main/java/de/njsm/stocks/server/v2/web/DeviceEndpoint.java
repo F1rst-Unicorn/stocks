@@ -27,33 +27,28 @@ import de.njsm.stocks.server.v2.business.DeviceManager;
 import de.njsm.stocks.server.v2.business.data.NewDeviceTicket;
 import de.njsm.stocks.server.v2.db.jooq.tables.records.UserDeviceRecord;
 import fj.data.Validation;
-import jakarta.servlet.http.HttpServletRequest;
-
-import jakarta.inject.Inject;
-import jakarta.ws.rs.*;
-import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.context.annotation.RequestScope;
 
-@Path("v2/device")
+@RequestMapping("v2/device")
+@RestController
+@RequestScope
 public class DeviceEndpoint extends Endpoint implements Get<UserDeviceRecord, UserDevice> {
 
     private final DeviceManager manager;
 
-    @Inject
     public DeviceEndpoint(DeviceManager manager) {
         this.manager = manager;
     }
 
-    @PUT
-    @Produces(MediaType.APPLICATION_JSON)
+    @PutMapping(produces = MediaType.APPLICATION_JSON)
     public DataResponse<NewDeviceTicket> putDevice(
-            @Context HttpServletRequest request,
-            @QueryParam("name") String name,
-            @QueryParam("belongsTo") int userId) {
+            @RequestParam("name") String name,
+            @RequestParam("belongsTo") int userId) {
 
         if (isValidName(name, "name") &&
                 isValid(userId, "userId")) {
-            manager.setPrincipals(getPrincipals(request));
             Validation<StatusCode, NewDeviceTicket> result = manager.addDevice(UserDeviceForInsertion.builder()
                     .name(name)
                     .belongsTo(userId)
@@ -64,15 +59,12 @@ public class DeviceEndpoint extends Endpoint implements Get<UserDeviceRecord, Us
         }
     }
 
-    @DELETE
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response deleteDevice(@Context HttpServletRequest request,
-                                 @QueryParam("id") int id,
-                                 @QueryParam("version") int version) {
+    @DeleteMapping(produces = MediaType.APPLICATION_JSON)
+    public Response deleteDevice(@RequestParam("id") int id,
+                                 @RequestParam("version") int version) {
         if (isValid(id, "id") &&
                 isValidVersion(version, "version")) {
 
-            manager.setPrincipals(getPrincipals(request));
             StatusCode result = manager.delete(UserDeviceForDeletion.builder()
                     .id(id)
                     .version(version)
@@ -83,16 +75,12 @@ public class DeviceEndpoint extends Endpoint implements Get<UserDeviceRecord, Us
         }
     }
 
-    @DELETE
-    @Path("/revoke")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response revokeDevice(@Context HttpServletRequest request,
-                                 @QueryParam("id") int id,
-                                 @QueryParam("version") int version) {
+    @DeleteMapping(path = "/revoke", produces = MediaType.APPLICATION_JSON)
+    public Response revokeDevice(@RequestParam("id") int id,
+                                 @RequestParam("version") int version) {
         if (isValid(id, "id") &&
                 isValidVersion(version, "version")) {
 
-            manager.setPrincipals(getPrincipals(request));
             StatusCode result = manager.revokeDevice(UserDeviceForDeletion.builder()
                     .id(id)
                     .version(version)

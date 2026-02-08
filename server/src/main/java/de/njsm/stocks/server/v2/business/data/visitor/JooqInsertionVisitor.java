@@ -21,22 +21,21 @@
 
 package de.njsm.stocks.server.v2.business.data.visitor;
 
-import de.njsm.stocks.common.api.*;
-import de.njsm.stocks.common.api.visitor.InsertableVisitor;
-import de.njsm.stocks.server.util.Principals;
-import org.jooq.InsertOnDuplicateStep;
-import org.jooq.InsertSetStep;
-import org.jooq.TableRecord;
-import org.jooq.impl.DSL;
+import static de.njsm.stocks.server.v2.db.jooq.Tables.*;
+import static de.njsm.stocks.server.v2.db.jooq.tables.User.USER;
+import static de.njsm.stocks.server.v2.db.jooq.tables.UserDevice.USER_DEVICE;
 
 import java.time.OffsetDateTime;
 import java.time.Period;
 import java.time.ZoneOffset;
 
-import static de.njsm.stocks.server.v2.db.jooq.Tables.*;
-import static de.njsm.stocks.server.v2.db.jooq.Tables.EAN_NUMBER;
-import static de.njsm.stocks.server.v2.db.jooq.tables.User.USER;
-import static de.njsm.stocks.server.v2.db.jooq.tables.UserDevice.USER_DEVICE;
+import org.jooq.InsertOnDuplicateStep;
+import org.jooq.InsertSetStep;
+import org.jooq.TableRecord;
+import org.jooq.impl.DSL;
+import de.njsm.stocks.common.api.*;
+import de.njsm.stocks.common.api.visitor.InsertableVisitor;
+import de.njsm.stocks.server.util.Principals;
 
 public class JooqInsertionVisitor<R extends TableRecord<R>> implements InsertableVisitor<JooqInsertionVisitor.Input<R>, InsertOnDuplicateStep<R>> {
 

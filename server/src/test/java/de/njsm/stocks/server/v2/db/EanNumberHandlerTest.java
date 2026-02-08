@@ -28,11 +28,11 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.time.Instant;
-import java.util.stream.Stream;
+import java.util.List;
 
 import static de.njsm.stocks.server.v2.db.CrudDatabaseHandler.INFINITY;
-import static de.njsm.stocks.server.v2.web.PrincipalFilterTest.TEST_USER;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class EanNumberHandlerTest extends DbTestCase implements CrudOperationsTest<EanNumberRecord, EanNumber> {
 
@@ -41,15 +41,14 @@ public class EanNumberHandlerTest extends DbTestCase implements CrudOperationsTe
     @BeforeEach
     public void setup() {
         uut = new EanNumberHandler(getConnectionFactory());
-        uut.setPrincipals(TEST_USER);
     }
 
     @Test
     public void bitemporalDataIsPresentWhenDesired() {
 
-        Validation<StatusCode, Stream<EanNumber>> result = uut.get(Instant.EPOCH, INFINITY.toInstant());
+        Validation<StatusCode, List<EanNumber>> result = uut.get(Instant.EPOCH, INFINITY.toInstant());
 
-        BitemporalEanNumber sample = (BitemporalEanNumber) result.success().findAny().get();
+        BitemporalEanNumber sample = (BitemporalEanNumber) result.success().stream().findAny().get();
         assertNotNull(sample.validTimeStart());
         assertNotNull(sample.validTimeEnd());
         assertNotNull(sample.transactionTimeStart());

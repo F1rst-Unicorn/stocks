@@ -1,0 +1,2 @@
+u stocks-server - "Stocks management" /var/lib/stocks-server /usr/bin/nologin
+g stocks-server - -

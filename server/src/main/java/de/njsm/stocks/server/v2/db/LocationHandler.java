@@ -23,19 +23,18 @@ package de.njsm.stocks.server.v2.db;
 
 import de.njsm.stocks.common.api.*;
 import de.njsm.stocks.server.v2.db.jooq.tables.records.LocationRecord;
-import org.jooq.DSLContext;
-import org.jooq.Field;
-import org.jooq.Table;
-import org.jooq.TableField;
+import org.jooq.*;
+import org.springframework.stereotype.Repository;
+import org.springframework.web.context.annotation.RequestScope;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.function.Function;
 
 import static de.njsm.stocks.server.v2.db.jooq.Tables.LOCATION;
 import static org.jooq.impl.DSL.inline;
 
-
+@Repository
+@RequestScope
 public class LocationHandler extends CrudDatabaseHandler<LocationRecord, Location> {
 
     private final FoodItemHandler foodItemHandler;
@@ -134,7 +133,7 @@ public class LocationHandler extends CrudDatabaseHandler<LocationRecord, Locatio
     }
 
     @Override
-    protected Function<LocationRecord, Location> getDtoMap() {
+    protected RecordMapper<LocationRecord, Location> getDtoMap() {
         return cursor -> BitemporalLocation.builder()
                 .id(cursor.getId())
                 .version(cursor.getVersion())

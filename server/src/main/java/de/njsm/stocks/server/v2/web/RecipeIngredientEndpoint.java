@@ -24,16 +24,17 @@ package de.njsm.stocks.server.v2.web;
 import de.njsm.stocks.common.api.RecipeIngredient;
 import de.njsm.stocks.server.v2.business.RecipeIngredientManager;
 import de.njsm.stocks.server.v2.db.jooq.tables.records.RecipeIngredientRecord;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.context.annotation.RequestScope;
 
-import jakarta.inject.Inject;
-import jakarta.ws.rs.Path;
-
-@Path("v2/recipe-ingredient")
+@RequestMapping("v2/recipe-ingredient")
+@RestController
+@RequestScope
 public class RecipeIngredientEndpoint extends Endpoint implements Get<RecipeIngredientRecord, RecipeIngredient> {
 
     private final RecipeIngredientManager manager;
 
-    @Inject
     public RecipeIngredientEndpoint(RecipeIngredientManager manager) {
         this.manager = manager;
     }

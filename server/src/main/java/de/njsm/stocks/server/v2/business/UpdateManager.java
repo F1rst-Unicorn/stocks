@@ -27,11 +27,14 @@ import de.njsm.stocks.common.api.Update;
 import de.njsm.stocks.server.v2.db.FailSafeDatabaseHandler;
 import de.njsm.stocks.server.v2.db.UpdateBackend;
 import fj.data.Validation;
+import org.springframework.stereotype.Service;
+import org.springframework.web.context.annotation.RequestScope;
 
-import jakarta.ws.rs.container.AsyncResponse;
-import java.util.stream.Stream;
+import java.util.List;
 
-public class UpdateManager implements AsyncRunner {
+@Service
+@RequestScope
+public class UpdateManager implements BusinessOperations {
 
     private final UpdateBackend updateBackend;
 
@@ -39,8 +42,8 @@ public class UpdateManager implements AsyncRunner {
         this.updateBackend = updateBackend;
     }
 
-    public Validation<StatusCode, Stream<Update>> getUpdates(AsyncResponse r) {
-        return runAsynchronously(r, () -> {
+    public Validation<StatusCode, List<Update>> getUpdates() {
+        return runFunction(() -> {
             var result = updateBackend.setReadOnly();
             if (result.isFail()) {
                 return Validation.fail(result);

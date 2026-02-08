@@ -1,6 +1,6 @@
 import com.android.build.gradle.internal.tasks.factory.dependsOn
 import org.jooq.meta.jaxb.Property
-import org.liquibase.gradle.Activity
+import org.springframework.boot.gradle.tasks.run.BootRun
 
 /*
  * stocks is client-server program to manage a household's food stock
@@ -24,10 +24,12 @@ import org.liquibase.gradle.Activity
  */
 
 plugins {
-    war
-    id ("checkstyle")
+    java
+    id("checkstyle")
     id("org.jooq.jooq-codegen-gradle")
     id("org.liquibase.gradle")
+    id("org.springframework.boot")
+    id("io.spring.dependency-management")
 }
 
 group = "de.njsm.stocks"
@@ -45,7 +47,6 @@ tasks.withType<JavaCompile> {
 dependencies {
     implementation(project(":common"))
     implementation(libs.postgresql)
-    implementation(libs.c3p0)
     implementation(libs.commons.io)
     implementation(libs.autovalue)
     implementation(libs.guava)
@@ -56,14 +57,26 @@ dependencies {
         exclude(group = "ch.qos.logback", module = "logback-classic")
     }
     implementation(libs.liquibase.slf4j)
-    implementation(libs.jakarta.servlet.api)
-    implementation(libs.bundles.jersey)
-    implementation(libs.bundles.jackson)
-    implementation(libs.jackson.datatype.jdk8)
-    implementation(libs.jackson.jaxrs)
     implementation(libs.bundles.jooq)
-    implementation(libs.bundles.spring)
+    implementation(libs.bundles.jackson)
     implementation(libs.bundles.log4j)
+    implementation("org.springframework.boot:spring-boot-starter-web") {
+        exclude(group = "org.springframework.boot", module = "spring-boot-starter-logging")
+    }
+    implementation("org.springframework.boot:spring-boot-starter-jdbc") {
+        exclude(group = "org.springframework.boot", module = "spring-boot-starter-logging")
+    }
+    implementation("org.springframework.boot:spring-boot-starter-security") {
+        exclude(group = "org.springframework.boot", module = "spring-boot-starter-logging")
+    }
+    implementation("org.springframework.boot:spring-boot-starter-quartz") {
+        exclude(group = "org.springframework.boot", module = "spring-boot-starter-logging")
+    }
+    implementation("org.springframework.boot:spring-boot-jackson2") {
+        exclude(group = "org.springframework.boot", module = "spring-boot-starter-logging")
+    }
+    implementation("org.springframework.boot:spring-boot-starter-log4j2")
+    implementation(libs.jakarta.ws.rs)
 
     annotationProcessor(libs.autovalue.processor)
 
@@ -76,6 +89,7 @@ dependencies {
     liquibaseRuntime(libs.jakarta.xml.api)
 
     testImplementation(libs.junit5)
+    testImplementation(libs.junit.platform)
     testImplementation(libs.hamcrest)
     testImplementation(libs.mockito)
 }
@@ -102,7 +116,7 @@ val profile = if (project.properties["profile"] == "teamcity") {
     mapOf(
         "de.njsm.stocks.server.v2.db.host" to "localhost",
         "de.njsm.stocks.server.v2.db.port" to "5432",
-        "de.njsm.stocks.server.v2.db.name" to "stocks",
+        "de.njsm.stocks.server.v2.db.name" to "stocks-codegen",
         "de.njsm.stocks.server.v2.db.postgres.user" to "stocks",
         "de.njsm.stocks.server.v2.db.postgres.password" to "linux",
         "de.njsm.stocks.server.v2.db.postgres.ssl" to "false",
@@ -113,6 +127,11 @@ val profile = if (project.properties["profile"] == "teamcity") {
         "de.njsm.stocks.internal.ticketValidityTimeInMinutes" to "10",
         "de.njsm.stocks.server.v2.db.history.maxPeriod" to "P3Y",
     )
+}
+
+tasks.named<BootRun>("bootRun") {
+    systemProperty("org.jooq.no-logo", "true")
+    systemProperty("org.jooq.no-tips", "true")
 }
 
 tasks.test {
@@ -137,7 +156,7 @@ liquibase {
         register("main") {
             arguments = mapOf(
                 "searchPath" to "$projectDir",
-                "changeLogFile" to "src/main/resources/migrations/master.xml",
+                "changelogFile" to "src/main/resources/migrations/master.xml",
                 "url" to "jdbc:postgresql://${profile.get("de.njsm.stocks.server.v2.db.host")}:${profile.get("de.njsm.stocks.server.v2.db.port")}/${profile.get("de.njsm.stocks.server.v2.db.name")}?user=${profile.get("de.njsm.stocks.server.v2.db.postgres.user")}&password=${profile.get("de.njsm.stocks.server.v2.db.postgres.password")}&ssl=${profile.get("de.njsm.stocks.server.v2.db.postgres.ssl")}&sslmode=${profile.get("de.njsm.stocks.server.v2.db.postgres.sslmode")}&sslcert=${profile.get("de.njsm.stocks.server.v2.db.postgres.sslcert")}&sslkey=${profile.get("de.njsm.stocks.server.v2.db.postgres.sslkey")}&sslrootcert=${profile.get("de.njsm.stocks.server.v2.db.postgres.sslrootcert")}&",
                 "driver" to "org.postgresql.Driver",
             )
@@ -204,6 +223,6 @@ val resetDb = tasks.register("resetDb") {
     dependsOn(tasks.getByName("update"))
 }
 tasks.jooqCodegen.dependsOn(resetDb)
-tasks.withType<JavaCompile>() {
+tasks.withType<JavaCompile> {
     dependsOn(tasks.jooqCodegen)
 }

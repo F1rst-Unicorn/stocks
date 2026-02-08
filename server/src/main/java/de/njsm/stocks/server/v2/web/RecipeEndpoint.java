@@ -25,46 +25,37 @@ import de.njsm.stocks.common.api.*;
 import de.njsm.stocks.server.v2.business.RecipeManager;
 import de.njsm.stocks.server.v2.db.jooq.tables.records.RecipeRecord;
 import fj.data.Validation;
-import jakarta.servlet.http.HttpServletRequest;
-
-import jakarta.inject.Inject;
-import jakarta.validation.constraints.NotNull;
-import jakarta.ws.rs.Consumes;
-import jakarta.ws.rs.PUT;
-import jakarta.ws.rs.Path;
-import jakarta.ws.rs.Produces;
-import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.context.annotation.RequestScope;
 
-@Path("v2/recipe")
+@RequestMapping("v2/recipe")
+@RestController
+@RequestScope
 public class RecipeEndpoint extends Endpoint implements Get<RecipeRecord, Recipe>, JsonDelete<FullRecipeForDeletion, Recipe> {
 
     private final RecipeManager manager;
 
-    @Inject
     public RecipeEndpoint(RecipeManager manager) {
         this.manager = manager;
     }
 
-    @PUT
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response put(@Context HttpServletRequest request,
-                        @NotNull FullRecipeForInsertion input) {
-        manager.setPrincipals(getPrincipals(request));
+    @PutMapping(consumes = MediaType.APPLICATION_JSON,produces = MediaType.APPLICATION_JSON)
+    public Response put(@RequestBody FullRecipeForInsertion input) {
         Validation<StatusCode, Integer> result = manager.add(input);
         return new DataResponse<>(result);
     }
 
-    @PUT
-    @Path("edit")
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response edit(@Context HttpServletRequest request,
-                         @NotNull FullRecipeForEditing input) {
-        manager.setPrincipals(getPrincipals(request));
+    @PutMapping(path = "edit", consumes = MediaType.APPLICATION_JSON,produces = MediaType.APPLICATION_JSON)
+    public Response edit(@RequestBody FullRecipeForEditing input) {
         StatusCode result = manager.edit(input);
         return new Response(result);
+    }
+
+    @Override
+    @DeleteMapping(consumes = MediaType.APPLICATION_JSON, produces = MediaType.APPLICATION_JSON)
+    public Response delete(FullRecipeForDeletion input) {
+        return JsonDelete.super.delete(input);
     }
 
     @Override

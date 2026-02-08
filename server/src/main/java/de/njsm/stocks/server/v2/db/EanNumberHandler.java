@@ -24,16 +24,20 @@ package de.njsm.stocks.server.v2.db;
 import de.njsm.stocks.common.api.*;
 import de.njsm.stocks.server.v2.db.jooq.tables.records.EanNumberRecord;
 import org.jooq.Field;
+import org.jooq.RecordMapper;
 import org.jooq.Table;
 import org.jooq.TableField;
+import org.springframework.stereotype.Repository;
+import org.springframework.web.context.annotation.RequestScope;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.function.Function;
 
 import static de.njsm.stocks.server.v2.db.jooq.Tables.EAN_NUMBER;
 
 
+@Repository
+@RequestScope
 public class EanNumberHandler extends CrudDatabaseHandler<EanNumberRecord, EanNumber> {
 
     public EanNumberHandler(ConnectionFactory connectionFactory) {
@@ -61,7 +65,7 @@ public class EanNumberHandler extends CrudDatabaseHandler<EanNumberRecord, EanNu
     }
 
     @Override
-    protected Function<EanNumberRecord, EanNumber> getDtoMap() {
+    protected RecordMapper<EanNumberRecord, EanNumber> getDtoMap() {
         return cursor -> BitemporalEanNumber.builder()
                 .id(cursor.getId())
                 .version(cursor.getVersion())

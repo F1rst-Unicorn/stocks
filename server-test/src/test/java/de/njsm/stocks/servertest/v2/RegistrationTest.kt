@@ -230,6 +230,8 @@ class RegistrationTest : Base() {
                         .keyStore("keystore_2", SetupTest.PASSWORD),
                 ),
             )
+            .queryParam("startingFrom")
+            .queryParam("upUntil")
             .`when`()
             .get(TestSuite.domain + "/v2/location")
             .then()

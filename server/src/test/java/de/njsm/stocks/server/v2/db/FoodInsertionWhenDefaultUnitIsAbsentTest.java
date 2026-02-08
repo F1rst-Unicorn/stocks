@@ -29,7 +29,6 @@ import org.junit.jupiter.api.Test;
 import java.sql.Connection;
 import java.util.List;
 
-import static de.njsm.stocks.server.v2.web.PrincipalFilterTest.TEST_USER;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
@@ -40,7 +39,6 @@ public class FoodInsertionWhenDefaultUnitIsAbsentTest extends DbTestCase {
     @BeforeEach
     public void setup() {
         uut = new FoodHandler(getConnectionFactory());
-        uut.setPrincipals(TEST_USER);
     }
 
     @Override

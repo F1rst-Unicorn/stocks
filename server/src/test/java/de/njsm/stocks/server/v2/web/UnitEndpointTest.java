@@ -21,11 +21,7 @@
 
 package de.njsm.stocks.server.v2.web;
 
-import de.njsm.stocks.common.api.Response;
-import de.njsm.stocks.common.api.StatusCode;
-import de.njsm.stocks.common.api.UnitForDeletion;
-import de.njsm.stocks.common.api.UnitForInsertion;
-import de.njsm.stocks.common.api.UnitForRenaming;
+import de.njsm.stocks.common.api.*;
 import de.njsm.stocks.server.v2.business.UnitManager;
 import fj.data.Validation;
 import org.junit.jupiter.api.AfterEach;
@@ -33,8 +29,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
-import static de.njsm.stocks.server.v2.web.PrincipalFilterTest.TEST_USER;
-import static de.njsm.stocks.server.v2.web.Util.createMockRequest;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
@@ -59,14 +53,14 @@ public class UnitEndpointTest {
 
     @Test
     public void puttingInvalidNameIsRejected() {
-        Response response = uut.put(createMockRequest(), "", "abbreviation");
+        Response response = uut.put("", "abbreviation");
 
         assertEquals(StatusCode.INVALID_ARGUMENT, response.getStatus());
     }
 
     @Test
     public void puttingInvalidAbbreviationIsRejected() {
-        Response response = uut.put(createMockRequest(), "name", "");
+        Response response = uut.put("name", "");
 
         assertEquals(StatusCode.INVALID_ARGUMENT, response.getStatus());
     }
@@ -79,11 +73,10 @@ public class UnitEndpointTest {
                 .build();
         when(manager.addReturningId(any())).thenReturn(Validation.success(1));
 
-        Response response = uut.put(createMockRequest(), input.name(), input.abbreviation());
+        Response response = uut.put(input.name(), input.abbreviation());
 
         assertEquals(StatusCode.SUCCESS, response.getStatus());
         verify(manager).addReturningId(input);
-        verify(manager).setPrincipals(TEST_USER);
     }
 
     @Test
@@ -94,37 +87,36 @@ public class UnitEndpointTest {
                 .build();
         when(manager.addReturningId(any())).thenReturn(Validation.fail(StatusCode.DATABASE_UNREACHABLE));
 
-        Response response = uut.put(createMockRequest(), input.name(), input.abbreviation());
+        Response response = uut.put(input.name(), input.abbreviation());
 
         assertEquals(StatusCode.DATABASE_UNREACHABLE, response.getStatus());
         verify(manager).addReturningId(input);
-        verify(manager).setPrincipals(TEST_USER);
     }
 
     @Test
     public void renamingInvalidIdIsRejected() {
-        Response response = uut.rename(createMockRequest(), -1, 0, "name", "abbreviation");
+        Response response = uut.rename(-1, 0, "name", "abbreviation");
 
         assertEquals(StatusCode.INVALID_ARGUMENT, response.getStatus());
     }
 
     @Test
     public void renamingInvalidVersionIsRejected() {
-        Response response = uut.rename(createMockRequest(), 1, -1, "name", "abbreviation");
+        Response response = uut.rename(1, -1, "name", "abbreviation");
 
         assertEquals(StatusCode.INVALID_ARGUMENT, response.getStatus());
     }
 
     @Test
     public void renamingInvalidNameIsRejected() {
-        Response response = uut.rename(createMockRequest(), 1, 0, "", "abbreviation");
+        Response response = uut.rename(1, 0, "", "abbreviation");
 
         assertEquals(StatusCode.INVALID_ARGUMENT, response.getStatus());
     }
 
     @Test
     public void renamingInvalidAbbreviationIsRejected() {
-        Response response = uut.rename(createMockRequest(), 1, 0, "name", "");
+        Response response = uut.rename(1, 0, "name", "");
 
         assertEquals(StatusCode.INVALID_ARGUMENT, response.getStatus());
     }
@@ -139,11 +131,10 @@ public class UnitEndpointTest {
                 .build();
         when(manager.rename(any())).thenReturn(StatusCode.DATABASE_UNREACHABLE);
 
-        Response response = uut.rename(createMockRequest(), input.id(), input.version(), input.name(), input.abbreviation());
+        Response response = uut.rename(input.id(), input.version(), input.name(), input.abbreviation());
 
         assertEquals(StatusCode.DATABASE_UNREACHABLE, response.getStatus());
         verify(manager).rename(input);
-        verify(manager).setPrincipals(TEST_USER);
     }
 
     @Test
@@ -156,11 +147,10 @@ public class UnitEndpointTest {
                 .build();
         when(manager.rename(any())).thenReturn(StatusCode.SUCCESS);
 
-        Response response = uut.rename(createMockRequest(), input.id(), input.version(), input.name(), input.abbreviation());
+        Response response = uut.rename(input.id(), input.version(), input.name(), input.abbreviation());
 
         assertEquals(StatusCode.SUCCESS, response.getStatus());
         verify(manager).rename(input);
-        verify(manager).setPrincipals(TEST_USER);
     }
 
 

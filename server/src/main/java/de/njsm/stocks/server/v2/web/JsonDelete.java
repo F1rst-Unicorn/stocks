@@ -26,25 +26,14 @@ import de.njsm.stocks.common.api.Response;
 import de.njsm.stocks.common.api.StatusCode;
 import de.njsm.stocks.common.api.Versionable;
 import de.njsm.stocks.server.v2.business.BusinessDeletable;
-import jakarta.servlet.http.HttpServletRequest;
-
-import jakarta.validation.constraints.NotNull;
-import jakarta.ws.rs.Consumes;
-import jakarta.ws.rs.DELETE;
-import jakarta.ws.rs.Produces;
-import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
-
-import static de.njsm.stocks.server.v2.web.Endpoint.getPrincipals;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
 public interface JsonDelete<T extends Versionable<U>, U extends Entity<U>> {
 
-    @DELETE
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    default Response delete(@Context HttpServletRequest request,
-                            @NotNull T input) {
-        getManager().setPrincipals(getPrincipals(request));
+    @DeleteMapping(consumes = MediaType.APPLICATION_JSON, produces = MediaType.APPLICATION_JSON)
+    default Response delete(@RequestBody T input) {
         StatusCode status = getManager().delete(input);
         return new Response(status);
     }

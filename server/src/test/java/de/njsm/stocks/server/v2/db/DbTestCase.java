@@ -21,7 +21,8 @@
 
 package de.njsm.stocks.server.v2.db;
 
-import com.mchange.v2.c3p0.ComboPooledDataSource;
+import com.zaxxer.hikari.HikariDataSource;
+import de.njsm.stocks.server.v2.web.security.StocksAuthentication;
 import org.jooq.DSLContext;
 import org.jooq.SQLDialect;
 import org.jooq.conf.Settings;
@@ -30,6 +31,8 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
+import org.postgresql.ds.PGSimpleDataSource;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -37,22 +40,28 @@ import java.sql.SQLException;
 import java.util.Map;
 import java.util.Properties;
 
+import static de.njsm.stocks.server.v2.web.security.HeaderAuthenticatorTest.TEST_USER;
+
 public abstract class DbTestCase {
 
     private static ConnectionFactory factory;
 
     private static Connection connection;
 
-    private static ComboPooledDataSource ds;
+    private static HikariDataSource ds;
 
     @BeforeAll
-    public static void beforeClass() {
-        ds = new ComboPooledDataSource();
-        ds.setJdbcUrl(getUrl());
-        ds.setProperties(getPostgresqlProperties(System.getProperties()));
-        ds.setInitialPoolSize(1);
-        ds.setMaxPoolSize(1);
-        ds.setMinPoolSize(1);
+    public static void beforeClass() throws SQLException {
+        var postgresql = new PGSimpleDataSource();
+        postgresql.setURL(getUrl());
+        Properties postgresqlProperties = getPostgresqlProperties(System.getProperties());
+        for (Object key : postgresqlProperties.keySet()) {
+            postgresql.setProperty((String) key, postgresqlProperties.getProperty((String) key));
+        }
+        ds = new HikariDataSource();
+        ds.setDataSource(postgresql);
+        ds.setMinimumIdle(1);
+        ds.setMaximumPoolSize(1);
     }
 
     @AfterAll
@@ -65,6 +74,7 @@ public abstract class DbTestCase {
         factory = new ConnectionFactory(ds);
         connection = factory.getConnection();
         getSampleData(connection).apply();
+        SecurityContextHolder.getContext().setAuthentication(new StocksAuthentication(TEST_USER));
     }
 
     protected SampleData getSampleData(Connection connection) {
@@ -84,13 +94,17 @@ public abstract class DbTestCase {
     }
 
     protected ConnectionFactory getUnreachableConnectionFactory() throws SQLException {
-        var ds = new ComboPooledDataSource();
-        ds.setJdbcUrl(getUrlByHost("unreachable.example"));
-        ds.setProperties(getPostgresqlProperties(System.getProperties()));
-        ds.setMaxPoolSize(1);
-        ds.setMinPoolSize(1);
-        ds.setLoginTimeout(1);
-        ds.setCheckoutTimeout(1000);
+        var postgresql = new PGSimpleDataSource();
+        postgresql.setURL(getUrlByHost("unreachable.example"));
+        Properties postgresqlProperties = getPostgresqlProperties(System.getProperties());
+        for (Object key : postgresqlProperties.keySet()) {
+            postgresql.setProperty((String) key, postgresqlProperties.getProperty((String) key));
+        }
+        var ds = new HikariDataSource();
+        ds.setDataSource(postgresql);
+        ds.setMinimumIdle(1);
+        ds.setMaximumPoolSize(1);
+
         return new ConnectionFactory(ds);
     }
 

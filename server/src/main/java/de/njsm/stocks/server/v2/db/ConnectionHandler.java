@@ -21,14 +21,14 @@
 
 package de.njsm.stocks.server.v2.db;
 
+import java.sql.Connection;
+import java.sql.SQLException;
+
 import de.njsm.stocks.common.api.StatusCode;
 import de.njsm.stocks.common.util.FunctionWithExceptions;
 import de.njsm.stocks.common.util.ProducerWithExceptions;
 import de.njsm.stocks.server.util.FallibleOperationWrapper;
 import fj.data.Validation;
-
-import java.sql.Connection;
-import java.sql.SQLException;
 
 class ConnectionHandler implements FallibleOperationWrapper<Connection, SQLException> {
 

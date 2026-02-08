@@ -32,7 +32,6 @@ import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
 
-import static de.njsm.stocks.server.v2.web.PrincipalFilterTest.TEST_USER;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
@@ -47,12 +46,10 @@ public class ScaledUnitManagerTest {
         dbHandler = mock(ScaledUnitHandler.class);
         when(dbHandler.commit()).thenReturn(StatusCode.SUCCESS);
         uut = new ScaledUnitManager(dbHandler);
-        uut.setPrincipals(TEST_USER);
     }
 
     @AfterEach
     public void tearDown() {
-        verify(dbHandler).setPrincipals(TEST_USER);
         verifyNoMoreInteractions(dbHandler);
     }
 

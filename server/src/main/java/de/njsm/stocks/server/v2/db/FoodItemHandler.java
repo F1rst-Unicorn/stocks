@@ -28,17 +28,21 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jooq.*;
 import org.jooq.impl.DSL;
+import org.springframework.context.annotation.Primary;
+import org.springframework.stereotype.Repository;
+import org.springframework.web.context.annotation.RequestScope;
 
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.util.Arrays;
 import java.util.List;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static de.njsm.stocks.server.v2.db.jooq.Tables.FOOD_ITEM;
 
-
+@Repository
+@RequestScope
+@Primary
 public class FoodItemHandler extends CrudDatabaseHandler<FoodItemRecord, FoodItem> {
 
     private static final Logger LOG = LogManager.getLogger(FoodItemHandler.class);
@@ -194,7 +198,7 @@ public class FoodItemHandler extends CrudDatabaseHandler<FoodItemRecord, FoodIte
     }
 
     @Override
-    protected Function<FoodItemRecord, FoodItem> getDtoMap() {
+    protected RecordMapper<FoodItemRecord, FoodItem> getDtoMap() {
         return cursor -> BitemporalFoodItem.builder()
                 .id(cursor.getId())
                 .version(cursor.getVersion())

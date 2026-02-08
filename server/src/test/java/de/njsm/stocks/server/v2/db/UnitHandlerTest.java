@@ -29,11 +29,8 @@ import org.junit.jupiter.api.Test;
 
 import java.time.Instant;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static de.njsm.stocks.server.v2.db.CrudDatabaseHandler.INFINITY;
-import static de.njsm.stocks.server.v2.web.PrincipalFilterTest.TEST_USER;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class UnitHandlerTest extends DbTestCase implements CrudOperationsTest<UnitRecord, Unit> {
@@ -43,7 +40,6 @@ public class UnitHandlerTest extends DbTestCase implements CrudOperationsTest<Un
     @BeforeEach
     public void setup() {
         uut = new UnitHandler(getConnectionFactory());
-        uut.setPrincipals(TEST_USER);
     }
 
     @Override
@@ -57,9 +53,9 @@ public class UnitHandlerTest extends DbTestCase implements CrudOperationsTest<Un
     @Test
     public void bitemporalDataIsPresentWhenDesired() {
 
-        Validation<StatusCode, Stream<Unit>> result = uut.get(Instant.EPOCH, INFINITY.toInstant());
+        Validation<StatusCode, List<Unit>> result = uut.get(Instant.EPOCH, INFINITY.toInstant());
 
-        BitemporalUnit sample = (BitemporalUnit) result.success().findAny().get();
+        BitemporalUnit sample = (BitemporalUnit) result.success().stream().findAny().get();
         assertNotNull(sample.validTimeStart());
         assertNotNull(sample.validTimeEnd());
         assertNotNull(sample.transactionTimeStart());
@@ -98,17 +94,19 @@ public class UnitHandlerTest extends DbTestCase implements CrudOperationsTest<Un
     void gettingDataUpUntilWorks() {
         var updateBackend = new UpdateBackend(getConnectionFactory());
         var unitTimestamp = updateBackend.get().success()
+                .stream()
                 .filter(v -> v.table().equals("unit"))
                 .findFirst()
                 .orElseThrow();
 
         var dataBeforeUpdate = uut.get(Instant.EPOCH, unitTimestamp.lastUpdate());
         assertTrue(dataBeforeUpdate.isSuccess());
-        var dataBefore = dataBeforeUpdate.success().toList();
+        var dataBefore = dataBeforeUpdate.success();
         assertEquals(3, dataBefore.size());
 
         uut.rename(UnitForRenaming.builder().id(1).version(0).name("new name").abbreviation("new").build());
         var unitTimestampAfterUpdate = updateBackend.get().success()
+                .stream()
                 .filter(v -> v.table().equals("unit"))
                 .findFirst()
                 .orElseThrow();
@@ -116,7 +114,7 @@ public class UnitHandlerTest extends DbTestCase implements CrudOperationsTest<Un
 
         var dataAfterUpdate = uut.get(unitTimestamp.lastUpdate(), unitTimestampAfterUpdate.lastUpdate());
         assertTrue(dataAfterUpdate.isSuccess());
-        var dataAfter = dataAfterUpdate.success().toList();
+        var dataAfter = dataAfterUpdate.success();
         assertEquals(3, dataAfter.size());
         assertNotEquals(dataBefore, dataAfter);
     }
@@ -165,11 +163,12 @@ public class UnitHandlerTest extends DbTestCase implements CrudOperationsTest<Un
 
     @Test
     public void gettingBitemporalWorks() {
-        Validation<StatusCode, Stream<Unit>> result = uut.get(Instant.EPOCH, INFINITY.toInstant());
+        Validation<StatusCode, List<Unit>> result = uut.get(Instant.EPOCH, INFINITY.toInstant());
 
         assertTrue(result.isSuccess());
         List<BitemporalUnit> data = result.success()
-                .map(v -> (BitemporalUnit) v).collect(Collectors.toList());
+                .stream()
+                .map(v -> (BitemporalUnit) v).toList();
 
         assertTrue(data.stream().anyMatch(l ->
                 l.id() == 1 &&
@@ -181,10 +180,10 @@ public class UnitHandlerTest extends DbTestCase implements CrudOperationsTest<Un
 
     @Test
     public void gettingWorks() {
-        Validation<StatusCode, Stream<Unit>> result = uut.get(Instant.EPOCH, INFINITY.toInstant());
+        Validation<StatusCode, List<Unit>> result = uut.get(Instant.EPOCH, INFINITY.toInstant());
 
         assertTrue(result.isSuccess());
-        List<Unit> data = result.success().collect(Collectors.toList());
+        List<Unit> data = result.success().stream().toList();
 
         assertTrue(data.stream().anyMatch(l ->
                 l.id() == 1 &&

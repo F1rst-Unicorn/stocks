@@ -35,6 +35,8 @@ import org.jooq.Field;
 import org.jooq.Record4;
 import org.jooq.Result;
 import org.jooq.impl.DSL;
+import org.springframework.stereotype.Repository;
+import org.springframework.web.context.annotation.RequestScope;
 
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
@@ -43,6 +45,8 @@ import static de.njsm.stocks.server.v2.db.jooq.tables.Ticket.TICKET;
 import static de.njsm.stocks.server.v2.db.jooq.tables.User.USER;
 import static de.njsm.stocks.server.v2.db.jooq.tables.UserDevice.USER_DEVICE;
 
+@Repository
+@RequestScope
 public class TicketHandler extends FailSafeDatabaseHandler {
 
     private static final Logger LOG = LogManager.getLogger(TicketHandler.class);

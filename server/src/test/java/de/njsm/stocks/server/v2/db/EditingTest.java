@@ -30,8 +30,8 @@ import java.util.List;
 
 import static de.njsm.stocks.server.v2.matchers.Matchers.matchesVersionableExactly;
 import static de.njsm.stocks.server.v2.matchers.Matchers.matchesVersionableUpdated;
-import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.hasItem;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public interface EditingTest<T extends TableRecord<T>, N extends Entity<N>> extends EntityDbTestCase<T, N> {

@@ -38,18 +38,18 @@ import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 
-import jakarta.ws.rs.container.AsyncResponse;
 import java.time.Instant;
-import java.util.stream.Stream;
+import java.util.List;
 
-import static de.njsm.stocks.server.v2.web.PrincipalFilterTest.TEST_USER;
+import static de.njsm.stocks.server.v2.web.security.HeaderAuthenticatorTest.TEST_USER;
+import static java.util.Collections.emptyList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
-public class DeviceManagerTest {
+public class DeviceManagerTest implements AuthenticationSetter {
 
     private UserDeviceHandler dbHandler;
 
@@ -69,14 +69,10 @@ public class DeviceManagerTest {
         authAdmin = Mockito.mock(AuthAdmin.class);
 
         uut = new DeviceManager(dbHandler, foodDbHandler, ticketDbHandler, authAdmin);
-        uut.setPrincipals(TEST_USER);
     }
 
     @AfterEach
     public void tearDown() {
-        Mockito.verify(dbHandler).setPrincipals(TEST_USER);
-        Mockito.verify(foodDbHandler).setPrincipals(TEST_USER);
-        Mockito.verify(ticketDbHandler).setPrincipals(TEST_USER);
         Mockito.verifyNoMoreInteractions(dbHandler);
         Mockito.verifyNoMoreInteractions(foodDbHandler);
         Mockito.verifyNoMoreInteractions(ticketDbHandler);
@@ -142,16 +138,16 @@ public class DeviceManagerTest {
 
     @Test
     public void gettingDevicesWorks() {
-        AsyncResponse r = Mockito.mock(AsyncResponse.class);
-        Mockito.when(dbHandler.get(Instant.EPOCH, Instant.EPOCH)).thenReturn(Validation.success(Stream.empty()));
+        Mockito.when(dbHandler.get(Instant.EPOCH, Instant.EPOCH)).thenReturn(Validation.success(emptyList()));
         Mockito.when(dbHandler.commit()).thenReturn(StatusCode.SUCCESS);
         when(dbHandler.setReadOnly()).thenReturn(StatusCode.SUCCESS);
 
-        Validation<StatusCode, Stream<UserDevice>> result = uut.get(r, Instant.EPOCH, Instant.EPOCH);
+        Validation<StatusCode, List<UserDevice>> result = uut.get(Instant.EPOCH, Instant.EPOCH);
 
         assertTrue(result.isSuccess());
         Mockito.verify(dbHandler).get(Instant.EPOCH, Instant.EPOCH);
         Mockito.verify(dbHandler).setReadOnly();
+        Mockito.verify(dbHandler).commit();
     }
 
     @Test

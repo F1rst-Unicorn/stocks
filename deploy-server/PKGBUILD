@@ -26,12 +26,12 @@ url="https://github.com/F1rst-Unicorn/stocks"
 license=('GPL3')
 depends=('nginx'
          'openssl'
-         'tomcat10')
+         'java-runtime-headless>=21')
 makedepends=('git'
              'maven')
 install=stocks-server.install
-backup=("etc/$pkgname/stocks.properties"
-        "etc/$pkgname/log4j2-stocks.xml"
+backup=("etc/$pkgname/stocks-stocks.yml"
+        "etc/$pkgname/log4j2-spring.xml"
         "usr/lib/$pkgname/setup-ca")
 
 build() {
@@ -55,10 +55,14 @@ package() {
     mkdir -p $pkgdir/usr/share/$pkgname/instances
 
     install -D -m 555 deploy-server/config/setup-ca     $pkgdir/usr/lib/$pkgname/setup-ca
-    install -D -m 444 server/build/libs/server-*.war    $pkgdir/usr/lib/$pkgname/server.war
+    install -D -m 444 server/build/libs/server-$pkgver.jar    $pkgdir/usr/lib/$pkgname/server.jar
 
-    install -D -m 644 deploy-server/config/stocks.properties $pkgdir/etc/$pkgname/stocks.properties
-    install -D -m 644 deploy-server/config/log4j2.xml        $pkgdir/etc/$pkgname/log4j2-stocks.xml
+    install -D -m 644 deploy-server/config/stocks.yml $pkgdir/etc/$pkgname/stocks-stocks.yml
+    install -D -m 644 deploy-server/config/log4j2-spring.xml        $pkgdir/etc/$pkgname/log4j2-spring.xml
+
+    install -D -m 644 deploy-server/config/systemd.service $pkgdir/usr/lib/systemd/system/${pkgname}@.service
+    install -D -m 644 deploy-server/config/systemd.sysusers $pkgdir/usr/lib/sysusers.d/${pkgname}.conf
+    install -D -m 644 deploy-server/config/systemd.tmpfiles $pkgdir/usr/lib/tmpfiles.d/${pkgname}.conf
 
     install -D -m 444 README.md                            $pkgdir/usr/share/doc/$pkgname/README.md
     install -D -m 444 manual/server/server-installation.md $pkgdir/usr/share/doc/$pkgname/

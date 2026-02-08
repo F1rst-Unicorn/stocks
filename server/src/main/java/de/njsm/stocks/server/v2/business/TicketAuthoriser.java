@@ -31,9 +31,14 @@ import de.njsm.stocks.server.v2.db.TicketHandler;
 import fj.data.Validation;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+import org.springframework.web.context.annotation.RequestScope;
 
 import java.time.LocalDateTime;
 
+@Service
+@RequestScope
 public class TicketAuthoriser implements BusinessOperations {
 
     private static final Logger LOG = LogManager.getLogger(TicketAuthoriser.class);
@@ -44,7 +49,11 @@ public class TicketAuthoriser implements BusinessOperations {
 
     private final int validityTimeInMinutes;
 
-    public TicketAuthoriser(AuthAdmin authAdmin, TicketHandler databaseHandler, int validityTimeInMinutes) {
+    public TicketAuthoriser(
+            AuthAdmin authAdmin,
+            TicketHandler databaseHandler,
+            @Value("${de.njsm.stocks.server.auth.ticket-validity-in-minutes}") int validityTimeInMinutes
+    ) {
         this.authAdmin = authAdmin;
         this.databaseHandler = databaseHandler;
         this.validityTimeInMinutes = validityTimeInMinutes;
@@ -142,10 +151,5 @@ public class TicketAuthoriser implements BusinessOperations {
     @Override
     public FailSafeDatabaseHandler getDbHandler() {
         return databaseHandler;
-    }
-
-    @Override
-    public Principals getPrincipals() {
-        return Principals.DUMMY;
     }
 }

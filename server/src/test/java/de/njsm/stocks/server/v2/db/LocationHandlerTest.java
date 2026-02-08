@@ -31,10 +31,8 @@ import org.mockito.Mockito;
 import java.time.Instant;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static de.njsm.stocks.server.v2.db.CrudDatabaseHandler.INFINITY;
-import static de.njsm.stocks.server.v2.web.PrincipalFilterTest.TEST_USER;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 
@@ -50,16 +48,16 @@ public class LocationHandlerTest extends DbTestCase implements CrudOperationsTes
 
         uut = new LocationHandler(getConnectionFactory(),
                 foodItemHandler);
-        uut.setPrincipals(TEST_USER);
     }
 
     @Test
     public void gettingBitemporalWorks() {
 
-        Validation<StatusCode, Stream<Location>> result = uut.get(Instant.EPOCH, INFINITY.toInstant());
+        Validation<StatusCode, List<Location>> result = uut.get(Instant.EPOCH, INFINITY.toInstant());
 
         assertTrue(result.isSuccess());
         List<BitemporalLocation> data = result.success()
+                .stream()
                 .map(v -> (BitemporalLocation) v).collect(Collectors.toList());
 
         assertTrue(data.stream().anyMatch(l ->
@@ -80,10 +78,10 @@ public class LocationHandlerTest extends DbTestCase implements CrudOperationsTes
     @Test
     public void gettingWorks() {
 
-        Validation<StatusCode, Stream<Location>> result = uut.get(Instant.EPOCH, INFINITY.toInstant());
+        Validation<StatusCode, List<Location>> result = uut.get(Instant.EPOCH, INFINITY.toInstant());
 
         assertTrue(result.isSuccess());
-        List<Location> data = result.success().collect(Collectors.toList());
+        List<Location> data = result.success().stream().collect(Collectors.toList());
 
         assertTrue(data.stream().anyMatch(l ->
                 l.id() == 1 &&
@@ -161,9 +159,9 @@ public class LocationHandlerTest extends DbTestCase implements CrudOperationsTes
     @Test
     public void bitemporalDataIsPresentWhenDesired() {
 
-        Validation<StatusCode, Stream<Location>> result = uut.get(Instant.EPOCH, INFINITY.toInstant());
+        Validation<StatusCode, List<Location>> result = uut.get(Instant.EPOCH, INFINITY.toInstant());
 
-        BitemporalLocation sample = (BitemporalLocation) result.success().findAny().get();
+        BitemporalLocation sample = (BitemporalLocation) result.success().stream().findAny().get();
         assertNotNull(sample.validTimeStart());
         assertNotNull(sample.validTimeEnd());
         assertNotNull(sample.transactionTimeStart());

@@ -21,8 +21,9 @@
 
 package de.njsm.stocks.server.v2.db;
 
-import de.njsm.stocks.common.api.*;
 import org.jooq.DSLContext;
+import de.njsm.stocks.common.api.Entity;
+import de.njsm.stocks.common.api.Identifiable;
 
 public interface PresenceChecker<T extends Entity<T>> {
 

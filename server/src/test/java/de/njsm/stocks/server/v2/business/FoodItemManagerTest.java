@@ -22,11 +22,7 @@
 package de.njsm.stocks.server.v2.business;
 
 
-import de.njsm.stocks.common.api.FoodItem;
-import de.njsm.stocks.common.api.StatusCode;
-import de.njsm.stocks.common.api.FoodItemForDeletion;
-import de.njsm.stocks.common.api.FoodItemForEditing;
-import de.njsm.stocks.common.api.FoodItemForInsertion;
+import de.njsm.stocks.common.api.*;
 import de.njsm.stocks.server.v2.db.FoodHandler;
 import de.njsm.stocks.server.v2.db.FoodItemHandler;
 import fj.data.Validation;
@@ -35,18 +31,17 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
-import jakarta.ws.rs.container.AsyncResponse;
 import java.time.Instant;
-import java.util.stream.Stream;
+import java.util.List;
 
-import static de.njsm.stocks.server.v2.web.PrincipalFilterTest.TEST_USER;
+import static java.util.Collections.emptyList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
-public class FoodItemManagerTest {
+public class FoodItemManagerTest implements AuthenticationSetter {
 
     private FoodItemManager uut;
 
@@ -60,28 +55,25 @@ public class FoodItemManagerTest {
         foodHandler = Mockito.mock(FoodHandler.class);
         Mockito.when(backend.commit()).thenReturn(StatusCode.SUCCESS);
         uut = new FoodItemManager(backend, foodHandler);
-        uut.setPrincipals(TEST_USER);
     }
 
     @AfterEach
     public void tearDown() {
-        Mockito.verify(backend).setPrincipals(TEST_USER);
-        Mockito.verify(foodHandler).setPrincipals(TEST_USER);
         Mockito.verifyNoMoreInteractions(backend);
         Mockito.verifyNoMoreInteractions(foodHandler);
     }
 
     @Test
     public void gettingItemsIsForwarded() {
-        AsyncResponse r = Mockito.mock(AsyncResponse.class);
         when(backend.setReadOnly()).thenReturn(StatusCode.SUCCESS);
-        Mockito.when(backend.get(Instant.EPOCH, Instant.EPOCH)).thenReturn(Validation.success(Stream.empty()));
+        Mockito.when(backend.get(Instant.EPOCH, Instant.EPOCH)).thenReturn(Validation.success(emptyList()));
 
-        Validation<StatusCode, Stream<FoodItem>> result = uut.get(r, Instant.EPOCH, Instant.EPOCH);
+        Validation<StatusCode, List<FoodItem>> result = uut.get(Instant.EPOCH, Instant.EPOCH);
 
         assertTrue(result.isSuccess());
         Mockito.verify(backend).get(Instant.EPOCH, Instant.EPOCH);
         Mockito.verify(backend).setReadOnly();
+        Mockito.verify(backend).commit();
     }
 
     @Test

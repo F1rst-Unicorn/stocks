@@ -21,22 +21,19 @@
 
 package de.njsm.stocks.server.v2.web;
 
+import de.njsm.stocks.common.api.ListResponse;
 import de.njsm.stocks.common.api.StatusCode;
-import de.njsm.stocks.common.api.StreamResponse;
 import de.njsm.stocks.common.api.Update;
 import de.njsm.stocks.server.v2.business.UpdateManager;
 import fj.data.Validation;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 
-import jakarta.ws.rs.container.AsyncResponse;
-import java.util.stream.Stream;
+import java.util.Collections;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.verify;
 
 public class UpdateEndpointTest {
 
@@ -57,18 +54,13 @@ public class UpdateEndpointTest {
 
     @Test
     public void getUpdates() {
-        AsyncResponse r = Mockito.mock(AsyncResponse.class);
-        Mockito.when(dbLayer.getUpdates(r))
-                .thenReturn(Validation.success(Stream.of()));
+        Mockito.when(dbLayer.getUpdates())
+                .thenReturn(Validation.success(Collections.emptyList()));
 
-        uut.getUpdates(r);
+        var actual = (ListResponse<Update>) uut.getUpdates();
 
-        ArgumentCaptor<StreamResponse<Update>> c = ArgumentCaptor.forClass(StreamResponse.class);
-        verify(r).resume(c.capture());
-        assertEquals(StatusCode.SUCCESS, c.getValue().getStatus());
-        assertEquals(0, c.getValue().data.count());
-        Mockito.verify(dbLayer).getUpdates(r);
+        assertEquals(StatusCode.SUCCESS, actual.getStatus());
+        assertEquals(0, actual.data.size());
+        Mockito.verify(dbLayer).getUpdates();
     }
-
-
 }

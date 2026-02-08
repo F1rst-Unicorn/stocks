@@ -27,7 +27,7 @@ import fj.data.Validation;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.stream.Stream;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -43,9 +43,9 @@ public class UpdateBackendTest extends DbTestCase {
 
     @Test
     public void getUpdates() {
-        Validation<StatusCode, Stream<Update>> result = uut.get();
+        Validation<StatusCode, List<Update>> result = uut.get();
 
         assertTrue(result.isSuccess());
-        assertEquals(11, result.success().count());
+        assertEquals(11, result.success().size());
     }
 }

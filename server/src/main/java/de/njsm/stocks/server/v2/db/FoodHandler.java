@@ -23,21 +23,22 @@ package de.njsm.stocks.server.v2.db;
 
 import de.njsm.stocks.common.api.*;
 import de.njsm.stocks.server.v2.db.jooq.tables.records.FoodRecord;
-import org.jooq.Condition;
-import org.jooq.Field;
-import org.jooq.Table;
-import org.jooq.TableField;
+import org.jooq.*;
 import org.jooq.impl.DSL;
+import org.springframework.context.annotation.Primary;
+import org.springframework.stereotype.Repository;
+import org.springframework.web.context.annotation.RequestScope;
 
 import java.time.Period;
 import java.util.Arrays;
 import java.util.List;
-import java.util.function.Function;
 
 import static de.njsm.stocks.server.v2.db.jooq.Tables.FOOD;
 import static org.jooq.impl.DSL.val;
 
-
+@Repository
+@RequestScope
+@Primary
 public class FoodHandler extends CrudDatabaseHandler<FoodRecord, Food> {
 
 
@@ -211,7 +212,7 @@ public class FoodHandler extends CrudDatabaseHandler<FoodRecord, Food> {
     }
 
     @Override
-    protected Function<FoodRecord, Food> getDtoMap() {
+    protected RecordMapper<FoodRecord, Food> getDtoMap() {
         return cursor -> BitemporalFood.builder()
                 .id(cursor.getId())
                 .version(cursor.getVersion())

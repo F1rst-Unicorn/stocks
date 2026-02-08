@@ -22,44 +22,37 @@
 package de.njsm.stocks.server.v2.web;
 
 import de.njsm.stocks.common.api.Entity;
+import de.njsm.stocks.common.api.ListResponse;
 import de.njsm.stocks.common.api.Response;
 import de.njsm.stocks.common.api.StatusCode;
-import de.njsm.stocks.common.api.StreamResponse;
 import de.njsm.stocks.server.v2.business.BusinessGettable;
 import fj.data.Validation;
-import org.jooq.TableRecord;
-
-import jakarta.ws.rs.GET;
-import jakarta.ws.rs.Produces;
-import jakarta.ws.rs.QueryParam;
-import jakarta.ws.rs.container.AsyncResponse;
-import jakarta.ws.rs.container.Suspended;
 import jakarta.ws.rs.core.MediaType;
+import org.jooq.TableRecord;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
 import java.time.Instant;
+import java.util.List;
 import java.util.Optional;
-import java.util.stream.Stream;
 
 import static de.njsm.stocks.server.v2.web.Endpoint.parseToInstant;
 
 public interface Get<U extends TableRecord<U>, T extends Entity<T>> {
 
-    @GET
-    @Produces(MediaType.APPLICATION_JSON)
-    default void get(@Suspended AsyncResponse response,
-                    @QueryParam("startingFrom") String startingFromParameter,
-                     @QueryParam("upUntil") String upUntilParameter) {
+    @GetMapping(produces = MediaType.APPLICATION_JSON)
+    default Response get(@RequestParam("startingFrom") String startingFromParameter,
+                     @RequestParam("upUntil") String upUntilParameter) {
         Optional<Instant> startingFrom = parseToInstant(startingFromParameter, "startingFrom");
         Optional<Instant> upUntil = parseToInstant(upUntilParameter, "upUntil");
         if (startingFrom.isEmpty() || upUntil.isEmpty()) {
-            response.resume(new Response(StatusCode.INVALID_ARGUMENT));
-            return;
+            return new Response(StatusCode.INVALID_ARGUMENT);
         }
 
-        Validation<StatusCode, Stream<T>> result = getManager().get(
-                response,
+        Validation<StatusCode, List<T>> result = getManager().get(
                 startingFrom.get(),
                 upUntil.get());
-        response.resume(new StreamResponse<>(result));
+        return new ListResponse<>(result);
     }
 
     BusinessGettable<U, T> getManager();

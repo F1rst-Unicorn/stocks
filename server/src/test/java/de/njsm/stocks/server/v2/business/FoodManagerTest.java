@@ -32,16 +32,15 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
-import jakarta.ws.rs.container.AsyncResponse;
 import java.time.Instant;
-import java.util.stream.Stream;
+import java.util.List;
 
-import static de.njsm.stocks.server.v2.web.PrincipalFilterTest.TEST_USER;
+import static java.util.Collections.emptyList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 
-public class FoodManagerTest {
+public class FoodManagerTest implements AuthenticationSetter {
 
     private FoodManager uut;
 
@@ -58,14 +57,10 @@ public class FoodManagerTest {
         eanNumberHandler = Mockito.mock(EanNumberHandler.class);
         Mockito.when(backend.commit()).thenReturn(StatusCode.SUCCESS);
         uut = new FoodManager(backend, foodItemHandler, eanNumberHandler);
-        uut.setPrincipals(TEST_USER);
     }
 
     @AfterEach
     public void tearDown() {
-        Mockito.verify(backend).setPrincipals(TEST_USER);
-        Mockito.verify(foodItemHandler).setPrincipals(TEST_USER);
-        Mockito.verify(eanNumberHandler).setPrincipals(TEST_USER);
         Mockito.verifyNoMoreInteractions(backend);
         Mockito.verifyNoMoreInteractions(foodItemHandler);
         Mockito.verifyNoMoreInteractions(eanNumberHandler);
@@ -73,15 +68,15 @@ public class FoodManagerTest {
 
     @Test
     public void gettingItemsIsForwarded() {
-        AsyncResponse r = Mockito.mock(AsyncResponse.class);
         when(backend.setReadOnly()).thenReturn(StatusCode.SUCCESS);
-        Mockito.when(backend.get(Instant.EPOCH, Instant.EPOCH)).thenReturn(Validation.success(Stream.empty()));
+        Mockito.when(backend.get(Instant.EPOCH, Instant.EPOCH)).thenReturn(Validation.success(emptyList()));
 
-        Validation<StatusCode, Stream<Food>> result = uut.get(r, Instant.EPOCH, Instant.EPOCH);
+        Validation<StatusCode, List<Food>> result = uut.get(Instant.EPOCH, Instant.EPOCH);
 
         assertTrue(result.isSuccess());
         Mockito.verify(backend).get(Instant.EPOCH, Instant.EPOCH);
         Mockito.verify(backend).setReadOnly();
+        Mockito.verify(backend).commit();
     }
 
     @Test

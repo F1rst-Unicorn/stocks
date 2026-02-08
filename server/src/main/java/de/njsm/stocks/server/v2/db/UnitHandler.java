@@ -21,20 +21,27 @@
 
 package de.njsm.stocks.server.v2.db;
 
-import de.njsm.stocks.common.api.*;
+import de.njsm.stocks.common.api.BitemporalUnit;
+import de.njsm.stocks.common.api.StatusCode;
+import de.njsm.stocks.common.api.Unit;
+import de.njsm.stocks.common.api.UnitForRenaming;
 import de.njsm.stocks.server.v2.db.jooq.tables.records.UnitRecord;
 import org.jooq.Field;
+import org.jooq.RecordMapper;
 import org.jooq.Table;
 import org.jooq.TableField;
 import org.jooq.impl.DSL;
+import org.springframework.stereotype.Repository;
+import org.springframework.web.context.annotation.RequestScope;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.function.Function;
 
 import static de.njsm.stocks.server.v2.db.jooq.Tables.UNIT;
 
 
+@Repository
+@RequestScope
 public class UnitHandler extends CrudDatabaseHandler<UnitRecord, Unit> {
 
 
@@ -79,7 +86,7 @@ public class UnitHandler extends CrudDatabaseHandler<UnitRecord, Unit> {
     }
 
     @Override
-    protected Function<UnitRecord, Unit> getDtoMap() {
+    protected RecordMapper<UnitRecord, Unit> getDtoMap() {
         return cursor -> BitemporalUnit.builder()
                 .id(cursor.getId())
                 .version(cursor.getVersion())

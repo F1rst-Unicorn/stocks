@@ -26,22 +26,24 @@ import de.njsm.stocks.server.util.Principals;
 import de.njsm.stocks.server.v2.db.DbTestCase;
 import de.njsm.stocks.server.v2.db.FoodItemHandler;
 import de.njsm.stocks.server.v2.db.LocationHandler;
+import de.njsm.stocks.server.v2.web.security.HeaderAuthenticatorTest;
+import de.njsm.stocks.server.v2.web.security.StocksAuthentication;
 import fj.data.Validation;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.sql.SQLException;
 import java.time.Instant;
 import java.time.OffsetDateTime;
 import java.time.Period;
-import java.util.stream.Stream;
+import java.util.List;
 
 import static de.njsm.stocks.server.v2.db.CrudDatabaseHandler.INFINITY;
 import static de.njsm.stocks.server.v2.db.jooq.Tables.USER_DEVICE;
 import static de.njsm.stocks.server.v2.db.jooq.tables.CurrentLocation.CURRENT_LOCATION;
 import static de.njsm.stocks.server.v2.db.jooq.tables.Location.LOCATION;
-import static de.njsm.stocks.server.v2.web.PrincipalFilterTest.TEST_USER;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -54,7 +56,7 @@ public class BitemporalityTest extends DbTestCase {
         FoodItemHandler foodItemHandler = Mockito.mock(FoodItemHandler.class);
 
         uut = new LocationHandler(getConnectionFactory(), foodItemHandler);
-        uut.setPrincipals(TEST_USER);
+        SecurityContextHolder.getContext().setAuthentication(new StocksAuthentication(HeaderAuthenticatorTest.TEST_USER));
     }
 
     @Test
@@ -89,7 +91,7 @@ public class BitemporalityTest extends DbTestCase {
 
         long allRows = uut.get(Instant.EPOCH, INFINITY.toInstant())
                 .success()
-                .count();
+                .size();
         assertEquals(5, allRows);
     }
 
@@ -124,11 +126,11 @@ public class BitemporalityTest extends DbTestCase {
 
 
         //                                            DB tracks at microsecond precision -----v
-        Validation<StatusCode, Stream<Location>> result = uut.get(now.minusDays(3).minusNanos(1000).toInstant(), INFINITY.toInstant());
+        Validation<StatusCode, List<Location>> result = uut.get(now.minusDays(3).minusNanos(1000).toInstant(), INFINITY.toInstant());
 
         long retrievedRows = result
                 .success()
-                .count();
+                .size();
         assertEquals(8, retrievedRows);
     }
 
@@ -148,7 +150,7 @@ public class BitemporalityTest extends DbTestCase {
                 .belongsTo(1)
                 .build();
         Principals principals = new Principals("Bob", youngDevice.name(), 1, youngDevice.id());
-        uut.setPrincipals(principals);
+        SecurityContextHolder.getContext().setAuthentication(new StocksAuthentication(principals));
         LocationForRenaming input = LocationForRenaming.builder()
                 .id(1)
                 .version(0)
@@ -163,9 +165,9 @@ public class BitemporalityTest extends DbTestCase {
         uut.rename(input);
         getConnectionFactory().getConnection().commit();
 
-        Validation<StatusCode, Stream<Location>> dbData = uut.get(Instant.EPOCH, INFINITY.toInstant());
+        Validation<StatusCode, List<Location>> dbData = uut.get(Instant.EPOCH, INFINITY.toInstant());
         assertTrue(dbData.isSuccess());
-        assertTrue(dbData.success().map(v -> (BitemporalLocation) v).anyMatch(f -> f.name().equals(input.name())
+        assertTrue(dbData.success().stream().map(v -> (BitemporalLocation) v).anyMatch(f -> f.name().equals(input.name())
                 && f.id() == input.id()
                 && f.version() == input.version() + 1
                 && f.validTimeEnd().equals(INFINITY.toInstant())
@@ -189,7 +191,7 @@ public class BitemporalityTest extends DbTestCase {
                 .belongsTo(1)
                 .build();
         Principals principals = new Principals("Bob", youngDevice.name(), 1, youngDevice.id());
-        uut.setPrincipals(principals);
+        SecurityContextHolder.getContext().setAuthentication(new StocksAuthentication(principals));
         LocationForDeletion input = LocationForDeletion.builder()
                 .id(2)
                 .version(0)
@@ -203,9 +205,9 @@ public class BitemporalityTest extends DbTestCase {
         uut.delete(input);
         getConnectionFactory().getConnection().commit();
 
-        Validation<StatusCode, Stream<Location>> dbData = uut.get(Instant.EPOCH, INFINITY.toInstant());
+        Validation<StatusCode, List<Location>> dbData = uut.get(Instant.EPOCH, INFINITY.toInstant());
         assertTrue(dbData.isSuccess());
-        assertTrue(dbData.success().map(v -> (BitemporalLocation) v).anyMatch(f -> f.name().equals("Cupboard")
+        assertTrue(dbData.success().stream().map(v -> (BitemporalLocation) v).anyMatch(f -> f.name().equals("Cupboard")
                 && f.id() == input.id()
                 && f.version() == input.version()
                 && !f.validTimeEnd().equals(INFINITY.toInstant())

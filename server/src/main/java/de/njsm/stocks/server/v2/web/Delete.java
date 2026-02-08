@@ -26,27 +26,21 @@ import de.njsm.stocks.common.api.Entity;
 import de.njsm.stocks.common.api.Response;
 import de.njsm.stocks.common.api.StatusCode;
 import de.njsm.stocks.common.api.Versionable;
-import jakarta.servlet.http.HttpServletRequest;
-
-import jakarta.ws.rs.DELETE;
-import jakarta.ws.rs.Produces;
-import jakarta.ws.rs.QueryParam;
-import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import static de.njsm.stocks.server.v2.web.Endpoint.isValid;
 import static de.njsm.stocks.server.v2.web.Endpoint.isValidVersion;
 
 public interface Delete<T extends Versionable<U>, U extends Entity<U>> extends MetaDelete<T, U> {
 
-    @DELETE
-    @Produces(MediaType.APPLICATION_JSON)
-    default Response delete(@Context HttpServletRequest request,
-                            @QueryParam("id") int id,
-                            @QueryParam("version") int version) {
+    @DeleteMapping(produces = MediaType.APPLICATION_JSON)
+    default Response delete(@RequestParam("id") int id,
+                            @RequestParam("version") int version) {
         if (isValid(id, "id") &&
                 isValidVersion(version, "version")) {
-            return delete(request, () -> wrapParameters(id, version));
+            return delete(() -> wrapParameters(id, version));
         } else {
             return new Response(StatusCode.INVALID_ARGUMENT);
         }

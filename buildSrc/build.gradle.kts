@@ -19,7 +19,10 @@ dependencies {
     implementation(libs.android.application)
     implementation(libs.android.navigation.safeargs)
     implementation(libs.jooq.plugin)
+    implementation(libs.liquibase)
     implementation(libs.liquibase.plugin)
+    implementation(libs.spring.dependency.management)
+    implementation(libs.spring.boot.plugin)
     implementation(libs.jaxb.api)
     implementation(libs.ktlint)
 }

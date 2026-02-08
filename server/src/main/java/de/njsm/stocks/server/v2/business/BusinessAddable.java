@@ -21,12 +21,12 @@
 
 package de.njsm.stocks.server.v2.business;
 
+import org.jooq.TableRecord;
 import de.njsm.stocks.common.api.Entity;
 import de.njsm.stocks.common.api.Insertable;
 import de.njsm.stocks.common.api.StatusCode;
 import de.njsm.stocks.server.v2.db.CrudDatabaseHandler;
 import fj.data.Validation;
-import org.jooq.TableRecord;
 
 public interface BusinessAddable<U extends TableRecord<U>, T extends Entity<T>> extends BusinessOperations {
 

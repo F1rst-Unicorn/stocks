@@ -21,24 +21,18 @@
 
 package de.njsm.stocks.server.v2.business;
 
-import de.njsm.stocks.common.api.Entity;
 import de.njsm.stocks.server.util.Principals;
-import de.njsm.stocks.server.v2.db.CrudDatabaseHandler;
 import org.jooq.TableRecord;
+import de.njsm.stocks.common.api.Entity;
+import de.njsm.stocks.server.v2.db.CrudDatabaseHandler;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 public class BusinessObject<U extends TableRecord<U>, T extends Entity<T>> implements BusinessOperations {
 
     private final CrudDatabaseHandler<U, T> dbHandler;
 
-    Principals principals;
-
     public BusinessObject(CrudDatabaseHandler<U, T> dbHandler) {
         this.dbHandler = dbHandler;
-    }
-
-    public void setPrincipals(Principals principals) {
-        this.principals = principals;
-        dbHandler.setPrincipals(principals);
     }
 
     @Override
@@ -46,8 +40,7 @@ public class BusinessObject<U extends TableRecord<U>, T extends Entity<T>> imple
         return dbHandler;
     }
 
-    @Override
-    public Principals getPrincipals() {
-        return principals;
+    protected Principals getPrincipals() {
+        return (Principals) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     }
 }

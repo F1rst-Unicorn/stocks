@@ -26,6 +26,7 @@ import de.njsm.stocks.server.util.Principals;
 import fj.data.Validation;
 import org.jooq.Field;
 import org.jooq.impl.DSL;
+import org.springframework.stereotype.Repository;
 
 import java.time.OffsetDateTime;
 import java.util.Set;
@@ -35,6 +36,7 @@ import static de.njsm.stocks.server.v2.db.jooq.tables.Ticket.TICKET;
 import static de.njsm.stocks.server.v2.db.jooq.tables.User.USER;
 import static de.njsm.stocks.server.v2.db.jooq.tables.UserDevice.USER_DEVICE;
 
+@Repository
 public class PrincipalsHandler extends FailSafeDatabaseHandler {
 
     public PrincipalsHandler(ConnectionFactory connectionFactory) {

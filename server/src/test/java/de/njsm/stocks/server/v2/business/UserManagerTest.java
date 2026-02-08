@@ -25,26 +25,24 @@ import de.njsm.stocks.common.api.*;
 import de.njsm.stocks.server.v2.db.FoodItemHandler;
 import de.njsm.stocks.server.v2.db.UserDeviceHandler;
 import de.njsm.stocks.server.v2.db.UserHandler;
-import de.njsm.stocks.server.v2.web.PrincipalFilterTest;
 import fj.data.Validation;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
-import jakarta.ws.rs.container.AsyncResponse;
 import java.time.Instant;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.stream.Stream;
 
-import static de.njsm.stocks.server.v2.web.PrincipalFilterTest.TEST_USER;
+import static de.njsm.stocks.server.v2.web.security.HeaderAuthenticatorTest.TEST_USER;
+import static java.util.Collections.emptyList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
-public class UserManagerTest {
+public class UserManagerTest implements AuthenticationSetter {
 
     private UserManager uut;
 
@@ -61,14 +59,10 @@ public class UserManagerTest {
         foodItemHandler = Mockito.mock(FoodItemHandler.class);
 
         uut = new UserManager(userDbHandler, deviceHandler, foodItemHandler);
-        uut.setPrincipals(TEST_USER);
     }
 
     @AfterEach
     public void tearDown() {
-        Mockito.verify(userDbHandler).setPrincipals(TEST_USER);
-        Mockito.verify(deviceHandler).setPrincipals(TEST_USER);
-        Mockito.verify(foodItemHandler).setPrincipals(TEST_USER);
         Mockito.verifyNoMoreInteractions(userDbHandler);
         Mockito.verifyNoMoreInteractions(deviceHandler);
         Mockito.verifyNoMoreInteractions(foodItemHandler);
@@ -76,16 +70,16 @@ public class UserManagerTest {
 
     @Test
     public void getUsersWorks() {
-        AsyncResponse r = Mockito.mock(AsyncResponse.class);
-        Mockito.when(userDbHandler.get(Instant.EPOCH, Instant.EPOCH)).thenReturn(Validation.success(Stream.empty()));
+        Mockito.when(userDbHandler.get(Instant.EPOCH, Instant.EPOCH)).thenReturn(Validation.success(emptyList()));
         Mockito.when(userDbHandler.commit()).thenReturn(StatusCode.SUCCESS);
         when(userDbHandler.setReadOnly()).thenReturn(StatusCode.SUCCESS);
 
-        Validation<StatusCode, Stream<User>> result = uut.get(r, Instant.EPOCH, Instant.EPOCH);
+        Validation<StatusCode, List<User>> result = uut.get(Instant.EPOCH, Instant.EPOCH);
 
         assertTrue(result.isSuccess());
         Mockito.verify(userDbHandler).get(Instant.EPOCH, Instant.EPOCH);
         Mockito.verify(userDbHandler).setReadOnly();
+        Mockito.verify(userDbHandler).commit();
     }
 
     @Test
@@ -164,14 +158,14 @@ public class UserManagerTest {
                 .belongsTo(input.id())
                 .build());
         Mockito.when(deviceHandler.getDevicesOfUser(input)).thenReturn(Validation.success(devices));
-        Mockito.when(foodItemHandler.transferFoodItems(input, PrincipalFilterTest.TEST_USER.toUser(), devices, PrincipalFilterTest.TEST_USER.toDevice()))
+        Mockito.when(foodItemHandler.transferFoodItems(input, TEST_USER.toUser(), devices, TEST_USER.toDevice()))
                 .thenReturn(code);
 
         StatusCode result = uut.delete(input);
 
         assertEquals(code, result);
         Mockito.verify(deviceHandler).getDevicesOfUser(input);
-        Mockito.verify(foodItemHandler).transferFoodItems(input, PrincipalFilterTest.TEST_USER.toUser(), devices, PrincipalFilterTest.TEST_USER.toDevice());
+        Mockito.verify(foodItemHandler).transferFoodItems(input, TEST_USER.toUser(), devices, TEST_USER.toDevice());
         Mockito.verify(userDbHandler).rollback();
     }
 
@@ -216,7 +210,7 @@ public class UserManagerTest {
                 .belongsTo(input.id())
                 .build());
         Mockito.when(deviceHandler.getDevicesOfUser(input)).thenReturn(Validation.success(devices));
-        Mockito.when(foodItemHandler.transferFoodItems(input, PrincipalFilterTest.TEST_USER.toUser(), devices, PrincipalFilterTest.TEST_USER.toDevice()))
+        Mockito.when(foodItemHandler.transferFoodItems(input, TEST_USER.toUser(), devices, TEST_USER.toDevice()))
                 .thenReturn(StatusCode.SUCCESS);
         Mockito.when(userDbHandler.delete(input)).thenReturn(StatusCode.SUCCESS);
         Mockito.when(userDbHandler.commit()).thenReturn(StatusCode.SUCCESS);
@@ -225,7 +219,7 @@ public class UserManagerTest {
 
         assertEquals(StatusCode.SUCCESS, result);
         Mockito.verify(deviceHandler).getDevicesOfUser(input);
-        Mockito.verify(foodItemHandler).transferFoodItems(input, PrincipalFilterTest.TEST_USER.toUser(), devices, PrincipalFilterTest.TEST_USER.toDevice());
+        Mockito.verify(foodItemHandler).transferFoodItems(input, TEST_USER.toUser(), devices, TEST_USER.toDevice());
         Mockito.verify(userDbHandler).delete(input);
         Mockito.verify(userDbHandler).commit();
     }

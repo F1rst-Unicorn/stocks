@@ -23,7 +23,11 @@ package de.njsm.stocks.server.v2.db;
 
 import de.njsm.stocks.common.api.StatusCode;
 import org.jooq.impl.DSL;
+import org.springframework.stereotype.Repository;
+import org.springframework.web.context.annotation.RequestScope;
 
+@Repository
+@RequestScope
 public class HealthHandler extends FailSafeDatabaseHandler {
 
     public HealthHandler(ConnectionFactory connectionFactory) {

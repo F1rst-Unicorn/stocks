@@ -25,7 +25,6 @@ import de.njsm.stocks.common.api.StatusCode;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static de.njsm.stocks.server.v2.web.PrincipalFilterTest.TEST_USER;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class HealthHandlerTest extends DbTestCase {
@@ -35,7 +34,6 @@ public class HealthHandlerTest extends DbTestCase {
     @BeforeEach
     public void setup() {
         uut = new HealthHandler(getConnectionFactory());
-        uut.setPrincipals(TEST_USER);
     }
 
     @Test

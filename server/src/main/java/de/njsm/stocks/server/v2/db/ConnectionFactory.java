@@ -23,12 +23,17 @@ package de.njsm.stocks.server.v2.db;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Component;
+import org.springframework.web.context.annotation.RequestScope;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Optional;
 
+@Component
+@RequestScope
 public class ConnectionFactory {
 
     private static final Logger LOG = LogManager.getLogger(ConnectionFactory.class);
@@ -37,7 +42,7 @@ public class ConnectionFactory {
 
     private Connection connection;
 
-    public ConnectionFactory(DataSource pool) {
+    public ConnectionFactory(@Qualifier("hikari") DataSource pool) {
         this.pool = pool;
     }
 

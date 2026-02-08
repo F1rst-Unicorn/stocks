@@ -21,11 +21,10 @@
 
 package de.njsm.stocks.server.util;
 
+import java.util.Objects;
 
 import de.njsm.stocks.server.v2.business.data.UserDeviceForPrincipals;
 import de.njsm.stocks.server.v2.business.data.UserForPrincipals;
-
-import java.util.Objects;
 
 /**
  * Stores the principals of a user during ticket

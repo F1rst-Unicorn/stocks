@@ -21,31 +21,22 @@
 
 package de.njsm.stocks.server.v2.web;
 
-import de.njsm.stocks.common.api.FoodItem;
-import de.njsm.stocks.common.api.Response;
-import de.njsm.stocks.common.api.StatusCode;
-import de.njsm.stocks.common.api.StreamResponse;
-import de.njsm.stocks.common.api.FoodItemForDeletion;
-import de.njsm.stocks.common.api.FoodItemForEditing;
-import de.njsm.stocks.common.api.FoodItemForInsertion;
+import de.njsm.stocks.common.api.*;
 import de.njsm.stocks.common.api.serialisers.InstantSerialiser;
 import de.njsm.stocks.server.v2.business.FoodItemManager;
 import fj.data.Validation;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 
-import jakarta.ws.rs.container.AsyncResponse;
 import java.io.IOException;
 import java.time.Instant;
-import java.util.stream.Stream;
 
-import static de.njsm.stocks.server.v2.web.PrincipalFilterTest.TEST_USER;
-import static de.njsm.stocks.server.v2.web.Util.createMockRequest;
+import static de.njsm.stocks.common.api.StatusCode.INVALID_ARGUMENT;
+import static de.njsm.stocks.server.v2.web.security.HeaderAuthenticatorTest.TEST_USER;
+import static java.util.Collections.emptyList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.verify;
 
 public class FoodItemEndpointTest {
 
@@ -68,33 +59,26 @@ public class FoodItemEndpointTest {
 
     @Test
     public void testGettingItems() {
-        AsyncResponse r = Mockito.mock(AsyncResponse.class);
-        Mockito.when(manager.get(r, Instant.EPOCH, Instant.EPOCH)).thenReturn(Validation.success(Stream.of()));
+        Mockito.when(manager.get(Instant.EPOCH, Instant.EPOCH)).thenReturn(Validation.success(emptyList()));
 
-        uut.get(r, InstantSerialiser.serialize(Instant.EPOCH), InstantSerialiser.serialize(Instant.EPOCH));
+        var actual = (ListResponse<FoodItem>) uut.get(InstantSerialiser.serialize(Instant.EPOCH), InstantSerialiser.serialize(Instant.EPOCH));
 
-        ArgumentCaptor<StreamResponse<FoodItem>> c = ArgumentCaptor.forClass(StreamResponse.class);
-        verify(r).resume(c.capture());
-        assertEquals(StatusCode.SUCCESS, c.getValue().getStatus());
-        assertEquals(0, c.getValue().data.count());
-        Mockito.verify(manager).get(r, Instant.EPOCH, Instant.EPOCH);
+        assertEquals(StatusCode.SUCCESS, actual.getStatus());
+        assertEquals(0, actual.data.size());
+        Mockito.verify(manager).get(Instant.EPOCH, Instant.EPOCH);
     }
 
     @Test
     public void getItemsFromInvalidStartingPoint() {
-        AsyncResponse r = Mockito.mock(AsyncResponse.class);
+        var actual = uut.get("invalid", "invalid");
 
-        uut.get(r, "invalid", "invalid");
-
-        ArgumentCaptor<Response> c = ArgumentCaptor.forClass(Response.class);
-        verify(r).resume(c.capture());
-        assertEquals(StatusCode.INVALID_ARGUMENT, c.getValue().getStatus());
+        assertEquals(INVALID_ARGUMENT, actual.getStatus());
     }
 
     @Test
     public void insertInvalidLocationIdIsReported() throws IOException {
 
-        Response result = uut.putItem(Util.createMockRequest(), DATE, 0, 2, 1);
+        Response result = uut.putItem(DATE, 0, 2, 1);
 
         assertEquals(StatusCode.INVALID_ARGUMENT, result.getStatus());
     }
@@ -102,7 +86,7 @@ public class FoodItemEndpointTest {
     @Test
     public void insertInvalidTypeIdIsReported() throws IOException {
 
-        Response result = uut.putItem(Util.createMockRequest(), DATE, 2, 0, 1);
+        Response result = uut.putItem(DATE, 2, 0, 1);
 
         assertEquals(StatusCode.INVALID_ARGUMENT, result.getStatus());
     }
@@ -110,7 +94,7 @@ public class FoodItemEndpointTest {
     @Test
     public void insertInvalidExpirationIdIsReported() throws IOException {
 
-        Response result = uut.putItem(Util.createMockRequest(), "invalid date", 2, 0, 1);
+        Response result = uut.putItem("invalid date", 2, 0, 1);
 
         assertEquals(StatusCode.INVALID_ARGUMENT, result.getStatus());
     }
@@ -127,17 +111,16 @@ public class FoodItemEndpointTest {
                 .build();
         Mockito.when(manager.add(expected)).thenReturn(Validation.success(1));
 
-        Response result = uut.putItem(Util.createMockRequest(), DATE, expected.storedIn(), expected.ofType(), expected.unit().get());
+        Response result = uut.putItem(DATE, expected.storedIn(), expected.ofType(), expected.unit().get());
 
         assertEquals(StatusCode.SUCCESS, result.getStatus());
         Mockito.verify(manager).add(expected);
-        Mockito.verify(manager).setPrincipals(TEST_USER);
     }
 
     @Test
     public void editInvalidIdIsReported() throws IOException {
 
-        Response result = uut.editItem(Util.createMockRequest(), 0, 2, DATE, 2, 1);
+        Response result = uut.editItem(0, 2, DATE, 2, 1);
 
         assertEquals(StatusCode.INVALID_ARGUMENT, result.getStatus());
     }
@@ -145,7 +128,7 @@ public class FoodItemEndpointTest {
     @Test
     public void editInvalidVersionIdIsReported() throws IOException {
 
-        Response result = uut.editItem(Util.createMockRequest(), 1, -1, DATE, 2, 1);
+        Response result = uut.editItem(1, -1, DATE, 2, 1);
 
         assertEquals(StatusCode.INVALID_ARGUMENT, result.getStatus());
     }
@@ -153,7 +136,7 @@ public class FoodItemEndpointTest {
     @Test
     public void editInvalidDateIsReported() throws IOException {
 
-        Response result = uut.editItem(Util.createMockRequest(), 2, 2, "invalid", 2, 1);
+        Response result = uut.editItem(2, 2, "invalid", 2, 1);
 
         assertEquals(StatusCode.INVALID_ARGUMENT, result.getStatus());
     }
@@ -161,7 +144,7 @@ public class FoodItemEndpointTest {
     @Test
     public void editInvalidLocationIsReported() throws IOException {
 
-        Response result = uut.editItem(Util.createMockRequest(), 2, 2, DATE, 0, 1);
+        Response result = uut.editItem(2, 2, DATE, 0, 1);
 
         assertEquals(StatusCode.INVALID_ARGUMENT, result.getStatus());
     }
@@ -177,18 +160,16 @@ public class FoodItemEndpointTest {
                 .build();
         Mockito.when(manager.edit(expected)).thenReturn(StatusCode.SUCCESS);
 
-        Response result = uut.editItem(Util.createMockRequest(),
-                expected.id(), expected.version(), DATE, expected.storedIn(), expected.unit().get());
+        Response result = uut.editItem(expected.id(), expected.version(), DATE, expected.storedIn(), expected.unit().get());
 
         assertEquals(StatusCode.SUCCESS, result.getStatus());
         Mockito.verify(manager).edit(expected);
-        Mockito.verify(manager).setPrincipals(TEST_USER);
     }
 
     @Test
     public void deleteInvalidIdIsReported() {
 
-        Response result = uut.delete(createMockRequest(), 0, 1);
+        Response result = uut.delete(0, 1);
 
         assertEquals(StatusCode.INVALID_ARGUMENT, result.getStatus());
     }
@@ -196,7 +177,7 @@ public class FoodItemEndpointTest {
     @Test
     public void deleteInvalidVersionIsReported() {
 
-        Response result = uut.delete(createMockRequest(), 1, -1);
+        Response result = uut.delete(1, -1);
 
         assertEquals(StatusCode.INVALID_ARGUMENT, result.getStatus());
     }
@@ -209,10 +190,9 @@ public class FoodItemEndpointTest {
                 .build();
         Mockito.when(manager.delete(expected)).thenReturn(StatusCode.SUCCESS);
 
-        Response result = uut.delete(createMockRequest(), expected.id(), expected.version());
+        Response result = uut.delete(expected.id(), expected.version());
 
         assertEquals(StatusCode.SUCCESS, result.getStatus());
         Mockito.verify(manager).delete(expected);
-        Mockito.verify(manager).setPrincipals(TEST_USER);
     }
 }

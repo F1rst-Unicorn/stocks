@@ -21,20 +21,19 @@
 
 package de.njsm.stocks.server.v2.business;
 
-import de.njsm.stocks.common.api.Identifiable;
-import de.njsm.stocks.common.api.StatusCode;
-import de.njsm.stocks.common.api.User;
-import de.njsm.stocks.common.api.UserDevice;
-import de.njsm.stocks.common.api.UserForDeletion;
-import de.njsm.stocks.server.util.Principals;
+import de.njsm.stocks.common.api.*;
 import de.njsm.stocks.server.v2.db.FoodItemHandler;
 import de.njsm.stocks.server.v2.db.UserDeviceHandler;
 import de.njsm.stocks.server.v2.db.UserHandler;
 import de.njsm.stocks.server.v2.db.jooq.tables.records.UserRecord;
 import fj.data.Validation;
+import org.springframework.stereotype.Service;
+import org.springframework.web.context.annotation.RequestScope;
 
 import java.util.List;
 
+@Service
+@RequestScope
 public class UserManager extends BusinessObject<UserRecord, User> implements
         BusinessGettable<UserRecord, User>,
         BusinessAddable<UserRecord, User>,
@@ -65,15 +64,8 @@ public class UserManager extends BusinessObject<UserRecord, User> implements
 
             List<Identifiable<UserDevice>> devices = deviceResult.success();
 
-            return foodItemHandler.transferFoodItems(userToDelete, principals.toUser(), devices, principals.toDevice())
+            return foodItemHandler.transferFoodItems(userToDelete, getPrincipals().toUser(), devices, getPrincipals().toDevice())
                     .bind(() -> dbHandler.delete(userToDelete));
         });
-    }
-
-    @Override
-    public void setPrincipals(Principals principals) {
-        super.setPrincipals(principals);
-        deviceHandler.setPrincipals(principals);
-        foodItemHandler.setPrincipals(principals);
     }
 }

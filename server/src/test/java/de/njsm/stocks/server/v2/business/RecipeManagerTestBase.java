@@ -28,9 +28,6 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.mockito.Mockito;
 
-import static de.njsm.stocks.server.v2.web.PrincipalFilterTest.TEST_USER;
-import static org.mockito.Mockito.verify;
-
 public abstract class RecipeManagerTestBase {
 
     RecipeManager uut;
@@ -47,12 +44,10 @@ public abstract class RecipeManagerTestBase {
         ingredientHandler = Mockito.mock(RecipeIngredientHandler.class);
         productHandler = Mockito.mock(RecipeProductHandler.class);
         uut = new RecipeManager(recipeHandler, ingredientHandler, productHandler);
-        uut.setPrincipals(TEST_USER);
     }
 
     @AfterEach
     public void tearDown() throws Exception {
-        verify(recipeHandler).setPrincipals(TEST_USER);
         Mockito.verifyNoMoreInteractions(recipeHandler);
     }
 }

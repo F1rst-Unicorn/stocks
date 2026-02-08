@@ -21,27 +21,27 @@
 
 package de.njsm.stocks.server.v2.business;
 
+import java.util.function.Supplier;
+
 import de.njsm.stocks.common.api.StatusCode;
-import de.njsm.stocks.server.util.Principals;
+import de.njsm.stocks.server.v2.db.FailSafeDatabaseHandler;
 import fj.data.Validation;
-import org.glassfish.jersey.internal.util.Producer;
 
-public interface BusinessOperations extends AsyncRunner {
+public interface BusinessOperations {
 
-    default <O> Validation<StatusCode, O> runFunction(Producer<Validation<StatusCode, O>> operation) {
+    default <O> Validation<StatusCode, O> runFunction(Supplier<Validation<StatusCode, O>> operation) {
         return runTransactionUntilSerialisable(operation);
     }
 
-    default StatusCode runOperation(Producer<StatusCode> operation) {
-        Validation<StatusCode, StatusCode> r = runTransactionUntilSerialisable(() -> operation.call().toValidation());
+    default StatusCode runOperation(Supplier<StatusCode> operation) {
+        Validation<StatusCode, StatusCode> r = runTransactionUntilSerialisable(() -> operation.get().toValidation());
         return StatusCode.toCode(r);
     }
 
-    default <O> Validation<StatusCode, O> runTransactionUntilSerialisable(Producer<Validation<StatusCode, O>> operation) {
-        assertPrincipalsAreSet();
+    default <O> Validation<StatusCode, O> runTransactionUntilSerialisable(Supplier<Validation<StatusCode, O>> operation) {
         Validation<StatusCode, O> result;
         do {
-            result = operation.call();
+            result = operation.get();
             result = finishTransaction(result);
         } while (result.isFail() && result.fail() == StatusCode.SERIALISATION_CONFLICT);
         return result;
@@ -61,11 +61,5 @@ public interface BusinessOperations extends AsyncRunner {
         }
     }
 
-    default void assertPrincipalsAreSet() {
-        if (getPrincipals() == null) {
-            throw new IllegalArgumentException("You forgot to set principals");
-        }
-    }
-
-    Principals getPrincipals();
+    FailSafeDatabaseHandler getDbHandler();
 }

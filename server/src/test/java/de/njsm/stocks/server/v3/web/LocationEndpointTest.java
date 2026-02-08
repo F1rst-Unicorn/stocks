@@ -28,8 +28,6 @@ import de.njsm.stocks.server.v2.business.LocationManager;
 import fj.data.Validation;
 import org.junit.jupiter.api.Test;
 
-import static de.njsm.stocks.server.v2.web.PrincipalFilterTest.TEST_USER;
-import static de.njsm.stocks.server.v2.web.Util.createMockRequest;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
@@ -43,14 +41,13 @@ class LocationEndpointTest {
                 .build();
         LocationManager manager = mock(LocationManager.class);
         when(manager.addReturningId(input)).thenReturn(Validation.success(1));
-        LocationEndpoint uut = new LocationEndpoint(manager);
+        LocationV3Endpoint uut = new LocationV3Endpoint(manager);
 
-        DataResponse<Integer> actual = uut.put(createMockRequest(), input);
+        DataResponse<Integer> actual = uut.put(input);
 
         assertEquals(StatusCode.SUCCESS, actual.getStatus());
         assertEquals(1, actual.getData());
         verify(manager).addReturningId(input);
-        verify(manager).setPrincipals(TEST_USER);
         verifyNoMoreInteractions(manager);
     }
 }

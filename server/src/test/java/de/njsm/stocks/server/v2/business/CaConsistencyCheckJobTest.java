@@ -24,25 +24,29 @@ package de.njsm.stocks.server.v2.business;
 import de.njsm.stocks.common.api.StatusCode;
 import de.njsm.stocks.server.util.AuthAdmin;
 import de.njsm.stocks.server.util.Principals;
+import de.njsm.stocks.server.v2.business.job.CaConsistencyChecker;
 import de.njsm.stocks.server.v2.db.FoodItemHandler;
 import de.njsm.stocks.server.v2.db.PrincipalsHandler;
 import de.njsm.stocks.server.v2.db.UserDeviceHandler;
+import de.njsm.stocks.server.v2.web.security.StocksAuthentication;
 import fj.data.Validation;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
+import org.springframework.security.authentication.AuthenticationManager;
 
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 public class CaConsistencyCheckJobTest {
 
-    private CaConsistencyCheckJob uut;
+    private CaConsistencyChecker uut;
 
     private AuthAdmin authAdmin;
 
@@ -57,14 +61,12 @@ public class CaConsistencyCheckJobTest {
     @BeforeEach
     public void setup() {
         authAdmin = Mockito.mock(AuthAdmin.class);
-
         dbHandler = Mockito.mock(PrincipalsHandler.class);
-
         deviceHandler = Mockito.mock(UserDeviceHandler.class);
-
         foodItemHandler = Mockito.mock(FoodItemHandler.class);
-
-        uut = new CaConsistencyCheckJob(authAdmin, dbHandler, deviceHandler, foodItemHandler);
+        var authenticationManager = Mockito.mock(AuthenticationManager.class);
+        when(authenticationManager.authenticate(any())).thenReturn(new StocksAuthentication(TEST_USER));
+        uut = new CaConsistencyChecker(authAdmin, dbHandler, deviceHandler, foodItemHandler, authenticationManager);
     }
 
     @AfterEach
@@ -81,7 +83,7 @@ public class CaConsistencyCheckJobTest {
         when(dbHandler.getJobRunnerPrincipal()).thenReturn(Validation.fail(StatusCode.DATABASE_UNREACHABLE));
         when(dbHandler.rollback()).thenReturn(StatusCode.SUCCESS);
 
-        uut.runJob();
+        uut.execute();
 
         verify(dbHandler).rollback();
     }
@@ -93,14 +95,11 @@ public class CaConsistencyCheckJobTest {
         when(authAdmin.getValidPrincipals()).thenReturn(Validation.success(Collections.emptySet()));
         when(dbHandler.rollback()).thenReturn(StatusCode.SUCCESS);
 
-        uut.runJob();
+        uut.execute();
 
         verify(dbHandler).getPrincipals();
         verify(dbHandler).rollback();
         verify(authAdmin).getValidPrincipals();
-        verify(dbHandler).setPrincipals(TEST_USER);
-        verify(deviceHandler).setPrincipals(TEST_USER);
-        verify(foodItemHandler).setPrincipals(TEST_USER);
     }
 
     @Test
@@ -110,14 +109,11 @@ public class CaConsistencyCheckJobTest {
         when(authAdmin.getValidPrincipals()).thenReturn(Validation.fail(StatusCode.DATABASE_UNREACHABLE));
         when(dbHandler.rollback()).thenReturn(StatusCode.SUCCESS);
 
-        uut.runJob();
+        uut.execute();
 
         verify(dbHandler).getPrincipals();
         verify(dbHandler).rollback();
         verify(authAdmin).getValidPrincipals();
-        verify(dbHandler).setPrincipals(TEST_USER);
-        verify(deviceHandler).setPrincipals(TEST_USER);
-        verify(foodItemHandler).setPrincipals(TEST_USER);
     }
 
     @Test
@@ -153,7 +149,7 @@ public class CaConsistencyCheckJobTest {
         when(deviceHandler.delete(dbOnlySuccessful.toDevice())).thenReturn(StatusCode.SUCCESS);
         when(dbHandler.commit()).thenReturn(StatusCode.SUCCESS);
 
-        uut.runJob();
+        uut.execute();
 
         verify(dbHandler).getPrincipals();
         verify(authAdmin).getValidPrincipals();
@@ -162,8 +158,5 @@ public class CaConsistencyCheckJobTest {
         verify(authAdmin).revokeCertificate(caOnlySuccessful.getDid());
         verify(authAdmin).revokeCertificate(caOnlyFailing.getDid());
         verify(dbHandler).commit();
-        verify(dbHandler).setPrincipals(TEST_USER);
-        verify(deviceHandler).setPrincipals(TEST_USER);
-        verify(foodItemHandler).setPrincipals(TEST_USER);
     }
 }

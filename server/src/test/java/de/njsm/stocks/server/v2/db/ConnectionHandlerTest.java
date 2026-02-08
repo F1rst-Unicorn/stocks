@@ -33,7 +33,6 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Optional;
 
-import static de.njsm.stocks.server.v2.web.PrincipalFilterTest.TEST_USER;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class ConnectionHandlerTest extends DbTestCase {
@@ -209,7 +208,6 @@ public class ConnectionHandlerTest extends DbTestCase {
     @Test
     void unreachableDatabaseIsPropagatedByBusiness() throws SQLException {
         EanNumberManager business = new EanNumberManager(new EanNumberHandler(getUnreachableConnectionFactory()));
-        business.setPrincipals(TEST_USER);
 
         var result = business.delete(EanNumberForDeletion.builder().id(1).version(1).build());
 

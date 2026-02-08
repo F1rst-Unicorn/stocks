@@ -29,13 +29,10 @@ import org.junit.jupiter.api.Test;
 
 import java.time.Instant;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static de.njsm.stocks.common.api.StatusCode.INVALID_DATA_VERSION;
 import static de.njsm.stocks.common.api.StatusCode.NOT_FOUND;
 import static de.njsm.stocks.server.v2.db.CrudDatabaseHandler.INFINITY;
-import static de.njsm.stocks.server.v2.web.PrincipalFilterTest.TEST_USER;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
@@ -48,7 +45,6 @@ public class RecipeProductHandlerTest extends DbTestCase
     @BeforeEach
     public void setup() {
         uut = new RecipeProductHandler(getConnectionFactory());
-        uut.setPrincipals(TEST_USER);
     }
 
     @Override
@@ -64,9 +60,9 @@ public class RecipeProductHandlerTest extends DbTestCase
     @Test
     public void bitemporalDataIsPresentWhenDesired() {
 
-        Validation<StatusCode, Stream<RecipeProduct>> result = uut.get(Instant.EPOCH, INFINITY.toInstant());
+        Validation<StatusCode, List<RecipeProduct>> result = uut.get(Instant.EPOCH, INFINITY.toInstant());
 
-        BitemporalRecipeProduct sample = (BitemporalRecipeProduct) result.success().findAny().get();
+        BitemporalRecipeProduct sample = (BitemporalRecipeProduct) result.success().stream().findAny().get();
         assertNotNull(sample.validTimeStart());
         assertNotNull(sample.validTimeEnd());
         assertNotNull(sample.transactionTimeStart());
@@ -75,11 +71,12 @@ public class RecipeProductHandlerTest extends DbTestCase
 
     @Test
     public void gettingBitemporalWorks() {
-        Validation<StatusCode, Stream<RecipeProduct>> result = uut.get(Instant.EPOCH, INFINITY.toInstant());
+        Validation<StatusCode, List<RecipeProduct>> result = uut.get(Instant.EPOCH, INFINITY.toInstant());
 
         assertTrue(result.isSuccess());
         List<BitemporalRecipeProduct> data = result.success()
-                .map(v -> (BitemporalRecipeProduct) v).collect(Collectors.toList());
+                .stream()
+                .map(v -> (BitemporalRecipeProduct) v).toList();
 
         assertTrue(data.stream().anyMatch(l ->
                         l.id() == 1 &&

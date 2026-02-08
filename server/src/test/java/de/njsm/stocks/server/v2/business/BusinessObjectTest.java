@@ -31,10 +31,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
-import jakarta.ws.rs.container.AsyncResponse;
-import jakarta.ws.rs.container.CompletionCallback;
-
-import static de.njsm.stocks.server.v2.web.PrincipalFilterTest.TEST_USER;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.times;
@@ -49,12 +45,10 @@ public class BusinessObjectTest {
     public void setup() {
         backend = Mockito.mock(CrudDatabaseHandler.class);
         uut = new BusinessObject<>(backend);
-        uut.setPrincipals(TEST_USER);
     }
 
     @AfterEach
     public void tearDown() {
-        Mockito.verify(backend).setPrincipals(TEST_USER);
         Mockito.verifyNoMoreInteractions(backend);
     }
 
@@ -71,17 +65,6 @@ public class BusinessObjectTest {
         assertEquals(StatusCode.SUCCESS, result);
         assertEquals(1, integerBox[0]);
         Mockito.verify(backend).commit();
-    }
-
-    @Test
-    public void asyncRequestIsUsedCorrectly() {
-        AsyncResponse r = Mockito.mock(AsyncResponse.class);
-
-        Validation<StatusCode, StatusCode> result = uut.runAsynchronously(r, () -> Validation.success(StatusCode.SUCCESS));
-
-        assertEquals(StatusCode.SUCCESS, result.success());
-        Mockito.verify(r).register(Mockito.any(CompletionCallback.class));
-        Mockito.verifyNoMoreInteractions(r);
     }
 
     @Test
@@ -203,22 +186,6 @@ public class BusinessObjectTest {
 
         assertTrue(result.isFail());
         assertEquals(StatusCode.DATABASE_UNREACHABLE, result.fail());
-        Mockito.verify(backend).rollback();
-    }
-
-    @Test
-    public void noThrowableLeadsToCommit() {
-
-        uut.finishTransaction((Throwable) null);
-
-        Mockito.verify(backend).commit();
-    }
-
-    @Test
-    public void throwableLeadsToRollback() {
-
-        uut.finishTransaction(new Exception("test"));
-
         Mockito.verify(backend).rollback();
     }
 }

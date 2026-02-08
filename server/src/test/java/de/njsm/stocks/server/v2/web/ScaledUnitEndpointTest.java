@@ -21,11 +21,7 @@
 
 package de.njsm.stocks.server.v2.web;
 
-import de.njsm.stocks.common.api.Response;
-import de.njsm.stocks.common.api.StatusCode;
-import de.njsm.stocks.common.api.ScaledUnitForDeletion;
-import de.njsm.stocks.common.api.ScaledUnitForEditing;
-import de.njsm.stocks.common.api.ScaledUnitForInsertion;
+import de.njsm.stocks.common.api.*;
 import de.njsm.stocks.server.v2.business.ScaledUnitManager;
 import fj.data.Validation;
 import org.junit.jupiter.api.AfterEach;
@@ -35,8 +31,6 @@ import org.mockito.Mockito;
 
 import java.math.BigDecimal;
 
-import static de.njsm.stocks.server.v2.web.PrincipalFilterTest.TEST_USER;
-import static de.njsm.stocks.server.v2.web.Util.createMockRequest;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
@@ -62,20 +56,17 @@ public class ScaledUnitEndpointTest {
 
     @Test
     public void puttingNullScaleIsRejected() {
-        assertThrows(IllegalStateException.class, () ->  uut.put(createMockRequest(), null, 1));
-        verify(manager).setPrincipals(TEST_USER);
+        assertThrows(IllegalStateException.class, () ->  uut.put(null, 1));
     }
 
     @Test
     public void puttingInvalidScaleIsRejected() {
-        assertThrows(IllegalStateException.class, () ->  uut.put(createMockRequest(), "hi there", 1));
-        verify(manager).setPrincipals(TEST_USER);
+        assertThrows(IllegalStateException.class, () ->  uut.put("hi there", 1));
     }
 
     @Test
     public void puttingInvalidUnitIsRejected() {
-        assertThrows(IllegalStateException.class, () -> uut.put(createMockRequest(), BigDecimal.ONE.toPlainString(), 0));
-        verify(manager).setPrincipals(TEST_USER);
+        assertThrows(IllegalStateException.class, () -> uut.put(BigDecimal.ONE.toPlainString(), 0));
     }
 
     @Test
@@ -86,11 +77,10 @@ public class ScaledUnitEndpointTest {
                 .build();
         when(manager.addReturningId(any())).thenReturn(Validation.success(1));
 
-        Response response = uut.put(createMockRequest(), input.scale().toPlainString(), input.unit());
+        Response response = uut.put(input.scale().toPlainString(), input.unit());
 
         assertEquals(StatusCode.SUCCESS, response.getStatus());
         verify(manager).addReturningId(input);
-        verify(manager).setPrincipals(TEST_USER);
     }
 
     @Test
@@ -101,11 +91,10 @@ public class ScaledUnitEndpointTest {
                 .build();
         when(manager.addReturningId(any())).thenReturn(Validation.fail(StatusCode.DATABASE_UNREACHABLE));
 
-        Response response = uut.put(createMockRequest(), input.scale().toPlainString(), input.unit());
+        Response response = uut.put(input.scale().toPlainString(), input.unit());
 
         assertEquals(StatusCode.DATABASE_UNREACHABLE, response.getStatus());
         verify(manager).addReturningId(input);
-        verify(manager).setPrincipals(TEST_USER);
     }
 
     @Test
@@ -118,11 +107,10 @@ public class ScaledUnitEndpointTest {
                 .build();
         when(manager.edit(data)).thenReturn(StatusCode.SUCCESS);
 
-        Response response = uut.edit(createMockRequest(), data.id(), data.version(), data.scale().toString(), data.unit());
+        Response response = uut.edit(data.id(), data.version(), data.scale().toString(), data.unit());
 
         assertEquals(StatusCode.SUCCESS, response.getStatus());
         verify(manager).edit(data);
-        verify(manager).setPrincipals(TEST_USER);
     }
 
     @Test
@@ -134,9 +122,7 @@ public class ScaledUnitEndpointTest {
                 .unit(2)
                 .build();
 
-        assertThrows(IllegalStateException.class, () -> uut.edit(createMockRequest(), data.id(), -1, data.scale().toString(), data.unit()));
-
-        verify(manager).setPrincipals(TEST_USER);
+        assertThrows(IllegalStateException.class, () -> uut.edit(data.id(), -1, data.scale().toString(), data.unit()));
     }
 
     @Test
@@ -148,9 +134,7 @@ public class ScaledUnitEndpointTest {
                 .unit(2)
                 .build();
 
-        assertThrows(IllegalStateException.class, () -> uut.edit(createMockRequest(), data.id(), data.version(), "not a number", data.unit()));
-
-        verify(manager).setPrincipals(TEST_USER);
+        assertThrows(IllegalStateException.class, () -> uut.edit(data.id(), data.version(), "not a number", data.unit()));
     }
 
     @Test
@@ -162,9 +146,7 @@ public class ScaledUnitEndpointTest {
                 .unit(2)
                 .build();
 
-        assertThrows(IllegalStateException.class, () -> uut.edit(createMockRequest(), 0, data.version(), data.scale().toString(), data.unit()));
-
-        verify(manager).setPrincipals(TEST_USER);
+        assertThrows(IllegalStateException.class, () -> uut.edit(0, data.version(), data.scale().toString(), data.unit()));
     }
 
     @Test
@@ -176,9 +158,7 @@ public class ScaledUnitEndpointTest {
                 .unit(999)
                 .build();
 
-        assertThrows(IllegalStateException.class, () -> uut.edit(createMockRequest(), data.id(), data.version(), data.scale().toString(), 0));
-
-        verify(manager).setPrincipals(TEST_USER);
+        assertThrows(IllegalStateException.class, () -> uut.edit(data.id(), data.version(), data.scale().toString(), 0));
     }
 
     @Test

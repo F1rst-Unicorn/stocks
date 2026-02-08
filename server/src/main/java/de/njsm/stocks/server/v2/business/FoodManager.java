@@ -22,14 +22,17 @@
 package de.njsm.stocks.server.v2.business;
 
 import de.njsm.stocks.common.api.*;
-import de.njsm.stocks.server.util.Principals;
 import de.njsm.stocks.server.v2.db.EanNumberHandler;
 import de.njsm.stocks.server.v2.db.FoodHandler;
 import de.njsm.stocks.server.v2.db.FoodItemHandler;
 import de.njsm.stocks.server.v2.db.jooq.tables.records.FoodRecord;
+import org.springframework.stereotype.Service;
+import org.springframework.web.context.annotation.RequestScope;
 
 import java.time.Period;
 
+@Service
+@RequestScope
 public class FoodManager extends BusinessObject<FoodRecord, Food> implements
         BusinessGettable<FoodRecord, Food>,
         BusinessAddable<FoodRecord, Food>,
@@ -73,13 +76,6 @@ public class FoodManager extends BusinessObject<FoodRecord, Food> implements
         return runOperation(() -> eanNumberHandler.deleteOwnedByFood(item)
                 .bind(() -> foodItemHandler.deleteItemsOfType(item))
                 .bind(() -> dbHandler.delete(item)));
-    }
-
-    @Override
-    public void setPrincipals(Principals principals) {
-        super.setPrincipals(principals);
-        foodItemHandler.setPrincipals(principals);
-        eanNumberHandler.setPrincipals(principals);
     }
 
     public StatusCode setDescription(FoodForSetDescription item) {

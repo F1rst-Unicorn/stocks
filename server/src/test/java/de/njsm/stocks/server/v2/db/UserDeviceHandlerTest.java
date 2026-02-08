@@ -30,10 +30,8 @@ import org.junit.jupiter.api.Test;
 
 import java.time.Instant;
 import java.util.List;
-import java.util.stream.Stream;
 
 import static de.njsm.stocks.server.v2.db.CrudDatabaseHandler.INFINITY;
-import static de.njsm.stocks.server.v2.web.PrincipalFilterTest.TEST_USER;
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
@@ -45,7 +43,6 @@ public class UserDeviceHandlerTest extends DbTestCase implements CrudOperationsT
     @BeforeEach
     public void setup() {
         uut = new UserDeviceHandler(getConnectionFactory());
-        uut.setPrincipals(TEST_USER);
     }
 
 
@@ -90,9 +87,9 @@ public class UserDeviceHandlerTest extends DbTestCase implements CrudOperationsT
     @Test
     public void bitemporalDataIsPresentWhenDesired() {
 
-        Validation<StatusCode, Stream<UserDevice>> result = uut.get(Instant.EPOCH, INFINITY.toInstant());
+        Validation<StatusCode, List<UserDevice>> result = uut.get(Instant.EPOCH, INFINITY.toInstant());
 
-        BitemporalUserDevice sample = (BitemporalUserDevice) result.success().findAny().get();
+        BitemporalUserDevice sample = (BitemporalUserDevice) result.success().get(0);
         assertNotNull(sample.validTimeStart());
         assertNotNull(sample.validTimeEnd());
         assertNotNull(sample.transactionTimeStart());

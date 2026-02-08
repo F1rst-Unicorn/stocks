@@ -21,22 +21,18 @@
 
 package de.njsm.stocks.server.v2.web;
 
+import java.util.function.Supplier;
+
 import de.njsm.stocks.common.api.Entity;
 import de.njsm.stocks.common.api.Response;
 import de.njsm.stocks.common.api.StatusCode;
 import de.njsm.stocks.common.api.Versionable;
 import de.njsm.stocks.server.v2.business.BusinessDeletable;
-import jakarta.servlet.http.HttpServletRequest;
-import org.glassfish.jersey.internal.util.Producer;
-
-import static de.njsm.stocks.server.v2.web.Endpoint.getPrincipals;
 
 public interface MetaDelete<T extends Versionable<U>, U extends Entity<U>> {
 
-    default Response delete(HttpServletRequest request,
-                            Producer<T> producer) {
-        getManager().setPrincipals(getPrincipals(request));
-        StatusCode status = getManager().delete(producer.call());
+    default Response delete(Supplier<T> producer) {
+        StatusCode status = getManager().delete(producer.get());
         return new Response(status);
     }
 

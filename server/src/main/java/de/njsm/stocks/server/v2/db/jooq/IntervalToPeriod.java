@@ -21,10 +21,10 @@
 
 package de.njsm.stocks.server.v2.db.jooq;
 
+import java.time.Period;
+
 import org.jooq.Converter;
 import org.jooq.types.DayToSecond;
-
-import java.time.Period;
 
 /**
  * Only supports `INTERVAL YEAR MONTH DAY` type

@@ -30,9 +30,12 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 
 import static de.njsm.stocks.server.v2.matchers.Matchers.*;
-import static de.njsm.stocks.server.v2.web.PrincipalFilterTest.TEST_USER;
-import static org.hamcrest.CoreMatchers.*;
+import static de.njsm.stocks.server.v2.web.security.HeaderAuthenticatorTest.TEST_USER;
+import static org.hamcrest.CoreMatchers.allOf;
+import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.hasItem;
+import static org.hamcrest.Matchers.not;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public interface DeletionTest<T extends TableRecord<T>, N extends Entity<N>> extends EntityDbTestCase<T, N>, SampleDataInformer {

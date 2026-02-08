@@ -30,11 +30,8 @@ import org.junit.jupiter.api.Test;
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static de.njsm.stocks.server.v2.db.CrudDatabaseHandler.INFINITY;
-import static de.njsm.stocks.server.v2.web.PrincipalFilterTest.TEST_USER;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class ScaledUnitHandlerTest extends DbTestCase implements CrudOperationsTest<ScaledUnitRecord, ScaledUnit> {
@@ -44,7 +41,6 @@ public class ScaledUnitHandlerTest extends DbTestCase implements CrudOperationsT
     @BeforeEach
     public void setup() {
         uut = new ScaledUnitHandler(getConnectionFactory());
-        uut.setPrincipals(TEST_USER);
     }
 
     @Override
@@ -58,9 +54,9 @@ public class ScaledUnitHandlerTest extends DbTestCase implements CrudOperationsT
     @Test
     public void bitemporalDataIsPresentWhenDesired() {
 
-        Validation<StatusCode, Stream<ScaledUnit>> result = uut.get(Instant.EPOCH, INFINITY.toInstant());
+        Validation<StatusCode, List<ScaledUnit>> result = uut.get(Instant.EPOCH, INFINITY.toInstant());
 
-        BitemporalScaledUnit sample = (BitemporalScaledUnit) result.success().findAny().get();
+        BitemporalScaledUnit sample = (BitemporalScaledUnit) result.success().stream().findAny().get();
         assertNotNull(sample.validTimeStart());
         assertNotNull(sample.validTimeEnd());
         assertNotNull(sample.transactionTimeStart());
@@ -69,11 +65,12 @@ public class ScaledUnitHandlerTest extends DbTestCase implements CrudOperationsT
 
     @Test
     public void gettingBitemporalWorks() {
-        Validation<StatusCode, Stream<ScaledUnit>> result = uut.get(Instant.EPOCH, INFINITY.toInstant());
+        Validation<StatusCode, List<ScaledUnit>> result = uut.get(Instant.EPOCH, INFINITY.toInstant());
 
         assertTrue(result.isSuccess());
         List<BitemporalScaledUnit> data = result.success()
-                .map(v -> (BitemporalScaledUnit) v).collect(Collectors.toList());
+                .stream()
+                .map(v -> (BitemporalScaledUnit) v).toList();
 
         assertTrue(data.stream().anyMatch(l ->
                         l.id() == 2 &&

@@ -27,25 +27,24 @@ import de.njsm.stocks.common.api.Health;
 import de.njsm.stocks.common.api.StatusCode;
 import de.njsm.stocks.server.v2.business.HealthManager;
 import fj.data.Validation;
-
-import jakarta.inject.Inject;
-import jakarta.ws.rs.GET;
-import jakarta.ws.rs.Path;
-import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.context.annotation.RequestScope;
 
-@Path("/health")
+@RequestMapping("/health")
+@RestController
+@RequestScope
 public class HealthEndpoint {
 
     private final HealthManager healthManager;
 
-    @Inject
     public HealthEndpoint(HealthManager healthManager) {
         this.healthManager = healthManager;
     }
 
-    @GET
-    @Produces(MediaType.APPLICATION_JSON)
+    @GetMapping(produces = MediaType.APPLICATION_JSON)
     public DataResponse<Health> getStatus() {
         Validation<StatusCode, Health> health = healthManager.get();
 

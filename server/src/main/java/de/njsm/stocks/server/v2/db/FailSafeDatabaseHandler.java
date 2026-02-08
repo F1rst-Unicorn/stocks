@@ -25,7 +25,6 @@ import de.njsm.stocks.common.api.StatusCode;
 import de.njsm.stocks.common.util.FunctionWithExceptions;
 import de.njsm.stocks.common.util.ProducerWithExceptions;
 import de.njsm.stocks.server.util.FallibleOperationWrapper;
-import de.njsm.stocks.server.util.Principals;
 import fj.data.Validation;
 import org.jooq.DSLContext;
 import org.jooq.SQLDialect;
@@ -39,14 +38,8 @@ public class FailSafeDatabaseHandler implements FallibleOperationWrapper<DSLCont
 
     private final ConnectionFactory connectionFactory;
 
-    protected Principals principals;
-
     public FailSafeDatabaseHandler(ConnectionFactory connectionFactory) {
         this.connectionFactory = connectionFactory;
-    }
-
-    public void setPrincipals(Principals principals) {
-        this.principals = principals;
     }
 
     public StatusCode commit() {

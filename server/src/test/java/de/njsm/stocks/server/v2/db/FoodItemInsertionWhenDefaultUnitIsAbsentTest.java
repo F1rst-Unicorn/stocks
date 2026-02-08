@@ -21,7 +21,10 @@
 
 package de.njsm.stocks.server.v2.db;
 
-import de.njsm.stocks.common.api.*;
+import de.njsm.stocks.common.api.FoodItemForInsertion;
+import de.njsm.stocks.common.api.StatusCode;
+import de.njsm.stocks.common.api.User;
+import de.njsm.stocks.common.api.UserDevice;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -30,7 +33,6 @@ import java.sql.Connection;
 import java.time.Instant;
 import java.util.List;
 
-import static de.njsm.stocks.server.v2.web.PrincipalFilterTest.TEST_USER;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
@@ -51,7 +53,6 @@ public class FoodItemInsertionWhenDefaultUnitIsAbsentTest extends DbTestCase {
         uut = new FoodItemHandler(getConnectionFactory(),
                 userDevicePresenceChecker,
                 userPresenceChecker);
-        uut.setPrincipals(TEST_USER);
     }
 
     @Override

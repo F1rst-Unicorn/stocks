@@ -22,34 +22,34 @@
 package de.njsm.stocks.server.v2.web;
 
 
+import de.njsm.stocks.common.api.ListResponse;
+import de.njsm.stocks.common.api.Response;
 import de.njsm.stocks.common.api.StatusCode;
-import de.njsm.stocks.common.api.StreamResponse;
 import de.njsm.stocks.common.api.Update;
 import de.njsm.stocks.server.v2.business.UpdateManager;
 import fj.data.Validation;
+import jakarta.ws.rs.core.MediaType;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.context.annotation.RequestScope;
 
-import jakarta.inject.Inject;
-import jakarta.ws.rs.GET;
-import jakarta.ws.rs.Path;
-import jakarta.ws.rs.Produces;
-import jakarta.ws.rs.container.AsyncResponse;
-import jakarta.ws.rs.container.Suspended;
-import java.util.stream.Stream;
+import java.util.List;
 
-@Path("/v2/update")
+@RequestMapping("/v2/update")
+@RestController
+@RequestScope
 public class UpdateEndpoint {
 
     private final UpdateManager handler;
 
-    @Inject
     public UpdateEndpoint(UpdateManager handler) {
         this.handler = handler;
     }
 
-    @GET
-    @Produces("application/json")
-    public void getUpdates(@Suspended AsyncResponse r) {
-        Validation<StatusCode, Stream<Update>> result = handler.getUpdates(r);
-        r.resume(new StreamResponse<>(result));
+    @GetMapping(produces = MediaType.APPLICATION_JSON)
+    public Response getUpdates() {
+        Validation<StatusCode, List<Update>> result = handler.getUpdates();
+        return new ListResponse<>(result);
     }
 }

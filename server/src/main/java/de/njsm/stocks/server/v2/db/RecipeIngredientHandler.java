@@ -24,18 +24,22 @@ package de.njsm.stocks.server.v2.db;
 import de.njsm.stocks.common.api.*;
 import de.njsm.stocks.server.v2.db.jooq.tables.records.RecipeIngredientRecord;
 import org.jooq.Field;
+import org.jooq.RecordMapper;
 import org.jooq.Table;
 import org.jooq.TableField;
 import org.jooq.impl.DSL;
+import org.springframework.stereotype.Repository;
+import org.springframework.web.context.annotation.RequestScope;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
-import java.util.function.Function;
 
 import static de.njsm.stocks.server.v2.db.jooq.Tables.RECIPE_INGREDIENT;
 
 
+@Repository
+@RequestScope
 public class RecipeIngredientHandler
         extends CrudDatabaseHandler<RecipeIngredientRecord, RecipeIngredient>
         implements CompleteReferenceChecker<Recipe, RecipeIngredient> {
@@ -100,7 +104,7 @@ public class RecipeIngredientHandler
     }
 
     @Override
-    protected Function<RecipeIngredientRecord, RecipeIngredient> getDtoMap() {
+    protected RecordMapper<RecipeIngredientRecord, RecipeIngredient> getDtoMap() {
         return cursor -> BitemporalRecipeIngredient.builder()
                 .id(cursor.getId())
                 .version(cursor.getVersion())

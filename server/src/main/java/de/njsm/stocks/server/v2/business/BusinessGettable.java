@@ -27,17 +27,15 @@ import de.njsm.stocks.server.v2.db.CrudDatabaseHandler;
 import fj.data.Validation;
 import org.jooq.TableRecord;
 
-import jakarta.ws.rs.container.AsyncResponse;
 import java.time.Instant;
-import java.util.stream.Stream;
+import java.util.List;
 
 public interface BusinessGettable<U extends TableRecord<U>, T extends Entity<T>> extends BusinessOperations {
 
-    default Validation<StatusCode, Stream<T>> get(
-            AsyncResponse r,
+    default Validation<StatusCode, List<T>> get(
             Instant startingFrom,
             Instant upUntil) {
-        return runAsynchronously(r, () -> {
+        return runFunction(() -> {
             var result = getDbHandler().setReadOnly();
             if (result.isFail()) {
                 return Validation.fail(result);

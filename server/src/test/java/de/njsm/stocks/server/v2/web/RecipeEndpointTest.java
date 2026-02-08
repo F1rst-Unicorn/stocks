@@ -33,8 +33,6 @@ import org.mockito.Mockito;
 import java.time.Duration;
 import java.util.Collections;
 
-import static de.njsm.stocks.server.v2.web.PrincipalFilterTest.TEST_USER;
-import static de.njsm.stocks.server.v2.web.Util.createMockRequest;
 import static java.util.Collections.emptySet;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -49,7 +47,7 @@ public class RecipeEndpointTest {
     private RecipeManager recipeManager;
 
     @BeforeEach
-    public void setUp() throws Exception {
+    public void setUp() {
         recipeManager = Mockito.mock(RecipeManager.class);
         uut = new RecipeEndpoint(recipeManager);
     }
@@ -73,11 +71,10 @@ public class RecipeEndpointTest {
                 .build();
         when(recipeManager.add(input)).thenReturn(Validation.success(1));
 
-        Response result = uut.put(createMockRequest(), input);
+        Response result = uut.put(input);
 
         assertEquals(StatusCode.SUCCESS, result.getStatus());
         verify(recipeManager).add(input);
-        verify(recipeManager).setPrincipals(TEST_USER);
     }
 
     @Test
@@ -100,10 +97,9 @@ public class RecipeEndpointTest {
                 .build();
         when(recipeManager.edit(input)).thenReturn(StatusCode.SUCCESS);
 
-        Response result = uut.edit(createMockRequest(), input);
+        Response result = uut.edit(input);
 
         assertThat(result.getStatus(), is(StatusCode.SUCCESS));
-        verify(recipeManager).setPrincipals(TEST_USER);
         verify(recipeManager).edit(input);
     }
 
@@ -120,10 +116,9 @@ public class RecipeEndpointTest {
                 .build();
         when(recipeManager.delete(input)).thenReturn(StatusCode.SUCCESS);
 
-        Response result = uut.delete(createMockRequest(), input);
+        Response result = uut.delete(input);
 
         assertEquals(StatusCode.SUCCESS, result.getStatus());
-        verify(recipeManager).setPrincipals(TEST_USER);
         verify(recipeManager).delete(input);
     }
 }

@@ -31,8 +31,8 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 
 import static de.njsm.stocks.server.v2.matchers.Matchers.matchesInsertable;
-import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.hasItem;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 

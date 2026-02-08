@@ -23,16 +23,19 @@ package de.njsm.stocks.server.v2.business;
 
 import de.njsm.stocks.common.api.*;
 import de.njsm.stocks.server.util.AuthAdmin;
-import de.njsm.stocks.server.util.Principals;
 import de.njsm.stocks.server.v2.business.data.NewDeviceTicket;
 import de.njsm.stocks.server.v2.db.FoodItemHandler;
 import de.njsm.stocks.server.v2.db.TicketHandler;
 import de.njsm.stocks.server.v2.db.UserDeviceHandler;
 import de.njsm.stocks.server.v2.db.jooq.tables.records.UserDeviceRecord;
 import fj.data.Validation;
+import org.springframework.stereotype.Service;
+import org.springframework.web.context.annotation.RequestScope;
 
 import java.security.SecureRandom;
 
+@Service
+@RequestScope
 public class DeviceManager extends BusinessObject<UserDeviceRecord, UserDevice> implements
         BusinessGettable<UserDeviceRecord, UserDevice>,
         BusinessDeletable<UserDeviceForDeletion, UserDevice> {
@@ -97,7 +100,7 @@ public class DeviceManager extends BusinessObject<UserDeviceRecord, UserDevice> 
     StatusCode removeDeviceInternally(UserDeviceForDeletion device) {
         return checkTechnicalDeviceStatus(device)
                 .bind(() -> checkIfInitiatingDevice(device))
-                .bind(() -> foodItemHandler.transferFoodItems(device, principals.toDevice()))
+                .bind(() -> foodItemHandler.transferFoodItems(device, getPrincipals().toDevice()))
                 .bind(() -> ticketHandler.removeTicketOfDevice(device))
                 .bind(() -> userDeviceHandler.delete(device))
                 .bind(() -> authAdmin.revokeCertificate(device.id()));
@@ -137,12 +140,5 @@ public class DeviceManager extends BusinessObject<UserDeviceRecord, UserDevice> 
             result = (byte) generator.nextInt();
         } while (!Character.isLetterOrDigit(result));
         return result;
-    }
-
-    @Override
-    public void setPrincipals(Principals principals) {
-        super.setPrincipals(principals);
-        foodItemHandler.setPrincipals(principals);
-        ticketHandler.setPrincipals(principals);
     }
 }

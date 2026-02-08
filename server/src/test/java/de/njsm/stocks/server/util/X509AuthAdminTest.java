@@ -56,7 +56,9 @@ public class X509AuthAdminTest {
 
     @BeforeEach
     public void setup() {
-        uut = new X509AuthAdmin(caDirectory.getAbsolutePath(),
+        uut = new X509AuthAdmin(
+                caDirectory.getAbsolutePath(),
+                "",
                 "touch " + caDirectory + "/reload-nginx");
     }
 

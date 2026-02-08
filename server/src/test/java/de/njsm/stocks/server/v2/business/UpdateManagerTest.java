@@ -30,9 +30,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
-import jakarta.ws.rs.container.AsyncResponse;
-import java.util.stream.Stream;
+import java.util.List;
 
+import static java.util.Collections.emptyList;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 
@@ -55,16 +55,16 @@ public class UpdateManagerTest {
 
     @Test
     public void gettingUpdatesWorks() {
-        AsyncResponse r = Mockito.mock(AsyncResponse.class);
-        Mockito.when(backend.get()).thenReturn(Validation.success(Stream.empty()));
+        Mockito.when(backend.get()).thenReturn(Validation.success(emptyList()));
         Mockito.when(backend.commit()).thenReturn(StatusCode.SUCCESS);
         when(backend.setReadOnly()).thenReturn(StatusCode.SUCCESS);
 
-        Validation<StatusCode, Stream<Update>> result = uut.getUpdates(r);
+        Validation<StatusCode, List<Update>> result = uut.getUpdates();
 
         assertTrue(result.isSuccess());
         Mockito.verify(backend).get();
         Mockito.verify(backend).setReadOnly();
+        Mockito.verify(backend).commit();
     }
 
 }

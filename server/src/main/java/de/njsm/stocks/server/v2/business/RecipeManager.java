@@ -22,13 +22,16 @@
 package de.njsm.stocks.server.v2.business;
 
 import de.njsm.stocks.common.api.*;
-import de.njsm.stocks.server.util.Principals;
 import de.njsm.stocks.server.v2.db.RecipeHandler;
 import de.njsm.stocks.server.v2.db.RecipeIngredientHandler;
 import de.njsm.stocks.server.v2.db.RecipeProductHandler;
 import de.njsm.stocks.server.v2.db.jooq.tables.records.RecipeRecord;
 import fj.data.Validation;
+import org.springframework.stereotype.Service;
+import org.springframework.web.context.annotation.RequestScope;
 
+@Service
+@RequestScope
 public class RecipeManager extends BusinessObject<RecipeRecord, Recipe>
         implements BusinessGettable<RecipeRecord, Recipe>,
                    BusinessDeletable<FullRecipeForDeletion, Recipe> {
@@ -116,12 +119,5 @@ public class RecipeManager extends BusinessObject<RecipeRecord, Recipe>
                         .bind(() -> recipeProductHandler.deleteAllOf(recipe.recipe()))
                         .bind(() -> dbHandler.delete(recipe.recipe()))
         );
-    }
-
-    @Override
-    public void setPrincipals(Principals principals) {
-        super.setPrincipals(principals);
-        recipeIngredientHandler.setPrincipals(principals);
-        recipeProductHandler.setPrincipals(principals);
     }
 }

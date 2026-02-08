@@ -22,12 +22,15 @@
 package de.njsm.stocks.server.v2.business;
 
 import de.njsm.stocks.common.api.*;
-import de.njsm.stocks.server.util.Principals;
 import de.njsm.stocks.server.v2.db.FoodHandler;
 import de.njsm.stocks.server.v2.db.FoodItemHandler;
 import de.njsm.stocks.server.v2.db.jooq.tables.records.FoodItemRecord;
 import fj.data.Validation;
+import org.springframework.stereotype.Service;
+import org.springframework.web.context.annotation.RequestScope;
 
+@Service
+@RequestScope
 public class FoodItemManager extends BusinessObject<FoodItemRecord, FoodItem> implements
         BusinessGettable<FoodItemRecord, FoodItem>,
         BusinessDeletable<FoodItemForDeletion, FoodItem> {
@@ -60,11 +63,5 @@ public class FoodItemManager extends BusinessObject<FoodItemRecord, FoodItem> im
 
     public StatusCode delete(FoodItemForDeletion item) {
         return runOperation(() -> dbHandler.delete(item));
-    }
-
-    @Override
-    public void setPrincipals(Principals principals) {
-        super.setPrincipals(principals);
-        foodHandler.setPrincipals(principals);
     }
 }

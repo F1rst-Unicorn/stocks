@@ -24,7 +24,11 @@ package de.njsm.stocks.server.v2.business;
 import de.njsm.stocks.common.api.RecipeIngredient;
 import de.njsm.stocks.server.v2.db.RecipeIngredientHandler;
 import de.njsm.stocks.server.v2.db.jooq.tables.records.RecipeIngredientRecord;
+import org.springframework.stereotype.Service;
+import org.springframework.web.context.annotation.RequestScope;
 
+@Service
+@RequestScope
 public class RecipeIngredientManager extends BusinessObject<RecipeIngredientRecord, RecipeIngredient>
         implements BusinessGettable<RecipeIngredientRecord, RecipeIngredient> {
 

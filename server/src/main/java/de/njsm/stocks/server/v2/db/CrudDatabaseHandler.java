@@ -22,6 +22,7 @@
 package de.njsm.stocks.server.v2.db;
 
 import de.njsm.stocks.common.api.*;
+import de.njsm.stocks.server.util.Principals;
 import de.njsm.stocks.server.v2.business.data.visitor.JooqInsertionVisitor;
 import fj.data.Validation;
 import org.apache.logging.log4j.LogManager;
@@ -29,13 +30,12 @@ import org.apache.logging.log4j.Logger;
 import org.jooq.*;
 import org.jooq.impl.DSL;
 import org.postgresql.PGStatement;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.time.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Function;
-import java.util.stream.Stream;
 
 import static de.njsm.stocks.common.api.StatusCode.*;
 
@@ -60,7 +60,7 @@ public abstract class CrudDatabaseHandler<T extends TableRecord<T>, N extends En
     public Validation<StatusCode, Integer> addReturningId(Insertable<N> item) {
         return runFunction(context -> {
             int lastInsertId = new JooqInsertionVisitor<T>()
-                    .visit(item, new JooqInsertionVisitor.Input<>(context.insertInto(getTable()), principals))
+                    .visit(item, new JooqInsertionVisitor.Input<>(context.insertInto(getTable()), getPrincipals()))
                     .returning(getIdField())
                     .fetch()
                     .getValue(0, getIdField());
@@ -71,7 +71,7 @@ public abstract class CrudDatabaseHandler<T extends TableRecord<T>, N extends En
     /**
      * CF 10.23
      */
-    public Validation<StatusCode, Stream<N>> get(Instant startingFrom, Instant upUntil) {
+    public Validation<StatusCode, List<N>> get(Instant startingFrom, Instant upUntil) {
         return runFunction(context -> {
 
             OffsetDateTime startingFromWithOffset = startingFrom.atOffset(ZoneOffset.UTC);
@@ -83,13 +83,11 @@ public abstract class CrudDatabaseHandler<T extends TableRecord<T>, N extends En
                     .or(getTransactionTimeEndField().lessOrEqual(upUntilWithOffset)
                             .and(getTransactionTimeEndField().lessThan(INFINITY)));
 
-            Stream<N> result = context
+            List<N> result = context
                     .selectFrom(getTable())
                     .where(greaterThanStartingFrom
                             .and(lessThanUpUntil))
-                    .fetchSize(1024)
-                    .stream()
-                    .map(getDtoMap());
+                    .fetch(getDtoMap());
 
             return Validation.success(result);
         });
@@ -123,7 +121,7 @@ public abstract class CrudDatabaseHandler<T extends TableRecord<T>, N extends En
                                             now,
                                             now,
                                             DSL.inline(CrudDatabaseHandler.INFINITY),
-                                            DSL.inline(principals.getDid()))
+                                            DSL.inline(getPrincipals().getDid()))
                                     .from(getTable())
                                     .where(condition
                                             .and(getValidTimeStartField().lessThan(now))
@@ -167,7 +165,7 @@ public abstract class CrudDatabaseHandler<T extends TableRecord<T>, N extends En
                                         getValidTimeEndField(),
                                         now,
                                         DSL.inline(CrudDatabaseHandler.INFINITY),
-                                        DSL.inline(principals.getDid()))
+                                        DSL.inline(getPrincipals().getDid()))
                                 .from(getTable())
                                 .where(condition
                                         .and(getValidTimeStartField().lessOrEqual(now))
@@ -185,7 +183,7 @@ public abstract class CrudDatabaseHandler<T extends TableRecord<T>, N extends En
                                         now,
                                         now,
                                         DSL.inline(INFINITY),
-                                        DSL.inline(principals.getDid())
+                                        DSL.inline(getPrincipals().getDid())
                                 ).from(getTable())
                                 .where(condition
                                         .and(getValidTimeStartField().lessThan(now))
@@ -213,7 +211,7 @@ public abstract class CrudDatabaseHandler<T extends TableRecord<T>, N extends En
                                         getValidTimeEndField(),
                                         now,
                                         DSL.inline(CrudDatabaseHandler.INFINITY),
-                                        DSL.inline(principals.getDid()))
+                                        DSL.inline(getPrincipals().getDid()))
                                 .from(getTable())
                                 .where(condition
                                         .and(getValidTimeStartField().greaterThan(now))
@@ -292,7 +290,7 @@ public abstract class CrudDatabaseHandler<T extends TableRecord<T>, N extends En
 
     protected abstract Table<T> getTable();
 
-    protected abstract Function<T, N> getDtoMap();
+    protected abstract RecordMapper<T, N> getDtoMap();
 
     protected abstract TableField<T, Integer> getIdField();
 
@@ -343,5 +341,9 @@ public abstract class CrudDatabaseHandler<T extends TableRecord<T>, N extends En
     @Override
     public String toString() {
         return getTable().getQualifiedName().toString();
+    }
+
+    protected Principals getPrincipals() {
+        return (Principals) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     }
 }

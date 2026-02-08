@@ -26,18 +26,24 @@ import de.njsm.stocks.server.v2.business.data.UserDeviceForPrincipals;
 import de.njsm.stocks.server.v2.db.jooq.tables.records.UserDeviceRecord;
 import fj.data.Validation;
 import org.jooq.Field;
+import org.jooq.RecordMapper;
 import org.jooq.Table;
 import org.jooq.TableField;
 import org.jooq.impl.DSL;
+import org.springframework.context.annotation.Primary;
+import org.springframework.stereotype.Repository;
+import org.springframework.web.context.annotation.RequestScope;
 
 import java.time.OffsetDateTime;
 import java.util.Arrays;
 import java.util.List;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static de.njsm.stocks.server.v2.db.jooq.tables.UserDevice.USER_DEVICE;
 
+@Repository
+@RequestScope
+@Primary
 public class UserDeviceHandler extends CrudDatabaseHandler<UserDeviceRecord, UserDevice> {
 
     public UserDeviceHandler(ConnectionFactory connectionFactory) {
@@ -83,7 +89,7 @@ public class UserDeviceHandler extends CrudDatabaseHandler<UserDeviceRecord, Use
     }
 
     @Override
-    protected Function<UserDeviceRecord, UserDevice> getDtoMap() {
+    protected RecordMapper<UserDeviceRecord, UserDevice> getDtoMap() {
         return cursor -> BitemporalUserDevice.builder()
                 .id(cursor.getId())
                 .version(cursor.getVersion())

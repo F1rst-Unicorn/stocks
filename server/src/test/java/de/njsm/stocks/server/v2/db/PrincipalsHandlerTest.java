@@ -29,7 +29,6 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Set;
 
-import static de.njsm.stocks.server.v2.web.PrincipalFilterTest.TEST_USER;
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -42,7 +41,6 @@ public class PrincipalsHandlerTest extends DbTestCase {
     @BeforeEach
     public void setup() {
         uut = new PrincipalsHandler(getConnectionFactory());
-        uut.setPrincipals(TEST_USER);
     }
 
     @Test

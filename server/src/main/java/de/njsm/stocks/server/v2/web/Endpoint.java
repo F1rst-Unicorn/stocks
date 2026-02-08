@@ -23,10 +23,9 @@ package de.njsm.stocks.server.v2.web;
 
 import de.njsm.stocks.common.api.serialisers.InstantDeserialiser;
 import de.njsm.stocks.server.util.Principals;
-import de.njsm.stocks.server.v2.web.servlet.PrincipalFilter;
-import jakarta.servlet.http.HttpServletRequest;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.io.IOException;
 import java.time.Instant;
@@ -35,10 +34,6 @@ import java.util.Optional;
 public class Endpoint {
 
     private static final Logger LOG = LogManager.getLogger(Endpoint.class);
-
-    protected static Principals getPrincipals(HttpServletRequest request) {
-        return (Principals) request.getAttribute(PrincipalFilter.STOCKS_PRINCIPAL);
-    }
 
     public static boolean isValid(String parameter, String name) {
         LOG.debug("Checking parameter " + name);
@@ -114,5 +109,9 @@ public class Endpoint {
             LOG.info("Request is invalid as " + name + " has value '" + rawInstant + "'");
             return Optional.empty();
         }
+    }
+
+    protected Principals getPrincipals() {
+        return (Principals) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     }
 }

@@ -26,22 +26,25 @@ import de.njsm.stocks.common.api.StatusCode;
 import de.njsm.stocks.server.v2.business.TicketAuthoriser;
 import de.njsm.stocks.server.v2.business.data.ClientTicket;
 import fj.data.Validation;
+import jakarta.ws.rs.core.MediaType;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.context.annotation.RequestScope;
 
-import jakarta.inject.Inject;
-import jakarta.ws.rs.*;
-import jakarta.ws.rs.core.MediaType;
 
-
-@Path("v2/auth")
+@RequestMapping(path = "v2/auth")
+@RestController
+@RequestScope
 public class RegistrationEndpoint extends Endpoint {
 
     private static final Logger LOG = LogManager.getLogger(RegistrationEndpoint.class);
 
     private final TicketAuthoriser authoriser;
 
-    @Inject
     public RegistrationEndpoint(TicketAuthoriser authoriser) {
         this.authoriser = authoriser;
     }
@@ -50,13 +53,14 @@ public class RegistrationEndpoint extends Endpoint {
      * Get a new user certificate
      * @return A response containing the new user certificate
      */
-    @POST
-    @Path("newuser")
-    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-    @Produces(MediaType.APPLICATION_JSON)
-    public DataResponse<String> getNewCertificate(@FormParam("device") int device,
-                                                  @FormParam("token") String token,
-                                                  @FormParam("csr") String csr){
+    @PostMapping(
+            path = "newuser",
+            consumes = MediaType.APPLICATION_FORM_URLENCODED,
+            produces = MediaType.APPLICATION_JSON
+    )
+    public DataResponse<String> getNewCertificate(@RequestParam("device") int device,
+                                                  @RequestParam("token") String token,
+                                                  @RequestParam("csr") String csr){
 
         LOG.info("Got new certificate request for device id " + device);
 
@@ -75,5 +79,4 @@ public class RegistrationEndpoint extends Endpoint {
             return new DataResponse<>(Validation.fail(StatusCode.INVALID_ARGUMENT));
         }
     }
-
 }

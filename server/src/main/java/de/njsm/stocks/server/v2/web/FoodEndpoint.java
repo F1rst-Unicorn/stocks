@@ -25,31 +25,28 @@ package de.njsm.stocks.server.v2.web;
 import de.njsm.stocks.common.api.*;
 import de.njsm.stocks.server.v2.business.FoodManager;
 import de.njsm.stocks.server.v2.db.jooq.tables.records.FoodRecord;
-import jakarta.inject.Inject;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.ws.rs.*;
-import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.context.annotation.RequestScope;
 
-@Path("v2/food")
+@RequestMapping("v2/food")
+@RestController
+@RequestScope
 public class FoodEndpoint extends Endpoint implements
         Get<FoodRecord, Food>,
         Delete<FoodForDeletion, Food> {
 
     private final FoodManager manager;
 
-    @Inject
     public FoodEndpoint(FoodManager manager) {
         this.manager = manager;
     }
 
-    @PUT
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response putFood(@Context HttpServletRequest request,
-                            @QueryParam("name") String name,
-                            @QueryParam("unit") Integer storeUnit) {
+    @PutMapping(produces = MediaType.APPLICATION_JSON)
+    public Response putFood(@RequestParam("name") String name,
+                            @RequestParam("unit") Integer storeUnit) {
         if (isValid(name, "name")) {
-            manager.setPrincipals(getPrincipals(request));
             StatusCode status = manager.add(FoodForInsertion.builder()
                     .name(name)
                     .storeUnit(storeUnit)
@@ -60,23 +57,18 @@ public class FoodEndpoint extends Endpoint implements
         }
     }
 
-    @PUT
-    @Path("edit")
-    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response edit(@Context HttpServletRequest request,
-                         @QueryParam("id") int id,
-                         @QueryParam("version") int version,
-                         @QueryParam("new") String newName,
-                         @QueryParam("expirationoffset") Integer expirationOffset,
-                         @QueryParam("location") Integer location,
-                         @FormParam("description") String description,
-                         @QueryParam("storeunit") Integer storeUnit) {
+    @PutMapping(path = "edit", consumes = MediaType. APPLICATION_FORM_URLENCODED, produces = MediaType.APPLICATION_JSON)
+    public Response edit(@RequestParam("id") int id,
+                         @RequestParam("version") int version,
+                         @RequestParam("new") String newName,
+                         @RequestParam("expirationoffset") Integer expirationOffset,
+                         @RequestParam("location") Integer location,
+                         @RequestParam("description") String description,
+                         @RequestParam("storeunit") Integer storeUnit) {
         if (isValid(id, "id") &&
                 isValidVersion(version, "version") &&
                 isValid(newName, "new")) {
 
-            manager.setPrincipals(getPrincipals(request));
             StatusCode status = manager.rename(
                     FoodForEditing.builder()
                             .id(id)
@@ -93,30 +85,23 @@ public class FoodEndpoint extends Endpoint implements
         }
     }
 
-    @PUT
-    @Path("rename")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response renameFood(@Context HttpServletRequest request,
-                               @QueryParam("id") int id,
-                               @QueryParam("version") int version,
-                               @QueryParam("new") String newName,
-                               @QueryParam("expirationoffset") Integer expirationOffset,
-                               @QueryParam("location") Integer location,
-                               @QueryParam("storeunit") Integer storeUnit) {
-        return edit(request, id, version, newName, expirationOffset, location, null, storeUnit);
+    @PutMapping(path = "rename", produces = MediaType.APPLICATION_JSON)
+    public Response renameFood(@RequestParam("id") int id,
+                               @RequestParam("version") int version,
+                               @RequestParam("new") String newName,
+                               @RequestParam("expirationoffset") Integer expirationOffset,
+                               @RequestParam("location") Integer location,
+                               @RequestParam("storeunit") Integer storeUnit) {
+        return edit(id, version, newName, expirationOffset, location, null, storeUnit);
     }
 
-    @PUT
-    @Path("buy")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response setToBuyStatus(@Context HttpServletRequest request,
-                                   @QueryParam("id") int id,
-                                   @QueryParam("version") int version,
-                                   @QueryParam("buy") int toBuyParameter) {
+    @PutMapping(path = "buy", produces = MediaType.APPLICATION_JSON)
+    public Response setToBuyStatus(@RequestParam("id") int id,
+                                   @RequestParam("version") int version,
+                                   @RequestParam("buy") int toBuyParameter) {
         if (isValid(id, "id") &&
                 isValidVersion(version, "version")) {
 
-            manager.setPrincipals(getPrincipals(request));
             boolean toBuy = toBuyParameter == 1;
             StatusCode status = manager.setToBuyStatus(FoodForSetToBuy.builder()
                     .id(id)
@@ -129,16 +114,11 @@ public class FoodEndpoint extends Endpoint implements
         }
     }
 
-    @POST
-    @Path("description")
-    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response setDescription(@Context HttpServletRequest request,
-                                   @QueryParam("id") int id,
-                                   @QueryParam("version") int version,
-                                   @FormParam("description") String description) {
+    @PostMapping(path = "description", consumes = MediaType.APPLICATION_FORM_URLENCODED, produces = MediaType.APPLICATION_JSON)
+    public Response setDescription(@RequestParam("id") int id,
+                                   @RequestParam("version") int version,
+                                   @RequestParam("description") String description) {
         if (isValid(id, "id") && isValidVersion(version, "version") && isValidOrEmpty(description, "description")) {
-            manager.setPrincipals(getPrincipals(request));
             StatusCode result = manager.setDescription(FoodForSetDescription.builder()
                     .id(id)
                     .version(version)

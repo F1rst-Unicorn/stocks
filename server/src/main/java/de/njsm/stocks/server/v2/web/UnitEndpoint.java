@@ -26,33 +26,28 @@ import de.njsm.stocks.common.api.*;
 import de.njsm.stocks.server.v2.business.UnitManager;
 import de.njsm.stocks.server.v2.db.jooq.tables.records.UnitRecord;
 import fj.data.Validation;
-import jakarta.servlet.http.HttpServletRequest;
-
-import jakarta.inject.Inject;
-import jakarta.ws.rs.PUT;
-import jakarta.ws.rs.Path;
-import jakarta.ws.rs.Produces;
-import jakarta.ws.rs.QueryParam;
-import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.context.annotation.RequestScope;
 
-@Path("v2/unit")
+@RequestMapping("v2/unit")
+@RestController
+@RequestScope
 public class UnitEndpoint extends Endpoint implements Get<UnitRecord, Unit>, Delete<UnitForDeletion, Unit> {
 
     private final UnitManager manager;
 
-    @Inject
     public UnitEndpoint(UnitManager manager) {
         this.manager = manager;
     }
 
-    @PUT
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response put(@Context HttpServletRequest request,
-                                     @QueryParam("name") String name,
-                                     @QueryParam("abbreviation") String abbreviation) {
+    @PutMapping(produces = MediaType.APPLICATION_JSON)
+    public Response put(@RequestParam("name") String name,
+                                     @RequestParam("abbreviation") String abbreviation) {
         if (isValid(name, "name") && isValid(abbreviation, "abbreviation")) {
-            manager.setPrincipals(getPrincipals(request));
             Validation<StatusCode, Integer> status = manager.addReturningId(UnitForInsertion.builder()
                     .name(name)
                     .abbreviation(abbreviation)
@@ -63,20 +58,16 @@ public class UnitEndpoint extends Endpoint implements Get<UnitRecord, Unit>, Del
         }
     }
 
-    @PUT
-    @Path("rename")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response rename(@Context HttpServletRequest request,
-                           @QueryParam("id") int id,
-                           @QueryParam("version") int version,
-                           @QueryParam("name") String name,
-                           @QueryParam("abbreviation") String abbreviation) {
+    @PutMapping(path = "rename", produces = MediaType.APPLICATION_JSON)
+    public Response rename(@RequestParam("id") int id,
+                           @RequestParam("version") int version,
+                           @RequestParam("name") String name,
+                           @RequestParam("abbreviation") String abbreviation) {
         if (isValid(id, "id") &&
                 isValidVersion(version, "version") &&
                 isValid(name, "new") &&
                 isValid(abbreviation, "abbreviation")) {
 
-            manager.setPrincipals(getPrincipals(request));
             StatusCode status = manager.rename(UnitForRenaming.builder()
                     .id(id)
                     .version(version)

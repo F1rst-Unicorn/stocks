@@ -28,7 +28,11 @@ import de.njsm.stocks.common.api.UnitForDeletion;
 import de.njsm.stocks.common.api.UnitForRenaming;
 import de.njsm.stocks.server.v2.db.UnitHandler;
 import de.njsm.stocks.server.v2.db.jooq.tables.records.UnitRecord;
+import org.springframework.stereotype.Service;
+import org.springframework.web.context.annotation.RequestScope;
 
+@Service
+@RequestScope
 public class UnitManager extends BusinessObject<UnitRecord, Unit>
         implements BusinessGettable<UnitRecord, Unit>,
                    BusinessAddable<UnitRecord, Unit>,

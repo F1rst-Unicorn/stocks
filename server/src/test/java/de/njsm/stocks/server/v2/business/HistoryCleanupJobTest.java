@@ -22,12 +22,15 @@
 package de.njsm.stocks.server.v2.business;
 
 import de.njsm.stocks.common.api.StatusCode;
+import de.njsm.stocks.server.v2.business.job.HistoryCleaner;
 import de.njsm.stocks.server.v2.db.CrudDatabaseHandler;
 import de.njsm.stocks.server.v2.db.PrincipalsHandler;
+import de.njsm.stocks.server.v2.web.security.StocksAuthentication;
 import fj.data.Validation;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.security.authentication.AuthenticationManager;
 
 import java.time.Period;
 import java.util.List;
@@ -37,7 +40,7 @@ import static org.mockito.Mockito.*;
 
 public class HistoryCleanupJobTest {
 
-    private HistoryCleanupJob uut;
+    private HistoryCleaner uut;
 
     private Period maxHistory;
 
@@ -53,13 +56,13 @@ public class HistoryCleanupJobTest {
         principalsHandler = mock(PrincipalsHandler.class);
         tableHandler = mock(CrudDatabaseHandler.class);
         tableHandler2 = mock(CrudDatabaseHandler.class);
-        uut = new HistoryCleanupJob(maxHistory, principalsHandler, List.of(tableHandler, tableHandler2));
+        var authenticationManager = mock(AuthenticationManager.class);
+        when(authenticationManager.authenticate(any())).thenReturn(new StocksAuthentication(TEST_USER));
+        uut = new HistoryCleaner(maxHistory, principalsHandler, List.of(tableHandler, tableHandler2), authenticationManager);
     }
 
     @AfterEach
     public void tearDown() {
-        verify(tableHandler).setPrincipals(TEST_USER);
-        verify(tableHandler2).setPrincipals(TEST_USER);
         verify(principalsHandler).getJobRunnerPrincipal();
         verifyNoMoreInteractions(principalsHandler);
         verifyNoMoreInteractions(tableHandler);
@@ -73,7 +76,7 @@ public class HistoryCleanupJobTest {
         when(tableHandler2.cleanDataOlderThan(maxHistory)).thenReturn(StatusCode.SUCCESS);
         when(principalsHandler.commit()).thenReturn(StatusCode.SUCCESS);
 
-        uut.runJob();
+        uut.execute();
 
         verify(tableHandler).cleanDataOlderThan(maxHistory);
         verify(tableHandler2).cleanDataOlderThan(maxHistory);
@@ -87,7 +90,7 @@ public class HistoryCleanupJobTest {
         when(tableHandler.cleanDataOlderThan(maxHistory)).thenReturn(StatusCode.DATABASE_UNREACHABLE);
         when(principalsHandler.rollback()).thenReturn(StatusCode.SUCCESS);
 
-        uut.runJob();
+        uut.execute();
 
         verify(tableHandler).cleanDataOlderThan(maxHistory);
         verify(principalsHandler).rollback();
@@ -100,7 +103,7 @@ public class HistoryCleanupJobTest {
         when(tableHandler2.cleanDataOlderThan(maxHistory)).thenReturn(StatusCode.DATABASE_UNREACHABLE);
         when(principalsHandler.rollback()).thenReturn(StatusCode.SUCCESS);
 
-        uut.runJob();
+        uut.execute();
 
         verify(tableHandler).cleanDataOlderThan(maxHistory);
         verify(tableHandler2).cleanDataOlderThan(maxHistory);

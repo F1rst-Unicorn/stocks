@@ -21,12 +21,16 @@
 
 package de.njsm.stocks.server.v2.business;
 
-import de.njsm.stocks.common.api.StatusCode;
 import de.njsm.stocks.common.api.Health;
+import de.njsm.stocks.common.api.StatusCode;
 import de.njsm.stocks.server.util.AuthAdmin;
 import de.njsm.stocks.server.v2.db.HealthHandler;
 import fj.data.Validation;
+import org.springframework.stereotype.Service;
+import org.springframework.web.context.annotation.RequestScope;
 
+@Service
+@RequestScope
 public class HealthManager {
 
     private final HealthHandler dbBackend;

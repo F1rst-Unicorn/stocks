@@ -18,6 +18,7 @@ log4j = "2.25.1"
 mockito = "5.18.0"
 retrofit = "2.9.0"
 spring = "6.2.9"
+spring-boot = "4.0.2"
 
 [libraries]
 android-application = { module = "com.android.application:com.android.application.gradle.plugin", version.ref = "android-gradle-plugin"}
@@ -99,9 +100,9 @@ kotlin-android = { module = "org.jetbrains.kotlin.android:org.jetbrains.kotlin.a
 kotlin-jdk7 = { module = "org.jetbrains.kotlin:kotlin-stdlib-jdk7", version.ref = "kotlin" }
 kotlin-jdk8 = { module = "org.jetbrains.kotlin:kotlin-stdlib-jdk8", version.ref = "kotlin" }
 ktlint = "org.jlleitschuh.gradle:ktlint-gradle:12.1.0"
-liquibase = "org.liquibase:liquibase-core:4.26.0"
-liquibase-plugin = "org.liquibase:liquibase-gradle-plugin:2.2.1"
-liquibase-slf4j = "com.mattbertolini:liquibase-slf4j:3.0.0"
+liquibase = "org.liquibase:liquibase-core:5.0.1"
+liquibase-plugin = "org.liquibase:liquibase-gradle-plugin:3.1.0"
+liquibase-slf4j = "com.mattbertolini:liquibase-slf4j:5.1.0"
 log4j-api = { module = "org.apache.logging.log4j:log4j-api", version.ref = "log4j" }
 log4j-core = { module = "org.apache.logging.log4j:log4j-core", version.ref = "log4j" }
 log4j-slf4j-impl = { module = "org.apache.logging.log4j:log4j-slf4j-impl", version.ref = "log4j" }
@@ -121,9 +122,11 @@ rxjava = "io.reactivex.rxjava3:rxjava:3.1.5"
 rxjava-android = "io.reactivex.rxjava3:rxandroid:3.0.0"
 slf4j = "org.slf4j:slf4j-api:2.0.16"
 slf4j-android = "uk.uuid.slf4j:slf4j-android:1.7.36-0"
+spring-boot-plugin = { module = "org.springframework.boot:org.springframework.boot.gradle.plugin", version.ref = "spring-boot"}
 spring-context = { module = "org.springframework:spring-context", version.ref = "spring" }
 spring-context-support = { module = "org.springframework:spring-context-support", version.ref = "spring" }
 spring-core = { module = "org.springframework:spring-core", version.ref = "spring" }
+spring-dependency-management = "io.spring.dependency-management:io.spring.dependency-management.gradle.plugin:1.1.7"
 spring-tx = { module = "org.springframework:spring-tx", version.ref = "spring" }
 spring-web = { module = "org.springframework:spring-web", version.ref = "spring" }
 zxing = "com.google.zxing:core:3.4.1"
