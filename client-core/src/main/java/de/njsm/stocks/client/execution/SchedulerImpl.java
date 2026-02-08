@@ -69,12 +69,15 @@ class SchedulerImpl implements Scheduler, SchedulerStatusReporter {
             if (job.name() != Job.Type.DATABASE) {
                 LOG.trace(job + " started");
             }
-            job.runnable().run();
-            numberOfRunningJobs.onNext(counter.decrementAndGet());
-            if (job.name() != Job.Type.DATABASE) {
-                LOG.trace(job + " stopped");
+            try {
+                job.runnable().run();
+            } finally {
+                numberOfRunningJobs.onNext(counter.decrementAndGet());
+                if (job.name() != Job.Type.DATABASE) {
+                    LOG.trace(job + " stopped");
+                }
+                lock.visit(job.name(), false);
             }
-            lock.visit(job.name(), false);
         });
     }
 
