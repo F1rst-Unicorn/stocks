@@ -38,6 +38,7 @@ class user_device {
     name: String
     technical_use_case: String?
 }
+note left: Every entity has a 'initiates' foreign key to this table
 
 package Food <<Frame>> {
 
@@ -195,21 +196,6 @@ package "Only Android" {
     }
 }
 
-location --> user_device : initiates
-food --> user_device : initiates
-user --> user_device : initiates
-user_device --> user_device : initiates
-food_item --> user_device : initiates
-ean_number --> user_device : initiates
-recipe --> user_device : initiates
-recipe_ingredient --> user_device : initiates
-recipe_product --> user_device : initiates
-unit --> user_device : initiates
-scaled_unit --> user_device : initiates
-grocery_store --> user_device : initiates
-grocery_chain --> user_device : initiates
-price --> user_device : initiates
-
 user_device -[dashed]-> user : belongs_to
 
 ean_number -[dashed]-> food : identifies
@@ -238,6 +224,6 @@ ticket -[dashed]-> user_device : belongs_device
 grocery_store -[dashed]-> grocery_chain : grocery_chain
 price -[dashed]-> grocery_store : grocery_store
 price --> food : food
-price --> unit : scaled_unit
+price --> scaled_unit : unit
 
 @enduml

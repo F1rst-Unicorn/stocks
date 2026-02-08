@@ -50,4 +50,10 @@ public interface BitemporalVisitor<I, O> {
     O bitemporalRecipeIngredient(BitemporalRecipeIngredient bitemporalRecipeIngredient, I argument);
 
     O bitemporalRecipeProduct(BitemporalRecipeProduct bitemporalRecipeProduct, I argument);
+
+    O bitemporalGroceryChain(BitemporalGroceryChain bitemporalGroceryChain, I argument);
+
+    O bitemporalGroceryStore(BitemporalGroceryStore bitemporalGroceryStore, I data);
+
+    O bitemporalPrice(BitemporalPrice bitemporalPrice, I data);
 }
