@@ -21,21 +21,21 @@
 
 package de.njsm.stocks.server.v2.business.data.visitor;
 
-import static de.njsm.stocks.server.v2.db.jooq.Tables.*;
-import static de.njsm.stocks.server.v2.db.jooq.tables.User.USER;
-import static de.njsm.stocks.server.v2.db.jooq.tables.UserDevice.USER_DEVICE;
+import de.njsm.stocks.common.api.*;
+import de.njsm.stocks.common.api.visitor.InsertableVisitor;
+import de.njsm.stocks.server.util.Principals;
+import org.jooq.InsertOnDuplicateStep;
+import org.jooq.InsertSetStep;
+import org.jooq.TableRecord;
+import org.jooq.impl.DSL;
 
 import java.time.OffsetDateTime;
 import java.time.Period;
 import java.time.ZoneOffset;
 
-import org.jooq.InsertOnDuplicateStep;
-import org.jooq.InsertSetStep;
-import org.jooq.TableRecord;
-import org.jooq.impl.DSL;
-import de.njsm.stocks.common.api.*;
-import de.njsm.stocks.common.api.visitor.InsertableVisitor;
-import de.njsm.stocks.server.util.Principals;
+import static de.njsm.stocks.server.v2.db.jooq.Tables.*;
+import static de.njsm.stocks.server.v2.db.jooq.tables.User.USER;
+import static de.njsm.stocks.server.v2.db.jooq.tables.UserDevice.USER_DEVICE;
 
 public class JooqInsertionVisitor<R extends TableRecord<R>> implements InsertableVisitor<JooqInsertionVisitor.Input<R>, InsertOnDuplicateStep<R>> {
 
@@ -175,6 +175,25 @@ public class JooqInsertionVisitor<R extends TableRecord<R>> implements Insertabl
     public InsertOnDuplicateStep<R> recipeProductWithIdForInsertion(RecipeProductWithIdForInsertion recipeProductWithIdForInsertion, Input<R> input) {
         return input.getInsertSetStep().columns(RECIPE_PRODUCT.AMOUNT, RECIPE_PRODUCT.PRODUCT, RECIPE_PRODUCT.RECIPE, RECIPE_PRODUCT.UNIT, RECIPE_PRODUCT.INITIATES)
                 .values(recipeProductWithIdForInsertion.amount(), recipeProductWithIdForInsertion.product(), recipeProductWithIdForInsertion.recipe(), recipeProductWithIdForInsertion.unit(), input.getPrincipals().getDid());
+    }
+
+    @Override
+    public InsertOnDuplicateStep<R> groceryChainForInsertion(GroceryChainForInsertion groceryChainForInsertion, Input<R> argument) {
+        return argument.getInsertSetStep().columns(GROCERY_CHAIN.NAME)
+                .values(groceryChainForInsertion.name());
+    }
+
+    @Override
+    public InsertOnDuplicateStep<R> groceryStoreForInsertion(GroceryStoreForInsertion groceryStoreForInsertion, Input<R> argument) {
+        return argument.getInsertSetStep().columns(GROCERY_STORE.NAME, GROCERY_STORE.GROCERY_CHAIN)
+                .values(groceryStoreForInsertion.name(), groceryStoreForInsertion.groceryChain());
+    }
+
+    @Override
+    public InsertOnDuplicateStep<R> price(PriceForInsertion priceForInsertion, Input<R> argument) {
+        return argument.getInsertSetStep()
+                .columns(PRICE.PRICE_, PRICE.SCALE, PRICE.GROCERY_STORE, PRICE.FOOD, PRICE.SCALED_UNIT)
+                .values(priceForInsertion.price(), priceForInsertion.scale(), priceForInsertion.groceryStore(), priceForInsertion.food(), priceForInsertion.scaledUnit());
     }
 
     public static class Input<R extends TableRecord<R>> {

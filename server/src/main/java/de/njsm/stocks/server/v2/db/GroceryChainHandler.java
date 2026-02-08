@@ -23,17 +23,26 @@ package de.njsm.stocks.server.v2.db;
 
 import de.njsm.stocks.common.api.BitemporalGroceryChain;
 import de.njsm.stocks.common.api.GroceryChain;
+import de.njsm.stocks.common.api.GroceryChainForEditing;
+import de.njsm.stocks.common.api.StatusCode;
 import de.njsm.stocks.server.v2.db.jooq.tables.records.GroceryChainRecord;
 import org.jooq.Field;
 import org.jooq.RecordMapper;
 import org.jooq.Table;
 import org.jooq.TableField;
+import org.jooq.impl.DSL;
+import org.springframework.context.annotation.Primary;
+import org.springframework.stereotype.Repository;
+import org.springframework.web.context.annotation.RequestScope;
 
 import java.util.Arrays;
 import java.util.List;
 
 import static de.njsm.stocks.server.v2.db.jooq.tables.GroceryChain.GROCERY_CHAIN;
 
+@Repository
+@RequestScope
+@Primary
 public class GroceryChainHandler extends CrudDatabaseHandler<GroceryChainRecord, GroceryChain> {
 
 
@@ -58,6 +67,22 @@ public class GroceryChainHandler extends CrudDatabaseHandler<GroceryChainRecord,
                 .initiates(cursor.getInitiates())
                 .name(cursor.getName())
                 .build();
+    }
+
+    public StatusCode edit(GroceryChainForEditing item) {
+        return runCommand(context -> {
+            if (isCurrentlyMissing(item, context))
+                return StatusCode.NOT_FOUND;
+
+            return currentUpdate(context, List.of(
+                    GROCERY_CHAIN.ID,
+                    GROCERY_CHAIN.VERSION,
+                    DSL.val(item.name())),
+                    getIdField().eq(item.id())
+                            .and(getVersionField().eq(item.version()))
+                            .and(GROCERY_CHAIN.NAME.ne(item.name())))
+            .map(this::notFoundMeansInvalidVersion);
+        });
     }
 
     @Override

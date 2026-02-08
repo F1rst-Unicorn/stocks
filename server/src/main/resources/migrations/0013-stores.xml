@@ -116,7 +116,6 @@
                 valid_time_end timestamp(6) with time zone not null default 'infinity',
                 transaction_time_start timestamp(6) with time zone not null default current_timestamp,
                 transaction_time_end timestamp (6) with time zone not null default 'infinity',
-                purchase_date timestamp(6) with time zone not null default current_timestamp,
                 price numeric not null,
                 scale numeric not null,
                 grocery_store int not null,
@@ -361,17 +360,17 @@
             select 12,
                    'grocery_chain',
                    coalesce(max(transaction_time_start), current_timestamp)
-            from unit
+            from grocery_chain
             union
             select 13,
                    'grocery_store',
                    coalesce(max(transaction_time_start), current_timestamp)
-            from unit
+            from grocery_store
             union
             select 14,
                    'price',
                    coalesce(max(transaction_time_start), current_timestamp)
-            from unit;
+            from price;
         </sql>
         <rollback>
             create or replace view updates (id, table_name, last_update) as

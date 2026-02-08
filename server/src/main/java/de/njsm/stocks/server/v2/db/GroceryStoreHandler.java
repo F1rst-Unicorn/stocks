@@ -21,31 +21,65 @@
 
 package de.njsm.stocks.server.v2.db;
 
-import de.njsm.stocks.common.api.BitemporalGroceryStore;
-import de.njsm.stocks.common.api.GroceryStore;
-import de.njsm.stocks.common.api.User;
+import de.njsm.stocks.common.api.*;
 import de.njsm.stocks.server.v2.db.jooq.tables.records.GroceryStoreRecord;
 import org.jooq.Field;
 import org.jooq.RecordMapper;
 import org.jooq.Table;
 import org.jooq.TableField;
+import org.jooq.impl.DSL;
+import org.springframework.context.annotation.Primary;
+import org.springframework.stereotype.Repository;
+import org.springframework.web.context.annotation.RequestScope;
 
 import java.util.Arrays;
 import java.util.List;
 
 import static de.njsm.stocks.server.v2.db.jooq.tables.GroceryStore.GROCERY_STORE;
-import static de.njsm.stocks.server.v2.db.jooq.tables.User.USER;
 
+@Repository
+@RequestScope
+@Primary
 public class GroceryStoreHandler extends CrudDatabaseHandler<GroceryStoreRecord, GroceryStore> {
 
+    private final GroceryChainHandler groceryChainHandler;
 
-    public GroceryStoreHandler(ConnectionFactory connectionFactory) {
+    public GroceryStoreHandler(ConnectionFactory connectionFactory, GroceryChainHandler groceryChainHandler) {
         super(connectionFactory);
+        this.groceryChainHandler = groceryChainHandler;
     }
 
     @Override
     protected Table<GroceryStoreRecord> getTable() {
         return GROCERY_STORE;
+    }
+
+    public StatusCode deleteStoresOfChain(Versionable<GroceryChain> id) {
+        return runCommand(context -> {
+            if (groceryChainHandler.isCurrentlyMissing(id, context)) {
+                return StatusCode.NOT_FOUND;
+            }
+
+            return currentDelete(GROCERY_STORE.GROCERY_CHAIN.eq(id.id()))
+                    .map(this::notFoundIsOk);
+        });
+    }
+
+    public StatusCode edit(GroceryStoreForEditing item) {
+        return runCommand(context -> {
+            if (isCurrentlyMissing(item, context))
+                return StatusCode.NOT_FOUND;
+
+            return currentUpdate(context, List.of(
+                            GROCERY_STORE.ID,
+                            GROCERY_STORE.VERSION,
+                            DSL.val(item.name()),
+                            GROCERY_STORE.GROCERY_CHAIN),
+                    getIdField().eq(item.id())
+                            .and(getVersionField().eq(item.version()))
+                            .and(GROCERY_STORE.NAME.ne(item.name())))
+                    .map(this::notFoundMeansInvalidVersion);
+        });
     }
 
     @Override

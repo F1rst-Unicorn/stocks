@@ -169,7 +169,6 @@ package Stores <<Frame>> {
         valid_time_end: OffsetDateTime
         transaction_time_start: OffsetDateTime
         transaction_time_end: OffsetDateTime
-        purchase_date: OffsetDateTime
         price: BigDecimal
         scale: BigDecimal
     }

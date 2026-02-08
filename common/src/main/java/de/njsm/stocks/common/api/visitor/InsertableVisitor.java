@@ -50,4 +50,10 @@ public interface InsertableVisitor<I, O> {
     O recipeIngredientWithIdForInsertion(RecipeIngredientWithIdForInsertion recipeIngredientWithIdForInsertion, I argument);
 
     O recipeProductWithIdForInsertion(RecipeProductWithIdForInsertion recipeProductWithIdForInsertion, I argument);
+
+    O groceryChainForInsertion(GroceryChainForInsertion groceryChainForInsertion, I argument);
+
+    O groceryStoreForInsertion(GroceryStoreForInsertion groceryStoreForInsertion, I argument);
+
+    O price(PriceForInsertion priceForInsertion, I argument);
 }

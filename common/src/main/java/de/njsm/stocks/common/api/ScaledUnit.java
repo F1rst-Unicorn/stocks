@@ -59,7 +59,7 @@ public interface ScaledUnit extends Entity<ScaledUnit> {
     @Override
     default boolean isContainedIn(ScaledUnit item, boolean increment) {
         return Entity.super.isContainedIn(item, increment) &&
-                scale().equals(item.scale()) &&
+                scale().compareTo(item.scale()) == 0 &&
                 unit() == item.unit();
     }
 

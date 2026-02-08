@@ -22,20 +22,13 @@
 package de.njsm.stocks.common.api;
 
 import com.fasterxml.jackson.annotation.JsonGetter;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import de.njsm.stocks.common.api.serialisers.InstantSerialiser;
 
 import java.math.BigDecimal;
-import java.time.Instant;
 
 public interface Price extends Entity<Price> {
 
     @JsonGetter
     BigDecimal price();
-
-    @JsonGetter
-    @JsonSerialize(using = InstantSerialiser.class)
-    Instant purchaseDate();
 
     @JsonGetter
     BigDecimal scale();
@@ -51,7 +44,6 @@ public interface Price extends Entity<Price> {
 
     interface Builder<T> {
         T price(BigDecimal v);
-        T purchaseDate(Instant v);
         T scale(BigDecimal v);
         T groceryStore(int v);
         T food(int v);
@@ -62,7 +54,6 @@ public interface Price extends Entity<Price> {
     default boolean isContainedIn(Price item, boolean increment) {
         return Entity.super.isContainedIn(item, increment) &&
                 price().compareTo(item.price()) == 0 &&
-                purchaseDate().equals(item.purchaseDate()) &&
                 scale().compareTo(item.scale()) == 0 &&
                 groceryStore() == item.groceryStore() &&
                 food() == item.food() &&
