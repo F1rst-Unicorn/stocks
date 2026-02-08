@@ -21,9 +21,7 @@
 
 package de.njsm.stocks.server.v2.db;
 
-import de.njsm.stocks.common.api.BitemporalGroceryStore;
-import de.njsm.stocks.common.api.GroceryStore;
-import de.njsm.stocks.common.api.User;
+import de.njsm.stocks.common.api.*;
 import de.njsm.stocks.server.v2.db.jooq.tables.records.GroceryStoreRecord;
 import org.jooq.Field;
 import org.jooq.RecordMapper;
@@ -34,13 +32,14 @@ import java.util.Arrays;
 import java.util.List;
 
 import static de.njsm.stocks.server.v2.db.jooq.tables.GroceryStore.GROCERY_STORE;
-import static de.njsm.stocks.server.v2.db.jooq.tables.User.USER;
 
 public class GroceryStoreHandler extends CrudDatabaseHandler<GroceryStoreRecord, GroceryStore> {
 
+    private final GroceryChainHandler groceryChainHandler;
 
-    public GroceryStoreHandler(ConnectionFactory connectionFactory) {
+    public GroceryStoreHandler(ConnectionFactory connectionFactory, GroceryChainHandler groceryChainHandler) {
         super(connectionFactory);
+        this.groceryChainHandler = groceryChainHandler;
     }
 
     @Override
@@ -81,5 +80,16 @@ public class GroceryStoreHandler extends CrudDatabaseHandler<GroceryStoreRecord,
                 GROCERY_STORE.NAME,
                 GROCERY_STORE.GROCERY_CHAIN
         );
+    }
+
+    public StatusCode deleteStoresOfChain(Versionable<GroceryChain> id) {
+        return runCommand(context -> {
+            if (groceryChainHandler.isCurrentlyMissing(id, context)) {
+                return StatusCode.NOT_FOUND;
+            }
+
+            return currentDelete(GROCERY_STORE.GROCERY_CHAIN.eq(id.id()))
+                .map(this::notFoundIsOk);
+        });
     }
 }

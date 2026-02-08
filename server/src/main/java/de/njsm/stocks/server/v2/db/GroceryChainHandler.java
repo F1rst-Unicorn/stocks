@@ -23,6 +23,8 @@ package de.njsm.stocks.server.v2.db;
 
 import de.njsm.stocks.common.api.BitemporalGroceryChain;
 import de.njsm.stocks.common.api.GroceryChain;
+import de.njsm.stocks.common.api.GroceryChainForEditing;
+import de.njsm.stocks.common.api.StatusCode;
 import de.njsm.stocks.server.v2.db.jooq.tables.records.GroceryChainRecord;
 import org.jooq.Field;
 import org.jooq.RecordMapper;
@@ -77,5 +79,9 @@ public class GroceryChainHandler extends CrudDatabaseHandler<GroceryChainRecord,
                 GROCERY_CHAIN.VERSION,
                 GROCERY_CHAIN.NAME
         );
+    }
+
+    public StatusCode edit(GroceryChainForEditing item) {
+
     }
 }

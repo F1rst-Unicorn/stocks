@@ -21,25 +21,29 @@
 
 package de.njsm.stocks.server.v2.db;
 
-import de.njsm.stocks.common.api.BitemporalPrice;
-import de.njsm.stocks.common.api.Price;
+import de.njsm.stocks.common.api.*;
 import de.njsm.stocks.server.v2.db.jooq.tables.records.PriceRecord;
 import org.jooq.Field;
 import org.jooq.RecordMapper;
 import org.jooq.Table;
 import org.jooq.TableField;
+import org.jooq.impl.DSL;
 
+import java.time.OffsetDateTime;
 import java.util.Arrays;
 import java.util.List;
-import java.util.function.Function;
 
+import static de.njsm.stocks.server.v2.db.jooq.tables.GroceryStore.GROCERY_STORE;
 import static de.njsm.stocks.server.v2.db.jooq.tables.Price.PRICE;
+import static org.jooq.impl.DSL.select;
 
 public class PriceHandler extends CrudDatabaseHandler<PriceRecord, Price> {
 
+    private final GroceryChainHandler groceryChainHandler;
 
-    public PriceHandler(ConnectionFactory connectionFactory) {
+    public PriceHandler(ConnectionFactory connectionFactory, GroceryChainHandler groceryChainHandler) {
         super(connectionFactory);
+        this.groceryChainHandler = groceryChainHandler;
     }
 
     @Override
@@ -88,5 +92,24 @@ public class PriceHandler extends CrudDatabaseHandler<PriceRecord, Price> {
                 PRICE.FOOD,
                 PRICE.SCALED_UNIT
         );
+    }
+
+    public StatusCode deletePricesOfChain(Versionable<GroceryChain> id) {
+        return runCommand(context -> {
+            if (groceryChainHandler.isCurrentlyMissing(id, context)) {
+                return StatusCode.NOT_FOUND;
+            }
+
+            Field<OffsetDateTime> now = DSL.currentOffsetDateTime();
+            return currentDelete(PRICE.GROCERY_STORE.in(
+                    select(GROCERY_STORE.ID)
+                    .from(GROCERY_STORE)
+                    .where(GROCERY_STORE.GROCERY_CHAIN.eq(id.id()))
+                    .and(GROCERY_STORE.VALID_TIME_START.le(now))
+                    .and(now.lt(GROCERY_STORE.VALID_TIME_END))
+                    .and(GROCERY_STORE.TRANSACTION_TIME_END.eq(INFINITY))
+            ))
+                    .map(this::notFoundIsOk);
+        });
     }
 }
