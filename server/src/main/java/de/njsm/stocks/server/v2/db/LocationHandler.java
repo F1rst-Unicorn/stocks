@@ -24,6 +24,7 @@ package de.njsm.stocks.server.v2.db;
 import de.njsm.stocks.common.api.*;
 import de.njsm.stocks.server.v2.db.jooq.tables.records.LocationRecord;
 import org.jooq.*;
+import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.context.annotation.RequestScope;
 
@@ -35,6 +36,7 @@ import static org.jooq.impl.DSL.inline;
 
 @Repository
 @RequestScope
+@Primary
 public class LocationHandler extends CrudDatabaseHandler<LocationRecord, Location> {
 
     private final FoodItemHandler foodItemHandler;

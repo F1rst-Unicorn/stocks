@@ -19,36 +19,20 @@
  *
  */
 
-package de.njsm.stocks.common.api;
+package de.njsm.stocks.client.business.entities;
 
-import com.fasterxml.jackson.annotation.JsonGetter;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.google.auto.value.AutoValue;
 
 @AutoValue
-@JsonDeserialize(builder = AutoValue_GroceryChainForEditing.Builder.class)
-public abstract class GroceryChainForEditing implements Versionable<GroceryChain> {
-
-    @JsonGetter
-    public abstract String name();
+public abstract class GroceryChainForSynchronisation implements Bitemporal<GroceryChain>, GroceryChain {
 
     public static Builder builder() {
-        return new AutoValue_GroceryChainForEditing.Builder();
+        return new AutoValue_GroceryChainForSynchronisation.Builder();
     }
 
     @AutoValue.Builder
-    @JsonPOJOBuilder(withPrefix = "")
     public abstract static class Builder
-            extends SelfValidating.Builder<GroceryChainForEditing>
-            implements Versionable.Builder<Builder> {
-
-        public abstract Builder name(String v);
-    }
-
-    @Override
-    public boolean isContainedIn(GroceryChain item, boolean increment) {
-        return Versionable.super.isContainedIn(item, increment) &&
-                name().equals(item.name());
+            extends BaseBuilder<GroceryChainForSynchronisation>
+            implements Bitemporal.Builder<Builder>, GroceryChainFields.Builder<Builder> {
     }
 }

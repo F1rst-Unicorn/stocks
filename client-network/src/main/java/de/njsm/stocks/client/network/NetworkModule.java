@@ -135,6 +135,15 @@ public interface NetworkModule {
     @Binds
     HealthService healthService(HealthServiceImpl impl);
 
+    @Binds
+    GroceryChainAddService GroceryChainAddService(GroceryChainAddServiceImpl impl);
+
+    @Binds
+    GroceryChainEditService GroceryChainEditService(GroceryChainEditServiceImpl impl);
+
+    @Binds
+    EntityDeleteService<GroceryChain> GroceryChainDeleteService(GroceryChainDeleteServiceImpl impl);
+
     @Provides
     @Singleton
     static ServerApi serverApi(ServerEndpoint serverEndpoint, HostnameInterceptor interceptor) {

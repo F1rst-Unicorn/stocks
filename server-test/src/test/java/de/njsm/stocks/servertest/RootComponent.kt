@@ -29,6 +29,7 @@ import de.njsm.stocks.servertest.v2.DeviceTest
 import de.njsm.stocks.servertest.v2.EanTest
 import de.njsm.stocks.servertest.v2.FoodItemTest
 import de.njsm.stocks.servertest.v2.FoodTest
+import de.njsm.stocks.servertest.v2.GroceryChainTest
 import de.njsm.stocks.servertest.v2.HealthTest
 import de.njsm.stocks.servertest.v2.InitialServerTest
 import de.njsm.stocks.servertest.v2.LocationTest
@@ -71,6 +72,8 @@ interface RootComponent {
     fun inject(initialServerTest: InitialServerTest)
 
     fun inject(healthTest: HealthTest)
+
+    fun inject(test: GroceryChainTest)
 
     @Component.Builder
     interface Builder {

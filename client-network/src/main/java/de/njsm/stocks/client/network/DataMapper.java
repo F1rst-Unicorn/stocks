@@ -131,6 +131,12 @@ public class DataMapper {
                 .build();
     }
 
+    public static GroceryChainForSynchronisation map(BitemporalGroceryChain source) {
+        return map(source, GroceryChainForSynchronisation.builder())
+                .name(source.name())
+                .build();
+    }
+
     private static <T extends Bitemporal.Builder<T>, E extends Entity<E>> T map(de.njsm.stocks.common.api.Bitemporal<E> source, T destination) {
         return destination
                 .id(source.id())

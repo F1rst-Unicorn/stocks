@@ -27,6 +27,7 @@ import org.jooq.Field;
 import org.jooq.RecordMapper;
 import org.jooq.Table;
 import org.jooq.TableField;
+import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.context.annotation.RequestScope;
 
@@ -38,6 +39,7 @@ import static de.njsm.stocks.server.v2.db.jooq.Tables.EAN_NUMBER;
 
 @Repository
 @RequestScope
+@Primary
 public class EanNumberHandler extends CrudDatabaseHandler<EanNumberRecord, EanNumber> {
 
     public EanNumberHandler(ConnectionFactory connectionFactory) {

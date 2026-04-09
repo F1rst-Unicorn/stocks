@@ -192,4 +192,30 @@ public interface ServerApi {
 
     @GET("stocks/health")
     Call<DataResponse<Health>> getHealth();
+
+    @GET("/v2/grocery-chain")
+    Call<ListResponse<BitemporalGroceryChain>> getGroceryChains(
+            @Query("startingFrom") String startingFrom,
+            @Query("upUntil") String upUntil);
+
+    @GET("/v2/grocery-store")
+    Call<ListResponse<BitemporalGroceryStore>> getGroceryStores(
+            @Query("startingFrom") String startingFrom,
+            @Query("upUntil") String upUntil);
+
+    @GET("/v2/price")
+    Call<ListResponse<BitemporalPrice>> getPrices(
+            @Query("startingFrom") String startingFrom,
+            @Query("upUntil") String upUntil);
+
+    @HTTP(method = "DELETE", path = "/v2/grocery-chain", hasBody = true)
+    Call<Response> deleteGroceryChain(@Query("id") int id,
+                                      @Query("version") int version);
+
+
+    @PUT("/v2/grocery-chain/edit")
+    Call<Response> editGroceryChain(@Body GroceryChainForEditing build);
+
+    @PUT("/v2/grocery-chain")
+    Call<DataResponse<Integer>> addGroceryChain(@Body GroceryChainForInsertion data);
 }

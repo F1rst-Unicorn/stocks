@@ -86,6 +86,8 @@ class ErrorRetryInteractorImpl implements ErrorRetryInteractor, ErrorDetailsVisi
 
     private final JobTypeTranslator jobTypeTranslator;
 
+    private final GroceryChainAddInteractor groceryChainAddInteractor;
+
     @Inject
     ErrorRetryInteractorImpl(LocationAddInteractor locationAddInteractor,
                              EntityDeleter<Location> locationDeleter,
@@ -114,7 +116,8 @@ class ErrorRetryInteractorImpl implements ErrorRetryInteractor, ErrorDetailsVisi
                              RecipeEditInteractor recipeEditInteractor,
                              Synchroniser synchroniser,
                              Scheduler scheduler,
-                             ErrorRepository errorRepository) {
+                             ErrorRepository errorRepository,
+                             GroceryChainAddInteractor groceryChainAddInteractor) {
         this.locationAddInteractor = locationAddInteractor;
         this.locationDeleter = locationDeleter;
         this.locationEditInteractor = locationEditInteractor;
@@ -143,6 +146,7 @@ class ErrorRetryInteractorImpl implements ErrorRetryInteractor, ErrorDetailsVisi
         this.synchroniser = synchroniser;
         this.scheduler = scheduler;
         this.errorRepository = errorRepository;
+        this.groceryChainAddInteractor = groceryChainAddInteractor;
         this.jobTypeTranslator = new JobTypeTranslator();
     }
 
@@ -356,6 +360,12 @@ class ErrorRetryInteractorImpl implements ErrorRetryInteractor, ErrorDetailsVisi
         return null;
     }
 
+    @Override
+    public Void groceryChainAddForm(GroceryChainAddForm groceryChainAddForm, Void input) {
+        groceryChainAddInteractor.addGroceryStore(groceryChainAddForm);
+        return null;
+    }
+
     private static final class JobTypeTranslator implements ErrorDetailsVisitor<Void, Job.Type> {
 
         @Override
@@ -486,6 +496,11 @@ class ErrorRetryInteractorImpl implements ErrorRetryInteractor, ErrorDetailsVisi
         @Override
         public Job.Type recipeEditErrorDetails(RecipeEditForm recipeEditForm, Void input) {
             return Job.Type.EDIT_RECIPE;
+        }
+
+        @Override
+        public Job.Type groceryChainAddForm(GroceryChainAddForm groceryChainAddForm, Void input) {
+            return Job.Type.ADD_GROCERY_CHAIN;
         }
     }
 }

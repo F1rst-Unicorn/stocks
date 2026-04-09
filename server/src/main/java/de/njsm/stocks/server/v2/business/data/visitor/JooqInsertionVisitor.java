@@ -179,21 +179,21 @@ public class JooqInsertionVisitor<R extends TableRecord<R>> implements Insertabl
 
     @Override
     public InsertOnDuplicateStep<R> groceryChainForInsertion(GroceryChainForInsertion groceryChainForInsertion, Input<R> argument) {
-        return argument.getInsertSetStep().columns(GROCERY_CHAIN.NAME)
-                .values(groceryChainForInsertion.name());
+        return argument.getInsertSetStep().columns(GROCERY_CHAIN.NAME, GROCERY_CHAIN.INITIATES)
+                .values(groceryChainForInsertion.name(), argument.getPrincipals().getDid());
     }
 
     @Override
     public InsertOnDuplicateStep<R> groceryStoreForInsertion(GroceryStoreForInsertion groceryStoreForInsertion, Input<R> argument) {
-        return argument.getInsertSetStep().columns(GROCERY_STORE.NAME, GROCERY_STORE.GROCERY_CHAIN)
-                .values(groceryStoreForInsertion.name(), groceryStoreForInsertion.groceryChain());
+        return argument.getInsertSetStep().columns(GROCERY_STORE.NAME, GROCERY_STORE.GROCERY_CHAIN, GROCERY_STORE.INITIATES)
+                .values(groceryStoreForInsertion.name(), groceryStoreForInsertion.groceryChain(), argument.getPrincipals().getDid());
     }
 
     @Override
     public InsertOnDuplicateStep<R> price(PriceForInsertion priceForInsertion, Input<R> argument) {
         return argument.getInsertSetStep()
-                .columns(PRICE.PRICE_, PRICE.SCALE, PRICE.GROCERY_STORE, PRICE.FOOD, PRICE.SCALED_UNIT)
-                .values(priceForInsertion.price(), priceForInsertion.scale(), priceForInsertion.groceryStore(), priceForInsertion.food(), priceForInsertion.scaledUnit());
+                .columns(PRICE.PRICE_, PRICE.SCALE, PRICE.GROCERY_STORE, PRICE.FOOD, PRICE.SCALED_UNIT, PRICE.INITIATES)
+                .values(priceForInsertion.price(), priceForInsertion.scale(), priceForInsertion.groceryStore(), priceForInsertion.food(), priceForInsertion.scaledUnit(), argument.getPrincipals().getDid());
     }
 
     public static class Input<R extends TableRecord<R>> {

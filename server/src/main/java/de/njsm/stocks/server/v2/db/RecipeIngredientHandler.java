@@ -28,6 +28,7 @@ import org.jooq.RecordMapper;
 import org.jooq.Table;
 import org.jooq.TableField;
 import org.jooq.impl.DSL;
+import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.context.annotation.RequestScope;
 
@@ -40,6 +41,7 @@ import static de.njsm.stocks.server.v2.db.jooq.Tables.RECIPE_INGREDIENT;
 
 @Repository
 @RequestScope
+@Primary
 public class RecipeIngredientHandler
         extends CrudDatabaseHandler<RecipeIngredientRecord, RecipeIngredient>
         implements CompleteReferenceChecker<Recipe, RecipeIngredient> {
