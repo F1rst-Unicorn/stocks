@@ -21,14 +21,5 @@
 
 package de.njsm.stocks.client.business.entities;
 
-import com.google.auto.value.AutoValue;
-
-import java.math.BigDecimal;
-
-@AutoValue
-public abstract class ScaledUnitForEditing implements ScaledUnit {
-
-    public static ScaledUnitForEditing create(int id, int version, BigDecimal scale, int unit) {
-        return new AutoValue_ScaledUnitForEditing(id, version, scale, unit);
-    }
+public interface GroceryStore extends Entity<GroceryStore>, GroceryStoreFields {
 }

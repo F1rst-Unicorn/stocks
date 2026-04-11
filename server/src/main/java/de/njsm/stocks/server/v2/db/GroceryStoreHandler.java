@@ -74,10 +74,11 @@ public class GroceryStoreHandler extends CrudDatabaseHandler<GroceryStoreRecord,
                             GROCERY_STORE.ID,
                             GROCERY_STORE.VERSION,
                             DSL.val(item.name()),
-                            GROCERY_STORE.GROCERY_CHAIN),
+                            DSL.val(item.groceryChain())),
                     getIdField().eq(item.id())
                             .and(getVersionField().eq(item.version()))
-                            .and(GROCERY_STORE.NAME.ne(item.name())))
+                            .and(GROCERY_STORE.NAME.ne(item.name())
+                                    .or(GROCERY_STORE.GROCERY_CHAIN.ne(item.groceryChain()))))
                     .map(this::notFoundMeansInvalidVersion);
         });
     }

@@ -292,6 +292,13 @@ public abstract class Job {
             public <I, O> O accept(TypeVisitor<I, O> visitor, I input) {
                 return visitor.addGroceryChain(this, input);
             }
+        },
+
+        ADD_GROCERY_STORE {
+            @Override
+            public <I, O> O accept(TypeVisitor<I, O> visitor, I input) {
+                return visitor.addGroceryStore(this, input);
+            }
         };
 
         public abstract <I, O> O accept(TypeVisitor<I, O> visitor, I input);
@@ -376,6 +383,8 @@ public abstract class Job {
         O cookRecipe(Type type, I input);
 
         O addGroceryChain(Type type, I input);
+
+        O addGroceryStore(Type type, I input);
     }
 
     public interface DefaultTypeVisitor<I, O> extends TypeVisitor<I, O> {
@@ -564,6 +573,11 @@ public abstract class Job {
 
         @Override
         default O addGroceryChain(Type type, I input) {
+            return defaultImpl(type, input);
+        }
+
+        @Override
+        default O addGroceryStore(Type type, I input) {
             return defaultImpl(type, input);
         }
     }

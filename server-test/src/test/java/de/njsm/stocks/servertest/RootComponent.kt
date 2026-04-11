@@ -24,12 +24,14 @@ import dagger.BindsInstance
 import dagger.Component
 import de.njsm.stocks.client.crypto.CryptoModule
 import de.njsm.stocks.client.network.NetworkModule
+import de.njsm.stocks.common.api.GroceryStore
 import de.njsm.stocks.servertest.v2.Cleanup
 import de.njsm.stocks.servertest.v2.DeviceTest
 import de.njsm.stocks.servertest.v2.EanTest
 import de.njsm.stocks.servertest.v2.FoodItemTest
 import de.njsm.stocks.servertest.v2.FoodTest
 import de.njsm.stocks.servertest.v2.GroceryChainTest
+import de.njsm.stocks.servertest.v2.GroceryStoreTest
 import de.njsm.stocks.servertest.v2.HealthTest
 import de.njsm.stocks.servertest.v2.InitialServerTest
 import de.njsm.stocks.servertest.v2.LocationTest
@@ -74,6 +76,8 @@ interface RootComponent {
     fun inject(healthTest: HealthTest)
 
     fun inject(test: GroceryChainTest)
+
+    fun inject(test: GroceryStoreTest)
 
     @Component.Builder
     interface Builder {

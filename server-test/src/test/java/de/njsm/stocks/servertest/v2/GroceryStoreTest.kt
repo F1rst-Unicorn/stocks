@@ -20,16 +20,19 @@ package de.njsm.stocks.servertest.v2
 
 import de.njsm.stocks.client.business.Constants
 import de.njsm.stocks.client.business.EntityDeleteService
-import de.njsm.stocks.client.business.GroceryChainAddService
-import de.njsm.stocks.client.business.GroceryChainEditService
+import de.njsm.stocks.client.business.GroceryStoreAddService
+import de.njsm.stocks.client.business.GroceryStoreEditService
 import de.njsm.stocks.client.business.StatusCodeException
-import de.njsm.stocks.client.business.entities.GroceryChain
-import de.njsm.stocks.client.business.entities.GroceryChainAddForm
 import de.njsm.stocks.client.business.entities.GroceryChainForDeletion
-import de.njsm.stocks.client.business.entities.GroceryChainForEditing
 import de.njsm.stocks.client.business.entities.GroceryChainForSynchronisation
+import de.njsm.stocks.client.business.entities.GroceryStore
+import de.njsm.stocks.client.business.entities.GroceryStoreAddForm
+import de.njsm.stocks.client.business.entities.GroceryStoreForDeletion
+import de.njsm.stocks.client.business.entities.GroceryStoreForEditing
+import de.njsm.stocks.client.business.entities.GroceryStoreForSynchronisation
 import de.njsm.stocks.client.business.entities.StatusCode
 import de.njsm.stocks.servertest.v2.repo.GroceryChainRepository
+import de.njsm.stocks.servertest.v2.repo.GroceryStoreRepository
 import org.assertj.core.api.Assertions
 import org.assertj.core.api.Assertions.assertThatExceptionOfType
 import org.junit.jupiter.api.BeforeEach
@@ -39,17 +42,20 @@ import java.time.Instant
 import javax.inject.Inject
 
 @Order(900)
-class GroceryChainTest : Base() {
-    internal lateinit var addService: GroceryChainAddService
+class GroceryStoreTest : Base() {
+    internal lateinit var addService: GroceryStoreAddService
         @Inject set
 
-    internal lateinit var editService: GroceryChainEditService
+    internal lateinit var editService: GroceryStoreEditService
         @Inject set
 
-    internal lateinit var deleteService: EntityDeleteService<GroceryChain>
+    internal lateinit var deleteService: EntityDeleteService<GroceryStore>
         @Inject set
 
-    internal lateinit var repository: GroceryChainRepository
+    internal lateinit var repository: GroceryStoreRepository
+        @Inject set
+
+    internal lateinit var groceryChainRepository: GroceryChainRepository
         @Inject set
 
     @BeforeEach
@@ -59,12 +65,13 @@ class GroceryChainTest : Base() {
 
     @Test
     fun addAnItem() {
-        val input = GroceryChainAddForm.create(uniqueName)
+        val groceryChain = groceryChainRepository.createNew(uniqueName)
+        val input = GroceryStoreAddForm.create(uniqueName, groceryChain.id())
 
-        addService.addGroceryChain(input)
+        addService.addGroceryStore(input)
 
-        val data = updateService.getGroceryChains(Instant.EPOCH, Constants.INFINITY)
-        Assertions.assertThat(data).filteredOn(GroceryChainForSynchronisation::name, input.name())
+        val data = updateService.getGroceryStores(Instant.EPOCH, Constants.INFINITY)
+        Assertions.assertThat(data).filteredOn(GroceryStoreForSynchronisation::name, input.name())
             .isNotEmpty
             .allMatch { it.name() == input.name() }
     }
@@ -73,11 +80,12 @@ class GroceryChainTest : Base() {
     fun rename() {
         val newName = uniqueName
         val id = repository.createNew(uniqueName)
+        val modifiedGroceryChain = groceryChainRepository.createNew(uniqueName)
 
-        editService.edit(GroceryChainForEditing.create(id.id(), 0, newName))
+        editService.edit(GroceryStoreForEditing.create(id.id(), 0, newName, modifiedGroceryChain.id()))
 
-        val data = updateService.getGroceryChains(Instant.EPOCH, Constants.INFINITY)
-        Assertions.assertThat(data).filteredOn(GroceryChainForSynchronisation::name, newName)
+        val data = updateService.getGroceryStores(Instant.EPOCH, Constants.INFINITY)
+        Assertions.assertThat(data).filteredOn(GroceryStoreForSynchronisation::name, newName)
             .isNotEmpty
             .allMatch { it.name() == newName }
     }
@@ -86,11 +94,12 @@ class GroceryChainTest : Base() {
     fun renamingFailsWithWrongVersion() {
         val newName = uniqueName
         val id = repository.createNew(uniqueName)
+        val modifiedGroceryChain = groceryChainRepository.createNew(uniqueName)
 
         assertThatExceptionOfType(StatusCodeException::class.java)
             .isThrownBy {
                 editService.edit(
-                    GroceryChainForEditing.create(id.id(), 99, newName),
+                    GroceryStoreForEditing.create(id.id(), 99, newName, modifiedGroceryChain.id()),
                 )
             }
             .matches { it.statusCode == StatusCode.INVALID_DATA_VERSION }
@@ -101,7 +110,7 @@ class GroceryChainTest : Base() {
         assertThatExceptionOfType(StatusCodeException::class.java)
             .isThrownBy {
                 editService.edit(
-                    GroceryChainForEditing.create(9999, 0, uniqueName),
+                    GroceryStoreForEditing.create(9999, 0, uniqueName, 1),
                 )
             }
             .matches { it.statusCode == StatusCode.NOT_FOUND }
@@ -112,10 +121,10 @@ class GroceryChainTest : Base() {
         val name = uniqueName
         val id = repository.createNew(name)
 
-        deleteService.delete(GroceryChainForDeletion.create(id.id(), 0))
+        deleteService.delete(GroceryStoreForDeletion.create(id.id(), 0))
 
-        val locations = updateService.getGroceryChains(Instant.EPOCH, Constants.INFINITY)
-        Assertions.assertThat(locations).filteredOn(GroceryChainForSynchronisation::name, name)
+        val data = updateService.getGroceryStores(Instant.EPOCH, Constants.INFINITY)
+        Assertions.assertThat(data).filteredOn(GroceryStoreForSynchronisation::name, name)
             .isNotEmpty
             .anyMatch { it.transactionTimeEnd().isBefore(Constants.INFINITY) }
     }
@@ -125,14 +134,14 @@ class GroceryChainTest : Base() {
         val id = repository.createNew(uniqueName)
 
         assertThatExceptionOfType(StatusCodeException::class.java)
-            .isThrownBy { deleteService.delete(GroceryChainForDeletion.create(id.id(), 99)) }
+            .isThrownBy { deleteService.delete(GroceryStoreForDeletion.create(id.id(), 99)) }
             .matches { it.statusCode == StatusCode.INVALID_DATA_VERSION }
     }
 
     @Test
     fun deletingUnknownIdIsReported() {
         assertThatExceptionOfType(StatusCodeException::class.java)
-            .isThrownBy { deleteService.delete(GroceryChainForDeletion.create(9999, 0)) }
+            .isThrownBy { deleteService.delete(GroceryStoreForDeletion.create(9999, 0)) }
             .matches { it.statusCode == StatusCode.NOT_FOUND }
     }
 }

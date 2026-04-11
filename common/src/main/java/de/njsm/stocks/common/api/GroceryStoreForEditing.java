@@ -21,13 +21,20 @@
 
 package de.njsm.stocks.common.api;
 
+import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.google.auto.value.AutoValue;
 
 @AutoValue
-@JsonDeserialize(builder = AutoValue_GroceryStoreForEditing.class)
+@JsonDeserialize(builder = AutoValue_GroceryStoreForEditing.Builder.class)
 public abstract class GroceryStoreForEditing implements Versionable<GroceryStore> {
+
+    @JsonGetter
+    public abstract String name();
+
+    @JsonGetter
+    public abstract int groceryChain();
 
     public static Builder builder() {
         return new AutoValue_GroceryStoreForEditing.Builder();
@@ -40,13 +47,14 @@ public abstract class GroceryStoreForEditing implements Versionable<GroceryStore
             implements Versionable.Builder<Builder> {
 
         public abstract Builder name(String v);
-    }
 
-    public abstract String name();
+        public abstract Builder groceryChain(int v);
+    }
 
     @Override
     public boolean isContainedIn(GroceryStore item, boolean increment) {
         return Versionable.super.isContainedIn(item, increment) &&
-                name().equals(item.name());
+                name().equals(item.name()) &&
+                groceryChain() == item.groceryChain();
     }
 }

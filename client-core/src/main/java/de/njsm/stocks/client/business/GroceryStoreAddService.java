@@ -19,16 +19,13 @@
  *
  */
 
-package de.njsm.stocks.client.business.entities;
+package de.njsm.stocks.client.business;
 
-import com.google.auto.value.AutoValue;
+import de.njsm.stocks.client.business.entities.GroceryStore;
+import de.njsm.stocks.client.business.entities.GroceryStoreAddForm;
+import de.njsm.stocks.client.business.entities.IdImpl;
 
-import java.math.BigDecimal;
+public interface GroceryStoreAddService {
 
-@AutoValue
-public abstract class ScaledUnitForEditing implements ScaledUnit {
-
-    public static ScaledUnitForEditing create(int id, int version, BigDecimal scale, int unit) {
-        return new AutoValue_ScaledUnitForEditing(id, version, scale, unit);
-    }
+    IdImpl<GroceryStore> addGroceryStore(GroceryStoreAddForm form);
 }

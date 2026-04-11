@@ -218,4 +218,14 @@ public interface ServerApi {
 
     @PUT("/v2/grocery-chain")
     Call<DataResponse<Integer>> addGroceryChain(@Body GroceryChainForInsertion data);
+
+    @PUT("/v2/grocery-store")
+    Call<DataResponse<Integer>> addGroceryStore(@Body GroceryStoreForInsertion build);
+
+    @PUT("/v2/grocery-store/edit")
+    Call<Response> editGroceryStore(@Body GroceryStoreForEditing build);
+
+    @HTTP(method = "DELETE", path = "/v2/grocery-store", hasBody = true)
+    Call<Response> deleteGroceryStore(@Query("id") int id,
+                                      @Query("version") int version);
 }

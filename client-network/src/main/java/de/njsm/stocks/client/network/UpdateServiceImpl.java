@@ -158,4 +158,12 @@ public class UpdateServiceImpl implements UpdateService {
         return callHandler.executeForResult(call)
                 .stream().map(DataMapper::map).collect(toList());
     }
+
+    @Override
+    public List<GroceryStoreForSynchronisation> getGroceryStores(Instant startingFrom, Instant upUntil) {
+        LOG.debug("getting grocery stores from " + startingFrom);
+        Call<ListResponse<BitemporalGroceryStore>> call = api.getGroceryStores(InstantSerialiser.serialize(startingFrom), InstantSerialiser.serialize(upUntil));
+        return callHandler.executeForResult(call)
+                .stream().map(DataMapper::map).collect(toList());
+    }
 }

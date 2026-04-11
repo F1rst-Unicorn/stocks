@@ -23,12 +23,26 @@ package de.njsm.stocks.client.business.entities;
 
 import com.google.auto.value.AutoValue;
 
-import java.math.BigDecimal;
-
 @AutoValue
-public abstract class ScaledUnitForEditing implements ScaledUnit {
+public abstract class GroceryStoreForEditing implements GroceryStore {
 
-    public static ScaledUnitForEditing create(int id, int version, BigDecimal scale, int unit) {
-        return new AutoValue_ScaledUnitForEditing(id, version, scale, unit);
+    public static GroceryStoreForEditing create(int id, int version, String name, int groceryChain) {
+        return GroceryStoreForEditing.builder()
+                .id(id)
+                .version(version)
+                .name(name)
+                .groceryChain(groceryChain)
+                .build();
+    }
+
+    public static Builder builder() {
+        return new AutoValue_GroceryStoreForEditing.Builder();
+    }
+
+    @AutoValue.Builder
+    public abstract static class Builder
+            extends BaseBuilder<GroceryStoreForEditing>
+            implements Versionable.Builder<Builder>, GroceryStoreFields.Builder<Builder> {
+
     }
 }

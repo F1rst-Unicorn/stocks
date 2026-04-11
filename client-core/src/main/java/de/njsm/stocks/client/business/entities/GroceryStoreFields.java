@@ -21,14 +21,16 @@
 
 package de.njsm.stocks.client.business.entities;
 
-import com.google.auto.value.AutoValue;
+public interface GroceryStoreFields {
 
-import java.math.BigDecimal;
+    String name();
 
-@AutoValue
-public abstract class ScaledUnitForEditing implements ScaledUnit {
+    int groceryChain();
 
-    public static ScaledUnitForEditing create(int id, int version, BigDecimal scale, int unit) {
-        return new AutoValue_ScaledUnitForEditing(id, version, scale, unit);
+    interface Builder<T> {
+
+        T name(String v);
+
+        T groceryChain(int v);
     }
 }

@@ -53,4 +53,6 @@ public interface UpdateService {
     List<RecipeProductForSynchronisation> getRecipeProducts(Instant startingFrom, Instant upUntil);
 
     List<GroceryChainForSynchronisation> getGroceryChains(Instant startingFrom, Instant upUntil);
+
+    List<GroceryStoreForSynchronisation> getGroceryStores(Instant startingFrom, Instant upUntil);
 }

@@ -144,6 +144,16 @@ public interface NetworkModule {
     @Binds
     EntityDeleteService<GroceryChain> GroceryChainDeleteService(GroceryChainDeleteServiceImpl impl);
 
+
+    @Binds
+    GroceryStoreAddService GroceryStoreAddService(GroceryStoreAddServiceImpl impl);
+
+    @Binds
+    GroceryStoreEditService GroceryStoreEditService(GroceryStoreEditServiceImpl impl);
+
+    @Binds
+    EntityDeleteService<GroceryStore> GroceryStoreDeleteService(GroceryStoreDeleteServiceImpl impl);
+
     @Provides
     @Singleton
     static ServerApi serverApi(ServerEndpoint serverEndpoint, HostnameInterceptor interceptor) {
