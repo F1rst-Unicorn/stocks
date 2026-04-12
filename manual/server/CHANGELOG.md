@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+### Added
+
+* Support storing prices of food items in different grocery stores
+  ([#56](https://veenj.de/git/veenj/stocks/issues/56)).
+
 ### Changed
 
 * Move to Spring Boot
