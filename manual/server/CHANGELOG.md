@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## [7.0.0.0]
+
 ### Added
 
 * Support storing prices of food items in different grocery stores

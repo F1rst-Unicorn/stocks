@@ -33,7 +33,7 @@ plugins {
 }
 
 group = "de.njsm.stocks"
-version = "6.0.0.0"
+version = "7.0.0.0"
 
 java {
     sourceCompatibility = JavaVersion.VERSION_17
