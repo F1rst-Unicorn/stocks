@@ -83,6 +83,8 @@ public interface ErrorDetailsVisitor<I, O> {
 
     O groceryStoreAddForm(GroceryStoreAddForm groceryStoreAddForm, I input);
 
+    O priceAddForm(PriceAddForm priceAddForm, I input);
+
     interface Default<I, O> extends ErrorDetailsVisitor<I, O> {
 
         O defaultImpl(ErrorDetails errorDetails, I input);
@@ -223,8 +225,8 @@ public interface ErrorDetailsVisitor<I, O> {
         }
 
         @Override
-        default O groceryStoreAddForm(GroceryStoreAddForm groceryStoreAddForm, I input) {
-            return defaultImpl(groceryStoreAddForm, input);
+        default O priceAddForm(PriceAddForm priceAddForm, I input) {
+            return defaultImpl(priceAddForm, input);
         }
     }
 }

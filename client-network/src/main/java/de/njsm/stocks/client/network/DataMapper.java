@@ -144,6 +144,16 @@ public class DataMapper {
                 .build();
     }
 
+    public static PriceForSynchronisation map(BitemporalPrice source) {
+        return map(source, PriceForSynchronisation.builder())
+                .price(source.price())
+                .scale(source.scale())
+                .groceryStore(source.groceryStore())
+                .food(source.food())
+                .scaledUnit(source.scaledUnit())
+                .build();
+    }
+
     private static <T extends Bitemporal.Builder<T>, E extends Entity<E>> T map(de.njsm.stocks.common.api.Bitemporal<E> source, T destination) {
         return destination
                 .id(source.id())

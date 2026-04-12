@@ -57,7 +57,7 @@ class EanTest : Base() {
     @Test
     fun addAnEan() {
         val code = uniqueName
-        val foodId = foodRepository.createNewFood(uniqueName)
+        val foodId = foodRepository.createNew(uniqueName)
 
         val id = eanNumberAddService.add(EanNumberAddForm.create(foodId, code))
 
@@ -71,7 +71,7 @@ class EanTest : Base() {
     @Test
     fun removeAnEan() {
         val code = uniqueName
-        val foodId = foodRepository.createNewFood(uniqueName)
+        val foodId = foodRepository.createNew(uniqueName)
         val id = eanNumberAddService.add(EanNumberAddForm.create(foodId, code))
 
         eanNumberDeleteService.delete(EanNumberForDeletion.create(id.id(), 0))

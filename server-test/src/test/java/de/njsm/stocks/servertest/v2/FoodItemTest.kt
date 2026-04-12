@@ -75,7 +75,7 @@ class FoodItemTest : Base() {
     @Test
     fun addFoodItem() {
         val locationId = locationRepository.createNewLocationType(uniqueName)
-        val foodId = foodRepository.createNewFood(uniqueName)
+        val foodId = foodRepository.createNew(uniqueName)
         val date = Instant.ofEpochMilli(14)
 
         val id = foodItemAddService.add(FoodItemToAdd.create(date, foodId.id(), locationId.id(), unitRepository.anyUnitId.id()))
@@ -93,7 +93,7 @@ class FoodItemTest : Base() {
     @Test
     fun editItem() {
         val locationId = locationRepository.createNewLocationType(uniqueName)
-        val foodId = foodRepository.createNewFood(uniqueName)
+        val foodId = foodRepository.createNew(uniqueName)
         val movedLocation = locationRepository.createNewLocationType(uniqueName)
         val date = Instant.ofEpochMilli(14)
         val editedDate = Instant.ofEpochMilli(15)
@@ -117,7 +117,7 @@ class FoodItemTest : Base() {
     @Test
     fun editInvalidVersionIsReported() {
         val locationId = locationRepository.createNewLocationType(uniqueName)
-        val foodId = foodRepository.createNewFood(uniqueName)
+        val foodId = foodRepository.createNew(uniqueName)
         val movedLocation = locationRepository.createNewLocationType(uniqueName)
         val date = Instant.ofEpochMilli(14)
         val editedDate = Instant.ofEpochMilli(15)
@@ -145,7 +145,7 @@ class FoodItemTest : Base() {
     @Test
     fun deleteItem() {
         val locationId = locationRepository.createNewLocationType(uniqueName)
-        val foodId = foodRepository.createNewFood(uniqueName)
+        val foodId = foodRepository.createNew(uniqueName)
         val id = foodItemRepository.createItem(locationId, foodId)
 
         foodItemDeleteService.delete(FoodItemForDeletion.create(id.id(), 0))
@@ -159,7 +159,7 @@ class FoodItemTest : Base() {
     @Test
     fun deletingInvalidVersionIsReported() {
         val locationId = locationRepository.createNewLocationType(uniqueName)
-        val foodId = foodRepository.createNewFood(uniqueName)
+        val foodId = foodRepository.createNew(uniqueName)
         val id = foodItemRepository.createItem(locationId, foodId)
 
         assertThatExceptionOfType(StatusCodeException::class.java)

@@ -166,4 +166,12 @@ public class UpdateServiceImpl implements UpdateService {
         return callHandler.executeForResult(call)
                 .stream().map(DataMapper::map).collect(toList());
     }
+
+    @Override
+    public List<PriceForSynchronisation> getPrices(Instant startingFrom, Instant upUntil) {
+        LOG.debug("getting prices from " + startingFrom);
+        Call<ListResponse<BitemporalPrice>> call = api.getPrices(InstantSerialiser.serialize(startingFrom), InstantSerialiser.serialize(upUntil));
+        return callHandler.executeForResult(call)
+                .stream().map(DataMapper::map).collect(toList());
+    }
 }

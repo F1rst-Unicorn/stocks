@@ -276,7 +276,7 @@ class RecipeTest : Base() {
     }
 
     private fun putRecipeWithIngredientAndProduct(): IdImpl<Recipe> {
-        val foodId = foodRepository.createNewFood(uniqueName)
+        val foodId = foodRepository.createNew(uniqueName)
         val name = uniqueName
         val instructions = "instruction"
         val duration = Duration.ofHours(2)

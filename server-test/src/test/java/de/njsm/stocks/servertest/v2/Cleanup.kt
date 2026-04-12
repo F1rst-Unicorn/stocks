@@ -27,8 +27,11 @@ import de.njsm.stocks.client.business.UserDeviceAddService
 import de.njsm.stocks.client.business.entities.EanNumber
 import de.njsm.stocks.client.business.entities.Food
 import de.njsm.stocks.client.business.entities.FoodItem
+import de.njsm.stocks.client.business.entities.GroceryChain
+import de.njsm.stocks.client.business.entities.GroceryStore
 import de.njsm.stocks.client.business.entities.IdImpl
 import de.njsm.stocks.client.business.entities.Location
+import de.njsm.stocks.client.business.entities.Price
 import de.njsm.stocks.client.business.entities.RecipeDeleteData
 import de.njsm.stocks.client.business.entities.RecipeIngredientDeleteNetworkData
 import de.njsm.stocks.client.business.entities.RecipeIngredientForSynchronisation
@@ -84,6 +87,15 @@ class Cleanup : Base() {
         @Inject set
 
     internal lateinit var userDeleteService: EntityDeleteService<User>
+        @Inject set
+
+    internal lateinit var priceDeleteService: EntityDeleteService<Price>
+        @Inject set
+
+    internal lateinit var groceryStoreDeleteService: EntityDeleteService<GroceryStore>
+        @Inject set
+
+    internal lateinit var groceryChainDeleteService: EntityDeleteService<GroceryChain>
         @Inject set
 
     @BeforeEach
@@ -194,6 +206,48 @@ class Cleanup : Base() {
                     products,
                 ),
             )
+        }
+    }
+
+    @Test
+    fun clean041Price() {
+        val entities =
+            updateService.getPrices(Instant.EPOCH, Constants.INFINITY)
+                .filter { it.transactionTimeEnd() == Constants.INFINITY }
+                .filter { it.validTimeStart().isBefore(Instant.now()) }
+                .filter { it.validTimeEnd().isAfter(Instant.now()) }
+                .toList()
+
+        for (entity in entities) {
+            priceDeleteService.delete(entity)
+        }
+    }
+
+    @Test
+    fun clean042GroceryStore() {
+        val entities =
+            updateService.getGroceryStores(Instant.EPOCH, Constants.INFINITY)
+                .filter { it.transactionTimeEnd() == Constants.INFINITY }
+                .filter { it.validTimeStart().isBefore(Instant.now()) }
+                .filter { it.validTimeEnd().isAfter(Instant.now()) }
+                .toList()
+
+        for (entity in entities) {
+            groceryStoreDeleteService.delete(entity)
+        }
+    }
+
+    @Test
+    fun clean043GroceryChain() {
+        val entities =
+            updateService.getGroceryChains(Instant.EPOCH, Constants.INFINITY)
+                .filter { it.transactionTimeEnd() == Constants.INFINITY }
+                .filter { it.validTimeStart().isBefore(Instant.now()) }
+                .filter { it.validTimeEnd().isAfter(Instant.now()) }
+                .toList()
+
+        for (entity in entities) {
+            groceryChainDeleteService.delete(entity)
         }
     }
 

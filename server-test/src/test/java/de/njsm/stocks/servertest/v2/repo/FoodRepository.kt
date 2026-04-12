@@ -20,10 +20,13 @@
  */
 package de.njsm.stocks.servertest.v2.repo
 
+import de.njsm.stocks.client.business.Constants
 import de.njsm.stocks.client.business.FoodAddService
+import de.njsm.stocks.client.business.UpdateService
 import de.njsm.stocks.client.business.entities.Food
 import de.njsm.stocks.client.business.entities.FoodAddForm
 import de.njsm.stocks.client.business.entities.IdImpl
+import java.time.Instant
 import java.time.Period
 import javax.inject.Inject
 
@@ -32,8 +35,20 @@ class FoodRepository
     constructor(
         private val foodAddService: FoodAddService,
         private val unitRepository: UnitRepository,
+        private val updateService: UpdateService
     ) {
-        fun createNewFood(name: String): IdImpl<Food> {
+    val anyFoodId: IdImpl<Food>
+        get() =
+            updateService.getFood(Instant.EPOCH, Constants.INFINITY)
+                .stream()
+                .filter { it.transactionTimeEnd() == Constants.INFINITY }
+                .filter { it.validTimeEnd().isAfter(Instant.now()) }
+                .findFirst()
+                .map { it.id() }
+                .map { IdImpl.create<Food>(it) }
+                .orElseGet { createNew("getAnyFoodId") }
+
+    fun createNew(name: String): IdImpl<Food> {
             return foodAddService.add(FoodAddForm.create(name, false, Period.ZERO, null, unitRepository.anyUnitId.id(), ""))
         }
     }

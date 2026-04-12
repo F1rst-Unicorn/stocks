@@ -208,7 +208,7 @@ public interface ServerApi {
             @Query("startingFrom") String startingFrom,
             @Query("upUntil") String upUntil);
 
-    @HTTP(method = "DELETE", path = "/v2/grocery-chain", hasBody = true)
+    @DELETE("/v2/grocery-chain")
     Call<Response> deleteGroceryChain(@Query("id") int id,
                                       @Query("version") int version);
 
@@ -225,7 +225,14 @@ public interface ServerApi {
     @PUT("/v2/grocery-store/edit")
     Call<Response> editGroceryStore(@Body GroceryStoreForEditing build);
 
-    @HTTP(method = "DELETE", path = "/v2/grocery-store", hasBody = true)
+    @DELETE("/v2/grocery-store")
     Call<Response> deleteGroceryStore(@Query("id") int id,
                                       @Query("version") int version);
+
+    @PUT("/v2/price")
+    Call<DataResponse<Integer>> addPrice(@Body PriceForInsertion data);
+
+    @DELETE("/v2/price")
+    Call<Response> deletePrice(@Query("id") int id,
+                               @Query("version") int version);
 }

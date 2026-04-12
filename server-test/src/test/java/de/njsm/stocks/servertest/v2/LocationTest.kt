@@ -187,7 +187,7 @@ class LocationTest : Base() {
     @Test
     fun deleteWhileContainingFoodFails() {
         val location = locationRepository.createNewLocationType(uniqueName)
-        val food = foodRepository.createNewFood(uniqueName)
+        val food = foodRepository.createNew(uniqueName)
         foodItemRepository.createItem(location, food)
 
         assertThatExceptionOfType(StatusCodeException::class.java)

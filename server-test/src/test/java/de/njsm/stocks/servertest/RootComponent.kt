@@ -35,6 +35,7 @@ import de.njsm.stocks.servertest.v2.GroceryStoreTest
 import de.njsm.stocks.servertest.v2.HealthTest
 import de.njsm.stocks.servertest.v2.InitialServerTest
 import de.njsm.stocks.servertest.v2.LocationTest
+import de.njsm.stocks.servertest.v2.PriceTest
 import de.njsm.stocks.servertest.v2.RecipeTest
 import de.njsm.stocks.servertest.v2.RegistrationTest
 import de.njsm.stocks.servertest.v2.ScaledUnitTest
@@ -78,6 +79,8 @@ interface RootComponent {
     fun inject(test: GroceryChainTest)
 
     fun inject(test: GroceryStoreTest)
+
+    fun inject(test: PriceTest)
 
     @Component.Builder
     interface Builder {

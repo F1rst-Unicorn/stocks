@@ -144,7 +144,6 @@ public interface NetworkModule {
     @Binds
     EntityDeleteService<GroceryChain> GroceryChainDeleteService(GroceryChainDeleteServiceImpl impl);
 
-
     @Binds
     GroceryStoreAddService GroceryStoreAddService(GroceryStoreAddServiceImpl impl);
 
@@ -153,6 +152,12 @@ public interface NetworkModule {
 
     @Binds
     EntityDeleteService<GroceryStore> GroceryStoreDeleteService(GroceryStoreDeleteServiceImpl impl);
+
+    @Binds
+    PriceAddService PriceAddService(PriceAddServiceImpl impl);
+
+    @Binds
+    EntityDeleteService<Price> PriceDeleteService(PriceDeleteServiceImpl impl);
 
     @Provides
     @Singleton

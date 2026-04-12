@@ -90,6 +90,8 @@ class ErrorRetryInteractorImpl implements ErrorRetryInteractor, ErrorDetailsVisi
 
     private final GroceryStoreAddInteractor groceryStoreAddInteractor;
 
+    private final PriceAddInteractor priceAddInteractor;
+
     @Inject
     ErrorRetryInteractorImpl(LocationAddInteractor locationAddInteractor,
                              EntityDeleter<Location> locationDeleter,
@@ -120,7 +122,8 @@ class ErrorRetryInteractorImpl implements ErrorRetryInteractor, ErrorDetailsVisi
                              Scheduler scheduler,
                              ErrorRepository errorRepository,
                              GroceryChainAddInteractor groceryChainAddInteractor,
-                             GroceryStoreAddInteractor groceryStoreAddInteractor) {
+                             GroceryStoreAddInteractor groceryStoreAddInteractor,
+                             PriceAddInteractor priceAddInteractor) {
         this.locationAddInteractor = locationAddInteractor;
         this.locationDeleter = locationDeleter;
         this.locationEditInteractor = locationEditInteractor;
@@ -151,6 +154,7 @@ class ErrorRetryInteractorImpl implements ErrorRetryInteractor, ErrorDetailsVisi
         this.errorRepository = errorRepository;
         this.groceryChainAddInteractor = groceryChainAddInteractor;
         this.groceryStoreAddInteractor = groceryStoreAddInteractor;
+        this.priceAddInteractor = priceAddInteractor;
         this.jobTypeTranslator = new JobTypeTranslator();
     }
 
@@ -376,6 +380,12 @@ class ErrorRetryInteractorImpl implements ErrorRetryInteractor, ErrorDetailsVisi
         return null;
     }
 
+    @Override
+    public Void priceAddForm(PriceAddForm priceAddForm, Void input) {
+        priceAddInteractor.addPrice(priceAddForm);
+        return null;
+    }
+
     private static final class JobTypeTranslator implements ErrorDetailsVisitor<Void, Job.Type> {
 
         @Override
@@ -516,6 +526,11 @@ class ErrorRetryInteractorImpl implements ErrorRetryInteractor, ErrorDetailsVisi
         @Override
         public Job.Type groceryStoreAddForm(GroceryStoreAddForm groceryStoreAddForm, Void input) {
             return Job.Type.ADD_GROCERY_STORE;
+        }
+
+        @Override
+        public Job.Type priceAddForm(PriceAddForm priceAddForm, Void input) {
+            return Job.Type.ADD_PRICE;
         }
     }
 }
