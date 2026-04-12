@@ -374,18 +374,6 @@ class ErrorRetryInteractorImpl implements ErrorRetryInteractor, ErrorDetailsVisi
         return null;
     }
 
-    @Override
-    public Void groceryStoreAddForm(GroceryStoreAddForm groceryStoreAddForm, Void input) {
-        groceryStoreAddInteractor.addGroceryStore(groceryStoreAddForm);
-        return null;
-    }
-
-    @Override
-    public Void priceAddForm(PriceAddForm priceAddForm, Void input) {
-        priceAddInteractor.addPrice(priceAddForm);
-        return null;
-    }
-
     private static final class JobTypeTranslator implements ErrorDetailsVisitor<Void, Job.Type> {
 
         @Override
@@ -521,16 +509,6 @@ class ErrorRetryInteractorImpl implements ErrorRetryInteractor, ErrorDetailsVisi
         @Override
         public Job.Type groceryChainAddForm(GroceryChainAddForm groceryChainAddForm, Void input) {
             return Job.Type.ADD_GROCERY_CHAIN;
-        }
-
-        @Override
-        public Job.Type groceryStoreAddForm(GroceryStoreAddForm groceryStoreAddForm, Void input) {
-            return Job.Type.ADD_GROCERY_STORE;
-        }
-
-        @Override
-        public Job.Type priceAddForm(PriceAddForm priceAddForm, Void input) {
-            return Job.Type.ADD_PRICE;
         }
     }
 }

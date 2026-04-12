@@ -19,16 +19,13 @@
  *
  */
 
-package de.njsm.stocks.client.business.entities;
+package de.njsm.stocks.client.navigation;
 
-import com.google.auto.value.AutoValue;
+public interface GroceryChainListNavigator {
 
-import java.math.BigDecimal;
+    void addGroceryChain();
 
-@AutoValue
-public abstract class PriceAddForm implements PriceFields {
+    void showGroceryChain(int id);
 
-    public static PriceAddForm create(BigDecimal price,BigDecimal scale, int groceryStore, int food, int scaledUnit) {
-        return new AutoValue_PriceAddForm(price,scale, groceryStore, food, scaledUnit);
-    }
+    void editGroceryChain(int id);
 }

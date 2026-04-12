@@ -146,4 +146,7 @@ public interface NavigationModule {
 
     @Binds
     RecipeCookNavigator RecipeCookNavigator(RecipeCookNavigatorImpl impl);
+
+    @Binds
+    GroceryChainListNavigator GroceryChainListNavigator(GroceryChainListNavigatorImpl impl);
 }

@@ -245,4 +245,10 @@ public interface UimockBusinessModule {
 
     @Binds
     RecipeCookInteractor RecipeCookInteractor(InMemoryRecipeCookInteractorImpl impl);
+
+    @Binds
+    GroceryChainListInteractor GroceryChainListInteractor(InMemoryGroceryChainListInteractorImpl impl);
+
+    @Binds
+    EntityDeleter<GroceryChain> InMemoryGroceryStoreDeleterImpl(InMemoryGroceryStoreDeleterImpl impl);
 }

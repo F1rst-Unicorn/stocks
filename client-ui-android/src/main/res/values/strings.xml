@@ -79,9 +79,15 @@
     <string name="title_add_food">Add Food</string>
     <string name="title_edit_food">Edit Food</string>
     <string name="title_all_food">To Eat Soon</string>
+    <string name="title_add_grocery_chain">Add Grocery Chain</string>
+    <string name="title_add_grocery_store">Add Grocery Store</string>
+    <string name="title_add_price">Add Price</string>
+    <string name="title_edit_grocery_chain">Edit Grocery Chain</string>
+    <string name="title_edit_grocery_store">Edit Grocery Store</string>
 
     <string name="action_users">Users</string>
     <string name="action_locations">Locations</string>
+    <string name="action_grocery_chains">Grocery</string>
     <string name="action_settings">Settings</string>
     <string name="action_refresh">Refresh</string>
     <string name="action_search">Search</string>
@@ -107,6 +113,7 @@
     <string name="action_delete">Delete</string>
     <string name="action_retry">Retry</string>
     <string name="action_add">ADD</string>
+    <string name="action_grocery">Grocery</string>
 
     <string name="hint_servername">Server host name</string>
     <string name="hint_expert">Expert options</string>
@@ -140,6 +147,7 @@
     <string name="hint_no_units">No Units of Measure.\nCreate one using the + button.</string>
     <string name="hint_no_scaled_units">No Unit Amounts.\nCreate one using the + button.</string>
     <string name="hint_no_food">No Food.\nCreate one using the + button.</string>
+    <string name="hint_no_grocery_chains">No grocery chains.\nCreate one using the + button.</string>
     <string name="hint_no_food_to_buy">Nothing to buy</string>
     <string name="hint_no_food_in_location">No food in this location.</string>
     <string name="hint_no_food_items">No food present.</string>
@@ -328,6 +336,9 @@
     <string name="error_details_user_device_add">Add Device</string>
     <string name="error_details_recipe_delete">Delete Recipe</string>
     <string name="error_details_recipe_edit">Edit Recipe</string>
+    <string name="error_details_grocery_chain_add">Add Grocery Chain</string>
+    <string name="error_details_grocery_store_add">Add Grocery Store</string>
+    <string name="error_details_price_add">Add Price</string>
 
     <string name="text_no_errors">Everything is fine.</string>
 

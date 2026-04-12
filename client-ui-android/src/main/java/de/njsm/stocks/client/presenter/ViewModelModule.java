@@ -367,4 +367,11 @@ public class ViewModelModule {
     ViewModel RecipeCookViewModel(RecipeCookInteractor interactor, ObservableDataCache<RecipeCookingFormData> data, FoodToBuyInteractor foodToBuyInteractor) {
         return new RecipeCookViewModel(interactor, foodToBuyInteractor, data);
     }
+
+    @Provides
+    @IntoMap
+    @ViewModelKey(GroceryChainListViewModel.class)
+    ViewModel GroceryChainListViewModel(GroceryChainListInteractor groceryChainListInteractor, EntityDeleter<GroceryChain> groceryChainDeleter, Synchroniser synchroniser, ObservableListCache<GroceryChainForListing> data) {
+        return new GroceryChainListViewModel(groceryChainListInteractor, groceryChainDeleter, synchroniser, data);
+    }
 }

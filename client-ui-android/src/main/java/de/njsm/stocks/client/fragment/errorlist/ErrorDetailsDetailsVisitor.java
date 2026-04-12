@@ -174,4 +174,9 @@ public class ErrorDetailsDetailsVisitor implements ErrorDetailsVisitor<Void, Str
     public String recipeEditErrorDetails(RecipeEditForm recipeEditForm, Void input) {
         return recipeEditForm.recipe().name();
     }
+
+    @Override
+    public String groceryChainAddForm(GroceryChainAddForm groceryChainAddForm, Void input) {
+        return groceryChainAddForm.name();
+    }
 }

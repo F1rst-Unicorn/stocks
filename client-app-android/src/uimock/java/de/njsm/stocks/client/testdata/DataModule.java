@@ -76,4 +76,10 @@ public class DataModule {
     public RecipeTestData RecipeTestData() {
         return new RecipeTestData(RecipeTestData.generate());
     }
+
+    @Provides
+    @Singleton
+    public GroceryChainsForListing GroceryChainsForListing() {
+        return new GroceryChainsForListing(GroceryChainsForListing.generate());
+    }
 }

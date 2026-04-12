@@ -23,12 +23,12 @@ package de.njsm.stocks.client.business.entities;
 
 import com.google.auto.value.AutoValue;
 
-import java.math.BigDecimal;
-
 @AutoValue
-public abstract class PriceAddForm implements PriceFields {
+public abstract class GroceryChainForListing implements Versionable<GroceryChain> {
 
-    public static PriceAddForm create(BigDecimal price,BigDecimal scale, int groceryStore, int food, int scaledUnit) {
-        return new AutoValue_PriceAddForm(price,scale, groceryStore, food, scaledUnit);
+    public static GroceryChainForListing create(int id, int version, String name) {
+        return new AutoValue_GroceryChainForListing(id, version, name);
     }
+
+    public abstract String name();
 }

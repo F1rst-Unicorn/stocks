@@ -19,16 +19,15 @@
  *
  */
 
-package de.njsm.stocks.client.business.entities;
+package de.njsm.stocks.client.business;
 
-import com.google.auto.value.AutoValue;
+import de.njsm.stocks.client.business.entities.GroceryChainForListing;
+import io.reactivex.rxjava3.core.Observable;
 
-import java.math.BigDecimal;
+import java.util.List;
 
-@AutoValue
-public abstract class PriceAddForm implements PriceFields {
+public interface GroceryChainListInteractor {
 
-    public static PriceAddForm create(BigDecimal price,BigDecimal scale, int groceryStore, int food, int scaledUnit) {
-        return new AutoValue_PriceAddForm(price,scale, groceryStore, food, scaledUnit);
-    }
+    Observable<List<GroceryChainForListing>> getGroceryChains();
+
 }

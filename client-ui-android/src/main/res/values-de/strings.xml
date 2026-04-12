@@ -78,9 +78,15 @@
     <string name="title_add_food">Lebensmittel hinzufügen</string>
     <string name="title_edit_food">Lebensmittel bearbeiten</string>
     <string name="title_all_food">Was bald abläuft</string>
+    <string name="title_add_grocery_chain">Ladenkette hinzufügen</string>
+    <string name="title_add_grocery_store">Laden hinzufügen</string>
+    <string name="title_add_price">Preis hinzufügen</string>
+    <string name="title_edit_grocery_chain">Ladenkette bearbeiten</string>
+    <string name="title_edit_grocery_store">Laden bearbeiten</string>
 
     <string name="action_users">Benutzer</string>
     <string name="action_locations">Orte</string>
+    <string name="action_grocery_chains">Läden</string>
     <string name="action_settings">Einstellungen</string>
     <string name="action_refresh">Aktualisieren</string>
     <string name="action_search">Suchen</string>
@@ -106,6 +112,7 @@
     <string name="action_delete">Löschen</string>
     <string name="action_retry">Erneut senden</string>
     <string name="action_add">Hinzufügen</string>
+    <string name="action_grocery">Läden</string>
 
     <string name="hint_servername">Server Hostname</string>
     <string name="hint_expert">Expertenoptionen</string>
@@ -139,6 +146,7 @@
     <string name="hint_no_units">Keine Maßeinheiten.\nErstelle eine mit dem + Knopf.</string>
     <string name="hint_no_scaled_units">Keine Mengen.\nErstelle eine mit dem + Knopf.</string>
     <string name="hint_no_food">Keine Lebensmittel.\nErstelle eines mit dem + Knopf.</string>
+    <string name="hint_no_grocery_chains">Keine Ladenketten.\nErstelle eine mit dem + Knopf.</string>
     <string name="hint_no_food_to_buy">Nichts einzukaufen</string>
     <string name="hint_no_food_in_location">Keine Lebensmittel an diesem Ort.</string>
     <string name="hint_no_food_items">Keine Lebensmittel vorhanden.</string>
@@ -327,6 +335,9 @@
     <string name="error_details_user_device_add">Gerät hinzufügen</string>
     <string name="error_details_recipe_delete">Rezept löschen</string>
     <string name="error_details_recipe_edit">Rezept bearbeiten</string>
+    <string name="error_details_price_add">Preis hinzufügen</string>
+    <string name="error_details_grocery_chain_add">Ladenkette hinzufügen</string>
+    <string name="error_details_grocery_store_add">Laden hinzufügen</string>
 
     <string name="text_no_errors">Alles in Ordnung.</string>
 </resources>

@@ -24,14 +24,9 @@ package de.njsm.stocks.client.business.entities;
 import com.google.auto.value.AutoValue;
 
 @AutoValue
-public abstract class GroceryStoreAddForm implements GroceryStoreFields, ErrorDetails {
+public abstract class GroceryStoreAddForm implements GroceryStoreFields {
 
     public static GroceryStoreAddForm create(String name, int groceryChain) {
         return new AutoValue_GroceryStoreAddForm(name, groceryChain);
-    }
-
-    @Override
-    public <I, O> O accept(ErrorDetailsVisitor<I, O> visitor, I input) {
-        return visitor.groceryStoreAddForm(this, input);
     }
 }
