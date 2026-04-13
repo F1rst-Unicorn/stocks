@@ -24,11 +24,14 @@ package de.njsm.stocks.client.business.entities;
 import com.google.auto.value.AutoValue;
 
 import java.math.BigDecimal;
+import java.time.Instant;
 
 @AutoValue
 public abstract class PriceAddForm implements PriceFields {
 
-    public static PriceAddForm create(BigDecimal price,BigDecimal scale, int groceryStore, int food, int scaledUnit) {
-        return new AutoValue_PriceAddForm(price,scale, groceryStore, food, scaledUnit);
+    public abstract Instant validTime();
+
+    public static PriceAddForm create(BigDecimal price, Instant validTime, BigDecimal scale, int groceryStore, int food, int scaledUnit) {
+        return new AutoValue_PriceAddForm(price, scale, groceryStore, food, scaledUnit, validTime);
     }
 }

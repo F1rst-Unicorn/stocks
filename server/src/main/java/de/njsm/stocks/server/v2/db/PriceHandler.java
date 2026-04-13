@@ -36,6 +36,7 @@ import java.time.OffsetDateTime;
 import java.util.Arrays;
 import java.util.List;
 
+import static de.njsm.stocks.common.api.StatusCode.NOT_FOUND;
 import static de.njsm.stocks.server.v2.db.jooq.tables.GroceryStore.GROCERY_STORE;
 import static de.njsm.stocks.server.v2.db.jooq.tables.Price.PRICE;
 import static org.jooq.impl.DSL.select;
@@ -99,6 +100,28 @@ public class PriceHandler extends CrudDatabaseHandler<PriceRecord, Price> {
                 PRICE.FOOD,
                 PRICE.SCALED_UNIT
         );
+    }
+
+    /**
+     * Prices must not be currentDeleted because they have been inserted to be
+     * valid only for a single granule. Thus, terminate transaction time instead
+     * to mark them as past knowledge without inserting a new entry valid until
+     * now.
+     */
+    @Override
+    public StatusCode delete(Versionable<Price> item) {
+        return runCommand(context -> {
+            Field<OffsetDateTime> now = DSL.currentOffsetDateTime();
+            int changedItems = context.update(getTable())
+                    .set(getTransactionTimeEndField(), now)
+                    .where(getIdField().eq(item.id()))
+                    .execute();
+
+            if (0 < changedItems)
+                return StatusCode.SUCCESS;
+            else
+                return NOT_FOUND;
+        });
     }
 
     public StatusCode deletePricesOfChain(Versionable<GroceryChain> id) {

@@ -75,7 +75,7 @@ class PriceTest : Base() {
         val groceryStore = groceryStoreRepository.createNew(uniqueName)
         val food = foodRepository.createNew(uniqueName)
         val scaledUnit = scaledUnitRepository.createNew(BigDecimal.ONE)
-        val input = PriceAddForm.create(price, scale, groceryStore.id(), food.id(), scaledUnit.id())
+        val input = PriceAddForm.create(price, Instant.now(), scale, groceryStore.id(), food.id(), scaledUnit.id())
 
         addService.addPrice(input)
 
@@ -98,17 +98,6 @@ class PriceTest : Base() {
         Assertions.assertThat(data).filteredOn(PriceForSynchronisation::price, price)
             .isNotEmpty
             .anyMatch { it.transactionTimeEnd().isBefore(Constants.INFINITY) }
-    }
-
-    @Test
-    fun deletingFailsWithWrongVersion() {
-        val id = repository.createNew(
-            BigDecimal.valueOf(uniqueName.hashCode().toLong()),
-            BigDecimal.valueOf(uniqueName.hashCode().toLong()))
-
-        assertThatExceptionOfType(StatusCodeException::class.java)
-            .isThrownBy { deleteService.delete(PriceForDeletion.create(id.id(), 99)) }
-            .matches { it.statusCode == StatusCode.INVALID_DATA_VERSION }
     }
 
     @Test

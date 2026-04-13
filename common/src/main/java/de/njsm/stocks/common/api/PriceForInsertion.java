@@ -38,6 +38,9 @@ public abstract class PriceForInsertion implements Insertable<Price>, SelfValida
     public abstract BigDecimal price();
 
     @JsonGetter
+    public abstract String validTime();
+
+    @JsonGetter
     public abstract BigDecimal scale();
 
     @JsonGetter
@@ -59,6 +62,7 @@ public abstract class PriceForInsertion implements Insertable<Price>, SelfValida
             extends SelfValidating.Builder<PriceForInsertion> {
 
         public abstract Builder price(BigDecimal v);
+        public abstract Builder validTime(String v);
         public abstract Builder scale(BigDecimal v);
         public abstract Builder groceryStore(int v);
         public abstract Builder food(int v);

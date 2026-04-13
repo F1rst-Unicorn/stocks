@@ -52,6 +52,7 @@ class PriceRepository
         ): IdImpl<Price> {
             return addService.addPrice(PriceAddForm.create(
                 price,
+                Instant.now(),
                 scale,
                 groceryStore.id(),
                 food.id(),

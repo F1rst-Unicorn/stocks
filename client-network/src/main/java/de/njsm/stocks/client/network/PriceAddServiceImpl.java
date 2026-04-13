@@ -27,6 +27,7 @@ import de.njsm.stocks.client.business.entities.Price;
 import de.njsm.stocks.client.business.entities.PriceAddForm;
 import de.njsm.stocks.common.api.DataResponse;
 import de.njsm.stocks.common.api.PriceForInsertion;
+import de.njsm.stocks.common.api.serialisers.InstantSerialiser;
 import retrofit2.Call;
 
 import javax.inject.Inject;
@@ -47,6 +48,7 @@ class PriceAddServiceImpl extends ServiceQuery<PriceAddForm, Price> implements P
     Call<? extends DataResponse<Integer>> buildCall(PriceAddForm form) {
         return api.addPrice(PriceForInsertion.builder()
                 .price(form.price())
+                .validTime(InstantSerialiser.serialize(form.validTime()))
                 .scale(form.scale())
                 .groceryStore(form.groceryStore())
                 .food(form.food())

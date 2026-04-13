@@ -22,6 +22,7 @@
 package de.njsm.stocks.server.v2.business.data.visitor;
 
 import de.njsm.stocks.common.api.*;
+import de.njsm.stocks.common.api.serialisers.InstantDeserialiser;
 import de.njsm.stocks.common.api.visitor.InsertableVisitor;
 import de.njsm.stocks.server.util.Principals;
 import org.jooq.InsertOnDuplicateStep;
@@ -29,6 +30,7 @@ import org.jooq.InsertSetStep;
 import org.jooq.TableRecord;
 import org.jooq.impl.DSL;
 
+import java.io.IOException;
 import java.time.OffsetDateTime;
 import java.time.Period;
 import java.time.ZoneOffset;
@@ -98,7 +100,7 @@ public class JooqInsertionVisitor<R extends TableRecord<R>> implements Insertabl
                             FOOD_ITEM.INITIATES,
                             FOOD_ITEM.UNIT)
                     .select(DSL.select(
-                                    DSL.inline(OffsetDateTime.from(foodItemForInsertion.eatByDate().atOffset(ZoneOffset.UTC))),
+                                    DSL.inline(foodItemForInsertion.eatByDate().atOffset(ZoneOffset.UTC)),
                                     DSL.inline(foodItemForInsertion.storedIn()),
                                     DSL.inline(foodItemForInsertion.ofType()),
                                     DSL.inline(foodItemForInsertion.registers()),
@@ -114,7 +116,7 @@ public class JooqInsertionVisitor<R extends TableRecord<R>> implements Insertabl
                             FOOD_ITEM.BUYS,
                             FOOD_ITEM.INITIATES,
                             FOOD_ITEM.UNIT)
-                    .values(OffsetDateTime.from(foodItemForInsertion.eatByDate().atOffset(ZoneOffset.UTC)),
+                    .values(foodItemForInsertion.eatByDate().atOffset(ZoneOffset.UTC),
                             foodItemForInsertion.storedIn(),
                             foodItemForInsertion.ofType(),
                             foodItemForInsertion.registers(),
@@ -191,9 +193,14 @@ public class JooqInsertionVisitor<R extends TableRecord<R>> implements Insertabl
 
     @Override
     public InsertOnDuplicateStep<R> price(PriceForInsertion priceForInsertion, Input<R> argument) {
-        return argument.getInsertSetStep()
-                .columns(PRICE.PRICE_, PRICE.SCALE, PRICE.GROCERY_STORE, PRICE.FOOD, PRICE.SCALED_UNIT, PRICE.INITIATES)
-                .values(priceForInsertion.price(), priceForInsertion.scale(), priceForInsertion.groceryStore(), priceForInsertion.food(), priceForInsertion.scaledUnit(), argument.getPrincipals().getDid());
+        try {
+            OffsetDateTime validTime = InstantDeserialiser.parseString(priceForInsertion.validTime()).atOffset(ZoneOffset.UTC);
+            return argument.getInsertSetStep()
+                    .columns(PRICE.PRICE_, PRICE.VALID_TIME_START, PRICE.VALID_TIME_END,  PRICE.SCALE, PRICE.GROCERY_STORE, PRICE.FOOD, PRICE.SCALED_UNIT, PRICE.INITIATES)
+                    .values(priceForInsertion.price(), validTime, validTime.plusNanos(1000), priceForInsertion.scale(), priceForInsertion.groceryStore(), priceForInsertion.food(), priceForInsertion.scaledUnit(), argument.getPrincipals().getDid());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public static class Input<R extends TableRecord<R>> {
