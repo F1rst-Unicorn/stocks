@@ -250,5 +250,14 @@ public interface UimockBusinessModule {
     GroceryChainListInteractor GroceryChainListInteractor(InMemoryGroceryChainListInteractorImpl impl);
 
     @Binds
-    EntityDeleter<GroceryChain> InMemoryGroceryStoreDeleterImpl(InMemoryGroceryStoreDeleterImpl impl);
+    EntityDeleter<GroceryChain> InMemoryGroceryStoreDeleter(InMemoryGroceryStoreDeleterImpl impl);
+
+    @Binds
+    GroceryChainAddInteractor GroceryChainAddInteractor(InMemoryGroceryChainAddInteractorImpl impl);
+
+    @Binds
+    GroceryChainEditInteractor GroceryChainEditInteractor(InMemoryGroceryChainEditInteractorImpl impl);
+
+    @Binds
+    GroceryChainConflictInteractor GroceryChainConflictInteractor(InMemoryGroceryChainConflictInteractorImpl impl);
 }

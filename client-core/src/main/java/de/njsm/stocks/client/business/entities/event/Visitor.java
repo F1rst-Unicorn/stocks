@@ -68,4 +68,10 @@ public interface Visitor<I, O> {
     O eanNumberCreated(EanNumberCreatedEvent eanNumberCreatedEvent, I input);
 
     O eanNumberDeleted(EanNumberDeletedEvent eanNumberDeletedEvent, I input);
+
+    O groceryChainCreated(GroceryChainCreatedEvent groceryChainCreatedEvent, I input);
+
+    O groceryChainDeleted(GroceryChainDeletedEvent groceryChainDeletedEvent, I input);
+
+    O groceryChainEdited(GroceryChainEditedEvent groceryChainEditedEvent, I input);
 }

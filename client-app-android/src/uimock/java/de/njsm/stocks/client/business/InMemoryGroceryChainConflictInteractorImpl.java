@@ -19,23 +19,23 @@
  *
  */
 
-package de.njsm.stocks.client.business.entities;
+package de.njsm.stocks.client.business;
 
-import java.io.Serializable;
+import de.njsm.stocks.client.business.entities.IdImpl;
+import de.njsm.stocks.client.business.entities.conflict.GroceryChainEditConflictData;
+import io.reactivex.rxjava3.core.Observable;
 
-public interface Id<T extends Entity<T>> extends Serializable {
+import javax.inject.Inject;
 
-    int id();
+class InMemoryGroceryChainConflictInteractorImpl implements GroceryChainConflictInteractor {
 
-    default IdImpl<T> toId() {
-        return IdImpl.from(this);
+    @Inject
+    InMemoryGroceryChainConflictInteractorImpl() {
     }
 
-    interface Builder<T> {
-        T id(int v);
-
-        default <E extends Entity<E>> T id(Id<E> id) {
-            return id(id.id());
-        }
+    @Override
+    public Observable<GroceryChainEditConflictData> getGroceryChainEditConflict(long errorId) {
+        return Observable.just(GroceryChainEditConflictData.create(1, IdImpl.create(42), 43,
+                "original name", "remote name", "local name"));
     }
 }

@@ -19,23 +19,11 @@
  *
  */
 
-package de.njsm.stocks.client.business.entities;
+package de.njsm.stocks.client.navigation;
 
-import java.io.Serializable;
+import android.os.Bundle;
 
-public interface Id<T extends Entity<T>> extends Serializable {
+public interface GroceryChainConflictNavigator extends Navigator {
 
-    int id();
-
-    default IdImpl<T> toId() {
-        return IdImpl.from(this);
-    }
-
-    interface Builder<T> {
-        T id(int v);
-
-        default <E extends Entity<E>> T id(Id<E> id) {
-            return id(id.id());
-        }
-    }
+    long getErrorId(Bundle arguments);
 }

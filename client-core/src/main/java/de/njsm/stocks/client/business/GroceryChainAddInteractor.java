@@ -25,5 +25,5 @@ import de.njsm.stocks.client.business.entities.GroceryChainAddForm;
 
 public interface GroceryChainAddInteractor {
 
-    void addGroceryStore(GroceryChainAddForm form);
+    void addGroceryChain(GroceryChainAddForm form);
 }

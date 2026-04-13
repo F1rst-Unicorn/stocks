@@ -21,11 +21,14 @@
 
 package de.njsm.stocks.client.navigation;
 
+import de.njsm.stocks.client.business.entities.GroceryChain;
+import de.njsm.stocks.client.business.entities.Versionable;
+
 public interface GroceryChainListNavigator {
 
     void addGroceryChain();
 
     void showGroceryChain(int id);
 
-    void editGroceryChain(int id);
+    void editGroceryChain(Versionable<GroceryChain> id);
 }

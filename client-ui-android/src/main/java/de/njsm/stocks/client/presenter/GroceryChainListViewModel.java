@@ -26,6 +26,7 @@ import de.njsm.stocks.client.business.GroceryChainListInteractor;
 import de.njsm.stocks.client.business.Synchroniser;
 import de.njsm.stocks.client.business.entities.GroceryChain;
 import de.njsm.stocks.client.business.entities.GroceryChainForListing;
+import de.njsm.stocks.client.business.entities.Versionable;
 
 import javax.inject.Inject;
 import java.util.List;
@@ -57,8 +58,8 @@ public class GroceryChainListViewModel extends ViewModel {
         data.performOnListItem(listItemIndex, groceryChainDeleter::delete);
     }
 
-    public void resolveGroceryChainId(int listItemIndex, Consumer<Integer> callback) {
-        data.performOnListItem(listItemIndex, v -> callback.accept(v.id()));
+    public void resolveGroceryChainId(int listItemIndex, Consumer<Versionable<GroceryChain>> callback) {
+        data.performOnListItem(listItemIndex, callback::accept);
     }
 
     public void synchronise() {

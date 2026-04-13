@@ -88,6 +88,8 @@ class ErrorRetryInteractorImpl implements ErrorRetryInteractor, ErrorDetailsVisi
 
     private final GroceryChainAddInteractor groceryChainAddInteractor;
 
+    private final GroceryChainEditInteractor groceryChainEditInteractor;
+
     private final GroceryStoreAddInteractor groceryStoreAddInteractor;
 
     private final PriceAddInteractor priceAddInteractor;
@@ -122,6 +124,7 @@ class ErrorRetryInteractorImpl implements ErrorRetryInteractor, ErrorDetailsVisi
                              Scheduler scheduler,
                              ErrorRepository errorRepository,
                              GroceryChainAddInteractor groceryChainAddInteractor,
+                             GroceryChainEditInteractor groceryChainEditInteractor,
                              GroceryStoreAddInteractor groceryStoreAddInteractor,
                              PriceAddInteractor priceAddInteractor) {
         this.locationAddInteractor = locationAddInteractor;
@@ -153,6 +156,7 @@ class ErrorRetryInteractorImpl implements ErrorRetryInteractor, ErrorDetailsVisi
         this.scheduler = scheduler;
         this.errorRepository = errorRepository;
         this.groceryChainAddInteractor = groceryChainAddInteractor;
+        this.groceryChainEditInteractor = groceryChainEditInteractor;
         this.groceryStoreAddInteractor = groceryStoreAddInteractor;
         this.priceAddInteractor = priceAddInteractor;
         this.jobTypeTranslator = new JobTypeTranslator();
@@ -370,7 +374,15 @@ class ErrorRetryInteractorImpl implements ErrorRetryInteractor, ErrorDetailsVisi
 
     @Override
     public Void groceryChainAddForm(GroceryChainAddForm groceryChainAddForm, Void input) {
-        groceryChainAddInteractor.addGroceryStore(groceryChainAddForm);
+        groceryChainAddInteractor.addGroceryChain(groceryChainAddForm);
+        return null;
+    }
+
+    @Override
+    public Void groceryChainEditErrorDetails(GroceryChainEditErrorDetails groceryChainEditErrorDetails, Void input) {
+        groceryChainEditInteractor.edit(GroceryChainForEditing.create(
+                groceryChainEditErrorDetails.id(),
+                groceryChainEditErrorDetails.name()));
         return null;
     }
 
@@ -509,6 +521,11 @@ class ErrorRetryInteractorImpl implements ErrorRetryInteractor, ErrorDetailsVisi
         @Override
         public Job.Type groceryChainAddForm(GroceryChainAddForm groceryChainAddForm, Void input) {
             return Job.Type.ADD_GROCERY_CHAIN;
+        }
+
+        @Override
+        public Job.Type groceryChainEditErrorDetails(GroceryChainEditErrorDetails groceryChainEditErrorDetails, Void input) {
+            return Job.Type.EDIT_GROCERY_CHAIN;
         }
     }
 }

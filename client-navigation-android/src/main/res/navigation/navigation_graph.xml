@@ -180,7 +180,7 @@
     </fragment>
     <fragment
             android:id="@+id/nav_fragment_grocery_chain_add"
-            android:name="androidx.fragment.app.Fragment"
+            android:name="de.njsm.stocks.client.fragment.grocerychainadd.GroceryChainAddFragment"
             android:label="@string/title_add_grocery_chain"
             tools:layout="@layout/template_swipe_list">
     </fragment>
@@ -194,15 +194,18 @@
     </fragment>
     <fragment
             android:id="@+id/nav_fragment_grocery_chain_edit"
-            android:name="androidx.fragment.app.Fragment"
+            android:name="de.njsm.stocks.client.fragment.grocerychainedit.GroceryChainEditFragment"
             android:label="@string/title_edit_grocery_chain">
         <argument
                 android:name="id"
                 app:argType="integer"/>
+        <argument
+                android:name="version"
+                app:argType="integer"/>
     </fragment>
     <fragment
             android:id="@+id/nav_fragment_grocery_chain_conflict"
-            android:name="androidx.fragment.app.Fragment"
+            android:name="de.njsm.stocks.client.fragment.grocerychainconflict.GroceryChainConflictFragment"
             android:label="@string/title_conflict">
         <argument
                 android:name="id"

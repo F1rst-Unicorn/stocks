@@ -19,23 +19,22 @@
  *
  */
 
-package de.njsm.stocks.client.business.entities;
+package de.njsm.stocks.client.navigation;
 
-import java.io.Serializable;
+import android.os.Bundle;
+import de.njsm.stocks.client.fragment.grocerychainconflict.GroceryChainConflictFragmentArgs;
 
-public interface Id<T extends Entity<T>> extends Serializable {
+import javax.inject.Inject;
 
-    int id();
+class GroceryChainConflictNavigatorImpl extends BaseNavigator implements GroceryChainConflictNavigator {
 
-    default IdImpl<T> toId() {
-        return IdImpl.from(this);
+    @Inject
+    GroceryChainConflictNavigatorImpl(NavigationArgConsumer navigationArgConsumer) {
+        super(navigationArgConsumer);
     }
 
-    interface Builder<T> {
-        T id(int v);
-
-        default <E extends Entity<E>> T id(Id<E> id) {
-            return id(id.id());
-        }
+    @Override
+    public long getErrorId(Bundle arguments) {
+        return GroceryChainConflictFragmentArgs.fromBundle(arguments).getId();
     }
 }

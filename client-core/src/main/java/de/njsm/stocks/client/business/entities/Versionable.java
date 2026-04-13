@@ -25,7 +25,16 @@ public interface Versionable<T extends Entity<T>> extends Id<T> {
 
     int version();
 
+    default VersionedId<T> toVersion() {
+        return VersionedId.create(this, version());
+    }
+
     interface Builder<T> extends Id.Builder<T> {
         T version(int v);
+
+        default <E extends Entity<E>> T version(Versionable<E> id) {
+            id(id);
+            return version(id.version());
+        }
     }
 }

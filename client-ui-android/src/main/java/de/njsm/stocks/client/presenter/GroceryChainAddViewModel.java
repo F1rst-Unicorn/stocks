@@ -19,23 +19,24 @@
  *
  */
 
-package de.njsm.stocks.client.business.entities;
+package de.njsm.stocks.client.presenter;
 
-import java.io.Serializable;
+import androidx.lifecycle.ViewModel;
+import de.njsm.stocks.client.business.GroceryChainAddInteractor;
+import de.njsm.stocks.client.business.entities.GroceryChainAddForm;
 
-public interface Id<T extends Entity<T>> extends Serializable {
+import javax.inject.Inject;
 
-    int id();
+public class GroceryChainAddViewModel extends ViewModel {
 
-    default IdImpl<T> toId() {
-        return IdImpl.from(this);
+    private final GroceryChainAddInteractor groceryChainAddInteractor;
+
+    @Inject
+    GroceryChainAddViewModel(GroceryChainAddInteractor groceryChainAddInteractor) {
+        this.groceryChainAddInteractor = groceryChainAddInteractor;
     }
 
-    interface Builder<T> {
-        T id(int v);
-
-        default <E extends Entity<E>> T id(Id<E> id) {
-            return id(id.id());
-        }
+    public void addGroceryChain(GroceryChainAddForm data) {
+        groceryChainAddInteractor.addGroceryChain(data);
     }
 }

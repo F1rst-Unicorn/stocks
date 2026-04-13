@@ -93,7 +93,7 @@ public class GroceryChainListFragment extends BottomToolbarFragment {
 
     private void onItemClicked(View listItem) {
         int listItemIndex = ((TextWithPrefixIconViewHolder) listItem.getTag()).getBindingAdapterPosition();
-        groceryChainListViewModel.resolveGroceryChainId(listItemIndex, groceryChainListNavigator::showGroceryChain);
+        groceryChainListViewModel.resolveGroceryChainId(listItemIndex, v -> groceryChainListNavigator.showGroceryChain(v.id()));
     }
 
     private boolean onItemLongClicked(View listItem) {

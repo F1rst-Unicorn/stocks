@@ -26,10 +26,9 @@ import com.google.auto.value.AutoValue;
 @AutoValue
 public abstract class GroceryChainForEditing implements GroceryChain {
 
-    public static GroceryChainForEditing create(int id, int version, String name) {
+    public static GroceryChainForEditing create(Versionable<GroceryChain> id, String name) {
         return GroceryChainForEditing.builder()
-                .id(id)
-                .version(version)
+                .version(id)
                 .name(name)
                 .build();
     }

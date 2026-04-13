@@ -22,9 +22,7 @@
 package de.njsm.stocks.client.business.event;
 
 import de.njsm.stocks.client.business.Localiser;
-import de.njsm.stocks.client.business.entities.event.LocationCreatedEvent;
-import de.njsm.stocks.client.business.entities.event.LocationDeletedEvent;
-import de.njsm.stocks.client.business.entities.event.LocationEditedEvent;
+import de.njsm.stocks.client.business.entities.event.*;
 import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.core.Single;
 
@@ -82,6 +80,33 @@ public class InMemoryEventInteractorImpl implements EventInteractor {
                         "Jane",
                         "Cupboard",
                         ""
+                ), localiser),
+                GroceryChainCreatedEvent.create(GroceryChainEventFeedItem.create(
+                        (int) day.toEpochDay(),
+                        localiser.toInstant(day),
+                        localiser.toInstant(day),
+                        "Jane",
+                        "coop"
+                ), localiser),
+                GroceryChainEditedEvent.create(List.of(GroceryChainEventFeedItem.create(
+                        (int) day.toEpochDay(),
+                        localiser.toInstant(day),
+                        localiser.toInstant(day),
+                        "Jane",
+                        "coop"
+                ), GroceryChainEventFeedItem.create(
+                        (int) day.toEpochDay(),
+                        localiser.toInstant(day),
+                        localiser.toInstant(day),
+                        "Jane",
+                        "coop renamed"
+                )), localiser),
+                GroceryChainDeletedEvent.create(GroceryChainEventFeedItem.create(
+                        (int) day.toEpochDay(),
+                        localiser.toInstant(day),
+                        localiser.toInstant(day),
+                        "Jane",
+                        "coop"
                 ), localiser)),
                 Optional.empty(),
                 Optional.empty())

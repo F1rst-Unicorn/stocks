@@ -179,4 +179,9 @@ public class ErrorDetailsDetailsVisitor implements ErrorDetailsVisitor<Void, Str
     public String groceryChainAddForm(GroceryChainAddForm groceryChainAddForm, Void input) {
         return groceryChainAddForm.name();
     }
+
+    @Override
+    public String groceryChainEditErrorDetails(GroceryChainEditErrorDetails groceryChainEditErrorDetails, Void input) {
+        return groceryChainEditErrorDetails.name();
+    }
 }

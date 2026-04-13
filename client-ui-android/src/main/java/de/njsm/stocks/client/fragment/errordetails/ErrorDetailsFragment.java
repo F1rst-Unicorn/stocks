@@ -273,5 +273,10 @@ public class ErrorDetailsFragment extends InjectableFragment {
         public String groceryChainAddForm(GroceryChainAddForm groceryChainAddForm, Void input) {
             return groceryChainAddForm.name();
         }
+
+        @Override
+        public String groceryChainEditErrorDetails(GroceryChainEditErrorDetails groceryChainEditErrorDetails, Void input) {
+            return groceryChainEditErrorDetails.name();
+        }
     }
 }

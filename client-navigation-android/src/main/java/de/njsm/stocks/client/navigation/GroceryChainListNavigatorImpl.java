@@ -21,6 +21,8 @@
 
 package de.njsm.stocks.client.navigation;
 
+import de.njsm.stocks.client.business.entities.GroceryChain;
+import de.njsm.stocks.client.business.entities.Versionable;
 import de.njsm.stocks.client.fragment.grocerychainlist.GroceryChainListFragmentDirections;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,15 +50,15 @@ class GroceryChainListNavigatorImpl extends BaseNavigator implements GroceryChai
     public void showGroceryChain(int id) {
         LOG.debug("showing grocery chain " + id);
         getNavigationArgConsumer().navigate(
-                GroceryChainListFragmentDirections.actionNavFragmentGroceryChainListToNavFragmentGroceryChainContent(id)
+                GroceryChainListFragmentDirections.actionNavFragmentGroceryChainListToNavFragmentGroceryStoreList(id)
         );
     }
 
     @Override
-    public void editGroceryChain(int id) {
+    public void editGroceryChain(Versionable<GroceryChain> id) {
         LOG.debug("editing grocery chain " + id);
         getNavigationArgConsumer().navigate(
-                GroceryChainListFragmentDirections.actionNavFragmentGroceryChainListToNavFragmentGroceryChainEdit(id)
+                GroceryChainListFragmentDirections.actionNavFragmentGroceryChainListToNavFragmentGroceryChainEdit(id.id(), id.version())
         );
     }
 }

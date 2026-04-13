@@ -374,4 +374,25 @@ public class ViewModelModule {
     ViewModel GroceryChainListViewModel(GroceryChainListInteractor groceryChainListInteractor, EntityDeleter<GroceryChain> groceryChainDeleter, Synchroniser synchroniser, ObservableListCache<GroceryChainForListing> data) {
         return new GroceryChainListViewModel(groceryChainListInteractor, groceryChainDeleter, synchroniser, data);
     }
+
+    @Provides
+    @IntoMap
+    @ViewModelKey(GroceryChainAddViewModel.class)
+    ViewModel GroceryChainAddViewModel(GroceryChainAddInteractor groceryChainAddInteractor) {
+        return new GroceryChainAddViewModel(groceryChainAddInteractor);
+    }
+
+    @Provides
+    @IntoMap
+    @ViewModelKey(GroceryChainEditViewModel.class)
+    ViewModel GroceryChainEditViewModel(GroceryChainEditInteractor groceryChainEditInteractor, ObservableDataCache<GroceryChainForEditing> data) {
+        return new GroceryChainEditViewModel(groceryChainEditInteractor, data);
+    }
+
+    @Provides
+    @IntoMap
+    @ViewModelKey(GroceryChainConflictViewModel.class)
+    ViewModel GroceryChainConflictViewModel(GroceryChainConflictInteractor groceryChainConflictInteractor, ErrorRetryInteractor errorRetryInteractor, ObservableDataCache<GroceryChainEditConflictData> data) {
+        return new GroceryChainConflictViewModel(groceryChainConflictInteractor, errorRetryInteractor, data);
+    }
 }

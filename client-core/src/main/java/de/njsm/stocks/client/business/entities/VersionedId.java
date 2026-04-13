@@ -29,4 +29,8 @@ public abstract class VersionedId<E extends Entity<E>> implements Versionable<E>
     public static <E extends Entity<E>> VersionedId<E> create(int id, int version) {
         return new AutoValue_VersionedId(id, version);
     }
+
+    public static <E extends Entity<E>> VersionedId<E> create(Id<E> id, int version) {
+        return new AutoValue_VersionedId(id.id(), version);
+    }
 }

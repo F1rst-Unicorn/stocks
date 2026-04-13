@@ -294,6 +294,9 @@
     <string name="event_scaled_unit_deleted">%1$s hat %2$s gelöscht.</string>
     <string name="event_scaled_unit_scale_changed">hat die Skalierung%1$s von %2$s auf %3$s gesetzt</string>
     <string name="event_scaled_unit_unit_changed">hat die Einheit%1$s von %2$s auf %3$s gesetzt</string>
+    <string name="event_grocery_chain_created">%1$s hat %2$s erstellt.</string>
+    <string name="event_grocery_chain_deleted">%1$s hat %2$s gelöscht.</string>
+    <string name="event_grocery_chain_renamed">hat %1$s zu %2$s umbenannt</string>
 
     <string name="content_description_plus">Plus-Symbol</string>
 
@@ -337,6 +340,7 @@
     <string name="error_details_recipe_edit">Rezept bearbeiten</string>
     <string name="error_details_price_add">Preis hinzufügen</string>
     <string name="error_details_grocery_chain_add">Ladenkette hinzufügen</string>
+    <string name="error_details_grocery_chain_edit">Ladenkette bearbeiten</string>
     <string name="error_details_grocery_store_add">Laden hinzufügen</string>
 
     <string name="text_no_errors">Alles in Ordnung.</string>

@@ -21,21 +21,19 @@
 
 package de.njsm.stocks.client.business.entities;
 
-import java.io.Serializable;
+import com.google.auto.value.AutoValue;
 
-public interface Id<T extends Entity<T>> extends Serializable {
+@AutoValue
+public abstract class GroceryChainEditErrorDetails implements ErrorDetails, GroceryChainFields {
 
-    int id();
+    public abstract VersionedId<GroceryChain> id();
 
-    default IdImpl<T> toId() {
-        return IdImpl.from(this);
+    public static GroceryChainEditErrorDetails create(VersionedId<GroceryChain> id, String name) {
+        return new AutoValue_GroceryChainEditErrorDetails(name, id);
     }
 
-    interface Builder<T> {
-        T id(int v);
-
-        default <E extends Entity<E>> T id(Id<E> id) {
-            return id(id.id());
-        }
+    @Override
+    public <I, O> O accept(ErrorDetailsVisitor<I, O> visitor, I input) {
+        return visitor.groceryChainEditErrorDetails(this, input);
     }
 }
