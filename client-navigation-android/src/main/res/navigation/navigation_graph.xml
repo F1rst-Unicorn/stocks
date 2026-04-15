@@ -239,7 +239,7 @@
     </fragment>
     <fragment
             android:id="@+id/nav_fragment_grocery_store_conflict"
-            android:name="androidx.fragment.app.Fragment"
+            android:name="de.njsm.stocks.client.fragment.grocerystoreconflict.GroceryStoreConflictFragment"
             android:label="@string/title_conflict">
         <argument
                 android:name="id"
@@ -267,6 +267,12 @@
         <action
             android:id="@+id/action_nav_fragment_error_list_to_nav_fragment_food_item_conflict"
             app:destination="@id/nav_fragment_food_item_conflict"/>
+        <action
+            android:id="@+id/action_nav_fragment_error_list_to_nav_fragment_grocery_chain_conflict"
+            app:destination="@id/nav_fragment_grocery_chain_conflict"/>
+        <action
+            android:id="@+id/action_nav_fragment_error_list_to_nav_fragment_grocery_store_conflict"
+            app:destination="@id/nav_fragment_grocery_store_conflict"/>
     </fragment>
     <fragment
         android:id="@+id/nav_fragment_error_detail"

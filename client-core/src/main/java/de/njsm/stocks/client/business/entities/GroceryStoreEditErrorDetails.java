@@ -19,23 +19,23 @@
  *
  */
 
-package de.njsm.stocks.client.navigation;
+package de.njsm.stocks.client.business.entities;
 
-public interface ErrorListNavigator {
+import com.google.auto.value.AutoValue;
 
-    void showErrorDetails(long id);
+@AutoValue
+public abstract class GroceryStoreEditErrorDetails implements ErrorDetails, GroceryStoreFields {
 
-    void resolveLocationEditConflict(long id);
+    public abstract VersionedId<GroceryStore> id();
 
-    void resolveUnitEditConflict(long id);
+    public abstract String groceryChainName();
 
-    void resolveScaledUnitEditConflict(long id);
+    public static GroceryStoreEditErrorDetails create(VersionedId<GroceryStore> id, String name, String groceryChainName, IdImpl<GroceryChain> groceryChain) {
+        return new AutoValue_GroceryStoreEditErrorDetails(name, groceryChain, id, groceryChainName);
+    }
 
-    void resolveFoodEditConflict(long input);
-
-    void resolveFoodItemEditConflict(long id);
-
-    void resolveGroceryChainEditConflict(long id);
-
-    void resolveGroceryStoreEditConflict(long id);
+    @Override
+    public <I, O> O accept(ErrorDetailsVisitor<I, O> visitor, I input) {
+        return visitor.groceryStoreEditErrorDetails(this, input);
+    }
 }

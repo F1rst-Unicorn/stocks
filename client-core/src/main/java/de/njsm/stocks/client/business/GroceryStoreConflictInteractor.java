@@ -19,23 +19,12 @@
  *
  */
 
-package de.njsm.stocks.client.navigation;
+package de.njsm.stocks.client.business;
 
-public interface ErrorListNavigator {
+import de.njsm.stocks.client.business.entities.conflict.GroceryStoreEditConflictData;
+import io.reactivex.rxjava3.core.Observable;
 
-    void showErrorDetails(long id);
+public interface GroceryStoreConflictInteractor {
 
-    void resolveLocationEditConflict(long id);
-
-    void resolveUnitEditConflict(long id);
-
-    void resolveScaledUnitEditConflict(long id);
-
-    void resolveFoodEditConflict(long input);
-
-    void resolveFoodItemEditConflict(long id);
-
-    void resolveGroceryChainEditConflict(long id);
-
-    void resolveGroceryStoreEditConflict(long id);
+    Observable<GroceryStoreEditConflictData> getGroceryStoreEditConflict(long errorId);
 }

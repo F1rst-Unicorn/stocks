@@ -164,4 +164,7 @@ public interface NavigationModule {
 
     @Binds
     GroceryStoreEditNavigator GroceryStoreEditNavigator(GroceryStoreEditNavigatorImpl impl);
+
+    @Binds
+    GroceryStoreConflictNavigator GroceryStoreConflictNavigator(GroceryStoreConflictNavigatorImpl impl);
 }

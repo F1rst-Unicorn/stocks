@@ -76,6 +76,16 @@ class RetryVisitor implements ErrorDetailsVisitor.Default<ErrorDescription, Void
     }
 
     @Override
+    public Void groceryChainEditErrorDetails(GroceryChainEditErrorDetails groceryChainEditErrorDetails, ErrorDescription input) {
+        return visit(input.statusCode(), input);
+    }
+
+    @Override
+    public Void groceryStoreEditErrorDetails(GroceryStoreEditErrorDetails groceryStoreEditErrorDetails, ErrorDescription input) {
+        return visit(input.statusCode(), input);
+    }
+
+    @Override
     public Void defaultImpl(ErrorDetails errorDetails, ErrorDescription input) {
         retryDirectlyCallback.accept(input);
         return null;
@@ -88,12 +98,6 @@ class RetryVisitor implements ErrorDetailsVisitor.Default<ErrorDescription, Void
 
     @Override
     public Void defaultImpl(StatusCode statusCode, ErrorDescription input) {
-        retryDirectlyCallback.accept(input);
-        return null;
-    }
-
-    @Override
-    public Void scaledUnitAddErrorDetails(ScaledUnitAddErrorDetails scaledUnitAddErrorDetails, ErrorDescription input) {
         retryDirectlyCallback.accept(input);
         return null;
     }

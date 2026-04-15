@@ -83,6 +83,18 @@ class ConflictNavigator implements ErrorDetailsVisitor.Default<ErrorDescription,
     }
 
     @Override
+    public Void groceryChainEditErrorDetails(GroceryChainEditErrorDetails groceryChainEditErrorDetails, ErrorDescription input) {
+        errorListNavigator.resolveGroceryChainEditConflict(input.id());
+        return null;
+    }
+
+    @Override
+    public Void groceryStoreEditErrorDetails(GroceryStoreEditErrorDetails groceryStoreEditErrorDetails, ErrorDescription input) {
+        errorListNavigator.resolveGroceryStoreEditConflict(input.id());
+        return null;
+    }
+
+    @Override
     public Void defaultImpl(ErrorDetails errorDetails, ErrorDescription input) {
         throw new IllegalStateException("unexpected conflict resolution on " + errorDetails);
     }

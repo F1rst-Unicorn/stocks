@@ -92,6 +92,8 @@ class ErrorRetryInteractorImpl implements ErrorRetryInteractor, ErrorDetailsVisi
 
     private final GroceryStoreAddInteractor groceryStoreAddInteractor;
 
+    private final GroceryStoreEditInteractor groceryStoreEditInteractor;
+
     private final PriceAddInteractor priceAddInteractor;
 
     @Inject
@@ -126,6 +128,7 @@ class ErrorRetryInteractorImpl implements ErrorRetryInteractor, ErrorDetailsVisi
                              GroceryChainAddInteractor groceryChainAddInteractor,
                              GroceryChainEditInteractor groceryChainEditInteractor,
                              GroceryStoreAddInteractor groceryStoreAddInteractor,
+                             GroceryStoreEditInteractor groceryStoreEditInteractor,
                              PriceAddInteractor priceAddInteractor) {
         this.locationAddInteractor = locationAddInteractor;
         this.locationDeleter = locationDeleter;
@@ -158,6 +161,7 @@ class ErrorRetryInteractorImpl implements ErrorRetryInteractor, ErrorDetailsVisi
         this.groceryChainAddInteractor = groceryChainAddInteractor;
         this.groceryChainEditInteractor = groceryChainEditInteractor;
         this.groceryStoreAddInteractor = groceryStoreAddInteractor;
+        this.groceryStoreEditInteractor = groceryStoreEditInteractor;
         this.priceAddInteractor = priceAddInteractor;
         this.jobTypeTranslator = new JobTypeTranslator();
     }
@@ -386,6 +390,15 @@ class ErrorRetryInteractorImpl implements ErrorRetryInteractor, ErrorDetailsVisi
         return null;
     }
 
+    @Override
+    public Void groceryStoreEditErrorDetails(GroceryStoreEditErrorDetails groceryStoreEditErrorDetails, Void input) {
+        groceryStoreEditInteractor.edit(GroceryStoreForEditing.builder()
+                .version(groceryStoreEditErrorDetails.id())
+                .name(groceryStoreEditErrorDetails.name())
+                .build());
+        return null;
+    }
+
     private static final class JobTypeTranslator implements ErrorDetailsVisitor<Void, Job.Type> {
 
         @Override
@@ -526,6 +539,11 @@ class ErrorRetryInteractorImpl implements ErrorRetryInteractor, ErrorDetailsVisi
         @Override
         public Job.Type groceryChainEditErrorDetails(GroceryChainEditErrorDetails groceryChainEditErrorDetails, Void input) {
             return Job.Type.EDIT_GROCERY_CHAIN;
+        }
+
+        @Override
+        public Job.Type groceryStoreEditErrorDetails(GroceryStoreEditErrorDetails groceryStoreEditErrorDetails, Void input) {
+            return Job.Type.EDIT_GROCERY_STORE;
         }
     }
 }

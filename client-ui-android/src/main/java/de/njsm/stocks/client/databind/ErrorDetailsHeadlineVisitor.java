@@ -165,4 +165,9 @@ public class ErrorDetailsHeadlineVisitor implements ErrorDetailsVisitor<Void, In
     public Integer groceryChainEditErrorDetails(GroceryChainEditErrorDetails groceryChainEditErrorDetails, Void input) {
         return R.string.error_details_grocery_chain_edit;
     }
+
+    @Override
+    public Integer groceryStoreEditErrorDetails(GroceryStoreEditErrorDetails groceryStoreEditErrorDetails, Void input) {
+        return R.string.error_details_grocery_store_edit;
+    }
 }

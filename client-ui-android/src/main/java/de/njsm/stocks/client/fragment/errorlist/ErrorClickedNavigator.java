@@ -81,6 +81,18 @@ class ErrorClickedNavigator implements ErrorDetailsVisitor.Default<ErrorDescript
     }
 
     @Override
+    public Void groceryChainEditErrorDetails(GroceryChainEditErrorDetails groceryChainEditErrorDetails, ErrorDescription input) {
+        resolveEditingConflict(input);
+        return null;
+    }
+
+    @Override
+    public Void groceryStoreEditErrorDetails(GroceryStoreEditErrorDetails groceryStoreEditErrorDetails, ErrorDescription input) {
+        resolveEditingConflict(input);
+        return null;
+    }
+
+    @Override
     public Void invalidDataVersion(StatusCode statusCode, ErrorDescription input) {
         conflictNavigator.visit(input.errorDetails(), input);
         return null;

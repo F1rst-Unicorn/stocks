@@ -21,21 +21,20 @@
 
 package de.njsm.stocks.client.navigation;
 
-public interface ErrorListNavigator {
+import android.os.Bundle;
+import de.njsm.stocks.client.fragment.grocerystoreconflict.GroceryStoreConflictFragmentArgs;
 
-    void showErrorDetails(long id);
+import javax.inject.Inject;
 
-    void resolveLocationEditConflict(long id);
+class GroceryStoreConflictNavigatorImpl extends BaseNavigator implements GroceryStoreConflictNavigator {
 
-    void resolveUnitEditConflict(long id);
+    @Inject
+    GroceryStoreConflictNavigatorImpl(NavigationArgConsumer navigationArgConsumer) {
+        super(navigationArgConsumer);
+    }
 
-    void resolveScaledUnitEditConflict(long id);
-
-    void resolveFoodEditConflict(long input);
-
-    void resolveFoodItemEditConflict(long id);
-
-    void resolveGroceryChainEditConflict(long id);
-
-    void resolveGroceryStoreEditConflict(long id);
+    @Override
+    public long getErrorId(Bundle arguments) {
+        return GroceryStoreConflictFragmentArgs.fromBundle(arguments).getId();
+    }
 }
