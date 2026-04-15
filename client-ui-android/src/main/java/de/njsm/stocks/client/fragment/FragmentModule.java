@@ -43,6 +43,7 @@ import de.njsm.stocks.client.fragment.grocerychainadd.GroceryChainAddFragment;
 import de.njsm.stocks.client.fragment.grocerychainconflict.GroceryChainConflictFragment;
 import de.njsm.stocks.client.fragment.grocerychainedit.GroceryChainEditFragment;
 import de.njsm.stocks.client.fragment.grocerychainlist.GroceryChainListFragment;
+import de.njsm.stocks.client.fragment.grocerystorelist.GroceryStoreListFragment;
 import de.njsm.stocks.client.fragment.history.HistoryFragment;
 import de.njsm.stocks.client.fragment.locationadd.LocationAddFragment;
 import de.njsm.stocks.client.fragment.locationconflict.LocationConflictFragment;
@@ -232,4 +233,7 @@ public abstract class FragmentModule {
 
     @ContributesAndroidInjector
     public abstract GroceryChainConflictFragment GroceryChainConflictFragment();
+
+    @ContributesAndroidInjector
+    public abstract GroceryStoreListFragment GroceryStoreListFragment();
 }

@@ -19,34 +19,37 @@
  *
  */
 
-package de.njsm.stocks.client.business;
+package de.njsm.stocks.client.testdata;
 
-import de.njsm.stocks.client.business.entities.GroceryStoresForListing;
-import de.njsm.stocks.client.business.entities.Id;
-import de.njsm.stocks.client.business.entities.GroceryStore;
+
 import de.njsm.stocks.client.business.entities.GroceryStoreForListing;
-import de.njsm.stocks.client.testdata.GroceryStoresForListingData;
+import de.njsm.stocks.client.business.entities.GroceryStoresForListing;
+import de.njsm.stocks.client.business.entities.IdImpl;
 import io.reactivex.rxjava3.subjects.BehaviorSubject;
 
-import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
 
-class InMemoryGroceryStoreDeleterImpl implements EntityDeleter<GroceryStore> {
+public class GroceryStoresForListingData {
 
     private final BehaviorSubject<GroceryStoresForListing> data;
 
-    @Inject
-    InMemoryGroceryStoreDeleterImpl(GroceryStoresForListingData groceryStoresForListingData) {
-        this.data = groceryStoresForListingData.getData();
+    public GroceryStoresForListingData(GroceryStoresForListing data) {
+        this.data = BehaviorSubject.createDefault(data);
     }
 
-    @Override
-    public void delete(Id<GroceryStore> groceryStore) {
-        data.firstElement().subscribe(list -> {
-            List<GroceryStoreForListing> newList = new ArrayList<>(list.groceryStores());
-            newList.removeIf(v -> v.id() == groceryStore.id());
-            data.onNext(GroceryStoresForListing.create(list.groceryChain(), list.name(), newList));
-        });
+    public static GroceryStoresForListing generate() {
+        return GroceryStoresForListing.create(
+                IdImpl.create(3),
+                "migros",
+                new ArrayList<>(List.of(
+                GroceryStoreForListing.create(IdImpl.create(1), 0, "Zürich HB"),
+                GroceryStoreForListing.create(IdImpl.create(2), 0, "Aarau"),
+                GroceryStoreForListing.create(IdImpl.create(4), 0, "Lugano")
+        )));
+    }
+
+    public BehaviorSubject<GroceryStoresForListing> getData() {
+        return data;
     }
 }

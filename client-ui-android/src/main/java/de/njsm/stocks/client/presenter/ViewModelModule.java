@@ -395,4 +395,11 @@ public class ViewModelModule {
     ViewModel GroceryChainConflictViewModel(GroceryChainConflictInteractor groceryChainConflictInteractor, ErrorRetryInteractor errorRetryInteractor, ObservableDataCache<GroceryChainEditConflictData> data) {
         return new GroceryChainConflictViewModel(groceryChainConflictInteractor, errorRetryInteractor, data);
     }
+
+    @Provides
+    @IntoMap
+    @ViewModelKey(GroceryStoreListViewModel.class)
+    ViewModel GroceryStoreListViewModel(GroceryStoreListInteractor groceryStoreListInteractor, EntityDeleter<GroceryStore> groceryStoreDeleter, Synchroniser synchroniser, ObservableDataCache<GroceryStoresForListing> data) {
+        return new GroceryStoreListViewModel(groceryStoreListInteractor, groceryStoreDeleter, synchroniser, data);
+    }
 }

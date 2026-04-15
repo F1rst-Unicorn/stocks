@@ -82,4 +82,10 @@ public class DataModule {
     public GroceryChainsForListing GroceryChainsForListing() {
         return new GroceryChainsForListing(GroceryChainsForListing.generate());
     }
+
+    @Provides
+    @Singleton
+    public GroceryStoresForListingData GroceryStoresForListing() {
+        return new GroceryStoresForListingData(GroceryStoresForListingData.generate());
+    }
 }

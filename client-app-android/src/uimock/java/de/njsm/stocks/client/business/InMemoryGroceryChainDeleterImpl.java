@@ -21,32 +21,31 @@
 
 package de.njsm.stocks.client.business;
 
-import de.njsm.stocks.client.business.entities.GroceryStoresForListing;
+import de.njsm.stocks.client.business.entities.GroceryChain;
+import de.njsm.stocks.client.business.entities.GroceryChainForListing;
 import de.njsm.stocks.client.business.entities.Id;
-import de.njsm.stocks.client.business.entities.GroceryStore;
-import de.njsm.stocks.client.business.entities.GroceryStoreForListing;
-import de.njsm.stocks.client.testdata.GroceryStoresForListingData;
+import de.njsm.stocks.client.testdata.GroceryChainsForListing;
 import io.reactivex.rxjava3.subjects.BehaviorSubject;
 
 import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
 
-class InMemoryGroceryStoreDeleterImpl implements EntityDeleter<GroceryStore> {
+class InMemoryGroceryChainDeleterImpl implements EntityDeleter<GroceryChain> {
 
-    private final BehaviorSubject<GroceryStoresForListing> data;
+    private final BehaviorSubject<List<GroceryChainForListing>> data;
 
     @Inject
-    InMemoryGroceryStoreDeleterImpl(GroceryStoresForListingData groceryStoresForListingData) {
-        this.data = groceryStoresForListingData.getData();
+    InMemoryGroceryChainDeleterImpl(GroceryChainsForListing groceryChainsForListing) {
+        this.data = groceryChainsForListing.getData();
     }
 
     @Override
-    public void delete(Id<GroceryStore> groceryStore) {
+    public void delete(Id<GroceryChain> groceryChain) {
         data.firstElement().subscribe(list -> {
-            List<GroceryStoreForListing> newList = new ArrayList<>(list.groceryStores());
-            newList.removeIf(v -> v.id() == groceryStore.id());
-            data.onNext(GroceryStoresForListing.create(list.groceryChain(), list.name(), newList));
+            List<GroceryChainForListing> newList = new ArrayList<>(list);
+            newList.removeIf(v -> v.id() == groceryChain.id());
+            data.onNext(newList);
         });
     }
 }
