@@ -86,27 +86,27 @@ public class InMemoryEventInteractorImpl implements EventInteractor {
                         localiser.toInstant(day),
                         localiser.toInstant(day),
                         "Jane",
-                        "coop"
+                        "BuyAndEad"
                 ), localiser),
                 GroceryChainEditedEvent.create(List.of(GroceryChainEventFeedItem.create(
                         (int) day.toEpochDay(),
                         localiser.toInstant(day),
                         localiser.toInstant(day),
                         "Jane",
-                        "coop"
+                        "BuyAndEad"
                 ), GroceryChainEventFeedItem.create(
                         (int) day.toEpochDay(),
                         localiser.toInstant(day),
                         localiser.toInstant(day),
                         "Jane",
-                        "coop renamed"
+                        "BuyAndEad renamed"
                 )), localiser),
                 GroceryChainDeletedEvent.create(GroceryChainEventFeedItem.create(
                         (int) day.toEpochDay(),
                         localiser.toInstant(day),
                         localiser.toInstant(day),
                         "Jane",
-                        "coop"
+                        "BuyAndEad"
                 ), localiser)),
                 Optional.empty(),
                 Optional.empty())

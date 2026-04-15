@@ -158,4 +158,7 @@ public interface NavigationModule {
 
     @Binds
     GroceryStoreListNavigator GroceryStoreListNavigator(GroceryStoreListNavigatorImpl impl);
+
+    @Binds
+    GroceryStoreAddNavigator GroceryStoreAddNavigator(GroceryStoreAddNavigatorImpl impl);
 }

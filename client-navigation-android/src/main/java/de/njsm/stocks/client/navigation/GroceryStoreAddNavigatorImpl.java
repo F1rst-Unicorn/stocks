@@ -23,15 +23,20 @@ package de.njsm.stocks.client.navigation;
 
 import android.os.Bundle;
 import de.njsm.stocks.client.business.entities.GroceryChain;
-import de.njsm.stocks.client.business.entities.GroceryStore;
-import de.njsm.stocks.client.business.entities.Id;
 import de.njsm.stocks.client.business.entities.IdImpl;
+import de.njsm.stocks.client.fragment.grocerystoreadd.GroceryStoreAddFragmentArgs;
 
-public interface GroceryStoreListNavigator {
+import javax.inject.Inject;
 
-    void addGroceryStore(Id<GroceryChain> id);
+class GroceryStoreAddNavigatorImpl extends BaseNavigator implements GroceryStoreAddNavigator {
 
-    void editGroceryStore(Id<GroceryStore> id);
+    @Inject
+    GroceryStoreAddNavigatorImpl(NavigationArgConsumer navigationArgConsumer) {
+        super(navigationArgConsumer);
+    }
 
-    IdImpl<GroceryChain> getGroceryChain(Bundle bundle);
+    @Override
+    public IdImpl<GroceryChain> getGroceryChain(Bundle arguments) {
+        return IdImpl.create(GroceryStoreAddFragmentArgs.fromBundle(arguments).getGroceryChainId());
+    }
 }

@@ -402,4 +402,11 @@ public class ViewModelModule {
     ViewModel GroceryStoreListViewModel(GroceryStoreListInteractor groceryStoreListInteractor, EntityDeleter<GroceryStore> groceryStoreDeleter, Synchroniser synchroniser, ObservableDataCache<GroceryStoresForListing> data) {
         return new GroceryStoreListViewModel(groceryStoreListInteractor, groceryStoreDeleter, synchroniser, data);
     }
+
+    @Provides
+    @IntoMap
+    @ViewModelKey(GroceryStoreAddViewModel.class)
+    ViewModel GroceryStoreAddViewModel(GroceryStoreAddInteractor groceryStoreAddInteractor) {
+        return new GroceryStoreAddViewModel(groceryStoreAddInteractor);
+    }
 }

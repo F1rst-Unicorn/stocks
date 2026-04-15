@@ -30,6 +30,7 @@ import de.njsm.stocks.client.business.entities.GroceryStoreAddForm
 import de.njsm.stocks.client.business.entities.GroceryStoreForDeletion
 import de.njsm.stocks.client.business.entities.GroceryStoreForEditing
 import de.njsm.stocks.client.business.entities.GroceryStoreForSynchronisation
+import de.njsm.stocks.client.business.entities.IdImpl
 import de.njsm.stocks.client.business.entities.StatusCode
 import de.njsm.stocks.servertest.v2.repo.GroceryChainRepository
 import de.njsm.stocks.servertest.v2.repo.GroceryStoreRepository
@@ -66,7 +67,7 @@ class GroceryStoreTest : Base() {
     @Test
     fun addAnItem() {
         val groceryChain = groceryChainRepository.createNew(uniqueName)
-        val input = GroceryStoreAddForm.create(uniqueName, groceryChain.id())
+        val input = GroceryStoreAddForm.create(uniqueName, groceryChain)
 
         addService.addGroceryStore(input)
 
@@ -82,7 +83,7 @@ class GroceryStoreTest : Base() {
         val id = repository.createNew(uniqueName)
         val modifiedGroceryChain = groceryChainRepository.createNew(uniqueName)
 
-        editService.edit(GroceryStoreForEditing.create(id.id(), 0, newName, modifiedGroceryChain.id()))
+        editService.edit(GroceryStoreForEditing.create(id.id(), 0, newName, modifiedGroceryChain))
 
         val data = updateService.getGroceryStores(Instant.EPOCH, Constants.INFINITY)
         Assertions.assertThat(data).filteredOn(GroceryStoreForSynchronisation::name, newName)
@@ -99,7 +100,7 @@ class GroceryStoreTest : Base() {
         assertThatExceptionOfType(StatusCodeException::class.java)
             .isThrownBy {
                 editService.edit(
-                    GroceryStoreForEditing.create(id.id(), 99, newName, modifiedGroceryChain.id()),
+                    GroceryStoreForEditing.create(id.id(), 99, newName, modifiedGroceryChain),
                 )
             }
             .matches { it.statusCode == StatusCode.INVALID_DATA_VERSION }
@@ -110,7 +111,7 @@ class GroceryStoreTest : Base() {
         assertThatExceptionOfType(StatusCodeException::class.java)
             .isThrownBy {
                 editService.edit(
-                    GroceryStoreForEditing.create(9999, 0, uniqueName, 1),
+                    GroceryStoreForEditing.create(9999, 0, uniqueName, IdImpl.create(1)),
                 )
             }
             .matches { it.statusCode == StatusCode.NOT_FOUND }

@@ -19,19 +19,17 @@
  *
  */
 
-package de.njsm.stocks.client.navigation;
+package de.njsm.stocks.client.business.entities;
 
-import android.os.Bundle;
-import de.njsm.stocks.client.business.entities.GroceryChain;
-import de.njsm.stocks.client.business.entities.GroceryStore;
-import de.njsm.stocks.client.business.entities.Id;
-import de.njsm.stocks.client.business.entities.IdImpl;
 
-public interface GroceryStoreListNavigator {
+import com.google.auto.value.AutoValue;
 
-    void addGroceryStore(Id<GroceryChain> id);
+@AutoValue
+public abstract class GroceryStoreAddData {
 
-    void editGroceryStore(Id<GroceryStore> id);
+    public abstract String groceryChainName();
 
-    IdImpl<GroceryChain> getGroceryChain(Bundle bundle);
+    public static GroceryStoreAddData create(String groceryChainName) {
+        return new AutoValue_GroceryStoreAddData(groceryChainName);
+    }
 }

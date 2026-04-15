@@ -21,26 +21,38 @@
 
 package de.njsm.stocks.client.business;
 
-import de.njsm.stocks.client.business.entities.GroceryChain;
+import de.njsm.stocks.client.business.entities.*;
 import de.njsm.stocks.client.business.entities.GroceryStoresForListing;
-import de.njsm.stocks.client.business.entities.IdImpl;
 import de.njsm.stocks.client.testdata.GroceryStoresForListingData;
-import io.reactivex.rxjava3.core.Observable;
+import io.reactivex.rxjava3.core.Maybe;
 import io.reactivex.rxjava3.subjects.BehaviorSubject;
 
 import javax.inject.Inject;
+import java.util.ArrayList;
+import java.util.List;
 
-class InMemoryGroceryStoreListInteractorImpl implements GroceryStoreListInteractor {
+public class InMemoryGroceryStoreAddInteractorImpl implements GroceryStoreAddInteractor {
 
     private final BehaviorSubject<GroceryStoresForListing> data;
 
     @Inject
-    InMemoryGroceryStoreListInteractorImpl(GroceryStoresForListingData groceryStoresForListingData) {
-        this.data = groceryStoresForListingData.getData();
+    InMemoryGroceryStoreAddInteractorImpl(GroceryStoresForListingData groceryStoresForListing) {
+        this.data = groceryStoresForListing.getData();
     }
 
     @Override
-    public Observable<GroceryStoresForListing> getGroceryStores(IdImpl<GroceryChain> groceryChain) {
-        return data;
+    public void addGroceryStore(GroceryStoreAddForm groceryStoreAddForm) {
+        data.firstElement().subscribe(list -> {
+            int id = list.groceryStores().stream().mapToInt(GroceryStoreForListing::id).max().orElse(0) + 1;
+            GroceryStoreForListing newItem = GroceryStoreForListing.create(IdImpl.create(id), 0, groceryStoreAddForm.name());
+            List<GroceryStoreForListing> newList = new ArrayList<>(list.groceryStores());
+            newList.add(newItem);
+            data.onNext(GroceryStoresForListing.create(list.groceryChain(), list.name(), newList));
+        });
+    }
+
+    @Override
+    public Maybe<GroceryStoreAddData> getFormData(Id<GroceryChain> groceryChain) {
+        return Maybe.just(GroceryStoreAddData.create("BigShop"));
     }
 }

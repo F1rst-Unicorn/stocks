@@ -266,4 +266,7 @@ public interface UimockBusinessModule {
 
     @Binds
     EntityDeleter<GroceryStore> InMemoryGroceryStoreDeleter(InMemoryGroceryStoreDeleterImpl impl);
+
+    @Binds
+    GroceryStoreAddInteractor GroceryStoreAddInteractor(InMemoryGroceryStoreAddInteractorImpl impl);
 }

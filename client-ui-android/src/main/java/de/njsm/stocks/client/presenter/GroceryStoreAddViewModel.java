@@ -19,17 +19,34 @@
  *
  */
 
-package de.njsm.stocks.client.business;
+package de.njsm.stocks.client.presenter;
 
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.LiveDataReactiveStreams;
+import androidx.lifecycle.ViewModel;
+import de.njsm.stocks.client.business.GroceryStoreAddInteractor;
 import de.njsm.stocks.client.business.entities.GroceryChain;
 import de.njsm.stocks.client.business.entities.GroceryStoreAddData;
 import de.njsm.stocks.client.business.entities.GroceryStoreAddForm;
 import de.njsm.stocks.client.business.entities.Id;
-import io.reactivex.rxjava3.core.Maybe;
 
-public interface GroceryStoreAddInteractor {
+import javax.inject.Inject;
 
-    void addGroceryStore(GroceryStoreAddForm form);
+public class GroceryStoreAddViewModel extends ViewModel {
 
-    Maybe<GroceryStoreAddData> getFormData(Id<GroceryChain> groceryChain);
+    private final GroceryStoreAddInteractor groceryStoreAddInteractor;
+
+    @Inject
+    GroceryStoreAddViewModel(GroceryStoreAddInteractor groceryStoreAddInteractor) {
+        this.groceryStoreAddInteractor = groceryStoreAddInteractor;
+    }
+
+    public LiveData<GroceryStoreAddData> getFormData(Id<GroceryChain> groceryChain) {
+        return LiveDataReactiveStreams.fromPublisher(
+                groceryStoreAddInteractor.getFormData(groceryChain).toFlowable());
+    }
+
+    public void addGroceryStore(GroceryStoreAddForm data) {
+        groceryStoreAddInteractor.addGroceryStore(data);
+    }
 }

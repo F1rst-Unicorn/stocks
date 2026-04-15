@@ -31,7 +31,9 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.lifecycle.ViewModelProvider;
+import de.njsm.stocks.client.business.entities.GroceryChain;
 import de.njsm.stocks.client.business.entities.GroceryStoresForListing;
+import de.njsm.stocks.client.business.entities.IdImpl;
 import de.njsm.stocks.client.fragment.BottomToolbarFragment;
 import de.njsm.stocks.client.fragment.listswipe.SwipeCallback;
 import de.njsm.stocks.client.fragment.view.TemplateSwipeList;
@@ -52,6 +54,8 @@ public class GroceryStoreListFragment extends BottomToolbarFragment {
 
     private TemplateSwipeList templateSwipeList;
 
+    private IdImpl<GroceryChain> groceryChain;
+
     @Override
     @NonNull
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -61,8 +65,9 @@ public class GroceryStoreListFragment extends BottomToolbarFragment {
         templateSwipeList = new TemplateSwipeList(swipeList);
         templateSwipeList.setLoading();
 
+        groceryChain = groceryStoreListNavigator.getGroceryChain(requireArguments());
         groceryStoreListAdapter = new GroceryStoreAdapter(this::doNothing, this::onItemLongClicked);
-        groceryStoreListViewModel.getGroceryStores().observe(getViewLifecycleOwner(), this::onListDataReceived);
+        groceryStoreListViewModel.getGroceryStores(groceryChain).observe(getViewLifecycleOwner(), this::onListDataReceived);
 
         SwipeCallback callback = new SwipeCallback(
                 ContextCompat.getDrawable(requireActivity(), R.drawable.ic_delete_white_24dp),
@@ -98,7 +103,7 @@ public class GroceryStoreListFragment extends BottomToolbarFragment {
     }
 
     private void onAddItem(View button) {
-        groceryStoreListNavigator.addGroceryStore();
+        groceryStoreListNavigator.addGroceryStore(groceryChain);
     }
 
     public void onSwipeDown() {

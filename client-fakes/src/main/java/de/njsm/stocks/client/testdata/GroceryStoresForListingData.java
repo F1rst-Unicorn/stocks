@@ -41,7 +41,7 @@ public class GroceryStoresForListingData {
     public static GroceryStoresForListing generate() {
         return GroceryStoresForListing.create(
                 IdImpl.create(3),
-                "migros",
+                "BigShop",
                 new ArrayList<>(List.of(
                 GroceryStoreForListing.create(IdImpl.create(1), 0, "Zürich HB"),
                 GroceryStoreForListing.create(IdImpl.create(2), 0, "Aarau"),

@@ -39,9 +39,9 @@ public class GroceryChainsForListing {
 
     public static List<GroceryChainForListing> generate() {
         return new ArrayList<>(Arrays.asList(
-                GroceryChainForListing.create(1, 0, "migros"),
-                GroceryChainForListing.create(2, 0, "coop"),
-                GroceryChainForListing.create(4, 0, "Lidl")
+                GroceryChainForListing.create(1, 0, "BigShop"),
+                GroceryChainForListing.create(2, 0, "BuyAndEat"),
+                GroceryChainForListing.create(4, 0, "HouseMarkt")
         ));
     }
 

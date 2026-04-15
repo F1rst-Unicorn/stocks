@@ -24,9 +24,7 @@ import androidx.lifecycle.ViewModel;
 import de.njsm.stocks.client.business.EntityDeleter;
 import de.njsm.stocks.client.business.GroceryStoreListInteractor;
 import de.njsm.stocks.client.business.Synchroniser;
-import de.njsm.stocks.client.business.entities.GroceryStore;
-import de.njsm.stocks.client.business.entities.GroceryStoresForListing;
-import de.njsm.stocks.client.business.entities.Versionable;
+import de.njsm.stocks.client.business.entities.*;
 
 import javax.inject.Inject;
 import java.util.function.Consumer;
@@ -49,8 +47,8 @@ public class GroceryStoreListViewModel extends ViewModel {
         this.data = data;
     }
 
-    public LiveData<GroceryStoresForListing> getGroceryStores() {
-        return data.getLiveData(groceryStoreListInteractor::getGroceryStores);
+    public LiveData<GroceryStoresForListing> getGroceryStores(IdImpl<GroceryChain> groceryChain) {
+        return data.getLiveData(() -> groceryStoreListInteractor.getGroceryStores(groceryChain));
     }
 
     public void deleteGroceryStore(int listItemIndex) {

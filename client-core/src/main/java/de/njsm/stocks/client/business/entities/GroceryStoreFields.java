@@ -25,12 +25,12 @@ public interface GroceryStoreFields {
 
     String name();
 
-    int groceryChain();
+    IdImpl<GroceryChain> groceryChain();
 
     interface Builder<T> {
 
         T name(String v);
 
-        T groceryChain(int v);
+        T groceryChain(IdImpl<GroceryChain> v);
     }
 }

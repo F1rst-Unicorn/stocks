@@ -223,8 +223,11 @@
     </fragment>
     <fragment
             android:id="@+id/nav_fragment_grocery_store_add"
-            android:name="androidx.fragment.app.Fragment"
+            android:name="de.njsm.stocks.client.fragment.grocerystoreadd.GroceryStoreAddFragment"
             android:label="@string/title_add_grocery_store">
+        <argument
+                android:name="groceryChainId"
+                app:argType="integer"/>
     </fragment>
     <fragment
             android:id="@+id/nav_fragment_grocery_store_edit"

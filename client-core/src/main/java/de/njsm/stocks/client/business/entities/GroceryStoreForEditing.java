@@ -26,7 +26,7 @@ import com.google.auto.value.AutoValue;
 @AutoValue
 public abstract class GroceryStoreForEditing implements GroceryStore {
 
-    public static GroceryStoreForEditing create(int id, int version, String name, int groceryChain) {
+    public static GroceryStoreForEditing create(int id, int version, String name, IdImpl<GroceryChain> groceryChain) {
         return GroceryStoreForEditing.builder()
                 .id(id)
                 .version(version)

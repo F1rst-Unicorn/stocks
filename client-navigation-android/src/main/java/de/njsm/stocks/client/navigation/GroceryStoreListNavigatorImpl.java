@@ -21,8 +21,12 @@
 
 package de.njsm.stocks.client.navigation;
 
+import android.os.Bundle;
+import de.njsm.stocks.client.business.entities.GroceryChain;
 import de.njsm.stocks.client.business.entities.GroceryStore;
 import de.njsm.stocks.client.business.entities.Id;
+import de.njsm.stocks.client.business.entities.IdImpl;
+import de.njsm.stocks.client.fragment.grocerystorelist.GroceryStoreListFragmentArgs;
 import de.njsm.stocks.client.fragment.grocerystorelist.GroceryStoreListFragmentDirections;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,10 +43,10 @@ class GroceryStoreListNavigatorImpl extends BaseNavigator implements GroceryStor
     }
 
     @Override
-    public void addGroceryStore() {
+    public void addGroceryStore(Id<GroceryChain> id) {
         LOG.debug("adding a grocery store");
         getNavigationArgConsumer().navigate(
-                GroceryStoreListFragmentDirections.actionNavFragmentGroceryStoreListToNavFragmentGroceryStoreAdd()
+                GroceryStoreListFragmentDirections.actionNavFragmentGroceryStoreListToNavFragmentGroceryStoreAdd(id.id())
         );
     }
 
@@ -52,5 +56,10 @@ class GroceryStoreListNavigatorImpl extends BaseNavigator implements GroceryStor
         getNavigationArgConsumer().navigate(
                 GroceryStoreListFragmentDirections.actionNavFragmentGroceryStoreListToNavFragmentGroceryStoreEdit(id.id())
         );
+    }
+
+    @Override
+    public IdImpl<GroceryChain> getGroceryChain(Bundle bundle) {
+        return IdImpl.create(GroceryStoreListFragmentArgs.fromBundle(bundle).getId());
     }
 }

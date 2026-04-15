@@ -21,11 +21,13 @@
 
 package de.njsm.stocks.client.business;
 
+import de.njsm.stocks.client.business.entities.GroceryChain;
 import de.njsm.stocks.client.business.entities.GroceryStoresForListing;
+import de.njsm.stocks.client.business.entities.IdImpl;
 import io.reactivex.rxjava3.core.Observable;
 
 public interface GroceryStoreListInteractor {
 
-    Observable<GroceryStoresForListing> getGroceryStores();
+    Observable<GroceryStoresForListing> getGroceryStores(IdImpl<GroceryChain> groceryChain);
 
 }

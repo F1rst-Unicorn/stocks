@@ -25,6 +25,7 @@ import android.os.Bundle;
 import android.view.*;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.view.MenuProvider;
 import androidx.lifecycle.ViewModelProvider;
 import de.njsm.stocks.client.business.Localiser;
 import de.njsm.stocks.client.business.entities.Food;
@@ -39,7 +40,7 @@ import de.njsm.stocks.client.ui.R;
 
 import javax.inject.Inject;
 
-public class FoodItemAddFragment extends BottomToolbarFragment {
+public class FoodItemAddFragment extends BottomToolbarFragment implements MenuProvider {
 
     private FoodItemAddViewModel foodItemAddViewModel;
 
@@ -65,7 +66,7 @@ public class FoodItemAddFragment extends BottomToolbarFragment {
         food = navigator.getFood(requireArguments());
         foodItemAddViewModel.getFormData(food).observe(getViewLifecycleOwner(), this::showForm);
 
-        setHasOptionsMenu(true);
+        requireActivity().addMenuProvider(this, getViewLifecycleOwner());
         return root;
     }
 
@@ -84,12 +85,12 @@ public class FoodItemAddFragment extends BottomToolbarFragment {
     }
 
     @Override
-    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
-        inflater.inflate(R.menu.check_and_continue, menu);
+    public void onCreateMenu(@NonNull Menu menu, MenuInflater menuInflater) {
+        menuInflater.inflate(R.menu.check_and_continue, menu);
     }
 
     @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+    public boolean onMenuItemSelected( MenuItem menuItem) {
         de.njsm.stocks.client.business.entities.FoodItemForm data = de.njsm.stocks.client.business.entities.FoodItemForm.create(
                 form.eatBy(),
                 food.id(),
@@ -98,7 +99,7 @@ public class FoodItemAddFragment extends BottomToolbarFragment {
         );
         foodItemAddViewModel.add(data);
 
-        if (item.getItemId() == R.id.menu_check_and_continue_check)
+        if (menuItem.getItemId() == R.id.menu_check_and_continue_check)
             navigator.back();
         return true;
     }

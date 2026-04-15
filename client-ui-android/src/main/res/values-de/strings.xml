@@ -79,7 +79,7 @@
     <string name="title_edit_food">Lebensmittel bearbeiten</string>
     <string name="title_all_food">Was bald abläuft</string>
     <string name="title_add_grocery_chain">Ladenkette hinzufügen</string>
-    <string name="title_add_grocery_store">Laden hinzufügen</string>
+    <string name="title_add_grocery_store">%1$s hinzufügen</string>
     <string name="title_add_price">Preis hinzufügen</string>
     <string name="title_edit_grocery_chain">Ladenkette bearbeiten</string>
     <string name="title_edit_grocery_store">Laden bearbeiten</string>

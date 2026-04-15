@@ -26,7 +26,7 @@ import com.google.auto.value.AutoValue;
 @AutoValue
 public abstract class GroceryStoreAddForm implements GroceryStoreFields {
 
-    public static GroceryStoreAddForm create(String name, int groceryChain) {
+    public static GroceryStoreAddForm create(String name, IdImpl<GroceryChain> groceryChain) {
         return new AutoValue_GroceryStoreAddForm(name, groceryChain);
     }
 }
