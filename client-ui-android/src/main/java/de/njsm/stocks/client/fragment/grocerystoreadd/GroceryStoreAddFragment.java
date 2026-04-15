@@ -48,6 +48,7 @@ public class GroceryStoreAddFragment extends BottomToolbarFragment implements Me
 
     private IdImpl<GroceryChain> groceryChain;
 
+    @NonNull
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View root = super.onCreateView(inflater, container, savedInstanceState);
@@ -56,10 +57,9 @@ public class GroceryStoreAddFragment extends BottomToolbarFragment implements Me
         form = new GroceryStoreForm(result, this::getString);
 
         groceryChain = navigator.getGroceryChain(requireArguments());
-        groceryStoreAddViewModel.getFormData(groceryChain).observe(getViewLifecycleOwner(), data -> {
-            requireActivity().setTitle(String.format(getString(R.string.title_add_grocery_store),
-                    data.groceryChainName()));
-        });
+        groceryStoreAddViewModel.getFormData(groceryChain).observe(getViewLifecycleOwner(), data ->
+                requireActivity().setTitle(String.format(getString(R.string.title_add_grocery_store),
+                data.groceryChainName())));
 
         requireActivity().addMenuProvider(this, getViewLifecycleOwner());
         return root;

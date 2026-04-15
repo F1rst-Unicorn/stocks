@@ -24,6 +24,7 @@ import android.os.Bundle;
 import android.view.*;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.view.MenuProvider;
 import androidx.lifecycle.ViewModelProvider;
 import de.njsm.stocks.client.business.entities.GroceryChainAddForm;
 import de.njsm.stocks.client.fragment.BottomToolbarFragment;
@@ -34,7 +35,7 @@ import de.njsm.stocks.client.ui.R;
 
 import javax.inject.Inject;
 
-public class GroceryChainAddFragment extends BottomToolbarFragment {
+public class GroceryChainAddFragment extends BottomToolbarFragment implements MenuProvider {
 
     private GroceryChainAddViewModel groceryChainAddViewModel;
 
@@ -49,17 +50,17 @@ public class GroceryChainAddFragment extends BottomToolbarFragment {
         View result = insertContent(inflater, root, R.layout.fragment_grocery_chain_form);
         form = new GroceryChainForm(result, this::getString);
 
-        setHasOptionsMenu(true);
+        requireActivity().addMenuProvider(this, getViewLifecycleOwner());
         return root;
     }
 
     @Override
-    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
-        inflater.inflate(R.menu.check, menu);
+    public void onCreateMenu(@NonNull Menu menu, @NonNull MenuInflater menuInflater) {
+        menuInflater.inflate(R.menu.check, menu);
     }
 
     @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+    public boolean onMenuItemSelected(@NonNull MenuItem menuItem) {
         if (!form.maySubmit()) {
             form.setError(R.string.error_may_not_be_empty);
             return true;

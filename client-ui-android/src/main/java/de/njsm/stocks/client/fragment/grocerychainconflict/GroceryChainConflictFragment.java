@@ -25,6 +25,7 @@ import android.os.Bundle;
 import android.view.*;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.view.MenuProvider;
 import androidx.lifecycle.ViewModelProvider;
 import de.njsm.stocks.client.business.entities.*;
 import de.njsm.stocks.client.fragment.BottomToolbarFragment;
@@ -35,7 +36,7 @@ import de.njsm.stocks.client.ui.R;
 
 import javax.inject.Inject;
 
-public class GroceryChainConflictFragment extends BottomToolbarFragment {
+public class GroceryChainConflictFragment extends BottomToolbarFragment implements MenuProvider {
 
     private GroceryChainConflictViewModel groceryChainConflictViewModel;
 
@@ -68,17 +69,17 @@ public class GroceryChainConflictFragment extends BottomToolbarFragment {
             }
         });
 
-        setHasOptionsMenu(true);
+        requireActivity().addMenuProvider(this, getViewLifecycleOwner());
         return root;
     }
 
     @Override
-    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
-        inflater.inflate(R.menu.check, menu);
+    public void onCreateMenu(@NonNull Menu menu, @NonNull MenuInflater menuInflater) {
+        menuInflater.inflate(R.menu.check, menu);
     }
 
     @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+    public boolean onMenuItemSelected(@NonNull MenuItem menuItem) {
         submit();
         return true;
     }
