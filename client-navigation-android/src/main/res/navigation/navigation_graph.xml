@@ -231,7 +231,7 @@
     </fragment>
     <fragment
             android:id="@+id/nav_fragment_grocery_store_edit"
-            android:name="androidx.fragment.app.Fragment"
+            android:name="de.njsm.stocks.client.fragment.grocerystoreedit.GroceryStoreEditFragment"
             android:label="@string/title_edit_grocery_store">
         <argument
                 android:name="id"

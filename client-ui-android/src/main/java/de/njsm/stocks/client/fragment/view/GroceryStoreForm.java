@@ -24,6 +24,8 @@ package de.njsm.stocks.client.fragment.view;
 import android.view.View;
 import androidx.annotation.StringRes;
 import com.google.android.material.textfield.TextInputLayout;
+import de.njsm.stocks.client.business.entities.GroceryChain;
+import de.njsm.stocks.client.business.entities.IdImpl;
 import de.njsm.stocks.client.business.entities.conflict.ConflictData;
 import de.njsm.stocks.client.ui.R;
 
@@ -38,6 +40,7 @@ public class GroceryStoreForm {
     private final Function<Integer, String> dictionary;
 
     private final Set<ConflictTextField> invalidFields;
+    private IdImpl<GroceryChain> groceryChainId;
 
     public GroceryStoreForm(View root, Function<Integer, String> dictionary) {
         this.nameField = new ConflictTextField(root.findViewById(R.id.fragment_grocery_store_form_name));
@@ -82,5 +85,13 @@ public class GroceryStoreForm {
 
     public void hideName() {
         nameField.hide();
+    }
+
+    public void setGroceryChainId(IdImpl<GroceryChain> groceryChainId) {
+        this.groceryChainId = groceryChainId;
+    }
+
+    public IdImpl<GroceryChain> getGroceryChainId() {
+        return groceryChainId;
     }
 }

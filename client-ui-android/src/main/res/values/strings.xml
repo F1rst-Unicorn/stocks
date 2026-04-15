@@ -83,7 +83,7 @@
     <string name="title_add_grocery_store">Add %1$s Store</string>
     <string name="title_add_price">Add Price</string>
     <string name="title_edit_grocery_chain">Edit Grocery Chain</string>
-    <string name="title_edit_grocery_store">Edit Grocery Store</string>
+    <string name="title_edit_grocery_store">Edit %1$s Store</string>
 
     <string name="action_users">Users</string>
     <string name="action_locations">Locations</string>

@@ -409,4 +409,11 @@ public class ViewModelModule {
     ViewModel GroceryStoreAddViewModel(GroceryStoreAddInteractor groceryStoreAddInteractor) {
         return new GroceryStoreAddViewModel(groceryStoreAddInteractor);
     }
+
+    @Provides
+    @IntoMap
+    @ViewModelKey(GroceryStoreEditViewModel.class)
+    ViewModel GroceryStoreEditViewModel(GroceryStoreEditInteractor groceryStoreEditInteractor, ObservableDataCache<GroceryStoreEditData> data) {
+        return new GroceryStoreEditViewModel(groceryStoreEditInteractor, data);
+    }
 }

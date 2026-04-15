@@ -82,7 +82,7 @@
     <string name="title_add_grocery_store">%1$s hinzufügen</string>
     <string name="title_add_price">Preis hinzufügen</string>
     <string name="title_edit_grocery_chain">Ladenkette bearbeiten</string>
-    <string name="title_edit_grocery_store">Laden bearbeiten</string>
+    <string name="title_edit_grocery_store">%1$s bearbeiten</string>
 
     <string name="action_users">Benutzer</string>
     <string name="action_locations">Orte</string>
