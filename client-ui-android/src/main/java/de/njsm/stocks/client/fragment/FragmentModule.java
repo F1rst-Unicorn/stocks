@@ -52,6 +52,8 @@ import de.njsm.stocks.client.fragment.locationconflict.LocationConflictFragment;
 import de.njsm.stocks.client.fragment.locationedit.LocationEditFragment;
 import de.njsm.stocks.client.fragment.locationlist.LocationListFragment;
 import de.njsm.stocks.client.fragment.outline.OutlineFragment;
+import de.njsm.stocks.client.fragment.priceadd.PriceAddFragment;
+import de.njsm.stocks.client.fragment.priceshow.PriceShowFragment;
 import de.njsm.stocks.client.fragment.recipeadd.RecipeAddFragment;
 import de.njsm.stocks.client.fragment.recipecook.RecipeCookFragment;
 import de.njsm.stocks.client.fragment.recipedetail.RecipeDetailFragment;
@@ -244,4 +246,10 @@ public abstract class FragmentModule {
 
     @ContributesAndroidInjector
     public abstract GroceryStoreEditFragment GroceryStoreEditFragment();
+
+    @ContributesAndroidInjector
+    public abstract PriceAddFragment PriceAddFragment();
+
+    @ContributesAndroidInjector
+    public abstract PriceShowFragment PriceShowFragment();
 }

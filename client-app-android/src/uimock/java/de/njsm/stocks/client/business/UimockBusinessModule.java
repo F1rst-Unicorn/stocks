@@ -272,4 +272,7 @@ public interface UimockBusinessModule {
 
     @Binds
     GroceryStoreEditInteractor GroceryStoreEditInteractor(InMemoryGroceryStoreEditInteractorImpl impl);
+
+    @Binds
+    PriceAddInteractor PriceAddInteractor(InMemoryPriceAddInteractor impl);
 }

@@ -19,31 +19,20 @@
  *
  */
 
-package de.njsm.stocks.client.business.entities;
+package de.njsm.stocks.client.navigation;
 
-import java.math.BigDecimal;
+import android.os.Bundle;
+import de.njsm.stocks.client.business.entities.Food;
+import de.njsm.stocks.client.business.entities.Id;
 
-public interface PriceFields {
+public interface PriceShowNavigator {
+    Id<Food> getFoodId(Bundle bundle);
 
-    BigDecimal price();
+    void editFood(Id<Food> foodId);
 
-    BigDecimal scale();
+    void showEanNumbers(Id<Food> foodId);
 
-    IdImpl<GroceryStore> groceryStore();
+    void showHistory(Id<Food> foodId);
 
-    IdImpl<Food> food();
-
-    IdImpl<ScaledUnit> scaledUnit();
-
-    interface Builder<T> {
-        T price(BigDecimal v);
-
-        T scale(BigDecimal v);
-
-        T groceryStore(IdImpl<GroceryStore> v);
-
-        T food(IdImpl<Food> v);
-
-        T scaledUnit(IdImpl<ScaledUnit> v);
-    }
+    void addPrice(Id<Food> foodId);
 }

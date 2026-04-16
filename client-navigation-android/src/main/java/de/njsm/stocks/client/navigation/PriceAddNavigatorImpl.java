@@ -19,31 +19,24 @@
  *
  */
 
-package de.njsm.stocks.client.business.entities;
+package de.njsm.stocks.client.navigation;
 
-import java.math.BigDecimal;
+import android.os.Bundle;
+import de.njsm.stocks.client.business.entities.Food;
+import de.njsm.stocks.client.business.entities.IdImpl;
+import de.njsm.stocks.client.fragment.priceadd.PriceAddFragmentArgs;
 
-public interface PriceFields {
+import javax.inject.Inject;
 
-    BigDecimal price();
+public class PriceAddNavigatorImpl extends BaseNavigator implements PriceAddNavigator {
 
-    BigDecimal scale();
+    @Inject
+    PriceAddNavigatorImpl(NavigationArgConsumer navigationArgConsumer) {
+        super(navigationArgConsumer);
+    }
 
-    IdImpl<GroceryStore> groceryStore();
-
-    IdImpl<Food> food();
-
-    IdImpl<ScaledUnit> scaledUnit();
-
-    interface Builder<T> {
-        T price(BigDecimal v);
-
-        T scale(BigDecimal v);
-
-        T groceryStore(IdImpl<GroceryStore> v);
-
-        T food(IdImpl<Food> v);
-
-        T scaledUnit(IdImpl<ScaledUnit> v);
+    @Override
+    public IdImpl<Food> getFoodId(Bundle args) {
+        return IdImpl.create(PriceAddFragmentArgs.fromBundle(args).getFoodId());
     }
 }

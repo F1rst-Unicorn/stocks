@@ -24,15 +24,30 @@ package de.njsm.stocks.client.business;
 import de.njsm.stocks.client.business.entities.GroceryStoreForSelection;
 import de.njsm.stocks.client.business.entities.PriceAddForm;
 import de.njsm.stocks.client.business.entities.ScaledUnitForSelection;
+import de.njsm.stocks.client.testdata.GroceryStoresForSelection;
+import de.njsm.stocks.client.testdata.ScaledUnitsForSelection;
 import io.reactivex.rxjava3.core.Observable;
 
+import javax.inject.Inject;
 import java.util.List;
 
-public interface PriceAddInteractor {
+public class InMemoryPriceAddInteractor implements PriceAddInteractor {
 
-    void addPrice(PriceAddForm form);
+    @Inject
+    InMemoryPriceAddInteractor() {}
 
-    Observable<List<ScaledUnitForSelection>> getUnits();
+    @Override
+    public void addPrice(PriceAddForm form) {
 
-    Observable<List<GroceryStoreForSelection>> getGroceryStores();
+    }
+
+    @Override
+    public Observable<List<ScaledUnitForSelection>> getUnits() {
+        return Observable.just(ScaledUnitsForSelection.generate());
+    }
+
+    @Override
+    public Observable<List<GroceryStoreForSelection>> getGroceryStores() {
+        return Observable.just(GroceryStoresForSelection.generate());
+    }
 }

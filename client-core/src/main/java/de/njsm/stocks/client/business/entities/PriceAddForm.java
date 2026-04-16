@@ -31,7 +31,7 @@ public abstract class PriceAddForm implements PriceFields {
 
     public abstract Instant validTime();
 
-    public static PriceAddForm create(BigDecimal price, Instant validTime, BigDecimal scale, int groceryStore, int food, int scaledUnit) {
+    public static PriceAddForm create(BigDecimal price, Instant validTime, BigDecimal scale, IdImpl<GroceryStore> groceryStore, IdImpl<Food> food, IdImpl<ScaledUnit> scaledUnit) {
         return new AutoValue_PriceAddForm(price, scale, groceryStore, food, scaledUnit, validTime);
     }
 }

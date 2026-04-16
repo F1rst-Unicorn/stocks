@@ -153,6 +153,7 @@
     <string name="hint_no_food_in_location">No food in this location.</string>
     <string name="hint_no_food_items">No food present.</string>
     <string name="hint_minutes">minutes</string>
+    <string name="hint_price">Price</string>
 
     <string name="dialog_success">Success</string>
     <string name="dialog_finished">Registration finished</string>

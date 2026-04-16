@@ -21,29 +21,14 @@
 
 package de.njsm.stocks.client.business.entities;
 
-import java.math.BigDecimal;
+import com.google.auto.value.AutoValue;
 
-public interface PriceFields {
+@AutoValue
+public abstract class GroceryStoreForSelection implements Id<GroceryStore> {
 
-    BigDecimal price();
+    public abstract String name();
 
-    BigDecimal scale();
-
-    IdImpl<GroceryStore> groceryStore();
-
-    IdImpl<Food> food();
-
-    IdImpl<ScaledUnit> scaledUnit();
-
-    interface Builder<T> {
-        T price(BigDecimal v);
-
-        T scale(BigDecimal v);
-
-        T groceryStore(IdImpl<GroceryStore> v);
-
-        T food(IdImpl<Food> v);
-
-        T scaledUnit(IdImpl<ScaledUnit> v);
+    public static GroceryStoreForSelection create(Id<GroceryStore> id, String name) {
+        return new AutoValue_GroceryStoreForSelection(id.id(), name);
     }
 }

@@ -32,6 +32,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.google.android.material.tabs.TabLayout;
 import de.njsm.stocks.client.fragment.fooddetails.FoodDetailsFragment;
 import de.njsm.stocks.client.fragment.fooditemlist.FoodItemListFragment;
+import de.njsm.stocks.client.fragment.priceshow.PriceShowFragment;
 import de.njsm.stocks.client.fragment.unittabs.TabsFragment;
 import de.njsm.stocks.client.ui.R;
 
@@ -51,6 +52,8 @@ public class FoodItemTabsFragment extends TabsFragment {
         int iconId;
         if (position == 0) {
             iconId = R.drawable.baseline_room_service_black_24;
+        } else if (position == 1) {
+            iconId = R.drawable.baseline_money_black_24;
         } else {
             iconId = R.drawable.baseline_insert_chart_black_24;
         }
@@ -62,6 +65,11 @@ public class FoodItemTabsFragment extends TabsFragment {
         return List.of(
                 () -> {
                     Fragment result = new FoodItemListFragment();
+                    result.setArguments(requireArguments());
+                    return result;
+                },
+                () -> {
+                    Fragment result = new PriceShowFragment();
                     result.setArguments(requireArguments());
                     return result;
                 },

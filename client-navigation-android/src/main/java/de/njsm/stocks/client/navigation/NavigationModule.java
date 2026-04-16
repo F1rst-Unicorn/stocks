@@ -167,4 +167,10 @@ public interface NavigationModule {
 
     @Binds
     GroceryStoreConflictNavigator GroceryStoreConflictNavigator(GroceryStoreConflictNavigatorImpl impl);
+
+    @Binds
+    PriceAddNavigator PriceAddNavigator(PriceAddNavigatorImpl impl);
+
+    @Binds
+    PriceShowNavigator PriceShowNavigator(PriceShowNavigatorImpl impl);
 }

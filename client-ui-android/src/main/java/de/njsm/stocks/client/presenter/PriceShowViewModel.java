@@ -19,31 +19,16 @@
  *
  */
 
-package de.njsm.stocks.client.business.entities;
+package de.njsm.stocks.client.presenter;
 
-import java.math.BigDecimal;
+import androidx.lifecycle.ViewModel;
+import de.njsm.stocks.client.business.entities.Food;
+import de.njsm.stocks.client.business.entities.Id;
 
-public interface PriceFields {
+public class PriceShowViewModel extends ViewModel {
 
-    BigDecimal price();
 
-    BigDecimal scale();
+    public void toggleShoppingFlag(Id<Food> foodId) {
 
-    IdImpl<GroceryStore> groceryStore();
-
-    IdImpl<Food> food();
-
-    IdImpl<ScaledUnit> scaledUnit();
-
-    interface Builder<T> {
-        T price(BigDecimal v);
-
-        T scale(BigDecimal v);
-
-        T groceryStore(IdImpl<GroceryStore> v);
-
-        T food(IdImpl<Food> v);
-
-        T scaledUnit(IdImpl<ScaledUnit> v);
     }
 }

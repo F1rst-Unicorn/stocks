@@ -19,31 +19,23 @@
  *
  */
 
-package de.njsm.stocks.client.business.entities;
+package de.njsm.stocks.client.testdata;
 
-import java.math.BigDecimal;
 
-public interface PriceFields {
+import de.njsm.stocks.client.business.entities.GroceryStoreForSelection;
+import de.njsm.stocks.client.business.entities.IdImpl;
 
-    BigDecimal price();
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
-    BigDecimal scale();
+public class GroceryStoresForSelection {
 
-    IdImpl<GroceryStore> groceryStore();
-
-    IdImpl<Food> food();
-
-    IdImpl<ScaledUnit> scaledUnit();
-
-    interface Builder<T> {
-        T price(BigDecimal v);
-
-        T scale(BigDecimal v);
-
-        T groceryStore(IdImpl<GroceryStore> v);
-
-        T food(IdImpl<Food> v);
-
-        T scaledUnit(IdImpl<ScaledUnit> v);
+    public static List<GroceryStoreForSelection> generate() {
+        return new ArrayList<>(Arrays.asList(
+                GroceryStoreForSelection.create(IdImpl.create(1), "BigShop City"),
+                GroceryStoreForSelection.create(IdImpl.create(2), "BuyAndEat Village"),
+                GroceryStoreForSelection.create(IdImpl.create(4), "Farm Store")
+        ));
     }
 }

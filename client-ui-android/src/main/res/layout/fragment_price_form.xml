@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    stocks is client-server program to manage a household's food stock
+    Copyright (C) 2019  The stocks developers
+
+    This file is part of the stocks program suite.
+
+    stocks is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    stocks is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see https://www.gnu.org/licenses/.
+-->
+
+<RelativeLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingTop="@dimen/activity_vertical_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:paddingBottom="@dimen/activity_vertical_margin">
+
+    <DatePicker
+            android:id="@+id/fragment_price_form_valid_date"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:calendarViewShown="false"
+            android:layout_centerHorizontal="true"
+            android:layout_alignParentTop="true"
+            android:datePickerMode="spinner"/>
+
+    <TimePicker
+            android:id="@+id/fragment_price_form_valid_time"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/fragment_price_form_valid_date"
+            android:timePickerMode="spinner"/>
+
+    <include
+            layout="@layout/text_field_conflict"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/fragment_price_form_valid_time"
+            android:id="@+id/fragment_price_form_price"/>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/fragment_price_form_price"
+            android:id="@+id/fragment_price_form_unit">
+
+        <include
+                layout="@layout/text_field_conflict"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/fragment_price_form_scaled_unit"
+                app:layout_constraintHorizontal_weight="1"
+                android:id="@+id/fragment_price_form_scale"/>
+
+        <include
+                layout="@layout/spinner_conflict"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/fragment_price_form_scale"
+                app:layout_constraintHorizontal_weight="1"
+                android:id="@+id/fragment_price_form_scaled_unit"/>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <include
+            layout="@layout/spinner_conflict"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/fragment_price_form_unit"
+            android:id="@+id/fragment_price_form_grocery_store"/>
+</RelativeLayout>
