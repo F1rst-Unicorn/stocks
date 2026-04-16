@@ -90,9 +90,13 @@ class ErrorRetryInteractorImpl implements ErrorRetryInteractor, ErrorDetailsVisi
 
     private final GroceryChainEditInteractor groceryChainEditInteractor;
 
+    private final EntityDeleter<GroceryChain> groceryChainDeleter;
+
     private final GroceryStoreAddInteractor groceryStoreAddInteractor;
 
     private final GroceryStoreEditInteractor groceryStoreEditInteractor;
+
+    private final EntityDeleter<GroceryStore> groceryStoreDeleter;
 
     private final PriceAddInteractor priceAddInteractor;
 
@@ -127,8 +131,10 @@ class ErrorRetryInteractorImpl implements ErrorRetryInteractor, ErrorDetailsVisi
                              ErrorRepository errorRepository,
                              GroceryChainAddInteractor groceryChainAddInteractor,
                              GroceryChainEditInteractor groceryChainEditInteractor,
+                             EntityDeleter<GroceryChain> groceryChainDeleter,
                              GroceryStoreAddInteractor groceryStoreAddInteractor,
                              GroceryStoreEditInteractor groceryStoreEditInteractor,
+                             EntityDeleter<GroceryStore> groceryStoreDeleter,
                              PriceAddInteractor priceAddInteractor) {
         this.locationAddInteractor = locationAddInteractor;
         this.locationDeleter = locationDeleter;
@@ -160,8 +166,10 @@ class ErrorRetryInteractorImpl implements ErrorRetryInteractor, ErrorDetailsVisi
         this.errorRepository = errorRepository;
         this.groceryChainAddInteractor = groceryChainAddInteractor;
         this.groceryChainEditInteractor = groceryChainEditInteractor;
+        this.groceryChainDeleter = groceryChainDeleter;
         this.groceryStoreAddInteractor = groceryStoreAddInteractor;
         this.groceryStoreEditInteractor = groceryStoreEditInteractor;
+        this.groceryStoreDeleter = groceryStoreDeleter;
         this.priceAddInteractor = priceAddInteractor;
         this.jobTypeTranslator = new JobTypeTranslator();
     }
@@ -391,11 +399,32 @@ class ErrorRetryInteractorImpl implements ErrorRetryInteractor, ErrorDetailsVisi
     }
 
     @Override
+    public Void groceryChainDeleteErrorDetails(GroceryChainDeleteErrorDetails groceryChainDeleteErrorDetails, Void input) {
+        groceryChainDeleter.delete(groceryChainDeleteErrorDetails.id());
+        return null;
+    }
+
+    @Override
+    public Void groceryStoreAddErrorDetails(GroceryStoreAddErrorDetails groceryStoreAddErrorDetails, Void input) {
+        groceryStoreAddInteractor.addGroceryStore(GroceryStoreAddForm.create(
+                groceryStoreAddErrorDetails.name(),
+                groceryStoreAddErrorDetails.groceryChain().toId()
+        ));
+        return null;
+    }
+
+    @Override
     public Void groceryStoreEditErrorDetails(GroceryStoreEditErrorDetails groceryStoreEditErrorDetails, Void input) {
         groceryStoreEditInteractor.edit(GroceryStoreForEditing.builder()
                 .version(groceryStoreEditErrorDetails.id())
                 .name(groceryStoreEditErrorDetails.name())
                 .build());
+        return null;
+    }
+
+    @Override
+    public Void groceryStoreDeleteErrorDetails(GroceryStoreDeleteErrorDetails groceryStoreDeleteErrorDetails, Void input) {
+        groceryStoreDeleter.delete(groceryStoreDeleteErrorDetails.id());
         return null;
     }
 
@@ -544,6 +573,21 @@ class ErrorRetryInteractorImpl implements ErrorRetryInteractor, ErrorDetailsVisi
         @Override
         public Job.Type groceryStoreEditErrorDetails(GroceryStoreEditErrorDetails groceryStoreEditErrorDetails, Void input) {
             return Job.Type.EDIT_GROCERY_STORE;
+        }
+
+        @Override
+        public Job.Type groceryChainDeleteErrorDetails(GroceryChainDeleteErrorDetails groceryChainDeleteErrorDetails, Void input) {
+            return Job.Type.DELETE_GROCERY_CHAIN;
+        }
+
+        @Override
+        public Job.Type groceryStoreDeleteErrorDetails(GroceryStoreDeleteErrorDetails groceryStoreDeleteErrorDetails, Void input) {
+            return Job.Type.DELETE_GROCERY_STORE;
+        }
+
+        @Override
+        public Job.Type groceryStoreAddErrorDetails(GroceryStoreAddErrorDetails groceryStoreAddErrorDetails, Void input) {
+            return Job.Type.ADD_GROCERY_STORE;
         }
     }
 }

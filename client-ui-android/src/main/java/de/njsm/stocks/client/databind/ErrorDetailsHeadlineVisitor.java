@@ -167,7 +167,22 @@ public class ErrorDetailsHeadlineVisitor implements ErrorDetailsVisitor<Void, In
     }
 
     @Override
+    public Integer groceryChainDeleteErrorDetails(GroceryChainDeleteErrorDetails groceryChainDeleteErrorDetails, Void input) {
+        return R.string.error_details_grocery_chain_delete;
+    }
+
+    @Override
+    public Integer groceryStoreAddErrorDetails(GroceryStoreAddErrorDetails groceryStoreAddErrorDetails, Void input) {
+        return R.string.error_details_grocery_store_add;
+    }
+
+    @Override
     public Integer groceryStoreEditErrorDetails(GroceryStoreEditErrorDetails groceryStoreEditErrorDetails, Void input) {
         return R.string.error_details_grocery_store_edit;
+    }
+
+    @Override
+    public Integer groceryStoreDeleteErrorDetails(GroceryStoreDeleteErrorDetails groceryStoreDeleteErrorDetails, Void input) {
+        return R.string.error_details_grocery_store_delete;
     }
 }

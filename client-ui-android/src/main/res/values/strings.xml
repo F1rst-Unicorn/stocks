@@ -342,8 +342,10 @@
     <string name="error_details_recipe_edit">Edit Recipe</string>
     <string name="error_details_grocery_chain_add">Add Grocery Chain</string>
     <string name="error_details_grocery_chain_edit">Edit Grocery Chain</string>
+    <string name="error_details_grocery_chain_delete">Delete Grocery Chain</string>
     <string name="error_details_grocery_store_add">Add Grocery Store</string>
     <string name="error_details_grocery_store_edit">Edit Grocery Store</string>
+    <string name="error_details_grocery_store_delete">Delete Grocery Store</string>
     <string name="error_details_price_add">Add Price</string>
 
     <string name="text_no_errors">Everything is fine.</string>

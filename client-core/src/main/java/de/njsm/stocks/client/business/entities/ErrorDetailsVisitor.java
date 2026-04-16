@@ -83,7 +83,13 @@ public interface ErrorDetailsVisitor<I, O> {
 
     O groceryChainEditErrorDetails(GroceryChainEditErrorDetails groceryChainEditErrorDetails, I input);
 
+    O groceryChainDeleteErrorDetails(GroceryChainDeleteErrorDetails groceryChainDeleteErrorDetails, I input);
+
+    O groceryStoreAddErrorDetails(GroceryStoreAddErrorDetails groceryStoreAddErrorDetails, I input);
+
     O groceryStoreEditErrorDetails(GroceryStoreEditErrorDetails groceryStoreEditErrorDetails, I input);
+
+    O groceryStoreDeleteErrorDetails(GroceryStoreDeleteErrorDetails groceryStoreDeleteErrorDetails, I input);
 
     interface Default<I, O> extends ErrorDetailsVisitor<I, O> {
 
@@ -230,8 +236,23 @@ public interface ErrorDetailsVisitor<I, O> {
         }
 
         @Override
+        default O groceryChainDeleteErrorDetails(GroceryChainDeleteErrorDetails groceryChainDeleteErrorDetails, I input) {
+            return defaultImpl(groceryChainDeleteErrorDetails, input);
+        }
+
+        @Override
+        default O groceryStoreAddErrorDetails(GroceryStoreAddErrorDetails groceryStoreAddErrorDetails, I input) {
+            return defaultImpl(groceryStoreAddErrorDetails, input);
+        }
+
+        @Override
         default O groceryStoreEditErrorDetails(GroceryStoreEditErrorDetails groceryStoreEditErrorDetails, I input) {
             return defaultImpl(groceryStoreEditErrorDetails, input);
+        }
+
+        @Override
+        default O groceryStoreDeleteErrorDetails(GroceryStoreDeleteErrorDetails groceryStoreDeleteErrorDetails, I input) {
+            return defaultImpl(groceryStoreDeleteErrorDetails, input);
         }
     }
 }
