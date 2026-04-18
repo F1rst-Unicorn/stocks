@@ -83,6 +83,9 @@
     <string name="title_add_price">Preis hinzufügen</string>
     <string name="title_edit_grocery_chain">Ladenkette bearbeiten</string>
     <string name="title_edit_grocery_store">%1$s bearbeiten</string>
+    <string name="title_grocery_store">Laden</string>
+    <string name="title_date">Datum</string>
+    <string name="title_price">Preis</string>
 
     <string name="action_users">Benutzer</string>
     <string name="action_locations">Orte</string>
@@ -113,6 +116,7 @@
     <string name="action_retry">Erneut senden</string>
     <string name="action_add">Hinzufügen</string>
     <string name="action_grocery">Läden</string>
+    <string name="action_show_all">Alle auflisten</string>
 
     <string name="hint_servername">Server Hostname</string>
     <string name="hint_expert">Expertenoptionen</string>
@@ -244,6 +248,7 @@
     <string name="text_qr_explanation">Willkommen bei Stocks! Scanne jetzt den erhaltenen QR Code ein. Solltest du keinen erhalten haben, kannst du dich manuell registrieren.</string>
     <string name="text_buy">Einzukaufen</string>
     <string name="text_dont_buy">Nicht Einzukaufen</string>
+    <string name="text_fraction">%1$s / %2$s</string>
 
     <string name="desc_profile_picture">Profilbild des Benutzers</string>
     <string name="desc_app_icon">Applikationslogo</string>

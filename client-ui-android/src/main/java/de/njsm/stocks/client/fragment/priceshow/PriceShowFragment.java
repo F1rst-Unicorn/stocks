@@ -27,9 +27,11 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.view.MenuProvider;
 import androidx.lifecycle.ViewModelProvider;
+import de.njsm.stocks.client.business.Localiser;
 import de.njsm.stocks.client.business.entities.Food;
 import de.njsm.stocks.client.business.entities.Id;
 import de.njsm.stocks.client.business.entities.IdImpl;
+import de.njsm.stocks.client.business.entities.PriceForTableListing;
 import de.njsm.stocks.client.fragment.InjectableFragment;
 import de.njsm.stocks.client.navigation.PriceShowNavigator;
 import de.njsm.stocks.client.presenter.PriceShowViewModel;
@@ -37,12 +39,17 @@ import de.njsm.stocks.client.ui.R;
 import org.jetbrains.annotations.NotNull;
 
 import javax.inject.Inject;
+import java.util.List;
 
 public class PriceShowFragment extends InjectableFragment implements MenuProvider {
 
     private PriceShowViewModel viewModel;
 
     private PriceShowNavigator navigator;
+
+    private PriceShowView priceShowView;
+
+    private Localiser localiser;
 
     private boolean toBuy;
 
@@ -55,7 +62,15 @@ public class PriceShowFragment extends InjectableFragment implements MenuProvide
         foodId = navigator.getFoodId(requireArguments()).toId();
         root.findViewById(R.id.fragmet_price_show_add).setOnClickListener(v -> navigator.addPrice(foodId));
         requireActivity().addMenuProvider(this, getViewLifecycleOwner());
+
+        priceShowView = new PriceShowView(root, this::getString);
+        viewModel.getPrices().observe(getViewLifecycleOwner(), this::onListDataReceived);
+
         return root;
+    }
+
+    private void onListDataReceived(List<PriceForTableListing> priceForTableListings) {
+        priceShowView.setTableData(priceForTableListings, localiser);
     }
 
     @Override
@@ -106,5 +121,10 @@ public class PriceShowFragment extends InjectableFragment implements MenuProvide
     @Inject
     void setNavigator(PriceShowNavigator navigator) {
         this.navigator = navigator;
+    }
+
+    @Inject
+    void setLocaliser(Localiser localiser) {
+        this.localiser = localiser;
     }
 }

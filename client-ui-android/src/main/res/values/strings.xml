@@ -84,6 +84,9 @@
     <string name="title_add_price">Add Price</string>
     <string name="title_edit_grocery_chain">Edit Grocery Chain</string>
     <string name="title_edit_grocery_store">Edit %1$s Store</string>
+    <string name="title_grocery_store">Store</string>
+    <string name="title_date">Date</string>
+    <string name="title_price">Price</string>
 
     <string name="action_users">Users</string>
     <string name="action_locations">Locations</string>
@@ -114,6 +117,7 @@
     <string name="action_retry">Retry</string>
     <string name="action_add">ADD</string>
     <string name="action_grocery">Grocery</string>
+    <string name="action_show_all">SHOW ALL</string>
 
     <string name="hint_servername">Server host name</string>
     <string name="hint_expert">Expert options</string>
@@ -245,6 +249,7 @@
     <string name="text_qr_explanation">Welcome to Stocks! Now scan the QR code you received. If you haven\'t received one, you can also register manually.</string>
     <string name="text_buy">to buy</string>
     <string name="text_dont_buy">not to buy</string>
+    <string name="text_fraction">%1$s / %2$s</string>
 
     <string name="desc_profile_picture">The user\'s profile picture</string>
     <string name="desc_cutlery">Cutlery</string>

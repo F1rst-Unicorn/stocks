@@ -427,7 +427,7 @@ public class ViewModelModule {
     @Provides
     @IntoMap
     @ViewModelKey(PriceShowViewModel.class)
-    ViewModel PriceShowViewModel() {
-        return new PriceShowViewModel();
+    ViewModel PriceShowViewModel(ObservableListCache<PriceForTableListing> data) {
+        return new PriceShowViewModel(data);
     }
 }
