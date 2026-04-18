@@ -299,6 +299,10 @@
     <string name="event_grocery_chain_created">%1$s hat %2$s erstellt.</string>
     <string name="event_grocery_chain_deleted">%1$s hat %2$s gelöscht.</string>
     <string name="event_grocery_chain_renamed">hat %1$s zu %2$s umbenannt</string>
+    <string name="event_grocery_store_created">%1$s hat %2$s erstellt.</string>
+    <string name="event_grocery_store_deleted">%1$s hat %2$s gelöscht.</string>
+    <string name="event_grocery_store_renamed">hat %1$s zu %2$s umbenannt</string>
+    <string name="event_grocery_store_chain_changed">hat die Ladenkette%1$s von %2$s auf %3$s gesetzt</string>
 
     <string name="content_description_plus">Plus-Symbol</string>
 

@@ -297,9 +297,13 @@
     <string name="event_scaled_unit_deleted">%1$s has deleted %2$s.</string>
     <string name="event_scaled_unit_scale_changed">has set the scale%1$s from %2$s to %3$s</string>
     <string name="event_scaled_unit_unit_changed">has set the unit%1$s from %2$s to %3$s</string>
-    <string name="event_grocery_chain_created">%1$s has created %2$s (%3$s).</string>
+    <string name="event_grocery_chain_created">%1$s has created %2$s.</string>
     <string name="event_grocery_chain_deleted">%1$s has deleted %2$s.</string>
     <string name="event_grocery_chain_renamed">has renamed %1$s to %2$s</string>
+    <string name="event_grocery_store_created">%1$s has created %2$s.</string>
+    <string name="event_grocery_store_deleted">%1$s has deleted %2$s.</string>
+    <string name="event_grocery_store_renamed">has renamed %1$s to %2$s</string>
+    <string name="event_grocery_store_chain_changed">has set the grocery chain%1$s from %2$s to %3$s</string>
 
     <string name="content_description_plus">Plus symbol</string>
 

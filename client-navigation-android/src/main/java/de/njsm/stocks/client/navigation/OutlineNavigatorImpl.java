@@ -256,4 +256,28 @@ class OutlineNavigatorImpl extends BaseNavigator implements OutlineNavigator {
         );
         return null;
     }
+
+    @Override
+    public Void groceryStoreCreated(GroceryStoreCreatedEvent groceryStoreCreatedEvent, Void input) {
+        getNavigationArgConsumer().navigate(
+                OutlineFragmentDirections.actionGlobalNavFragmentGroceryStoreList(groceryStoreCreatedEvent.groceryChainId().id())
+        );
+        return null;
+    }
+
+    @Override
+    public Void groceryStoreDeleted(GroceryStoreDeletedEvent groceryStoreDeletedEvent, Void input) {
+        getNavigationArgConsumer().navigate(
+                OutlineFragmentDirections.actionGlobalNavFragmentGroceryStoreList(groceryStoreDeletedEvent.groceryChainId().id())
+        );
+        return null;
+    }
+
+    @Override
+    public Void groceryStoreEdited(GroceryStoreEditedEvent groceryStoreEditedEvent, Void input) {
+        getNavigationArgConsumer().navigate(
+                OutlineFragmentDirections.actionGlobalNavFragmentGroceryStoreList(groceryStoreEditedEvent.groceryChainId().current().id())
+        );
+        return null;
+    }
 }

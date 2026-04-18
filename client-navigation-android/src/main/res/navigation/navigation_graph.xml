@@ -749,6 +749,9 @@
             android:id="@+id/action_global_nav_fragment_location_list"
             app:destination="@id/nav_fragment_location_list" />
     <action
+            android:id="@+id/action_global_nav_fragment_grocery_store_list"
+            app:destination="@id/nav_fragment_grocery_store_list" />
+    <action
             android:id="@+id/action_global_nav_fragment_grocery_chain_list"
             app:destination="@id/nav_fragment_grocery_chain_list" />
     <action

@@ -22,6 +22,7 @@
 package de.njsm.stocks.client.business.event;
 
 import de.njsm.stocks.client.business.Localiser;
+import de.njsm.stocks.client.business.entities.IdImpl;
 import de.njsm.stocks.client.business.entities.event.*;
 import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.core.Single;
@@ -93,20 +94,55 @@ public class InMemoryEventInteractorImpl implements EventInteractor {
                         localiser.toInstant(day),
                         localiser.toInstant(day),
                         "Jane",
-                        "BuyAndEad"
+                        "BuyAndEat"
                 ), GroceryChainEventFeedItem.create(
                         (int) day.toEpochDay(),
                         localiser.toInstant(day),
                         localiser.toInstant(day),
                         "Jane",
-                        "BuyAndEad renamed"
+                        "BuyAndEat renamed"
                 )), localiser),
                 GroceryChainDeletedEvent.create(GroceryChainEventFeedItem.create(
                         (int) day.toEpochDay(),
                         localiser.toInstant(day),
                         localiser.toInstant(day),
                         "Jane",
-                        "BuyAndEad"
+                        "BuyAndEat"
+                ), localiser),
+                GroceryStoreCreatedEvent.create(GroceryStoreEventFeedItem.create(
+                        (int) day.toEpochDay(),
+                        localiser.toInstant(day),
+                        localiser.toInstant(day),
+                        "Jane",
+                        "City",
+                        IdImpl.create(1),
+                        "BuyAndEat"
+                ), localiser),
+                GroceryStoreEditedEvent.create(List.of(GroceryStoreEventFeedItem.create(
+                        (int) day.toEpochDay(),
+                        localiser.toInstant(day),
+                        localiser.toInstant(day),
+                        "Jane",
+                        "City",
+                        IdImpl.create(1),
+                        "BuyAndEat"
+                ), GroceryStoreEventFeedItem.create(
+                        (int) day.toEpochDay(),
+                        localiser.toInstant(day),
+                        localiser.toInstant(day),
+                        "Jane",
+                        "Village",
+                        IdImpl.create(2),
+                        "BigShop"
+                )), localiser),
+                GroceryStoreDeletedEvent.create(GroceryStoreEventFeedItem.create(
+                        (int) day.toEpochDay(),
+                        localiser.toInstant(day),
+                        localiser.toInstant(day),
+                        "Jane",
+                        "Village",
+                        IdImpl.create(2),
+                        "BigShop"
                 ), localiser)),
                 Optional.empty(),
                 Optional.empty())

@@ -287,6 +287,31 @@ public class DescriptionRenderer implements Visitor<Void, String> {
         ), object);
     }
 
+    @Override
+    public String groceryStoreCreated(GroceryStoreCreatedEvent groceryStoreCreatedEvent, Void input) {
+        String template = dictionary.apply(R.string.event_grocery_store_created);
+        return String.format(template,
+                groceryStoreCreatedEvent.userName(),
+                groceryStoreCreatedEvent.groceryChainName() + " " + groceryStoreCreatedEvent.name());
+    }
+
+    @Override
+    public String groceryStoreDeleted(GroceryStoreDeletedEvent groceryStoreDeletedEvent, Void input) {
+        String template = dictionary.apply(R.string.event_grocery_store_deleted);
+        return String.format(template,
+                groceryStoreDeletedEvent.userName(),
+                groceryStoreDeletedEvent.groceryChainName() + " " + groceryStoreDeletedEvent.name());
+    }
+
+    @Override
+    public String groceryStoreEdited(GroceryStoreEditedEvent event, Void input) {
+        var object = formObject(event.name().former());
+        return describe(event, List.of(
+                GroceryStoreNameDiffer.of(event, dictionary, object),
+                GroceryStoreChainDiffer.of(event, dictionary, object)
+        ), object);
+    }
+
     public <T extends ActivityEvent> String describe(T event, List<PartialDiffGenerator<?>> differs, SentenceObject object) {
         ArrayList<String> partialSentences = generatePartialSentences(differs);
 

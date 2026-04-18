@@ -151,4 +151,19 @@ public class DataIconSelector implements Visitor<Void, Integer> {
     public Integer groceryChainEdited(GroceryChainEditedEvent groceryChainEditedEvent, Void input) {
         return R.drawable.ic_store_black_24dp;
     }
+
+    @Override
+    public Integer groceryStoreCreated(GroceryStoreCreatedEvent groceryStoreCreatedEvent, Void input) {
+        return R.drawable.ic_store_black_24dp;
+    }
+
+    @Override
+    public Integer groceryStoreDeleted(GroceryStoreDeletedEvent groceryStoreDeletedEvent, Void input) {
+        return R.drawable.ic_store_black_24dp;
+    }
+
+    @Override
+    public Integer groceryStoreEdited(GroceryStoreEditedEvent groceryStoreEditedEvent, Void input) {
+        return R.drawable.ic_store_black_24dp;
+    }
 }

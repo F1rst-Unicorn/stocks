@@ -165,4 +165,19 @@ public class ActionIconSelector implements Visitor<Void, Integer> {
     public Integer groceryChainEdited(GroceryChainEditedEvent groceryChainEditedEvent, Void input) {
         return R.drawable.ic_create_black_24;
     }
+
+    @Override
+    public Integer groceryStoreCreated(GroceryStoreCreatedEvent groceryStoreCreatedEvent, Void input) {
+        return R.drawable.baseline_add_black_24;
+    }
+
+    @Override
+    public Integer groceryStoreDeleted(GroceryStoreDeletedEvent groceryStoreDeletedEvent, Void input) {
+        return R.drawable.baseline_delete_black_24;
+    }
+
+    @Override
+    public Integer groceryStoreEdited(GroceryStoreEditedEvent groceryStoreEditedEvent, Void input) {
+        return R.drawable.ic_create_black_24;
+    }
 }

@@ -74,4 +74,10 @@ public interface Visitor<I, O> {
     O groceryChainDeleted(GroceryChainDeletedEvent groceryChainDeletedEvent, I input);
 
     O groceryChainEdited(GroceryChainEditedEvent groceryChainEditedEvent, I input);
+
+    O groceryStoreCreated(GroceryStoreCreatedEvent groceryStoreCreatedEvent, I input);
+
+    O groceryStoreDeleted(GroceryStoreDeletedEvent groceryStoreDeletedEvent, I input);
+
+    O groceryStoreEdited(GroceryStoreEditedEvent groceryStoreEditedEvent, I input);
 }
