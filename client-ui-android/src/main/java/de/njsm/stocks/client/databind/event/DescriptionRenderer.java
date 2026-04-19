@@ -312,6 +312,30 @@ public class DescriptionRenderer implements Visitor<Void, String> {
         ), object);
     }
 
+    @Override
+    public String priceCreated(PriceCreatedEvent priceCreatedEvent, Void input) {
+        String template = dictionary.apply(R.string.event_price_created);
+        return String.format(template,
+                dateRenderStrategy.render(priceCreatedEvent.validTime()),
+                unitAmountRenderStrategy.render(priceCreatedEvent.quantity()),
+                priceCreatedEvent.foodName(),
+                unitAmountRenderStrategy.render(priceCreatedEvent.price()),
+                priceCreatedEvent.groceryStoreName(),
+                priceCreatedEvent.userName());
+    }
+
+    @Override
+    public String priceDeleted(PriceDeletedEvent priceDeletedEvent, Void input) {
+        String template = dictionary.apply(R.string.event_price_deleted);
+        return String.format(template,
+                unitAmountRenderStrategy.render(priceDeletedEvent.quantity()),
+                priceDeletedEvent.foodName(),
+                unitAmountRenderStrategy.render(priceDeletedEvent.price()),
+                dateRenderStrategy.render(priceDeletedEvent.validTime()),
+                priceDeletedEvent.groceryStoreName(),
+                priceDeletedEvent.userName());
+    }
+
     public <T extends ActivityEvent> String describe(T event, List<PartialDiffGenerator<?>> differs, SentenceObject object) {
         ArrayList<String> partialSentences = generatePartialSentences(differs);
 

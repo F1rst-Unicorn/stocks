@@ -280,4 +280,20 @@ class OutlineNavigatorImpl extends BaseNavigator implements OutlineNavigator {
         );
         return null;
     }
+
+    @Override
+    public Void priceCreated(PriceCreatedEvent priceCreatedEvent, Void input) {
+        getNavigationArgConsumer().navigate(
+                OutlineFragmentDirections.actionNavFragmentOutlineToNavFragmentFoodItemTabs(priceCreatedEvent.foodId().id())
+        );
+        return null;
+    }
+
+    @Override
+    public Void priceDeleted(PriceDeletedEvent priceDeletedEvent, Void input) {
+        getNavigationArgConsumer().navigate(
+                OutlineFragmentDirections.actionNavFragmentOutlineToNavFragmentFoodItemTabs(priceDeletedEvent.foodId().id())
+        );
+        return null;
+    }
 }

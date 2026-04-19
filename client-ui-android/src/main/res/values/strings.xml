@@ -313,6 +313,8 @@
     <string name="event_grocery_store_deleted">%1$s has deleted %2$s.</string>
     <string name="event_grocery_store_renamed">has renamed %1$s to %2$s</string>
     <string name="event_grocery_store_chain_changed">has set the grocery chain%1$s from %2$s to %3$s</string>
+    <string name="event_price_created">%6$s has bought %2$s %3$s for %4$s at %5$s on %1$s</string>
+    <string name="event_price_deleted">%6$s has deleted the price of %2$s %3$s for %4$s at %5$s on %1$s</string>
 
     <string name="content_description_plus">Plus symbol</string>
 

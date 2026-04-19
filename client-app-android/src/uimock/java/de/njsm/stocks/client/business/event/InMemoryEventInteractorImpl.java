@@ -23,11 +23,13 @@ package de.njsm.stocks.client.business.event;
 
 import de.njsm.stocks.client.business.Localiser;
 import de.njsm.stocks.client.business.entities.IdImpl;
+import de.njsm.stocks.client.business.entities.StoredAmount;
 import de.njsm.stocks.client.business.entities.event.*;
 import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.core.Single;
 
 import javax.inject.Inject;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Collections;
@@ -143,7 +145,29 @@ public class InMemoryEventInteractorImpl implements EventInteractor {
                         "Village",
                         IdImpl.create(2),
                         "BigShop"
-                ), localiser)),
+                ), localiser),
+                        PriceCreatedEvent.create(PriceEventFeedItem.create(
+                                IdImpl.create((int) day.toEpochDay()),
+                                localiser.toInstant(day),
+                                localiser.toInstant(day),
+                                "Jane",
+                                IdImpl.create(2),
+                                "Chocolate",
+                                BigDecimal.valueOf(4.2),
+                                StoredAmount.create(BigDecimal.valueOf(100), "g"),
+                                day.atTime(15, 3),
+                                "BigShop Capital"), localiser),
+                        PriceDeletedEvent.create(PriceEventFeedItem.create(
+                                IdImpl.create((int) day.toEpochDay()),
+                                localiser.toInstant(day),
+                                localiser.toInstant(day),
+                                "Jane",
+                                IdImpl.create(2),
+                                "Chocolate",
+                                BigDecimal.valueOf(4.2),
+                                StoredAmount.create(BigDecimal.valueOf(100), "g"),
+                                day.atTime(15, 3),
+                                "BigShop Capital"), localiser)),
                 Optional.empty(),
                 Optional.empty())
         );

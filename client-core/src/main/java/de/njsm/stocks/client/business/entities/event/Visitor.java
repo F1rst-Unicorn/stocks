@@ -80,4 +80,8 @@ public interface Visitor<I, O> {
     O groceryStoreDeleted(GroceryStoreDeletedEvent groceryStoreDeletedEvent, I input);
 
     O groceryStoreEdited(GroceryStoreEditedEvent groceryStoreEditedEvent, I input);
+
+    O priceCreated(PriceCreatedEvent priceCreatedEvent, I input);
+
+    O priceDeleted(PriceDeletedEvent priceDeletedEvent, I input);
 }
