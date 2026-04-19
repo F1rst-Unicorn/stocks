@@ -86,6 +86,7 @@
     <string name="title_grocery_store">Laden</string>
     <string name="title_date">Datum</string>
     <string name="title_price">Preis</string>
+    <string name="title_all_prices">Alle Preise</string>
 
     <string name="action_users">Benutzer</string>
     <string name="action_locations">Orte</string>
@@ -249,6 +250,8 @@
     <string name="text_buy">Einzukaufen</string>
     <string name="text_dont_buy">Nicht Einzukaufen</string>
     <string name="text_fraction">%1$s / %2$s</string>
+    <string name="text_chart_by_store">Nach Laden</string>
+    <string name="text_chart_by_chain">Nach Kette</string>
 
     <string name="desc_profile_picture">Profilbild des Benutzers</string>
     <string name="desc_app_icon">Applikationslogo</string>

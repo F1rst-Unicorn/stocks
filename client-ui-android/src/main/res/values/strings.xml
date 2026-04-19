@@ -87,6 +87,7 @@
     <string name="title_grocery_store">Store</string>
     <string name="title_date">Date</string>
     <string name="title_price">Price</string>
+    <string name="title_all_prices">All Prices</string>
 
     <string name="action_users">Users</string>
     <string name="action_locations">Locations</string>
@@ -250,6 +251,8 @@
     <string name="text_buy">to buy</string>
     <string name="text_dont_buy">not to buy</string>
     <string name="text_fraction">%1$s / %2$s</string>
+    <string name="text_chart_by_store">By store</string>
+    <string name="text_chart_by_chain">By chain</string>
 
     <string name="desc_profile_picture">The user\'s profile picture</string>
     <string name="desc_cutlery">Cutlery</string>

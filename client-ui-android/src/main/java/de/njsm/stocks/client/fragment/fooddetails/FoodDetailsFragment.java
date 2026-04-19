@@ -21,6 +21,7 @@
 
 package de.njsm.stocks.client.fragment.fooddetails;
 
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -81,15 +82,23 @@ public class FoodDetailsFragment extends InjectableFragment {
         view.setDefaultExpiration(foodDetails.expirationOffset());
         view.setUnit(foodDetails.storeUnit());
         view.setDescription(foodDetails.description());
-        view.setDiagramData(foodDetails.amountOverTime(), new int[]{
-                ResourcesCompat.getColor(getResources(), R.color.colorPrimary, requireContext().getTheme()),
-                ResourcesCompat.getColor(getResources(), R.color.colorPrimaryDark, requireContext().getTheme()),
-                ResourcesCompat.getColor(getResources(), R.color.colorAccent, requireContext().getTheme()),
-                ResourcesCompat.getColor(getResources(), R.color.colorOnSurface, requireContext().getTheme()),
-                ResourcesCompat.getColor(getResources(), R.color.colorError, requireContext().getTheme())
-        });
+        view.setDiagramData(foodDetails.amountOverTime(), getLineColours(getResources(), requireActivity().getTheme()));
         view.setHistogramData(foodDetails.eatenAmountByExpiration(),
                 ResourcesCompat.getColor(getResources(), R.color.colorPrimary, requireContext().getTheme()));
+    }
+
+    public static int[] getLineColours(Resources resources, Resources.Theme theme) {
+        return new int[]{
+                ResourcesCompat.getColor(resources, R.color.colorPrimary, theme),
+                ResourcesCompat.getColor(resources, R.color.colorPrimaryDark, theme),
+                ResourcesCompat.getColor(resources, R.color.colorAccent, theme),
+                ResourcesCompat.getColor(resources, R.color.colorOnSurface, theme),
+                ResourcesCompat.getColor(resources, R.color.colorError, theme),
+                ResourcesCompat.getColor(resources, R.color.diagramColor1, theme),
+                ResourcesCompat.getColor(resources, R.color.diagramColor2, theme),
+                ResourcesCompat.getColor(resources, R.color.diagramColor3, theme),
+                ResourcesCompat.getColor(resources, R.color.diagramColor4, theme),
+        };
     }
 
     @Inject

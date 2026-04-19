@@ -22,6 +22,7 @@
 <ScrollView
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/fragment_price_show_scroller"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -96,12 +97,36 @@
                 style="@style/Widget.MaterialComponents.Button.TextButton"/>
 
         <com.github.mikephil.charting.charts.LineChart
-                android:id="@+id/fragmet_price_show_chart"
+                android:id="@+id/fragment_price_show_chart"
                 app:layout_constraintTop_toBottomOf="@id/fragmet_price_show_show_all"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 android:layout_width="match_parent"
                 android:layout_height="200dp"/>
+
+        <RadioGroup
+                android:id="@+id/fragment_price_show_chart_settings"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@id/fragment_price_show_chart"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:orientation="horizontal">
+            <RadioButton
+                    android:id="@+id/fragment_price_show_chart_settings_by_chain"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    android:text="@string/text_chart_by_chain"/>
+            <RadioButton
+                    android:id="@+id/fragment_price_show_chart_settings_by_store"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    android:text="@string/text_chart_by_store"/>
+        </RadioGroup>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

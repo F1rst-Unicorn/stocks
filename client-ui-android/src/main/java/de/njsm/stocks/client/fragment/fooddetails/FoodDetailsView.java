@@ -33,6 +33,7 @@ import de.njsm.stocks.client.business.entities.PlotByUnit;
 import de.njsm.stocks.client.business.entities.PlotPoint;
 import de.njsm.stocks.client.business.entities.ScaledUnitForSelection;
 import de.njsm.stocks.client.business.entities.UnitAmount;
+import de.njsm.stocks.client.fragment.view.ValueFormatter;
 import de.njsm.stocks.client.presenter.DateRenderStrategy;
 import de.njsm.stocks.client.presenter.UnitAmountRenderStrategy;
 import de.njsm.stocks.client.ui.R;

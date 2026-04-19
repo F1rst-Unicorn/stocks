@@ -19,16 +19,14 @@
  *
  */
 
-package de.njsm.stocks.client.navigation;
+package de.njsm.stocks.client.business;
 
-import android.os.Bundle;
 import de.njsm.stocks.client.business.entities.Food;
-import de.njsm.stocks.client.business.entities.Id;
+import de.njsm.stocks.client.business.entities.IdImpl;
+import de.njsm.stocks.client.business.entities.PriceDetails;
+import io.reactivex.rxjava3.core.Observable;
 
-public interface PriceShowNavigator {
-    Id<Food> getFoodId(Bundle bundle);
+public interface PriceShowInteractor {
 
-    void addPrice(Id<Food> foodId);
-
-    void showAllPrices(Id<Food> foodId);
+    Observable<PriceDetails> getPriceDetails(IdImpl<Food> id);
 }

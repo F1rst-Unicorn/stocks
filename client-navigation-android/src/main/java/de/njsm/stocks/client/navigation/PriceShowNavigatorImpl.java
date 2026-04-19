@@ -25,8 +25,8 @@ import android.os.Bundle;
 import de.njsm.stocks.client.business.entities.Food;
 import de.njsm.stocks.client.business.entities.Id;
 import de.njsm.stocks.client.business.entities.IdImpl;
+import de.njsm.stocks.client.fragment.fooditemtabs.FoodItemTabsFragmentArgs;
 import de.njsm.stocks.client.fragment.fooditemtabs.FoodItemTabsFragmentDirections;
-import de.njsm.stocks.client.fragment.priceshow.PriceShowFragmentArgs;
 
 import javax.inject.Inject;
 
@@ -39,32 +39,20 @@ public class PriceShowNavigatorImpl extends BaseNavigator implements PriceShowNa
 
     @Override
     public IdImpl<Food> getFoodId(Bundle args) {
-        return IdImpl.create(PriceShowFragmentArgs.fromBundle(args).getFoodId());
-    }
-
-    @Override
-    public void editFood(Id<Food> foodId) {
-        var direction = FoodItemTabsFragmentDirections.actionNavFragmentFoodItemTabsToNavFragmentEditFood(foodId.id());
-        getNavigationArgConsumer().navigate(direction);
-    }
-
-    @Override
-    public void showEanNumbers(Id<Food> foodId) {
-        var direction = FoodItemTabsFragmentDirections.actionNavFragmentFoodItemTabsToNavFragmentEanNumbers(foodId.id());
-        getNavigationArgConsumer().navigate(direction);
-    }
-
-    @Override
-    public void showHistory(Id<Food> foodId) {
-        getNavigationArgConsumer().navigate(
-                FoodItemTabsFragmentDirections.actionNavFragmentFoodItemTabsToNavFragmentHistory(foodId.id())
-        );
+        return IdImpl.create(FoodItemTabsFragmentArgs.fromBundle(args).getFoodId());
     }
 
     @Override
     public void addPrice(Id<Food> foodId) {
         getNavigationArgConsumer().navigate(
                 FoodItemTabsFragmentDirections.actionNavFragmentFoodItemTabsToNavFragmentPriceAdd(foodId.id())
+        );
+    }
+
+    @Override
+    public void showAllPrices(Id<Food> foodId) {
+        getNavigationArgConsumer().navigate(
+            FoodItemTabsFragmentDirections.actionNavFragmentFoodItemTabsToNavFragmentShowAllPrices(foodId.id())
         );
     }
 }

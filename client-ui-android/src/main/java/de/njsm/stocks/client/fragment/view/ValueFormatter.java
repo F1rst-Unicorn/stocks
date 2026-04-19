@@ -19,16 +19,21 @@
  *
  */
 
-package de.njsm.stocks.client.navigation;
+package de.njsm.stocks.client.fragment.view;
 
-import android.os.Bundle;
-import de.njsm.stocks.client.business.entities.Food;
-import de.njsm.stocks.client.business.entities.Id;
+import com.github.mikephil.charting.components.AxisBase;
+import de.njsm.stocks.client.presenter.DateRenderStrategy;
 
-public interface PriceShowNavigator {
-    Id<Food> getFoodId(Bundle bundle);
+public class ValueFormatter extends com.github.mikephil.charting.formatter.ValueFormatter {
 
-    void addPrice(Id<Food> foodId);
+    private final DateRenderStrategy dateRenderStrategy;
 
-    void showAllPrices(Id<Food> foodId);
+    public ValueFormatter(DateRenderStrategy dateRenderStrategy) {
+        this.dateRenderStrategy = dateRenderStrategy;
+    }
+
+    @Override
+    public String getAxisLabel(float value, AxisBase axis) {
+        return dateRenderStrategy.renderEpochSeconds(value);
+    }
 }

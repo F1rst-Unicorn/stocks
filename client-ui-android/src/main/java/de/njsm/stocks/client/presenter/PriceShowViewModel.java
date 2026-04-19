@@ -23,48 +23,23 @@ package de.njsm.stocks.client.presenter;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModel;
+import de.njsm.stocks.client.business.PriceShowInteractor;
 import de.njsm.stocks.client.business.entities.Food;
-import de.njsm.stocks.client.business.entities.Id;
-import de.njsm.stocks.client.business.entities.PriceForTableListing;
-import de.njsm.stocks.client.business.entities.StoredAmount;
-import io.reactivex.rxjava3.core.Observable;
-
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.util.List;
+import de.njsm.stocks.client.business.entities.IdImpl;
+import de.njsm.stocks.client.business.entities.PriceDetails;
 
 public class PriceShowViewModel extends ViewModel {
 
-    private final ObservableListCache<PriceForTableListing> data;
+    private final PriceShowInteractor priceShowInteractor;
 
-    public PriceShowViewModel(ObservableListCache<PriceForTableListing> data) {
+    private final ObservableDataCache<PriceDetails> data;
+
+    PriceShowViewModel(PriceShowInteractor priceShowInteractor, ObservableDataCache<PriceDetails> data) {
+        this.priceShowInteractor = priceShowInteractor;
         this.data = data;
     }
 
-    public LiveData<List<PriceForTableListing>> getPrices() {
-        return data.getLiveData(() -> Observable.just(List.of(
-                PriceForTableListing.create(
-                        LocalDate.of(2025, 4, 17),
-                        "BigShop City",
-                        BigDecimal.valueOf(3.7),
-                        StoredAmount.create(BigDecimal.valueOf(100), "g")
-                ),
-                PriceForTableListing.create(
-                        LocalDate.of(2025, 4, 14),
-                        "Farm Shop",
-                        BigDecimal.valueOf(2.4),
-                        StoredAmount.create(BigDecimal.valueOf(100), "g")
-                ),
-                PriceForTableListing.create(
-                        LocalDate.of(2025, 4, 12),
-                        "BuyAndEat Village",
-                        BigDecimal.valueOf(4.1),
-                        StoredAmount.create(BigDecimal.valueOf(100), "g")
-                )
-        )));
-    }
-
-    public void toggleShoppingFlag(Id<Food> foodId) {
-
+    public LiveData<PriceDetails> getPrices(IdImpl<Food> id) {
+        return data.getLiveData(() -> priceShowInteractor.getPriceDetails(id));
     }
 }

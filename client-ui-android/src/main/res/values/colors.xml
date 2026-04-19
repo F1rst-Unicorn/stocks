@@ -34,6 +34,11 @@
     <color name="colorOnSurface">#000000</color>
     <color name="colorError">#F44336</color>
 
+    <color name="diagramColor1">#00FFE1</color>
+    <color name="diagramColor2">#3F51B5</color>
+    <color name="diagramColor3">#D88BFF</color>
+    <color name="diagramColor4">#B1B1B1</color>
+
     <color name="colorFadedIcon">#6C6C6C</color>
 
 

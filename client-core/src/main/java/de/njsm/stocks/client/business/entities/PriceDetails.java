@@ -19,16 +19,23 @@
  *
  */
 
-package de.njsm.stocks.client.navigation;
+package de.njsm.stocks.client.business.entities;
 
-import android.os.Bundle;
-import de.njsm.stocks.client.business.entities.Food;
-import de.njsm.stocks.client.business.entities.Id;
+import com.google.auto.value.AutoValue;
 
-public interface PriceShowNavigator {
-    Id<Food> getFoodId(Bundle bundle);
+import java.time.LocalDateTime;
+import java.util.List;
 
-    void addPrice(Id<Food> foodId);
+@AutoValue
+public abstract class PriceDetails {
 
-    void showAllPrices(Id<Food> foodId);
+    public abstract List<PriceForTableListing> pricesForTable();
+
+    public abstract List<PricePlot<GroceryChain, LocalDateTime>> pricePlotByChain();
+
+    public abstract List<PricePlot<GroceryStore, LocalDateTime>> pricePlotByStore();
+
+    public static PriceDetails create(List<PriceForTableListing> pricesForTable, List<PricePlot<GroceryChain, LocalDateTime>> pricePlotByChain, List<PricePlot<GroceryStore, LocalDateTime>> pricePlotByStore) {
+        return new AutoValue_PriceDetails(pricesForTable, pricePlotByChain, pricePlotByStore);
+    }
 }

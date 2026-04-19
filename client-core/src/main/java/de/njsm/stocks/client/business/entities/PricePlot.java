@@ -1,4 +1,5 @@
-/* stocks is client-server program to manage a household's food stock
+/*
+ * stocks is client-server program to manage a household's food stock
  * Copyright (C) 2019  The stocks developers
  *
  * This file is part of the stocks program suite.
@@ -15,23 +16,25 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  */
 
-package de.njsm.stocks.client.fragment.fooddetails;
+package de.njsm.stocks.client.business.entities;
 
-import com.github.mikephil.charting.components.AxisBase;
-import de.njsm.stocks.client.presenter.DateRenderStrategy;
+import com.google.auto.value.AutoValue;
 
-class ValueFormatter extends com.github.mikephil.charting.formatter.ValueFormatter {
+import java.util.List;
 
-    private final DateRenderStrategy dateRenderStrategy;
+@AutoValue
+public abstract class PricePlot<E extends Entity<E>, T extends Comparable<? super T>> {
 
-    ValueFormatter(DateRenderStrategy dateRenderStrategy) {
-        this.dateRenderStrategy = dateRenderStrategy;
-    }
+    public abstract IdImpl<E> id();
 
-    @Override
-    public String getAxisLabel(float value, AxisBase axis) {
-        return dateRenderStrategy.renderEpochSeconds(value);
+    public abstract String name();
+
+    public abstract List<PlotPoint<T>> plotPoints();
+
+    public static <E extends Entity<E>, T extends Comparable<? super T>> PricePlot<E, T> create(Id<E> id, String name, List<PlotPoint<T>> plotPoints) {
+        return new AutoValue_PricePlot<>(id.toId(), name, plotPoints);
     }
 }

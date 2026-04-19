@@ -69,7 +69,8 @@ public class FoodItemTabsFragment extends TabsFragment {
                     return result;
                 },
                 () -> {
-                    Fragment result = new PriceShowFragment();
+                    SwipeRefreshLayout swiper = requireView().findViewById(R.id.fragment_tab_layout_swipe);
+                    Fragment result = new PriceShowFragment(swiper::setEnabled);
                     result.setArguments(requireArguments());
                     return result;
                 },

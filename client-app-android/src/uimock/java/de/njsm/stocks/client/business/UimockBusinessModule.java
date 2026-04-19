@@ -275,4 +275,7 @@ public interface UimockBusinessModule {
 
     @Binds
     PriceAddInteractor PriceAddInteractor(InMemoryPriceAddInteractor impl);
+
+    @Binds
+    PriceShowInteractor PriceShowInteractor(InMemoryPriceShowInterActorImpl impl);
 }
