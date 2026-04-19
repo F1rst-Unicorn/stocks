@@ -173,4 +173,7 @@ public interface NavigationModule {
 
     @Binds
     PriceShowNavigator PriceShowNavigator(PriceShowNavigatorImpl impl);
+
+    @Binds
+    PriceListNavigator PriceListNavigator(PriceListNavigatorImpl impl);
 }

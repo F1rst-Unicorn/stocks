@@ -430,4 +430,11 @@ public class ViewModelModule {
     ViewModel PriceShowViewModel(PriceShowInteractor priceShowInteractor, ObservableDataCache<PriceDetails> data) {
         return new PriceShowViewModel(priceShowInteractor, data);
     }
+
+    @Provides
+    @IntoMap
+    @ViewModelKey(PriceListViewModel.class)
+    ViewModel PriceListViewModel(PriceListInteractor interactor, EntityDeleter<Price> deleter, Synchroniser synchroniser, ObservableListCache<PriceForListing> data) {
+        return new PriceListViewModel(interactor, deleter, synchroniser, data);
+    }
 }

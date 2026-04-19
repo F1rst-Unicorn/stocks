@@ -54,7 +54,7 @@ class FoodItemAdapter extends RecyclerView.Adapter<FoodItemViewHolder> {
 
     FoodItemAdapter(View.OnClickListener onClickListener, ExpirationIconProvider expirationIconProvider, Localiser localiser) {
         this.onClickListener = onClickListener;
-        unitAmountRenderStrategy = new UnitAmountRenderStrategy();
+        this.unitAmountRenderStrategy = new UnitAmountRenderStrategy();
         this.dateRenderStrategy = new DateRenderStrategy(localiser);
         this.localiser = localiser;
         this.expirationIconProvider = expirationIconProvider;

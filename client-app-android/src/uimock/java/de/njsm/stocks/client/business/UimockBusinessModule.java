@@ -278,4 +278,10 @@ public interface UimockBusinessModule {
 
     @Binds
     PriceShowInteractor PriceShowInteractor(InMemoryPriceShowInterActorImpl impl);
+
+    @Binds
+    PriceListInteractor PriceListInteractor(InMemoryPriceListIteractorImpl impl);
+
+    @Binds
+    EntityDeleter<Price> PriceDeleter(InMemoryPriceDeleterImpl impl);
 }

@@ -1,0 +1,48 @@
+/*
+ * stocks is client-server program to manage a household's food stock
+ * Copyright (C) 2019  The stocks developers
+ *
+ * This file is part of the stocks program suite.
+ *
+ * stocks is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * stocks is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
+ */
+
+package de.njsm.stocks.client.business;
+
+import de.njsm.stocks.client.business.entities.Food;
+import de.njsm.stocks.client.business.entities.IdImpl;
+import de.njsm.stocks.client.business.entities.PriceForListing;
+import de.njsm.stocks.client.business.entities.StoredAmount;
+import io.reactivex.rxjava3.core.Observable;
+
+import javax.inject.Inject;
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.List;
+
+public class InMemoryPriceListIteractorImpl implements PriceListInteractor {
+
+    @Inject
+    InMemoryPriceListIteractorImpl() {
+    }
+
+    @Override
+    public Observable<List<PriceForListing>> getPrices(IdImpl<Food> id) {
+        return Observable.just(List.of(
+                PriceForListing.create(IdImpl.create(1), LocalDateTime.of(2025, 4, 17, 15, 3), "BuyAndEat Village", BigDecimal.valueOf(4.1), StoredAmount.create(BigDecimal.valueOf(100), "g")),
+                PriceForListing.create(IdImpl.create(1), LocalDateTime.of(2025, 4, 12, 15, 3), "BigShop Capital", BigDecimal.valueOf(4.1), StoredAmount.create(BigDecimal.valueOf(100), "g"))
+        ));
+    }
+}
