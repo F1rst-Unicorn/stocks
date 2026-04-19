@@ -25,17 +25,21 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.LiveDataReactiveStreams;
 import androidx.lifecycle.ViewModel;
 import de.njsm.stocks.client.business.FoodItemAddInteractor;
-import de.njsm.stocks.client.business.entities.Food;
-import de.njsm.stocks.client.business.entities.FoodItemAddData;
-import de.njsm.stocks.client.business.entities.FoodItemForm;
-import de.njsm.stocks.client.business.entities.Id;
+import de.njsm.stocks.client.business.PriceAddInteractor;
+import de.njsm.stocks.client.business.entities.*;
+import io.reactivex.rxjava3.core.BackpressureStrategy;
+
+import java.util.List;
 
 public class FoodItemAddViewModel extends ViewModel {
 
     private final FoodItemAddInteractor interactor;
 
-    public FoodItemAddViewModel(FoodItemAddInteractor interactor) {
+    private final PriceAddInteractor priceInteractor;
+
+    FoodItemAddViewModel(FoodItemAddInteractor interactor, PriceAddInteractor priceInteractor) {
         this.interactor = interactor;
+        this.priceInteractor = priceInteractor;
     }
 
     public LiveData<FoodItemAddData> getFormData(Id<Food> food) {
@@ -46,5 +50,22 @@ public class FoodItemAddViewModel extends ViewModel {
 
     public void add(FoodItemForm data) {
         interactor.add(data);
+    }
+
+    public void add(PriceAddForm data) {
+        priceInteractor.addPrice(data);
+    }
+
+
+    public LiveData<List<ScaledUnitForSelection>> getUnits() {
+        return LiveDataReactiveStreams.fromPublisher(
+                priceInteractor.getUnits().toFlowable(BackpressureStrategy.LATEST)
+        );
+    }
+
+    public LiveData<List<GroceryStoreForSelection>> getGroceryStores() {
+        return LiveDataReactiveStreams.fromPublisher(
+                priceInteractor.getGroceryStores().toFlowable(BackpressureStrategy.LATEST)
+        );
     }
 }

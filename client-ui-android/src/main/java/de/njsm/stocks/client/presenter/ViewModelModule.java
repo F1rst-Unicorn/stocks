@@ -224,8 +224,8 @@ public class ViewModelModule {
     @Provides
     @IntoMap
     @ViewModelKey(FoodItemAddViewModel.class)
-    ViewModel FoodItemAddViewModel(FoodItemAddInteractor interactor) {
-        return new FoodItemAddViewModel(interactor);
+    ViewModel FoodItemAddViewModel(FoodItemAddInteractor interactor, PriceAddInteractor priceInteractor) {
+        return new FoodItemAddViewModel(interactor, priceInteractor);
     }
 
     @Provides

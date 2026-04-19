@@ -31,8 +31,10 @@ import de.njsm.stocks.client.business.Localiser;
 import de.njsm.stocks.client.business.entities.Food;
 import de.njsm.stocks.client.business.entities.FoodItemAddData;
 import de.njsm.stocks.client.business.entities.Id;
+import de.njsm.stocks.client.business.entities.PriceAddForm;
 import de.njsm.stocks.client.fragment.BottomToolbarFragment;
 import de.njsm.stocks.client.fragment.DialogDisplayer;
+import de.njsm.stocks.client.fragment.priceadd.PriceForm;
 import de.njsm.stocks.client.fragment.view.FoodItemForm;
 import de.njsm.stocks.client.navigation.FoodItemAddNavigator;
 import de.njsm.stocks.client.presenter.FoodItemAddViewModel;
@@ -48,11 +50,15 @@ public class FoodItemAddFragment extends BottomToolbarFragment implements MenuPr
 
     private FoodItemForm form;
 
+    private PriceForm priceAddForm;
+
     private Id<Food> food;
 
     private Localiser clock;
 
     private DialogDisplayer dialogDisplayer;
+
+    private Localiser localiser;
 
     @NonNull
     @Override
@@ -62,6 +68,10 @@ public class FoodItemAddFragment extends BottomToolbarFragment implements MenuPr
         View result = insertContent(inflater, root, R.layout.fragment_food_item_form);
         form = new FoodItemForm(result);
         form.setToday(clock.today());
+
+        priceAddForm = new PriceForm(result.findViewById(R.id.fragment_food_item_form_price), this::getString);
+        foodItemAddViewModel.getUnits().observe(getViewLifecycleOwner(), priceAddForm::showUnits);
+        foodItemAddViewModel.getGroceryStores().observe(getViewLifecycleOwner(), priceAddForm::showGroceryStores);
 
         food = navigator.getFood(requireArguments());
         foodItemAddViewModel.getFormData(food).observe(getViewLifecycleOwner(), this::showForm);
@@ -99,6 +109,21 @@ public class FoodItemAddFragment extends BottomToolbarFragment implements MenuPr
         );
         foodItemAddViewModel.add(data);
 
+        if (priceAddForm.maySubmit()) {
+            priceAddForm.getGroceryStore().ifPresent(groceryStore ->
+                    priceAddForm.getUnit().ifPresent(scaledUnit -> {
+                        PriceAddForm priceToAdd = PriceAddForm.create(
+                                priceAddForm.getPrice(),
+                                localiser.toInstant(priceAddForm.getDate().atTime(priceAddForm.getTime())),
+                                priceAddForm.getScale(),
+                                groceryStore.toId(),
+                                food.toId(),
+                                scaledUnit.toId()
+                        );
+                        foodItemAddViewModel.add(priceToAdd);
+                    }));
+        }
+
         if (menuItem.getItemId() == R.id.menu_check_and_continue_check)
             navigator.back();
         return true;
@@ -125,5 +150,10 @@ public class FoodItemAddFragment extends BottomToolbarFragment implements MenuPr
     @Inject
     void setDialogDisplayer(DialogDisplayer dialogDisplayer) {
         this.dialogDisplayer = dialogDisplayer;
+    }
+
+    @Inject
+    void setLocaliser(Localiser localiser) {
+        this.localiser = localiser;
     }
 }
