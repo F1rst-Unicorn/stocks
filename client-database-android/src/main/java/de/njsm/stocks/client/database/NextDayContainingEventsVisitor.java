@@ -123,4 +123,9 @@ class NextDayContainingEventsVisitor implements EntityType.Visitor<Void, Maybe<I
     public Maybe<Instant> recipeProduct(Void input) {
         return eventDao.getNextDayContainingRecipeProductEvents(day, previous);
     }
+
+    @Override
+    public Maybe<Instant> groceryChain(Void input) {
+        return eventDao.getNextDayContainingGroceryChainEvents(day, previous);
+    }
 }

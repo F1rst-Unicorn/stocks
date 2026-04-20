@@ -177,4 +177,16 @@ public abstract class SynchronisationDao {
 
     @Query("delete from recipe_product")
     abstract void deleteRecipeProducts();
+
+    @Transaction
+    void synchroniseGroceryChains(List<GroceryChainDbEntity> data) {
+        deleteGroceryChains();
+        writeGroceryChains(data);
+    }
+
+    @Insert(onConflict = REPLACE)
+    abstract void writeGroceryChains(List<GroceryChainDbEntity> data);
+
+    @Query("delete from grocery_chain")
+    abstract void deleteGroceryChains();
 }

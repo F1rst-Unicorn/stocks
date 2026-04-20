@@ -200,6 +200,13 @@ class SynchroniseInteractorImpl implements SynchroniseInteractor {
             synchronisationRepository.writeRecipeProducts(items);
             return null;
         }
+
+        @Override
+        public Void groceryChain(InstantInterval input) {
+            List<GroceryChainForSynchronisation> items = updateService.getGroceryChains(input.startingFrom(), input.upUntil());
+            synchronisationRepository.writeGroceryChains(items);
+            return null;
+        }
     }
 
     private final class EntityInitialiser implements EntityType.Visitor<InstantInterval, Void> {
@@ -284,6 +291,13 @@ class SynchroniseInteractorImpl implements SynchroniseInteractor {
         public Void recipeProduct(InstantInterval input) {
             List<RecipeProductForSynchronisation> items = updateService.getRecipeProducts(input.startingFrom(), input.upUntil());
             synchronisationRepository.initialiseRecipeProducts(items);
+            return null;
+        }
+
+        @Override
+        public Void groceryChain(InstantInterval input) {
+            List<GroceryChainForSynchronisation> items = updateService.getGroceryChains(input.startingFrom(), input.upUntil());
+            synchronisationRepository.initialiseGroceryChains(items);
             return null;
         }
     }
