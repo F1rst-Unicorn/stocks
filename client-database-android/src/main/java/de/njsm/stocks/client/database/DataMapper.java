@@ -213,6 +213,20 @@ public class DataMapper {
         );
     }
 
+    static GroceryStoreDbEntity map(GroceryStoreForSynchronisation groceryStore) {
+        return GroceryStoreDbEntity.create(
+                groceryStore.id(),
+                groceryStore.version(),
+                groceryStore.validTimeStart(),
+                groceryStore.validTimeEnd(),
+                groceryStore.transactionTimeStart(),
+                groceryStore.transactionTimeEnd(),
+                groceryStore.initiates(),
+                groceryStore.name(),
+                groceryStore.groceryChain().id()
+        );
+    }
+
     static LocationForListing map(LocationDbEntity input) {
         return LocationForListing.create(input.id(), input.name());
     }

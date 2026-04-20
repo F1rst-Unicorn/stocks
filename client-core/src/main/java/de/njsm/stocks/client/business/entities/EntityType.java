@@ -95,6 +95,12 @@ public enum EntityType {
         <I, O> O accept(Visitor<I, O> visitor, I input) {
             return visitor.groceryChain(input);
         }
+    },
+    GROCERY_STORE {
+        @Override
+        <I, O> O accept(Visitor<I, O> visitor, I input) {
+            return visitor.groceryStore(input);
+        }
     };
 
     abstract <I, O> O accept(Visitor<I, O> visitor, I input);
@@ -128,5 +134,7 @@ public enum EntityType {
         O recipeProduct(I input);
 
         O groceryChain(I input);
+
+        O groceryStore(I input);
     }
 }

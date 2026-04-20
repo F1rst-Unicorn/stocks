@@ -78,6 +78,7 @@ import java.time.format.DateTimeFormatter;
                 RecipeIngredientEditEntity.class,
                 RecipeProductEditEntity.class,
                 GroceryChainDbEntity.class,
+                GroceryStoreDbEntity.class,
         },
         views = {
                 CurrentLocationDbView.class,

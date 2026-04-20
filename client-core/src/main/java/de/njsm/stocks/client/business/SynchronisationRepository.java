@@ -78,4 +78,8 @@ public interface SynchronisationRepository {
     void initialiseGroceryChains(List<GroceryChainForSynchronisation> items);
 
     void writeGroceryChains(List<GroceryChainForSynchronisation> entities);
+
+    void initialiseGroceryStores(List<GroceryStoreForSynchronisation> items);
+
+    void writeGroceryStores(List<GroceryStoreForSynchronisation> entities);
 }
