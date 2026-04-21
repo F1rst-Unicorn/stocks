@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 53,
-    "identityHash": "e775706e307d5747505c1f6e9b85a86c",
+    "identityHash": "cab7cc9a857a1b24ca77b8a46ec16a36",
     "entities": [
       {
         "tableName": "updates",
@@ -3031,6 +3031,132 @@
             "createSql": "CREATE INDEX IF NOT EXISTS `grocery_store_transaction_time_end` ON `${TABLE_NAME}` (`transaction_time_end`)"
           }
         ]
+      },
+      {
+        "tableName": "price",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`price` TEXT NOT NULL, `scale` TEXT NOT NULL, `grocery_store` INTEGER NOT NULL, `food` INTEGER NOT NULL, `scaled_unit` INTEGER NOT NULL, `id` INTEGER NOT NULL, `version` INTEGER NOT NULL, `valid_time_start` TEXT NOT NULL, `valid_time_end` TEXT NOT NULL, `transaction_time_start` TEXT NOT NULL, `transaction_time_end` TEXT NOT NULL, `initiates` INTEGER NOT NULL, PRIMARY KEY(`id`, `version`, `transaction_time_start`))",
+        "fields": [
+          {
+            "fieldPath": "price",
+            "columnName": "price",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "scale",
+            "columnName": "scale",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "groceryStore",
+            "columnName": "grocery_store",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "food",
+            "columnName": "food",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "scaledUnit",
+            "columnName": "scaled_unit",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "version",
+            "columnName": "version",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "validTimeStart",
+            "columnName": "valid_time_start",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "validTimeEnd",
+            "columnName": "valid_time_end",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "transactionTimeStart",
+            "columnName": "transaction_time_start",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "transactionTimeEnd",
+            "columnName": "transaction_time_end",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "initiates",
+            "columnName": "initiates",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "id",
+            "version",
+            "transaction_time_start"
+          ]
+        },
+        "indices": [
+          {
+            "name": "price_current",
+            "unique": false,
+            "columnNames": [
+              "id",
+              "valid_time_start",
+              "valid_time_end"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `price_current` ON `${TABLE_NAME}` (`id`, `valid_time_start`, `valid_time_end`)"
+          },
+          {
+            "name": "price_pkey",
+            "unique": false,
+            "columnNames": [
+              "id"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `price_pkey` ON `${TABLE_NAME}` (`id`)"
+          },
+          {
+            "name": "price_transaction_time_start",
+            "unique": false,
+            "columnNames": [
+              "transaction_time_start"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `price_transaction_time_start` ON `${TABLE_NAME}` (`transaction_time_start`)"
+          },
+          {
+            "name": "price_transaction_time_end",
+            "unique": false,
+            "columnNames": [
+              "transaction_time_end"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `price_transaction_time_end` ON `${TABLE_NAME}` (`transaction_time_end`)"
+          }
+        ]
       }
     ],
     "views": [
@@ -3081,7 +3207,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'e775706e307d5747505c1f6e9b85a86c')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'cab7cc9a857a1b24ca77b8a46ec16a36')"
     ]
   }
 }

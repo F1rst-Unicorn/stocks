@@ -50,9 +50,9 @@ class PriceAddServiceImpl extends ServiceQuery<PriceAddForm, Price> implements P
                 .price(form.price())
                 .validTime(InstantSerialiser.serialize(form.validTime()))
                 .scale(form.scale())
-                .groceryStore(form.groceryStore())
-                .food(form.food())
-                .scaledUnit(form.scaledUnit())
+                .groceryStore(form.groceryStore().id())
+                .food(form.food().id())
+                .scaledUnit(form.scaledUnit().id())
                 .build());
     }
 }

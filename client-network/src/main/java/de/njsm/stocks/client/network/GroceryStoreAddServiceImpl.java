@@ -47,7 +47,7 @@ class GroceryStoreAddServiceImpl extends ServiceQuery<GroceryStoreAddForm, Groce
     Call<? extends DataResponse<Integer>> buildCall(GroceryStoreAddForm form) {
         return api.addGroceryStore(GroceryStoreForInsertion.builder()
                 .name(form.name())
-                .groceryChain(form.groceryChain())
+                .groceryChain(form.groceryChain().id())
                 .build());
     }
 }

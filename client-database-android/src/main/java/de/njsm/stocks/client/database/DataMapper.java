@@ -227,6 +227,23 @@ public class DataMapper {
         );
     }
 
+    static PriceDbEntity map(PriceForSynchronisation price) {
+        return PriceDbEntity.create(
+                price.id(),
+                price.version(),
+                price.validTimeStart(),
+                price.validTimeEnd(),
+                price.transactionTimeStart(),
+                price.transactionTimeEnd(),
+                price.initiates(),
+                price.price(),
+                price.scale(),
+                price.groceryStore().id(),
+                price.food().id(),
+                price.scaledUnit().id()
+        );
+    }
+
     static LocationForListing map(LocationDbEntity input) {
         return LocationForListing.create(input.id(), input.name());
     }

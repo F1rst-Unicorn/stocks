@@ -24,6 +24,7 @@ val Project.libs: VersionCatalog
 
 dependencies {
     addProvider("testImplementation", provider { libs.findLibrary("junit5").get().get() })
+    addProvider("testImplementation", provider { libs.findLibrary("junit-platform").get().get() })
     addProvider("testImplementation", provider { libs.findLibrary("hamcrest").get().get() })
     addProvider("testImplementation", provider { libs.findLibrary("mockito").get().get() })
     addProvider("testImplementation", provider { libs.findLibrary("mockito-junit5").get().get() })

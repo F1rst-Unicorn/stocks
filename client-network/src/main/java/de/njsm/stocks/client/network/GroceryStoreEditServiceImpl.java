@@ -41,7 +41,7 @@ class GroceryStoreEditServiceImpl extends ServiceCommand<GroceryStoreForEditing>
                 .id(data.id())
                 .version(data.version())
                 .name(data.name())
-                .groceryChain(data.groceryChain())
+                .groceryChain(data.groceryChain().id())
                 .build());
     }
 

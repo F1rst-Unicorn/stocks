@@ -140,7 +140,7 @@ public class DataMapper {
     public static GroceryStoreForSynchronisation map(BitemporalGroceryStore source) {
         return map(source, GroceryStoreForSynchronisation.builder())
                 .name(source.name())
-                .groceryChain(source.groceryChain())
+                .groceryChain(IdImpl.create(source.groceryChain()))
                 .build();
     }
 
@@ -148,9 +148,9 @@ public class DataMapper {
         return map(source, PriceForSynchronisation.builder())
                 .price(source.price())
                 .scale(source.scale())
-                .groceryStore(source.groceryStore())
-                .food(source.food())
-                .scaledUnit(source.scaledUnit())
+                .groceryStore(IdImpl.create(source.groceryStore()))
+                .food(IdImpl.create(source.food()))
+                .scaledUnit(IdImpl.create(source.scaledUnit()))
                 .build();
     }
 
@@ -188,6 +188,12 @@ public class DataMapper {
             return Optional.of(EntityType.RECIPE_INGREDIENT);
         } else if (entityType.equalsIgnoreCase("recipe_product")) {
             return Optional.of(EntityType.RECIPE_PRODUCT);
+        } else if (entityType.equalsIgnoreCase("grocery_chain")) {
+            return Optional.of(EntityType.GROCERY_CHAIN);
+        } else if (entityType.equalsIgnoreCase("grocery_store")) {
+            return Optional.of(EntityType.GROCERY_STORE);
+        } else if (entityType.equalsIgnoreCase("price")) {
+            return Optional.of(EntityType.PRICE);
         }
 
         LOG.info("unknown entity type '" + entityType + "'");

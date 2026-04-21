@@ -552,6 +552,11 @@ abstract class EventDao {
     abstract Maybe<Instant> getNextDayContainingGroceryStoreEvents(Instant day, boolean previous);
 
     @Query(SELECT_REDUCER +
+            "from price main_table " +
+            "where :previous != (main_table.transaction_time_start >= :day)")
+    abstract Maybe<Instant> getNextDayContainingPriceEvents(Instant day, boolean previous);
+
+    @Query(SELECT_REDUCER +
             "from user main_table " +
             "where :previous != (main_table.transaction_time_start >= :day)")
     abstract Maybe<Instant> getNextDayContainingUserEvents(Instant day, boolean previous);
