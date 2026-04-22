@@ -27,6 +27,8 @@ import de.njsm.stocks.client.business.entities.GroceryChainForDeletion;
 import de.njsm.stocks.client.business.entities.GroceryChainForListing;
 import io.reactivex.rxjava3.core.Observable;
 
+import java.util.List;
+
 @Dao
 abstract class GroceryChainDao {
 
@@ -35,4 +37,9 @@ abstract class GroceryChainDao {
 
     @Query("select * from current_grocery_chain where id = :id")
     abstract Observable<GroceryChainForListing> getGroceryChainForListing(int id);
+
+    @Query("select * " +
+            "from current_grocery_chain " +
+            "order by name")
+    public abstract Observable<List<GroceryChainForListing>> getGroceryChains();
 }

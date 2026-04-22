@@ -19,33 +19,25 @@
  *
  */
 
-package de.njsm.stocks.client.database;
+package de.njsm.stocks.client.business;
 
-import de.njsm.stocks.client.business.EntityDeleteRepository;
-import de.njsm.stocks.client.business.GroceryChainRepository;
-import de.njsm.stocks.client.business.entities.*;
+import de.njsm.stocks.client.business.entities.GroceryChainForListing;
 import io.reactivex.rxjava3.core.Observable;
 
 import javax.inject.Inject;
 import java.util.List;
 
-class GroceryChainRepositoryImpl implements EntityDeleteRepository<GroceryChain>, GroceryChainRepository {
+class GroceryChainListInteractorImpl implements GroceryChainListInteractor {
 
-    private final GroceryChainDao groceryChainDao;
+    private final GroceryChainRepository groceryChainRepository;
 
     @Inject
-    GroceryChainRepositoryImpl(GroceryChainDao groceryChainDao) {
-        this.groceryChainDao = groceryChainDao;
-    }
-
-    @Override
-    public GroceryChainForDeletion getEntityForDeletion(Id<GroceryChain> id) {
-        return groceryChainDao.getGroceryChain(id.id());
+    GroceryChainListInteractorImpl(GroceryChainRepository groceryChainRepository) {
+        this.groceryChainRepository = groceryChainRepository;
     }
 
     @Override
     public Observable<List<GroceryChainForListing>> getGroceryChains() {
-        return groceryChainDao.getGroceryChains()
-                .distinctUntilChanged();
+        return groceryChainRepository.getGroceryChains();
     }
 }

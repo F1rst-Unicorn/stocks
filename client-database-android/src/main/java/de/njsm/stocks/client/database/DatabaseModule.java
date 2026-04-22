@@ -305,13 +305,16 @@ public interface DatabaseModule {
     RecipeCookRepository RecipeCookRepository(RecipeCookRepositoryImpl impl);
 
     @Binds
-    EntityDeleteRepository<GroceryChain> GroceryChainRepository(GroceryChainRepositoryImpl impl);
+    EntityDeleteRepository<GroceryChain> GroceryChainDeleteRepository(GroceryChainRepositoryImpl impl);
 
     @Binds
     EntityDeleteRepository<GroceryStore> GroceryStoreRepositoryImpl(GroceryStoreRepositoryImpl impl);
 
     @Binds
     GroceryStoreRepository GroceryStoreRepository(GroceryStoreRepositoryImpl impl);
+
+    @Binds
+    GroceryChainRepository GroceryChainRepository(GroceryChainRepositoryImpl impl);
 
     @Binds
     EntityDeleteRepository<Price> PriceRepository(PriceRepositoryImpl impl);
