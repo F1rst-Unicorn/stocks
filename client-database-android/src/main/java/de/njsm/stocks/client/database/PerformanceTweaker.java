@@ -60,6 +60,7 @@ public class PerformanceTweaker extends Callback {
         recreateCurrentIndex(db, "recipe_product");
         recreateCurrentIndex(db, "grocery_chain");
         recreateCurrentIndex(db, "grocery_store");
+        recreateCurrentIndex(db, "price");
 
         recreateFoodToBuyIndex(db);
 
