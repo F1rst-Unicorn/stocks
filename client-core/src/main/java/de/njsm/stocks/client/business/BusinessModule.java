@@ -235,4 +235,7 @@ public interface BusinessModule {
 
     @Binds
     EntityDeleter<Price> PriceDeleter(PriceDeleterImpl impl);
+
+    @Binds
+    GroceryStoreListInteractor GroceryStoreListInteractor(GroceryStoreListInteractorImpl impl);
 }

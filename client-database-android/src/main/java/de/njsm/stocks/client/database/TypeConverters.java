@@ -126,4 +126,9 @@ public class TypeConverters {
     public Id<ScaledUnit> scaledUnitId(int id) {
         return IdImpl.create(id);
     }
+
+    @TypeConverter
+    public Id<GroceryStore> groceryStoreId(int id) {
+        return IdImpl.create(id);
+    }
 }

@@ -19,23 +19,18 @@
  *
  */
 
-package de.njsm.stocks.client.database;
+package de.njsm.stocks.client.business;
 
-import androidx.room.Dao;
-import androidx.room.Query;
-import de.njsm.stocks.client.business.entities.GroceryStoreForDeletion;
+import de.njsm.stocks.client.business.entities.GroceryChain;
+import de.njsm.stocks.client.business.entities.GroceryChainForListing;
+import de.njsm.stocks.client.business.entities.GroceryStoreForListing;
+import de.njsm.stocks.client.business.entities.IdImpl;
 import io.reactivex.rxjava3.core.Observable;
 
 import java.util.List;
 
-@Dao
-abstract class GroceryStoreDao {
+public interface GroceryStoreRepository {
+    Observable<List<GroceryStoreForListing>> getGroceryStores();
 
-    @Query("select * from current_grocery_store where id = :id")
-    abstract GroceryStoreForDeletion getGroceryStore(int id);
-
-    @Query("select * " +
-            "from current_grocery_store " +
-            "order by name")
-    public abstract Observable<List<GroceryStoreDbEntity>> getCurrentGroceryStores();
+    Observable<GroceryChainForListing> getGroceryChain(IdImpl<GroceryChain> id);
 }

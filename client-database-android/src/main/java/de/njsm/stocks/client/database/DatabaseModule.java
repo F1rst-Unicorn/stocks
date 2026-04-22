@@ -308,7 +308,10 @@ public interface DatabaseModule {
     EntityDeleteRepository<GroceryChain> GroceryChainRepository(GroceryChainRepositoryImpl impl);
 
     @Binds
-    EntityDeleteRepository<GroceryStore> GroceryStoreRepository(GroceryStoreRepositoryImpl impl);
+    EntityDeleteRepository<GroceryStore> GroceryStoreRepositoryImpl(GroceryStoreRepositoryImpl impl);
+
+    @Binds
+    GroceryStoreRepository GroceryStoreRepository(GroceryStoreRepositoryImpl impl);
 
     @Binds
     EntityDeleteRepository<Price> PriceRepository(PriceRepositoryImpl impl);

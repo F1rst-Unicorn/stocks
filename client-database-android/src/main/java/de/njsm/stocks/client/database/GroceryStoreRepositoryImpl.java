@@ -22,23 +22,47 @@
 package de.njsm.stocks.client.database;
 
 import de.njsm.stocks.client.business.EntityDeleteRepository;
-import de.njsm.stocks.client.business.entities.GroceryStore;
-import de.njsm.stocks.client.business.entities.GroceryStoreForDeletion;
-import de.njsm.stocks.client.business.entities.Id;
+import de.njsm.stocks.client.business.GroceryStoreRepository;
+import de.njsm.stocks.client.business.entities.*;
+import io.reactivex.rxjava3.core.Observable;
 
 import javax.inject.Inject;
+import java.util.List;
 
-class GroceryStoreRepositoryImpl implements EntityDeleteRepository<GroceryStore> {
+import static java.util.stream.Collectors.toList;
+
+class GroceryStoreRepositoryImpl implements EntityDeleteRepository<GroceryStore>, GroceryStoreRepository {
 
     private final GroceryStoreDao groceryStoreDao;
 
+    private final GroceryChainDao groceryChainDao;
+
     @Inject
-    GroceryStoreRepositoryImpl(GroceryStoreDao groceryStoreDao) {
+    GroceryStoreRepositoryImpl(GroceryStoreDao groceryStoreDao, GroceryChainDao groceryChainDao) {
         this.groceryStoreDao = groceryStoreDao;
+        this.groceryChainDao = groceryChainDao;
     }
 
     @Override
     public GroceryStoreForDeletion getEntityForDeletion(Id<GroceryStore> id) {
         return groceryStoreDao.getGroceryStore(id.id());
+    }
+
+    @Override
+    public Observable<List<GroceryStoreForListing>> getGroceryStores() {
+        return groceryStoreDao.getCurrentGroceryStores()
+                .map(v -> v.stream()
+                        .map(store -> GroceryStoreForListing.create(
+                                IdImpl.create(store.id()),
+                                store.version(),
+                                store.name()
+                        ))
+                        .collect(toList()))
+                .distinctUntilChanged();
+    }
+
+    @Override
+    public Observable<GroceryChainForListing> getGroceryChain(IdImpl<GroceryChain> id) {
+        return groceryChainDao.getGroceryChainForListing(id.id());
     }
 }
