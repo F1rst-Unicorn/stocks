@@ -362,6 +362,8 @@
     <string name="error_details_grocery_store_edit">Laden bearbeiten</string>
     <string name="error_details_grocery_store_delete">Laden löschen</string>
     <string name="error_details_price_add">Preis hinzufügen</string>
+    <string name="error_details_price_delete">Preis löschen</string>
+    <string name="error_details_price_delete_details">%1$s für %2$s %3$s\nbei %4$s</string>
 
     <string name="text_no_errors">Alles in Ordnung.</string>
 </resources>

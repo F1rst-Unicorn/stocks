@@ -920,4 +920,172 @@ public abstract class ErrorDao {
             "from recipe_product_to_edit " +
             "where recipe_to_edit = :recipeId")
     abstract List<RecipeProductEditEntity> getRecipeProductEdit(long recipeId);
+
+    @Insert
+    abstract long insert(GroceryChainDeleteEntity recipeEditEntity);
+
+    @Insert
+    abstract long insert(GroceryStoreDeleteEntity recipeEditEntity);
+
+    @Insert
+    abstract long insert(PriceDeleteEntity recipeEditEntity);
+
+    @Query("delete from grocery_chain_to_delete " +
+            "where id = :id")
+    abstract void deleteGroceryChainDelete(Long id);
+
+    @Query("delete from grocery_store_to_delete " +
+            "where id = :id")
+    abstract void deleteGroceryStoreDelete(Long id);
+
+    @Query("delete from price_to_delete " +
+            "where id = :id")
+    abstract void deletePriceDelete(Long id);
+
+    @Query("select * " +
+            "from grocery_chain_to_delete " +
+            "where id = :id")
+    abstract GroceryChainDeleteEntity getGroceryChainDelete(Long id);
+
+    @Query("select * " +
+            "from grocery_store_to_delete " +
+            "where id = :id")
+    abstract GroceryStoreDeleteEntity getGroceryStoreDelete(Long id);
+
+    @Query("select * " +
+            "from price_to_delete " +
+            "where id = :id")
+    abstract PriceDeleteEntity getPriceDelete(Long id);
+
+    public GroceryChainDbEntity getGroceryChainByValidOrTransactionTime(PreservedId id) {
+        GroceryChainDbEntity groceryChain = getCurrentGroceryChain(id.id());
+        if (groceryChain == null) {
+            groceryChain = getLatestGroceryChainAsBestKnown(id.id());
+        }
+        if (groceryChain == null) {
+            groceryChain = getCurrentGroceryChainAsKnownAt(id.id(), id.transactionTime());
+        }
+        return groceryChain;
+    }
+
+    @Query("select * " +
+            "from current_grocery_chain " +
+            "where id = :id")
+    abstract GroceryChainDbEntity getCurrentGroceryChain(int id);
+
+    @Query("select * " +
+            "from grocery_chain " +
+            "where id = :id " +
+            "and transaction_time_end = " + DATABASE_INFINITY_STRING_SQL +
+            "and valid_time_start = (" +
+            "   select max(valid_time_start) " +
+            "   from grocery_chain " +
+            "   where id = :id" +
+            "   and valid_time_start <= " + NOW +
+            "   and transaction_time_end = " + DATABASE_INFINITY_STRING_SQL +
+            ")")
+    abstract GroceryChainDbEntity getLatestGroceryChainAsBestKnown(int id);
+
+    @Query("select * " +
+            "from grocery_chain " +
+            "where id = :id " +
+            "and transaction_time_start <= :transactionTime " +
+            "and :transactionTime < transaction_time_end " +
+            "and valid_time_start = (" +
+            "   select max(valid_time_start) " +
+            "   from grocery_chain " +
+            "   where id = :id" +
+            "   and valid_time_start <= " + NOW +
+            "   and transaction_time_start <= :transactionTime " +
+            "   and :transactionTime < transaction_time_end " +
+            ")")
+    abstract GroceryChainDbEntity getCurrentGroceryChainAsKnownAt(int id, Instant transactionTime);
+
+    public GroceryStoreDbEntity getGroceryStoreByValidOrTransactionTime(PreservedId id) {
+        GroceryStoreDbEntity groceryStore = getCurrentGroceryStore(id.id());
+        if (groceryStore == null) {
+            groceryStore = getLatestGroceryStoreAsBestKnown(id.id());
+        }
+        if (groceryStore == null) {
+            groceryStore = getCurrentGroceryStoreAsKnownAt(id.id(), id.transactionTime());
+        }
+        return groceryStore;
+    }
+
+    @Query("select * " +
+            "from current_grocery_store " +
+            "where id = :id")
+    abstract GroceryStoreDbEntity getCurrentGroceryStore(int id);
+
+    @Query("select * " +
+            "from grocery_store " +
+            "where id = :id " +
+            "and transaction_time_end = " + DATABASE_INFINITY_STRING_SQL +
+            "and valid_time_start = (" +
+            "   select max(valid_time_start) " +
+            "   from grocery_store " +
+            "   where id = :id" +
+            "   and valid_time_start <= " + NOW +
+            "   and transaction_time_end = " + DATABASE_INFINITY_STRING_SQL +
+            ")")
+    abstract GroceryStoreDbEntity getLatestGroceryStoreAsBestKnown(int id);
+
+    @Query("select * " +
+            "from grocery_store " +
+            "where id = :id " +
+            "and transaction_time_start <= :transactionTime " +
+            "and :transactionTime < transaction_time_end " +
+            "and valid_time_start = (" +
+            "   select max(valid_time_start) " +
+            "   from grocery_store " +
+            "   where id = :id" +
+            "   and valid_time_start <= " + NOW +
+            "   and transaction_time_start <= :transactionTime " +
+            "   and :transactionTime < transaction_time_end " +
+            ")")
+    abstract GroceryStoreDbEntity getCurrentGroceryStoreAsKnownAt(int id, Instant transactionTime);
+
+    public PriceDbEntity getPriceByValidOrTransactionTime(PreservedId id) {
+        PriceDbEntity price = getCurrentPrice(id.id());
+        if (price == null) {
+            price = getLatestPriceAsBestKnown(id.id());
+        }
+        if (price == null) {
+            price = getCurrentPriceAsKnownAt(id.id(), id.transactionTime());
+        }
+        return price;
+    }
+
+    @Query("select * " +
+            "from current_price " +
+            "where id = :id")
+    abstract PriceDbEntity getCurrentPrice(int id);
+
+    @Query("select * " +
+            "from price " +
+            "where id = :id " +
+            "and transaction_time_end = " + DATABASE_INFINITY_STRING_SQL +
+            "and valid_time_start = (" +
+            "   select max(valid_time_start) " +
+            "   from price " +
+            "   where id = :id" +
+            "   and valid_time_start <= " + NOW +
+            "   and transaction_time_end = " + DATABASE_INFINITY_STRING_SQL +
+            ")")
+    abstract PriceDbEntity getLatestPriceAsBestKnown(int id);
+
+    @Query("select * " +
+            "from price " +
+            "where id = :id " +
+            "and transaction_time_start <= :transactionTime " +
+            "and :transactionTime < transaction_time_end " +
+            "and valid_time_start = (" +
+            "   select max(valid_time_start) " +
+            "   from price " +
+            "   where id = :id" +
+            "   and valid_time_start <= " + NOW +
+            "   and transaction_time_start <= :transactionTime " +
+            "   and :transactionTime < transaction_time_end " +
+            ")")
+    abstract PriceDbEntity getCurrentPriceAsKnownAt(int id, Instant transactionTime);
 }

@@ -19,25 +19,15 @@
  *
  */
 
-package de.njsm.stocks.client.business.entities;
+package de.njsm.stocks.client.database;
 
-import com.google.auto.value.AutoValue;
+import androidx.room.Dao;
+import androidx.room.Query;
+import de.njsm.stocks.client.business.entities.GroceryStoreForDeletion;
 
-@AutoValue
-public abstract class GroceryStoreDeleteErrorDetails implements ErrorDetails {
+@Dao
+abstract class GroceryStoreDao {
 
-    public abstract VersionedId<GroceryStore> id();
-
-    public abstract String name();
-
-    public abstract String groceryChainName();
-
-    public static ErrorDetails create(VersionedId<GroceryStore> id, String name, String groceryChainName) {
-        return new AutoValue_GroceryStoreDeleteErrorDetails(id, name, groceryChainName);
-    }
-
-    @Override
-    public <I, O> O accept(ErrorDetailsVisitor<I, O> visitor, I input) {
-        return visitor.groceryStoreDeleteErrorDetails(this, input);
-    }
+    @Query("select * from current_grocery_store where id = :id")
+    abstract GroceryStoreForDeletion getGroceryStore(int id);
 }

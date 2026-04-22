@@ -22,9 +22,7 @@
 package de.njsm.stocks.client.business.entities;
 
 import com.google.auto.value.AutoValue;
-import com.google.auto.value.extension.memoized.Memoized;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @AutoValue
@@ -38,13 +36,13 @@ public abstract class FoodItemAddErrorDetails implements ErrorDetails {
 
     public abstract int unitId();
 
-    public abstract Unit unit();
+    public abstract UnitForErrorDetails unit();
 
     public abstract String foodName();
 
     public abstract String locationName();
 
-    public static FoodItemAddErrorDetails create(LocalDate eatBy, int ofType, int storedIn, int unitId, Unit unit, String foodName, String locationName) {
+    public static FoodItemAddErrorDetails create(LocalDate eatBy, int ofType, int storedIn, int unitId, UnitForErrorDetails unit, String foodName, String locationName) {
         return new AutoValue_FoodItemAddErrorDetails(eatBy, ofType, storedIn, unitId, unit, foodName, locationName);
     }
 
@@ -60,25 +58,5 @@ public abstract class FoodItemAddErrorDetails implements ErrorDetails {
                 storedIn(),
                 unitId()
         );
-    }
-
-    @AutoValue
-    public static abstract class Unit implements ScaledUnitSummaryFields {
-
-        @Override
-        @Memoized
-        public UnitPrefix decimalPrefix() {
-            return ScaledUnitSummaryFields.super.decimalPrefix();
-        }
-
-        @Override
-        @Memoized
-        public BigDecimal prefixedAmount() {
-            return ScaledUnitSummaryFields.super.prefixedAmount();
-        }
-
-        public static FoodItemAddErrorDetails.Unit create(BigDecimal scale, String abbreviation) {
-            return new AutoValue_FoodItemAddErrorDetails_Unit(scale, abbreviation);
-        }
     }
 }

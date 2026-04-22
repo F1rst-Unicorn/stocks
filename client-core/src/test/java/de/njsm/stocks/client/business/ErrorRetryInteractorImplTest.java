@@ -386,7 +386,7 @@ public class ErrorRetryInteractorImplTest {
                 1,
                 2,
                 3,
-                FoodItemAddErrorDetails.Unit.create(BigDecimal.TEN, "g"),
+                UnitForErrorDetails.create(BigDecimal.TEN, "g"),
                 "Banana",
                 "Fridge");
         ErrorDescription input = ErrorDescription.create(1, StatusCode.DATABASE_UNREACHABLE, "", "test", errorDetails);

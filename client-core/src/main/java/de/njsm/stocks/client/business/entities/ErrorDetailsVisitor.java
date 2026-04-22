@@ -91,6 +91,8 @@ public interface ErrorDetailsVisitor<I, O> {
 
     O groceryStoreDeleteErrorDetails(GroceryStoreDeleteErrorDetails groceryStoreDeleteErrorDetails, I input);
 
+    O priceDeleteErrorDetails(PriceDeleteErrorDetails priceDeleteErrorDetails, I input);
+
     interface Default<I, O> extends ErrorDetailsVisitor<I, O> {
 
         O defaultImpl(ErrorDetails errorDetails, I input);
@@ -253,6 +255,11 @@ public interface ErrorDetailsVisitor<I, O> {
         @Override
         default O groceryStoreDeleteErrorDetails(GroceryStoreDeleteErrorDetails groceryStoreDeleteErrorDetails, I input) {
             return defaultImpl(groceryStoreDeleteErrorDetails, input);
+        }
+
+        @Override
+        default O priceDeleteErrorDetails(PriceDeleteErrorDetails priceDeleteErrorDetails, I input) {
+            return defaultImpl(priceDeleteErrorDetails, input);
         }
     }
 }

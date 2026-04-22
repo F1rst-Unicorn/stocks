@@ -19,25 +19,26 @@
  *
  */
 
-package de.njsm.stocks.client.business.entities;
+package de.njsm.stocks.client.database;
 
-import com.google.auto.value.AutoValue;
+import de.njsm.stocks.client.business.EntityDeleteRepository;
+import de.njsm.stocks.client.business.entities.GroceryStore;
+import de.njsm.stocks.client.business.entities.GroceryStoreForDeletion;
+import de.njsm.stocks.client.business.entities.Id;
 
-@AutoValue
-public abstract class GroceryStoreDeleteErrorDetails implements ErrorDetails {
+import javax.inject.Inject;
 
-    public abstract VersionedId<GroceryStore> id();
+class GroceryStoreRepositoryImpl implements EntityDeleteRepository<GroceryStore> {
 
-    public abstract String name();
+    private final GroceryStoreDao groceryStoreDao;
 
-    public abstract String groceryChainName();
-
-    public static ErrorDetails create(VersionedId<GroceryStore> id, String name, String groceryChainName) {
-        return new AutoValue_GroceryStoreDeleteErrorDetails(id, name, groceryChainName);
+    @Inject
+    GroceryStoreRepositoryImpl(GroceryStoreDao groceryStoreDao) {
+        this.groceryStoreDao = groceryStoreDao;
     }
 
     @Override
-    public <I, O> O accept(ErrorDetailsVisitor<I, O> visitor, I input) {
-        return visitor.groceryStoreDeleteErrorDetails(this, input);
+    public GroceryStoreForDeletion getEntityForDeletion(Id<GroceryStore> id) {
+        return groceryStoreDao.getGroceryStore(id.id());
     }
 }

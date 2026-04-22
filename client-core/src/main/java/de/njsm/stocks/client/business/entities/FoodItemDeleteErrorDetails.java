@@ -31,34 +31,14 @@ public abstract class FoodItemDeleteErrorDetails implements Id<FoodItem>, ErrorD
 
     public abstract String foodName();
 
-    public abstract Unit unit();
+    public abstract UnitForErrorDetails unit();
 
     @Override
     public <I, O> O accept(ErrorDetailsVisitor<I, O> visitor, I input) {
         return visitor.foodItemDeleteErrorDetails(this, input);
     }
 
-    public static FoodItemDeleteErrorDetails create(int id, String foodName, Unit unit) {
+    public static FoodItemDeleteErrorDetails create(int id, String foodName, UnitForErrorDetails unit) {
         return new AutoValue_FoodItemDeleteErrorDetails(id, foodName, unit);
-    }
-
-    @AutoValue
-    public static abstract class Unit implements ScaledUnitSummaryFields {
-
-        @Override
-        @Memoized
-        public UnitPrefix decimalPrefix() {
-            return ScaledUnitSummaryFields.super.decimalPrefix();
-        }
-
-        @Override
-        @Memoized
-        public BigDecimal prefixedAmount() {
-            return ScaledUnitSummaryFields.super.prefixedAmount();
-        }
-
-        public static Unit create(BigDecimal scale, String abbreviation) {
-            return new AutoValue_FoodItemDeleteErrorDetails_Unit(scale, abbreviation);
-        }
     }
 }

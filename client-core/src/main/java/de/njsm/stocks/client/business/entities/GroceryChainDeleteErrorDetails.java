@@ -30,6 +30,10 @@ public abstract class GroceryChainDeleteErrorDetails implements ErrorDetails {
 
     public abstract String name();
 
+    public static GroceryChainDeleteErrorDetails create(VersionedId<GroceryChain> id, String name) {
+        return new AutoValue_GroceryChainDeleteErrorDetails(id, name);
+    }
+
     @Override
     public <I, O> O accept(ErrorDetailsVisitor<I, O> visitor, I input) {
         return visitor.groceryChainDeleteErrorDetails(this, input);

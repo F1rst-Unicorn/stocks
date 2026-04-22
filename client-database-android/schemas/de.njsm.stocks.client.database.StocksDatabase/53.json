@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 53,
-    "identityHash": "cab7cc9a857a1b24ca77b8a46ec16a36",
+    "identityHash": "2099c6f19f09f7e5161d5d8fe7b98c60",
     "entities": [
       {
         "tableName": "updates",
@@ -3157,6 +3157,108 @@
             "createSql": "CREATE INDEX IF NOT EXISTS `price_transaction_time_end` ON `${TABLE_NAME}` (`transaction_time_end`)"
           }
         ]
+      },
+      {
+        "tableName": "grocery_chain_to_delete",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `version` INTEGER NOT NULL, `grocery_chain_id` INTEGER, `grocery_chain_transaction_time` TEXT)",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "version",
+            "columnName": "version",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "groceryChain.id",
+            "columnName": "grocery_chain_id",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "groceryChain.transactionTime",
+            "columnName": "grocery_chain_transaction_time",
+            "affinity": "TEXT"
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "id"
+          ]
+        }
+      },
+      {
+        "tableName": "grocery_store_to_delete",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `version` INTEGER NOT NULL, `grocery_store_id` INTEGER, `grocery_store_transaction_time` TEXT)",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "version",
+            "columnName": "version",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "groceryStore.id",
+            "columnName": "grocery_store_id",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "groceryStore.transactionTime",
+            "columnName": "grocery_store_transaction_time",
+            "affinity": "TEXT"
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "id"
+          ]
+        }
+      },
+      {
+        "tableName": "price_to_delete",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `version` INTEGER NOT NULL, `price_store_id` INTEGER, `price_store_transaction_time` TEXT)",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "version",
+            "columnName": "version",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "price.id",
+            "columnName": "price_store_id",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "price.transactionTime",
+            "columnName": "price_store_transaction_time",
+            "affinity": "TEXT"
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "id"
+          ]
+        }
       }
     ],
     "views": [
@@ -3203,11 +3305,23 @@
       {
         "viewName": "current_recipe_product",
         "createSql": "CREATE VIEW `${VIEW_NAME}` AS select * from recipe_product where valid_time_start <= (select max(x) from (select datetime('now') as x union select max(last_update) as x from updates)) and (select max(x) from (select datetime('now') as x union select max(last_update) as x from updates))  < valid_time_end and transaction_time_end = '9999-12-31 23:59:59.999999'"
+      },
+      {
+        "viewName": "current_grocery_chain",
+        "createSql": "CREATE VIEW `${VIEW_NAME}` AS select * from grocery_chain where valid_time_start <= (select max(x) from (select datetime('now') as x union select max(last_update) as x from updates)) and (select max(x) from (select datetime('now') as x union select max(last_update) as x from updates))  < valid_time_end and transaction_time_end = '9999-12-31 23:59:59.999999'"
+      },
+      {
+        "viewName": "current_grocery_store",
+        "createSql": "CREATE VIEW `${VIEW_NAME}` AS select * from grocery_store where valid_time_start <= (select max(x) from (select datetime('now') as x union select max(last_update) as x from updates)) and (select max(x) from (select datetime('now') as x union select max(last_update) as x from updates))  < valid_time_end and transaction_time_end = '9999-12-31 23:59:59.999999'"
+      },
+      {
+        "viewName": "current_price",
+        "createSql": "CREATE VIEW `${VIEW_NAME}` AS select * from price where valid_time_start <= (select max(x) from (select datetime('now') as x union select max(last_update) as x from updates)) and (select max(x) from (select datetime('now') as x union select max(last_update) as x from updates))  < valid_time_end and transaction_time_end = '9999-12-31 23:59:59.999999'"
       }
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'cab7cc9a857a1b24ca77b8a46ec16a36')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '2099c6f19f09f7e5161d5d8fe7b98c60')"
     ]
   }
 }

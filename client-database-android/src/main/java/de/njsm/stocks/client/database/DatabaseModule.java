@@ -181,6 +181,21 @@ public interface DatabaseModule {
         return database.recipeProductDao();
     }
 
+    @Provides
+    static GroceryChainDao GroceryChainDao(StocksDatabase database) {
+        return database.groceryChainDao();
+    }
+
+    @Provides
+    static GroceryStoreDao GroceryStoreDao(StocksDatabase database) {
+        return database.groceryStoreDao();
+    }
+
+    @Provides
+    static PriceDao PriceDao(StocksDatabase database) {
+        return database.priceDao();
+    }
+
     @Binds
     ErrorRepository errorRepository(ErrorRepositoryImpl impl);
 
@@ -288,4 +303,13 @@ public interface DatabaseModule {
 
     @Binds
     RecipeCookRepository RecipeCookRepository(RecipeCookRepositoryImpl impl);
+
+    @Binds
+    EntityDeleteRepository<GroceryChain> GroceryChainRepository(GroceryChainRepositoryImpl impl);
+
+    @Binds
+    EntityDeleteRepository<GroceryStore> GroceryStoreRepository(GroceryStoreRepositoryImpl impl);
+
+    @Binds
+    EntityDeleteRepository<Price> PriceRepository(PriceRepositoryImpl impl);
 }

@@ -25,6 +25,8 @@ import androidx.annotation.NonNull;
 import androidx.room.migration.Migration;
 import androidx.sqlite.db.SupportSQLiteDatabase;
 
+import static de.njsm.stocks.client.database.CurrentTable.NOW_AS_BEST_KNOWN;
+
 public class Migration52To53 extends Migration {
 
     public Migration52To53() {
@@ -79,5 +81,25 @@ public class Migration52To53 extends Migration {
         ddlPrimitives.createIndex("price", "price_pkey", "id");
         ddlPrimitives.createIndex("price", "price_transaction_time_start", "transaction_time_start");
         ddlPrimitives.createIndex("price", "price_transaction_time_end", "transaction_time_end");
+
+        ddlPrimitives.createTable("grocery_chain_to_delete", "id",
+                "id INTEGER not null",
+                "version INTEGER not null",
+                "grocery_chain_id INTEGER not null",
+                "grocery_chain_transaction_time TEXT not null");
+        ddlPrimitives.createTable("grocery_store_to_delete", "id",
+                "id INTEGER not null",
+                "version INTEGER not null",
+                "grocery_store_id INTEGER not null",
+                "grocery_store_transaction_time TEXT not null");
+        ddlPrimitives.createTable("price_to_delete", "id",
+                "id INTEGER not null",
+                "version INTEGER not null",
+                "price_id INTEGER not null",
+                "price_transaction_time TEXT not null");
+
+        ddlPrimitives.createView("current_grocery_chain", "select * from grocery_chain " + NOW_AS_BEST_KNOWN);
+        ddlPrimitives.createView("current_grocery_store", "select * from grocery_store " + NOW_AS_BEST_KNOWN);
+        ddlPrimitives.createView("current_price", "select * from price " + NOW_AS_BEST_KNOWN);
     }
 }

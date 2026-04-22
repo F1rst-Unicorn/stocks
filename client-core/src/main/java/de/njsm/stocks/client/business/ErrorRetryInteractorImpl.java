@@ -100,6 +100,8 @@ class ErrorRetryInteractorImpl implements ErrorRetryInteractor, ErrorDetailsVisi
 
     private final PriceAddInteractor priceAddInteractor;
 
+    private final EntityDeleter<Price> priceDeleter;
+
     @Inject
     ErrorRetryInteractorImpl(LocationAddInteractor locationAddInteractor,
                              EntityDeleter<Location> locationDeleter,
@@ -135,7 +137,8 @@ class ErrorRetryInteractorImpl implements ErrorRetryInteractor, ErrorDetailsVisi
                              GroceryStoreAddInteractor groceryStoreAddInteractor,
                              GroceryStoreEditInteractor groceryStoreEditInteractor,
                              EntityDeleter<GroceryStore> groceryStoreDeleter,
-                             PriceAddInteractor priceAddInteractor) {
+                             PriceAddInteractor priceAddInteractor,
+                             EntityDeleter<Price> priceDeleter) {
         this.locationAddInteractor = locationAddInteractor;
         this.locationDeleter = locationDeleter;
         this.locationEditInteractor = locationEditInteractor;
@@ -171,6 +174,7 @@ class ErrorRetryInteractorImpl implements ErrorRetryInteractor, ErrorDetailsVisi
         this.groceryStoreEditInteractor = groceryStoreEditInteractor;
         this.groceryStoreDeleter = groceryStoreDeleter;
         this.priceAddInteractor = priceAddInteractor;
+        this.priceDeleter = priceDeleter;
         this.jobTypeTranslator = new JobTypeTranslator();
     }
 
@@ -428,6 +432,12 @@ class ErrorRetryInteractorImpl implements ErrorRetryInteractor, ErrorDetailsVisi
         return null;
     }
 
+    @Override
+    public Void priceDeleteErrorDetails(PriceDeleteErrorDetails priceDeleteErrorDetails, Void input) {
+        priceDeleter.delete(priceDeleteErrorDetails.id());
+        return null;
+    }
+
     private static final class JobTypeTranslator implements ErrorDetailsVisitor<Void, Job.Type> {
 
         @Override
@@ -583,6 +593,11 @@ class ErrorRetryInteractorImpl implements ErrorRetryInteractor, ErrorDetailsVisi
         @Override
         public Job.Type groceryStoreDeleteErrorDetails(GroceryStoreDeleteErrorDetails groceryStoreDeleteErrorDetails, Void input) {
             return Job.Type.DELETE_GROCERY_STORE;
+        }
+
+        @Override
+        public Job.Type priceDeleteErrorDetails(PriceDeleteErrorDetails priceDeleteErrorDetails, Void input) {
+            return Job.Type.DELETE_PRICE;
         }
 
         @Override

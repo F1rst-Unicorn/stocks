@@ -386,6 +386,33 @@ public class ErrorRecorderImpl implements ErrorRecorder {
         errorDao.insert(ErrorEntity.create(ErrorEntity.Action.EDIT_RECIPE, dataId, exceptionData.exceptionType(), exceptionData.exceptionId()));
     }
 
+    @Override
+    public void recordGroceryChainDeleteError(SubsystemException e, Versionable<GroceryChain> input) {
+        ExceptionData exceptionData = new ExceptionInserter().visit(e, null);
+        Instant currentTransactionTime = errorDao.getTransactionTimeOf(EntityType.GROCERY_CHAIN);
+        GroceryChainDeleteEntity entity = GroceryChainDeleteEntity.create(input.version(), PreservedId.create(input.id(), currentTransactionTime));
+        long dataId = errorDao.insert(entity);
+        errorDao.insert(ErrorEntity.create(ErrorEntity.Action.DELETE_GROCERY_CHAIN, dataId, exceptionData.exceptionType(), exceptionData.exceptionId()));
+    }
+
+    @Override
+    public void recordGroceryStoreDeleteError(SubsystemException e, Versionable<GroceryStore> data) {
+        ExceptionData exceptionData = new ExceptionInserter().visit(e, null);
+        Instant currentTransactionTime = errorDao.getTransactionTimeOf(EntityType.GROCERY_CHAIN);
+        GroceryStoreDeleteEntity entity = GroceryStoreDeleteEntity.create(data.version(), PreservedId.create(data.id(), currentTransactionTime));
+        long dataId = errorDao.insert(entity);
+        errorDao.insert(ErrorEntity.create(ErrorEntity.Action.DELETE_GROCERY_STORE, dataId, exceptionData.exceptionType(), exceptionData.exceptionId()));
+    }
+
+    @Override
+    public void recordPriceDeleteError(SubsystemException e, Versionable<Price> data) {
+        ExceptionData exceptionData = new ExceptionInserter().visit(e, null);
+        Instant currentTransactionTime = errorDao.getTransactionTimeOf(EntityType.GROCERY_CHAIN);
+        PriceDeleteEntity entity = PriceDeleteEntity.create(data.version(), PreservedId.create(data.id(), currentTransactionTime));
+        long dataId = errorDao.insert(entity);
+        errorDao.insert(ErrorEntity.create(ErrorEntity.Action.DELETE_PRICE, dataId, exceptionData.exceptionType(), exceptionData.exceptionId()));
+    }
+
     @AutoValue
     abstract static class ExceptionData {
 

@@ -28,6 +28,8 @@ import java.time.Instant;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 
+
+
 @Database(
         entities = {
                 UpdateDbEntity.class,
@@ -80,6 +82,9 @@ import java.time.format.DateTimeFormatter;
                 GroceryChainDbEntity.class,
                 GroceryStoreDbEntity.class,
                 PriceDbEntity.class,
+                GroceryChainDeleteEntity.class,
+                GroceryStoreDeleteEntity.class,
+                PriceDeleteEntity.class,
         },
         views = {
                 CurrentLocationDbView.class,
@@ -93,6 +98,9 @@ import java.time.format.DateTimeFormatter;
                 CurrentRecipeDbView.class,
                 CurrentRecipeIngredientDbView.class,
                 CurrentRecipeProductDbView.class,
+                CurrentGroceryChainDbView.class,
+                CurrentGroceryStoreDbView.class,
+                CurrentPriceDbView.class,
         },
         version = 53)
 @androidx.room.TypeConverters(TypeConverters.class)
@@ -151,4 +159,10 @@ public abstract class StocksDatabase extends RoomDatabase {
     abstract EventDao eventDao();
 
     abstract PlotDao plotDao();
+
+    abstract GroceryChainDao groceryChainDao();
+
+    abstract GroceryStoreDao groceryStoreDao();
+
+    abstract PriceDao priceDao();
 }

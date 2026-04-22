@@ -190,7 +190,7 @@ public class ErrorRepositoryImpl implements ErrorRepository, ErrorEntity.ActionV
                 entity.ofType().id(),
                 entity.storedIn().id(),
                 scaledUnit.id(),
-                FoodItemAddErrorDetails.Unit.create(scaledUnit.scale(), unit.abbreviation()),
+                UnitForErrorDetails.create(scaledUnit.scale(), unit.abbreviation()),
                 food.name(),
                 location.name()
         );
@@ -206,7 +206,7 @@ public class ErrorRepositoryImpl implements ErrorRepository, ErrorEntity.ActionV
         return FoodItemDeleteErrorDetails.create(
                 foodItem.id(),
                 food.name(),
-                FoodItemDeleteErrorDetails.Unit.create(scaledUnit.scale(), unit.abbreviation())
+                UnitForErrorDetails.create(scaledUnit.scale(), unit.abbreviation())
         );
     }
 
@@ -310,6 +310,41 @@ public class ErrorRepositoryImpl implements ErrorRepository, ErrorEntity.ActionV
                 products.stream()
                         .map(v -> RecipeProductEditFormData.create(v.recipeProduct().id(), v.amount(), -1, IdImpl.create(v.unit().id()), -1, IdImpl.create(v.product().id())))
                         .collect(toList())
+        );
+    }
+
+    @Override
+    public ErrorDetails deleteGroceryChain(ErrorEntity.Action action, Long input) {
+        var groceryChainDelete = errorDao.getGroceryChainDelete(input);
+        var groceryChain = errorDao.getGroceryChainByValidOrTransactionTime(groceryChainDelete.groceryChain());
+        return GroceryChainDeleteErrorDetails.create(VersionedId.create(groceryChain.id(), groceryChainDelete.version()), groceryChain.name());
+    }
+
+    @Override
+    public ErrorDetails deleteGroceryStore(ErrorEntity.Action action, Long input) {
+        var groceryStoreDelete = errorDao.getGroceryStoreDelete(input);
+        var groceryStore = errorDao.getGroceryStoreByValidOrTransactionTime(groceryStoreDelete.groceryStore());
+        var groceryChain = errorDao.getGroceryChainByValidOrTransactionTime(PreservedId.create(groceryStore.groceryChain(), groceryStoreDelete.groceryStore().transactionTime()));
+        return GroceryStoreDeleteErrorDetails.create(VersionedId.create(groceryStore.id(), groceryStoreDelete.version()), groceryStore.name(), groceryChain.name());
+    }
+
+    @Override
+    public ErrorDetails deletePrice(ErrorEntity.Action action, Long input) {
+        PriceDeleteEntity entity = errorDao.getPriceDelete(input);
+        PriceDbEntity price = errorDao.getPriceByValidOrTransactionTime(entity.price());
+        var groceryStore = errorDao.getGroceryStoreByValidOrTransactionTime(PreservedId.create(price.groceryStore(), entity.price().transactionTime()));
+        var groceryChain = errorDao.getGroceryChainByValidOrTransactionTime(PreservedId.create(groceryStore.groceryChain(), entity.price().transactionTime()));
+        var food = errorDao.getFoodByValidOrTransactionTime(PreservedId.create(price.food(), entity.price().transactionTime()));
+        ScaledUnitDbEntity scaledUnit = errorDao.getScaledUnitByValidOrTransactionTime(PreservedId.create(price.scaledUnit(), entity.price().transactionTime()));
+        UnitDbEntity unit = errorDao.getUnitByValidOrTransactionTime(PreservedId.create(scaledUnit.unit(), entity.price().transactionTime()));
+        return PriceDeleteErrorDetails.create(
+                VersionedId.create(price.id(), entity.version()),
+                price.price(),
+                price.scale(),
+                groceryChain.name(),
+                groceryStore.name(),
+                food.name(),
+                UnitForErrorDetails.create(scaledUnit.scale(), unit.abbreviation())
         );
     }
 }

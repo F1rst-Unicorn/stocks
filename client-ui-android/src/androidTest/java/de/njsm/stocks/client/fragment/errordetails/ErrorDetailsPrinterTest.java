@@ -156,7 +156,7 @@ public class ErrorDetailsPrinterTest {
 
     @Test
     public void foodItemAddingShowsAllDetails() {
-        FoodItemAddErrorDetails data = FoodItemAddErrorDetails.create(LocalDate.ofEpochDay(2), 1, 2, 3, FoodItemAddErrorDetails.Unit.create(BigDecimal.ONE, "g"), "Banana", "Fridge");
+        FoodItemAddErrorDetails data = FoodItemAddErrorDetails.create(LocalDate.ofEpochDay(2), 1, 2, 3, UnitForErrorDetails.create(BigDecimal.ONE, "g"), "Banana", "Fridge");
         assertEquals("1g Banana\nFridge", uut.visit(data, null));
     }
 

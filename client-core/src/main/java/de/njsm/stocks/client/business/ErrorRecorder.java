@@ -76,4 +76,10 @@ public interface ErrorRecorder {
     void recordRecipeDeleteError(SubsystemException e, Id<Recipe> data);
 
     void recordRecipeEditError(SubsystemException e, RecipeEditForm form);
+
+    void recordGroceryChainDeleteError(SubsystemException e, Versionable<GroceryChain> data);
+
+    void recordGroceryStoreDeleteError(SubsystemException e, Versionable<GroceryStore> data);
+
+    void recordPriceDeleteError(SubsystemException e, Versionable<Price> data);
 }

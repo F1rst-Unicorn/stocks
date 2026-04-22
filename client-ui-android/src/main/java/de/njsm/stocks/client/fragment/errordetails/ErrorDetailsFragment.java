@@ -298,5 +298,14 @@ public class ErrorDetailsFragment extends InjectableFragment {
         public String groceryStoreDeleteErrorDetails(GroceryStoreDeleteErrorDetails groceryStoreDeleteErrorDetails, Void input) {
             return groceryStoreDeleteErrorDetails.groceryChainName() + " " + groceryStoreDeleteErrorDetails.name();
         }
+
+        @Override
+        public String priceDeleteErrorDetails(PriceDeleteErrorDetails priceDeleteErrorDetails, Void input) {
+            return String.format(dictionary.apply(R.string.error_details_price_delete_details),
+                    unitAmountRenderStrategy.render(priceDeleteErrorDetails.price()),
+                    unitAmountRenderStrategy.render(UnitForErrorDetails.create(priceDeleteErrorDetails.scale().multiply(priceDeleteErrorDetails.unit().scale()), priceDeleteErrorDetails.unit().abbreviation())),
+                    priceDeleteErrorDetails.food(),
+                    priceDeleteErrorDetails.groceryChain() + " " + priceDeleteErrorDetails.groceryStore());
+        }
     }
 }

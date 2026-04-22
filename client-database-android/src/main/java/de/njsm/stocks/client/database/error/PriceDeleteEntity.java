@@ -19,25 +19,30 @@
  *
  */
 
-package de.njsm.stocks.client.business.entities;
+package de.njsm.stocks.client.database.error;
 
+import androidx.room.Embedded;
+import androidx.room.Entity;
+import androidx.room.Ignore;
 import com.google.auto.value.AutoValue;
+import de.njsm.stocks.client.database.IdFields;
+import de.njsm.stocks.client.database.PreservedId;
+import de.njsm.stocks.client.database.VersionFields;
 
 @AutoValue
-public abstract class GroceryStoreDeleteErrorDetails implements ErrorDetails {
+@Entity(tableName = "price_to_delete")
+public abstract class PriceDeleteEntity implements IdFields, VersionFields {
 
-    public abstract VersionedId<GroceryStore> id();
+    @Embedded(prefix = "price_store_")
+    @AutoValue.CopyAnnotations
+    public abstract PreservedId price();
 
-    public abstract String name();
-
-    public abstract String groceryChainName();
-
-    public static ErrorDetails create(VersionedId<GroceryStore> id, String name, String groceryChainName) {
-        return new AutoValue_GroceryStoreDeleteErrorDetails(id, name, groceryChainName);
+    public static PriceDeleteEntity create(int id, int version, PreservedId price) {
+        return new AutoValue_PriceDeleteEntity(id, version, price);
     }
 
-    @Override
-    public <I, O> O accept(ErrorDetailsVisitor<I, O> visitor, I input) {
-        return visitor.groceryStoreDeleteErrorDetails(this, input);
+    @Ignore
+    public static PriceDeleteEntity create(int version, PreservedId price) {
+        return new AutoValue_PriceDeleteEntity(0, version, price);
     }
 }

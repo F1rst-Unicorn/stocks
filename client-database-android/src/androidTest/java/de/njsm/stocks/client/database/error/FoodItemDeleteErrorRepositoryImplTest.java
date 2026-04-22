@@ -53,7 +53,7 @@ public class FoodItemDeleteErrorRepositoryImplTest extends AbstractErrorReposito
         stocksDatabase.synchronisationDao().writeFoodItems(singletonList(foodItem));
         FoodItemForDeletion data = FoodItemForDeletion.create(foodItem.id(), foodItem.version());
         ErrorDetails errorDetails = FoodItemDeleteErrorDetails.create(foodItem.id(), food.name(),
-                FoodItemDeleteErrorDetails.Unit.create(scaledUnit.scale(), unit.abbreviation()));
+                UnitForErrorDetails.create(scaledUnit.scale(), unit.abbreviation()));
         errorRecorder.recordFoodItemDeleteError(e, data);
         return errorDetails;
     }
@@ -86,7 +86,7 @@ public class FoodItemDeleteErrorRepositoryImplTest extends AbstractErrorReposito
         stocksDatabase.synchronisationDao().writeFoodItems(currentDelete(foodItem, editTime));
         errorRecorder.recordFoodItemDeleteError(exception, data);
         ErrorDetails errorDetails = FoodItemDeleteErrorDetails.create(foodItem.id(), food.name(),
-                FoodItemDeleteErrorDetails.Unit.create(scaledUnit.scale(), unit.abbreviation()));
+                UnitForErrorDetails.create(scaledUnit.scale(), unit.abbreviation()));
 
         test(uut.getNumberOfErrors()).assertValue(1);
         testList(uut.getErrors()).assertValue(v -> v.get(0).statusCode() == statusCode);
@@ -118,7 +118,7 @@ public class FoodItemDeleteErrorRepositoryImplTest extends AbstractErrorReposito
         stocksDatabase.synchronisationDao().insert(singletonList(UpdateDbEntity.create(EntityType.FOOD_ITEM, Instant.EPOCH)));
         errorRecorder.recordFoodItemDeleteError(exception, data);
         ErrorDetails errorDetails = FoodItemDeleteErrorDetails.create(foodItem.id(), food.name(),
-                FoodItemDeleteErrorDetails.Unit.create(scaledUnit.scale(), unit.abbreviation()));
+                UnitForErrorDetails.create(scaledUnit.scale(), unit.abbreviation()));
 
         test(uut.getNumberOfErrors()).assertValue(1);
         testList(uut.getErrors()).assertValue(v -> v.get(0).statusCode() == statusCode);

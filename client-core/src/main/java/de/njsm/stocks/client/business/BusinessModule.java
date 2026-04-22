@@ -226,4 +226,13 @@ public interface BusinessModule {
 
     @Binds
     RecipeCookInteractor RecipeCookInteractor(RecipeCookInteractorImpl impl);
+
+    @Binds
+    EntityDeleter<GroceryChain> GroceryChainDeleter(GroceryChainDeleterImpl impl);
+
+    @Binds
+    EntityDeleter<GroceryStore> GroceryStoreDeleter(GroceryStoreDeleterImpl impl);
+
+    @Binds
+    EntityDeleter<Price> PriceDeleter(PriceDeleterImpl impl);
 }

@@ -23,21 +23,31 @@ package de.njsm.stocks.client.business.entities;
 
 import com.google.auto.value.AutoValue;
 
+import java.math.BigDecimal;
+
 @AutoValue
-public abstract class GroceryStoreDeleteErrorDetails implements ErrorDetails {
+public abstract class PriceDeleteErrorDetails implements ErrorDetails {
 
-    public abstract VersionedId<GroceryStore> id();
+    public abstract VersionedId<Price> id();
 
-    public abstract String name();
+    public abstract BigDecimal price();
 
-    public abstract String groceryChainName();
+    public abstract BigDecimal scale();
 
-    public static ErrorDetails create(VersionedId<GroceryStore> id, String name, String groceryChainName) {
-        return new AutoValue_GroceryStoreDeleteErrorDetails(id, name, groceryChainName);
+    public abstract String groceryChain();
+
+    public abstract String groceryStore();
+
+    public abstract String food();
+
+    public abstract UnitForErrorDetails unit();
+
+    public static PriceDeleteErrorDetails create(VersionedId<Price> id, BigDecimal price, BigDecimal scale, String groceryChain, String groceryStore, String food, UnitForErrorDetails unit) {
+        return new AutoValue_PriceDeleteErrorDetails(id, price, scale, groceryChain, groceryStore, food, unit);
     }
 
     @Override
     public <I, O> O accept(ErrorDetailsVisitor<I, O> visitor, I input) {
-        return visitor.groceryStoreDeleteErrorDetails(this, input);
+        return visitor.priceDeleteErrorDetails(this, input);
     }
 }

@@ -25,6 +25,7 @@ import de.njsm.stocks.client.business.StatusCodeException;
 import de.njsm.stocks.client.business.entities.ErrorDetails;
 import de.njsm.stocks.client.business.entities.FoodItemAddErrorDetails;
 import de.njsm.stocks.client.business.entities.FoodItemAddFormForErrorRecording;
+import de.njsm.stocks.client.business.entities.UnitForErrorDetails;
 import de.njsm.stocks.client.database.FoodDbEntity;
 import de.njsm.stocks.client.database.LocationDbEntity;
 import de.njsm.stocks.client.database.ScaledUnitDbEntity;
@@ -54,7 +55,7 @@ public class FoodItemAddErrorRepositoryImplTest extends AbstractErrorRepositoryI
                 form.ofType(),
                 form.storedIn(),
                 form.unit(),
-                FoodItemAddErrorDetails.Unit.create(scaledUnit.scale(), unit.abbreviation()),
+                UnitForErrorDetails.create(scaledUnit.scale(), unit.abbreviation()),
                 food.name(),
                 location.name()
         );

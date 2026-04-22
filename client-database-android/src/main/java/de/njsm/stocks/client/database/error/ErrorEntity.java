@@ -225,6 +225,27 @@ public abstract class ErrorEntity implements IdFields {
             <I, O> O accept(ActionVisitor<I, O> visitor, I input) {
                 return visitor.editRecipe(this, input);
             }
+        },
+
+        DELETE_GROCERY_CHAIN {
+            @Override
+            <I, O> O accept(ActionVisitor<I, O> visitor, I input) {
+                return visitor.deleteGroceryChain(this, input);
+            }
+        },
+
+        DELETE_GROCERY_STORE {
+            @Override
+            <I, O> O accept(ActionVisitor<I, O> visitor, I input) {
+                return visitor.deleteGroceryStore(this, input);
+            }
+        },
+
+        DELETE_PRICE {
+            @Override
+            <I, O> O accept(ActionVisitor<I, O> visitor, I input) {
+                return visitor.deletePrice(this, input);
+            }
         };
 
         abstract <I, O> O accept(ActionVisitor<I, O> visitor, I input);
@@ -287,6 +308,12 @@ public abstract class ErrorEntity implements IdFields {
         O deleteRecipe(Action action, I input);
 
         O editRecipe(Action action, I input);
+
+        O deleteGroceryChain(Action action, I input);
+
+        O deleteGroceryStore(Action action, I input);
+
+        O deletePrice(Action action, I input);
     }
 
     enum ExceptionType {

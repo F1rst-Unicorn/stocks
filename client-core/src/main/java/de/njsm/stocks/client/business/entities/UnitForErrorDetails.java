@@ -22,22 +22,26 @@
 package de.njsm.stocks.client.business.entities;
 
 import com.google.auto.value.AutoValue;
+import com.google.auto.value.extension.memoized.Memoized;
+
+import java.math.BigDecimal;
 
 @AutoValue
-public abstract class GroceryStoreDeleteErrorDetails implements ErrorDetails {
+public abstract class UnitForErrorDetails implements ScaledUnitSummaryFields {
 
-    public abstract VersionedId<GroceryStore> id();
-
-    public abstract String name();
-
-    public abstract String groceryChainName();
-
-    public static ErrorDetails create(VersionedId<GroceryStore> id, String name, String groceryChainName) {
-        return new AutoValue_GroceryStoreDeleteErrorDetails(id, name, groceryChainName);
+    @Override
+    @Memoized
+    public UnitPrefix decimalPrefix() {
+        return ScaledUnitSummaryFields.super.decimalPrefix();
     }
 
     @Override
-    public <I, O> O accept(ErrorDetailsVisitor<I, O> visitor, I input) {
-        return visitor.groceryStoreDeleteErrorDetails(this, input);
+    @Memoized
+    public BigDecimal prefixedAmount() {
+        return ScaledUnitSummaryFields.super.prefixedAmount();
+    }
+
+    public static UnitForErrorDetails create(BigDecimal scale, String abbreviation) {
+        return new AutoValue_UnitForErrorDetails(scale, abbreviation);
     }
 }
