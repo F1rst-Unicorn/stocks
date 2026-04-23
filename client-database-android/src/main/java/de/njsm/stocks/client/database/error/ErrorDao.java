@@ -1100,4 +1100,16 @@ public abstract class ErrorDao {
             "from grocery_chain_to_add " +
             "where id = :id")
     abstract GroceryChainAddEntity getGroceryChainAdd(Long id);
+
+    @Insert
+    abstract long insert(GroceryStoreAddEntity groceryStoreAddEntity);
+
+    @Query("delete from grocery_store_to_add " +
+            "where id = :id")
+    abstract void deleteGroceryStoreAdd(Long id);
+
+    @Query("select * " +
+            "from grocery_store_to_add " +
+            "where id = :id")
+    abstract GroceryStoreAddEntity getGroceryStoreAdd(Long id);
 }

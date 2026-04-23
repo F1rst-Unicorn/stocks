@@ -353,4 +353,11 @@ public class ErrorRepositoryImpl implements ErrorRepository, ErrorEntity.ActionV
         var entity = errorDao.getGroceryChainAdd(input);
         return GroceryChainAddForm.create(entity.name());
     }
+
+    @Override
+    public ErrorDetails addGroceryStore(ErrorEntity.Action action, Long input) {
+        var entity = errorDao.getGroceryStoreAdd(input);
+        var groceryChain = errorDao.getGroceryChainByValidOrTransactionTime(entity.groceryChain());
+        return GroceryStoreAddErrorDetails.create(entity.name(), IdImpl.create(entity.groceryChain().id()), groceryChain.name());
+    }
 }

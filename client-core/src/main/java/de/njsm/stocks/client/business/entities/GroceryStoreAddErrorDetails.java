@@ -32,6 +32,10 @@ public abstract class GroceryStoreAddErrorDetails implements ErrorDetails {
 
     public abstract String groceryChainName();
 
+    public static GroceryStoreAddErrorDetails create(String name, IdImpl<GroceryChain> groceryChain, String groceryChainName) {
+        return new AutoValue_GroceryStoreAddErrorDetails(name, groceryChain, groceryChainName);
+    }
+
     @Override
     public <I, O> O accept(ErrorDetailsVisitor<I, O> visitor, I input) {
         return visitor.groceryStoreAddErrorDetails(this, input);

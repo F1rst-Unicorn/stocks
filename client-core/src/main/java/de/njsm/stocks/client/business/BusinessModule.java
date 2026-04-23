@@ -244,4 +244,7 @@ public interface BusinessModule {
 
     @Binds
     GroceryChainAddInteractor GroceryChainAddInteractor(GroceryChainAddInteractorImpl impl);
+
+    @Binds
+    GroceryStoreAddInteractor GroceryStoreAddInteractor(GroceryStoreAddInteractorImpl impl);
 }
