@@ -318,4 +318,7 @@ public interface DatabaseModule {
 
     @Binds
     EntityDeleteRepository<Price> PriceRepository(PriceRepositoryImpl impl);
+
+    @Binds
+    PriceAddRepository PriceAddRepository(PriceAddRepositoryImpl impl);
 }

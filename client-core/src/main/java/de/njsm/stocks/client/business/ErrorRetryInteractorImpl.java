@@ -438,6 +438,19 @@ class ErrorRetryInteractorImpl implements ErrorRetryInteractor, ErrorDetailsVisi
         return null;
     }
 
+    @Override
+    public Void priceAddErrorDetails(PriceAddErrorDetails priceAddErrorDetails, Void input) {
+        priceAddInteractor.addPrice(PriceAddForm.create(
+                priceAddErrorDetails.price(),
+                priceAddErrorDetails.validTime(),
+                priceAddErrorDetails.scale(),
+                priceAddErrorDetails.groceryStore().toId(),
+                priceAddErrorDetails.food().toId(),
+                priceAddErrorDetails.scaledUnit().toId()
+        ));
+        return null;
+    }
+
     private static final class JobTypeTranslator implements ErrorDetailsVisitor<Void, Job.Type> {
 
         @Override
@@ -598,6 +611,11 @@ class ErrorRetryInteractorImpl implements ErrorRetryInteractor, ErrorDetailsVisi
         @Override
         public Job.Type priceDeleteErrorDetails(PriceDeleteErrorDetails priceDeleteErrorDetails, Void input) {
             return Job.Type.DELETE_PRICE;
+        }
+
+        @Override
+        public Job.Type priceAddErrorDetails(PriceAddErrorDetails priceAddErrorDetails, Void input) {
+            return Job.Type.ADD_PRICE;
         }
 
         @Override

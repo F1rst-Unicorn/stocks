@@ -213,4 +213,13 @@ public class ErrorDetailsDetailsVisitor implements ErrorDetailsVisitor<Void, Str
                 priceDeleteErrorDetails.food(),
                 priceDeleteErrorDetails.groceryChain() + " " + priceDeleteErrorDetails.groceryStore());
     }
+
+    @Override
+    public String priceAddErrorDetails(PriceAddErrorDetails priceAddErrorDetails, Void input) {
+        return String.format(dictionary.apply(R.string.error_details_price_delete_details),
+                unitAmountRenderStrategy.render(priceAddErrorDetails.price()),
+                unitAmountRenderStrategy.render(UnitForErrorDetails.create(priceAddErrorDetails.scale().multiply(priceAddErrorDetails.unit().scale()), priceAddErrorDetails.unit().abbreviation())),
+                priceAddErrorDetails.foodName(),
+                priceAddErrorDetails.groceryStoreName());
+    }
 }

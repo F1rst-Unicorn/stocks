@@ -86,4 +86,6 @@ public interface ErrorRecorder {
     void recordGroceryChainAddError(SubsystemException e, GroceryChainAddForm form);
 
     void recordGroceryStoreAddError(SubsystemException e, GroceryStoreAddForm form);
+
+    void recordPriceAddError(SubsystemException e, PriceAddForm form);
 }

@@ -79,7 +79,6 @@ public class PriceForm {
         this.dictionary = dictionary;
         invalidFields = new HashSet<>();
         invalidFields.add(price);
-        invalidFields.add(scale);
         unitAdapter = new ArrayAdapter<>(root.getContext(),
                 android.R.layout.simple_list_item_1, android.R.id.text1);
         scaledUnit.setAdapter(unitAdapter);
@@ -93,6 +92,7 @@ public class PriceForm {
         price.setInputType(EditorInfo.TYPE_CLASS_NUMBER | EditorInfo.TYPE_NUMBER_FLAG_DECIMAL);
         scale.addNonEmptyValidator((a,b) -> onInputChanged(scale, a, b));
         scale.setEditorHint(R.string.hint_scale);
+        scale.setEditorContent("1");
         scale.setInputType(EditorInfo.TYPE_CLASS_NUMBER | EditorInfo.TYPE_NUMBER_FLAG_DECIMAL);
     }
 

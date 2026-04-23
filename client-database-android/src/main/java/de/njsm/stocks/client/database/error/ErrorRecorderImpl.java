@@ -425,9 +425,26 @@ public class ErrorRecorderImpl implements ErrorRecorder {
     public void recordGroceryStoreAddError(SubsystemException e, GroceryStoreAddForm form) {
         ExceptionData exceptionData = new ExceptionInserter().visit(e, null);
         Instant groceryChainTransactionTime = errorDao.getTransactionTimeOf(EntityType.GROCERY_CHAIN);
-        GroceryStoreAddEntity groceryStoreAddEntity = GroceryStoreAddEntity.create(form.name(), PreservedId.create(form.groceryChain().id(), groceryChainTransactionTime));
+        GroceryStoreAddEntity groceryStoreAddEntity = GroceryStoreAddEntity.create(form.name(), PreservedId.create(form.groceryChain(), groceryChainTransactionTime));
         long dataId = errorDao.insert(groceryStoreAddEntity);
         errorDao.insert(ErrorEntity.create(ErrorEntity.Action.ADD_GROCERY_STORE, dataId, exceptionData.exceptionType(), exceptionData.exceptionId()));
+    }
+
+    @Override
+    public void recordPriceAddError(SubsystemException e, PriceAddForm form) {
+        ExceptionData exceptionData = new ExceptionInserter().visit(e, null);
+        Instant foodTransactionTime = errorDao.getTransactionTimeOf(EntityType.FOOD);
+        Instant scaledUnitTransactionTime = errorDao.getTransactionTimeOf(EntityType.SCALED_UNIT);
+        Instant groceryStoreTransactionTime = errorDao.getTransactionTimeOf(EntityType.GROCERY_STORE);
+        PriceAddEntity priceAddEntity = PriceAddEntity.create(
+                form.price(),
+                form.scale(),
+                form.validTime(),
+                PreservedId.create(form.groceryStore(), groceryStoreTransactionTime),
+                PreservedId.create(form.food(), foodTransactionTime),
+                PreservedId.create(form.scaledUnit(), scaledUnitTransactionTime));
+        long dataId = errorDao.insert(priceAddEntity);
+        errorDao.insert(ErrorEntity.create(ErrorEntity.Action.ADD_PRICE, dataId, exceptionData.exceptionType(), exceptionData.exceptionId()));
     }
 
     @AutoValue

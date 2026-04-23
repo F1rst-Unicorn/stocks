@@ -23,7 +23,9 @@ package de.njsm.stocks.client.database;
 
 import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
+import androidx.room.Ignore;
 import com.google.auto.value.AutoValue;
+import de.njsm.stocks.client.business.entities.Id;
 
 import java.time.Instant;
 
@@ -41,5 +43,10 @@ public abstract class PreservedId {
 
     public static PreservedId create(int id, Instant transactionTime) {
         return new AutoValue_PreservedId(id, transactionTime);
+    }
+
+    @Ignore
+    public static PreservedId create(Id<?> id, Instant transactionTime) {
+        return new AutoValue_PreservedId(id.id(), transactionTime);
     }
 }

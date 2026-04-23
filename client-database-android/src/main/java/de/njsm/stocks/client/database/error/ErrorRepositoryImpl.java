@@ -360,4 +360,25 @@ public class ErrorRepositoryImpl implements ErrorRepository, ErrorEntity.ActionV
         var groceryChain = errorDao.getGroceryChainByValidOrTransactionTime(entity.groceryChain());
         return GroceryStoreAddErrorDetails.create(entity.name(), IdImpl.create(entity.groceryChain().id()), groceryChain.name());
     }
+
+    @Override
+    public ErrorDetails addPrice(ErrorEntity.Action action, Long input) {
+        var entity = errorDao.getPriceAdd(input);
+        var groceryStore = errorDao.getGroceryStoreByValidOrTransactionTime(entity.groceryStore());
+        var groceryChain = errorDao.getGroceryChainByValidOrTransactionTime(PreservedId.create(groceryStore.groceryChain(), entity.groceryStore().transactionTime()));
+        var food = errorDao.getFoodByValidOrTransactionTime(entity.food());
+        var scaledUnit = errorDao.getScaledUnitByValidOrTransactionTime(entity.scaledUnit());
+        var unit = errorDao.getUnitByValidOrTransactionTime(PreservedId.create(scaledUnit.unit(), entity.scaledUnit().transactionTime()));
+        return PriceAddErrorDetails.create(
+                entity.price(),
+                entity.scale(),
+                entity.validTime(),
+                IdImpl.create(entity.groceryStore().id()),
+                groceryStore.name() + " " + groceryChain.name(),
+                IdImpl.create(entity.food().id()),
+                food.name(),
+                IdImpl.create(entity.scaledUnit().id()),
+                UnitForErrorDetails.create(scaledUnit.scale(), unit.abbreviation())
+        );
+    }
 }

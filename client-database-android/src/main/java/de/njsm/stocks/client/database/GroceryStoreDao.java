@@ -37,5 +37,11 @@ abstract class GroceryStoreDao {
     @Query("select * " +
             "from current_grocery_store " +
             "order by name")
-    public abstract Observable<List<GroceryStoreDbEntity>> getCurrentGroceryStores();
+    abstract Observable<List<GroceryStoreDbEntity>> getCurrentGroceryStores();
+
+    @Query("select current_grocery_store.id as id, current_grocery_store.name || ' ' || current_grocery_chain.name as name " +
+            "from current_grocery_store " +
+            "join current_grocery_chain on current_grocery_chain.id = current_grocery_store.grocery_chain " +
+            "order by name")
+    abstract Observable<List<PriceAddRepositoryImpl.GroceryStoreData>> getGroceryStoresForSelection();
 }

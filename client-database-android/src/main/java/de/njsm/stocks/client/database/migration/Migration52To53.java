@@ -110,5 +110,16 @@ public class Migration52To53 extends Migration {
                 "name TEXT not null",
                 "grocery_chain_id INTEGER",
                 "grocery_chain_transaction_time TEXT");
+        ddlPrimitives.createTable("price_to_add", "id",
+                "id INTEGER not null",
+                "price TEXT not null",
+                "scale TEXT not null",
+                "valid_time TEXT not null",
+                "grocery_store_id INTEGER",
+                "grocery_store_transaction_time TEXT",
+                "food_id INTEGER",
+                "food_transaction_time TEXT",
+                "scaled_unit_id INTEGER",
+                "scaled_unit_transaction_time TEXT");
     }
 }
