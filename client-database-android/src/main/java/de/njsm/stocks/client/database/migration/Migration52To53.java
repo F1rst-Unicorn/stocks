@@ -85,21 +85,25 @@ public class Migration52To53 extends Migration {
         ddlPrimitives.createTable("grocery_chain_to_delete", "id",
                 "id INTEGER not null",
                 "version INTEGER not null",
-                "grocery_chain_id INTEGER not null",
-                "grocery_chain_transaction_time TEXT not null");
+                "grocery_chain_id INTEGER ",
+                "grocery_chain_transaction_time TEXT");
         ddlPrimitives.createTable("grocery_store_to_delete", "id",
                 "id INTEGER not null",
                 "version INTEGER not null",
-                "grocery_store_id INTEGER not null",
-                "grocery_store_transaction_time TEXT not null");
+                "grocery_store_id INTEGER",
+                "grocery_store_transaction_time TEXT");
         ddlPrimitives.createTable("price_to_delete", "id",
                 "id INTEGER not null",
                 "version INTEGER not null",
-                "price_id INTEGER not null",
-                "price_transaction_time TEXT not null");
+                "price_id INTEGER",
+                "price_transaction_time TEXT");
 
         ddlPrimitives.createView("current_grocery_chain", "select * from grocery_chain " + NOW_AS_BEST_KNOWN);
         ddlPrimitives.createView("current_grocery_store", "select * from grocery_store " + NOW_AS_BEST_KNOWN);
         ddlPrimitives.createView("current_price", "select * from price " + NOW_AS_BEST_KNOWN);
+
+        ddlPrimitives.createTable("grocery_chain_to_add", "id",
+                "id INTEGER not null",
+                "name TEXT not null");
     }
 }

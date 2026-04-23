@@ -85,6 +85,7 @@ import java.time.format.DateTimeFormatter;
                 GroceryChainDeleteEntity.class,
                 GroceryStoreDeleteEntity.class,
                 PriceDeleteEntity.class,
+                GroceryChainAddEntity.class,
         },
         views = {
                 CurrentLocationDbView.class,

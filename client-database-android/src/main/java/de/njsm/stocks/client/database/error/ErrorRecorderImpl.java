@@ -413,6 +413,14 @@ public class ErrorRecorderImpl implements ErrorRecorder {
         errorDao.insert(ErrorEntity.create(ErrorEntity.Action.DELETE_PRICE, dataId, exceptionData.exceptionType(), exceptionData.exceptionId()));
     }
 
+    @Override
+    public void recordGroceryChainAddError(SubsystemException e, GroceryChainAddForm form) {
+        ExceptionData exceptionData = new ExceptionInserter().visit(e, null);
+        GroceryChainAddEntity groceryChainAddEntity = GroceryChainAddEntity.create(form.name());
+        long dataId = errorDao.insert(groceryChainAddEntity);
+        errorDao.insert(ErrorEntity.create(ErrorEntity.Action.ADD_GROCERY_CHAIN, dataId, exceptionData.exceptionType(), exceptionData.exceptionId()));
+    }
+
     @AutoValue
     abstract static class ExceptionData {
 

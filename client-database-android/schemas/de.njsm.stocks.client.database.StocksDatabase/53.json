@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 53,
-    "identityHash": "2099c6f19f09f7e5161d5d8fe7b98c60",
+    "identityHash": "89d0a6cd52b84eb7137eec0b1df83142",
     "entities": [
       {
         "tableName": "updates",
@@ -3228,7 +3228,7 @@
       },
       {
         "tableName": "price_to_delete",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `version` INTEGER NOT NULL, `price_store_id` INTEGER, `price_store_transaction_time` TEXT)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `version` INTEGER NOT NULL, `price_id` INTEGER, `price_transaction_time` TEXT)",
         "fields": [
           {
             "fieldPath": "id",
@@ -3244,13 +3244,37 @@
           },
           {
             "fieldPath": "price.id",
-            "columnName": "price_store_id",
+            "columnName": "price_id",
             "affinity": "INTEGER"
           },
           {
             "fieldPath": "price.transactionTime",
-            "columnName": "price_store_transaction_time",
+            "columnName": "price_transaction_time",
             "affinity": "TEXT"
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "id"
+          ]
+        }
+      },
+      {
+        "tableName": "grocery_chain_to_add",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `name` TEXT NOT NULL)",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "name",
+            "columnName": "name",
+            "affinity": "TEXT",
+            "notNull": true
           }
         ],
         "primaryKey": {
@@ -3321,7 +3345,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '2099c6f19f09f7e5161d5d8fe7b98c60')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '89d0a6cd52b84eb7137eec0b1df83142')"
     ]
   }
 }

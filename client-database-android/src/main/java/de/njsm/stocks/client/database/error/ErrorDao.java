@@ -1088,4 +1088,16 @@ public abstract class ErrorDao {
             "   and :transactionTime < transaction_time_end " +
             ")")
     abstract PriceDbEntity getCurrentPriceAsKnownAt(int id, Instant transactionTime);
+
+    @Insert
+    abstract long insert(GroceryChainAddEntity groceryChainAddEntity);
+
+    @Query("delete from grocery_chain_to_add " +
+            "where id = :id")
+    abstract void deleteGroceryChainAdd(Long id);
+
+    @Query("select * " +
+            "from grocery_chain_to_add " +
+            "where id = :id")
+    abstract GroceryChainAddEntity getGroceryChainAdd(Long id);
 }

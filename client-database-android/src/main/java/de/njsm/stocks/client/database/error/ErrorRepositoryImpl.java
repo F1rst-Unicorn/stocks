@@ -347,4 +347,10 @@ public class ErrorRepositoryImpl implements ErrorRepository, ErrorEntity.ActionV
                 UnitForErrorDetails.create(scaledUnit.scale(), unit.abbreviation())
         );
     }
+
+    @Override
+    public ErrorDetails addGroceryChain(ErrorEntity.Action action, Long input) {
+        var entity = errorDao.getGroceryChainAdd(input);
+        return GroceryChainAddForm.create(entity.name());
+    }
 }

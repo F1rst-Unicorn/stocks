@@ -82,4 +82,6 @@ public interface ErrorRecorder {
     void recordGroceryStoreDeleteError(SubsystemException e, Versionable<GroceryStore> data);
 
     void recordPriceDeleteError(SubsystemException e, Versionable<Price> data);
+
+    void recordGroceryChainAddError(SubsystemException e, GroceryChainAddForm form);
 }

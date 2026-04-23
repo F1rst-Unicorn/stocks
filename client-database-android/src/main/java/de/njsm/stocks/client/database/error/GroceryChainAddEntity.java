@@ -21,28 +21,23 @@
 
 package de.njsm.stocks.client.database.error;
 
-import androidx.room.Embedded;
 import androidx.room.Entity;
 import androidx.room.Ignore;
 import com.google.auto.value.AutoValue;
+import de.njsm.stocks.client.database.GroceryChainFields;
 import de.njsm.stocks.client.database.IdFields;
-import de.njsm.stocks.client.database.PreservedId;
-import de.njsm.stocks.client.database.VersionFields;
+import de.njsm.stocks.client.database.LocationFields;
 
 @AutoValue
-@Entity(tableName = "price_to_delete")
-public abstract class PriceDeleteEntity implements IdFields, VersionFields {
+@Entity(tableName = "grocery_chain_to_add")
+public abstract class GroceryChainAddEntity implements IdFields, GroceryChainFields {
 
-    @Embedded(prefix = "price_")
-    @AutoValue.CopyAnnotations
-    public abstract PreservedId price();
-
-    public static PriceDeleteEntity create(int id, int version, PreservedId price) {
-        return new AutoValue_PriceDeleteEntity(id, version, price);
+    public static GroceryChainAddEntity create(int id, String name) {
+        return new AutoValue_GroceryChainAddEntity(id, name);
     }
 
     @Ignore
-    public static PriceDeleteEntity create(int version, PreservedId price) {
-        return new AutoValue_PriceDeleteEntity(0, version, price);
+    public static GroceryChainAddEntity create(String name) {
+        return new AutoValue_GroceryChainAddEntity(0, name);
     }
 }
