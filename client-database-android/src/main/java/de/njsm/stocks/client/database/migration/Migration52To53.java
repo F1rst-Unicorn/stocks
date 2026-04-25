@@ -117,7 +117,7 @@ public class Migration52To53 extends Migration {
                 "name TEXT not null",
                 "grocery_chain_id INTEGER",
                 "grocery_chain_transaction_time TEXT");
-        ddlPrimitives.createTable("grocery_chain_to_edit", "id",
+        ddlPrimitives.createTable("grocery_store_to_edit", "id",
                 "id INTEGER not null",
                 "version INTEGER not null",
                 "name TEXT not null",

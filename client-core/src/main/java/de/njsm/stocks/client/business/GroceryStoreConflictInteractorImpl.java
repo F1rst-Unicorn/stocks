@@ -21,21 +21,22 @@
 
 package de.njsm.stocks.client.business;
 
-import de.njsm.stocks.client.business.entities.conflict.*;
+import de.njsm.stocks.client.business.entities.conflict.GroceryStoreEditConflictData;
 import io.reactivex.rxjava3.core.Observable;
 
-public interface ConflictRepository {
-    Observable<LocationEditConflictData> getLocationEditConflict(long errorId);
+import javax.inject.Inject;
 
-    Observable<UnitEditConflictData> getUnitEditConflict(long errorId);
+class GroceryStoreConflictInteractorImpl implements GroceryStoreConflictInteractor {
 
-    Observable<ScaledUnitEditConflictData> getScaledUnitEditConflict(long errorId);
+    private final ConflictRepository conflictRepository;
 
-    Observable<FoodEditConflictData> getFoodEditConflict(long errorId);
+    @Inject
+    GroceryStoreConflictInteractorImpl(ConflictRepository conflictRepository) {
+        this.conflictRepository = conflictRepository;
+    }
 
-    Observable<FoodItemEditConflictData> getFoodItemEditConflict(long errorId);
-
-    Observable<GroceryChainEditConflictData> getGroceryChainEditConflict(long errorId);
-
-    Observable<GroceryStoreEditConflictData> getGroceryStoreEditConflict(long errorId);
+    @Override
+    public Observable<GroceryStoreEditConflictData> getGroceryStoreEditConflict(long errorId) {
+        return conflictRepository.getGroceryStoreEditConflict(errorId);
+    }
 }

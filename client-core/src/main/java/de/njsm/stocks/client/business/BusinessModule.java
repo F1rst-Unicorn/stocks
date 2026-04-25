@@ -262,4 +262,7 @@ public interface BusinessModule {
 
     @Binds
     GroceryStoreEditInteractor GroceryStoreEditInteractor(GroceryStoreEditInteractorImpl impl);
+
+    @Binds
+    GroceryStoreConflictInteractor GroceryStoreConflictInteractor(GroceryStoreConflictInteractorImpl impl);
 }

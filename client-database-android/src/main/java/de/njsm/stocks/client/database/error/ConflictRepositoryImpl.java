@@ -206,6 +206,27 @@ public class ConflictRepositoryImpl implements ConflictRepository {
         });
     }
 
+    @Override
+    public Observable<GroceryStoreEditConflictData> getGroceryStoreEditConflict(long errorId) {
+        return errorDao.observeError(errorId).map(error -> {
+            if (error.action() != ErrorEntity.Action.EDIT_GROCERY_STORE)
+                throw new IllegalArgumentException("error " + errorId + " does not belong to " + ErrorEntity.Action.EDIT_GROCERY_STORE + " but to " + error.action());
+
+            GroceryStoreEditEntity groceryStoreEditEntity = errorDao.getGroceryStoreEdit(error.dataId());
+            GroceryStoreDbEntity original = errorDao.getCurrentGroceryStoreAsKnownAt(groceryStoreEditEntity.groceryStore().id(), groceryStoreEditEntity.groceryStore().transactionTime());
+            GroceryStoreDbEntity remote = errorDao.getCurrentGroceryStoreAsKnownAt(groceryStoreEditEntity.groceryStore().id(), groceryStoreEditEntity.executionTime());
+
+            return GroceryStoreEditConflictData.create(
+                    error.id(),
+                    groceryStoreEditEntity.groceryChain().toId(),
+                    remote.version(),
+                    original.name(),
+                    remote.name(),
+                    groceryStoreEditEntity.name()
+            );
+        });
+    }
+
     private UnitForListing getUnitForListingFromDbEntity(UnitDbEntity dbEntity) {
         return UnitForListing.create(dbEntity.id(), dbEntity.name(), dbEntity.abbreviation());
     }
