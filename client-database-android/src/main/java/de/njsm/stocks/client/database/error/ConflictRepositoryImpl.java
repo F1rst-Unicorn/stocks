@@ -23,6 +23,7 @@ package de.njsm.stocks.client.database.error;
 
 import de.njsm.stocks.client.business.ConflictRepository;
 import de.njsm.stocks.client.business.Localiser;
+import de.njsm.stocks.client.business.entities.IdImpl;
 import de.njsm.stocks.client.business.entities.LocationForListing;
 import de.njsm.stocks.client.business.entities.ScaledUnitForListing;
 import de.njsm.stocks.client.business.entities.UnitForListing;
@@ -181,6 +182,27 @@ public class ConflictRepositoryImpl implements ConflictRepository {
                     ScaledUnitForListing.create(originalScaledUnit.id(), originalUnit.abbreviation(), originalScaledUnit.scale()),
                     ScaledUnitForListing.create(remoteScaledUnit.id(), remoteUnit.abbreviation(), remoteScaledUnit.scale()),
                     ScaledUnitForListing.create(localScaledUnit.id(), localUnit.abbreviation(), localScaledUnit.scale()));
+        });
+    }
+
+    @Override
+    public Observable<GroceryChainEditConflictData> getGroceryChainEditConflict(long errorId) {
+        return errorDao.observeError(errorId).map(error -> {
+            if (error.action() != ErrorEntity.Action.EDIT_GROCERY_CHAIN)
+                throw new IllegalArgumentException("error " + errorId + " does not belong to " + ErrorEntity.Action.EDIT_GROCERY_CHAIN + " but to " + error.action());
+
+            GroceryChainEditEntity groceryChainEditEntity = errorDao.getGroceryChainEdit(error.dataId());
+            GroceryChainDbEntity original = errorDao.getCurrentGroceryChainAsKnownAt(groceryChainEditEntity.groceryChain().id(), groceryChainEditEntity.groceryChain().transactionTime());
+            GroceryChainDbEntity remote = errorDao.getCurrentGroceryChainAsKnownAt(groceryChainEditEntity.groceryChain().id(), groceryChainEditEntity.executionTime());
+
+            return GroceryChainEditConflictData.create(
+                    error.id(),
+                    IdImpl.create(groceryChainEditEntity.groceryChain().id()),
+                    remote.version(),
+                    original.name(),
+                    remote.name(),
+                    groceryChainEditEntity.name()
+            );
         });
     }
 

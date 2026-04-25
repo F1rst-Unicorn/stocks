@@ -256,4 +256,7 @@ public interface BusinessModule {
 
     @Binds
     GroceryChainEditInteractor GroceryChainEditInteractor(GroceryChainEditInteractorImpl impl);
+
+    @Binds
+    GroceryChainConflictInteractor GroceryChainConflictInteractor(GroceryChainConflictInteractorImpl impl);
 }
