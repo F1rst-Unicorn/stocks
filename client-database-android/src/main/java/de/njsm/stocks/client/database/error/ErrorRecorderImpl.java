@@ -461,6 +461,21 @@ public class ErrorRecorderImpl implements ErrorRecorder {
         errorDao.insert(ErrorEntity.create(ErrorEntity.Action.EDIT_GROCERY_CHAIN, dataId, exceptionData.exceptionType(), exceptionData.exceptionId()));
     }
 
+    @Override
+    public void recordGroceryStoreEditError(SubsystemException e, GroceryStoreForEditing formData) {
+        ExceptionData exceptionData = new ExceptionInserter().visit(e, null);
+        Instant groceryStoreTransactionTime = errorDao.getTransactionTimeOf(EntityType.GROCERY_STORE);
+        Instant groceryChainTransactionTime = errorDao.getTransactionTimeOf(EntityType.GROCERY_CHAIN);
+        GroceryStoreEditEntity groceryStoreEditEntity = GroceryStoreEditEntity.create(
+                formData.version(),
+                PreservedId.create(formData.id(), groceryStoreTransactionTime),
+                clock.get(),
+                formData.name(),
+                PreservedId.create(formData.groceryChain().id(), groceryChainTransactionTime));
+        long dataId = errorDao.insert(groceryStoreEditEntity);
+        errorDao.insert(ErrorEntity.create(ErrorEntity.Action.EDIT_GROCERY_STORE, dataId, exceptionData.exceptionType(), exceptionData.exceptionId()));
+    }
+
     @AutoValue
     abstract static class ExceptionData {
 

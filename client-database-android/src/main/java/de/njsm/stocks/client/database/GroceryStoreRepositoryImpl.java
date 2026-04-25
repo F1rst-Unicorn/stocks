@@ -45,7 +45,11 @@ class GroceryStoreRepositoryImpl implements EntityDeleteRepository<GroceryStore>
 
     @Override
     public GroceryStoreForDeletion getEntityForDeletion(Id<GroceryStore> id) {
-        return groceryStoreDao.getGroceryStore(id.id());
+        GroceryStoreDbEntity groceryStoreEntity = groceryStoreDao.getGroceryStoreEntity(id.id());
+        return GroceryStoreForDeletion.builder()
+                .id(groceryStoreEntity.id())
+                .version(groceryStoreEntity.version())
+                .build();
     }
 
     @Override
@@ -64,5 +68,35 @@ class GroceryStoreRepositoryImpl implements EntityDeleteRepository<GroceryStore>
     @Override
     public Observable<GroceryChainForListing> getGroceryChain(IdImpl<GroceryChain> id) {
         return groceryChainDao.getGroceryChainForListing(id.id());
+    }
+
+    @Override
+    public Observable<GroceryStoreEditData> getGroceryStoreForEditing(Id<GroceryStore> id) {
+        return groceryStoreDao.getGroceryStoreEditData(id.id())
+                .map(v -> GroceryStoreEditData.create(
+                        v.id,
+                        v.version,
+                        v.name,
+                        IdImpl.create(v.groceryChain),
+                        v.groceryChainName
+                ));
+    }
+
+    static class GroceryStoreDbEditData {
+        int id;
+        int version;
+        String name;
+        int groceryChain;
+        String groceryChainName;
+    }
+
+    @Override
+    public GroceryStoreForEditing getCurrentGroceryStoreBeforeEditing(GroceryStoreForEditing formData) {
+        GroceryStoreDbEntity groceryStoreEntity = groceryStoreDao.getGroceryStoreEntity(formData.id());
+        return GroceryStoreForEditing.create(
+                groceryStoreEntity.id(),
+                groceryStoreEntity.version(),
+                groceryStoreEntity.name(),
+                IdImpl.create(groceryStoreEntity.groceryChain()));
     }
 }

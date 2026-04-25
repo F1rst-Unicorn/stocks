@@ -25,7 +25,9 @@ import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Ignore;
 import com.google.auto.value.AutoValue;
+import de.njsm.stocks.client.business.entities.Entity;
 import de.njsm.stocks.client.business.entities.Id;
+import de.njsm.stocks.client.business.entities.IdImpl;
 
 import java.time.Instant;
 
@@ -48,5 +50,9 @@ public abstract class PreservedId {
     @Ignore
     public static PreservedId create(Id<?> id, Instant transactionTime) {
         return new AutoValue_PreservedId(id.id(), transactionTime);
+    }
+
+    public <E extends Entity<E>>IdImpl<E> toId() {
+        return IdImpl.create(id());
     }
 }

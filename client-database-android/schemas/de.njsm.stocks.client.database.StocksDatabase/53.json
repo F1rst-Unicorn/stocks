@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 53,
-    "identityHash": "534aeff1f726f1d1f7ca1f9f9e14de40",
+    "identityHash": "1fab2c114e6d82446d1eb5db79a9fbed",
     "entities": [
       {
         "tableName": "updates",
@@ -3431,6 +3431,66 @@
             "id"
           ]
         }
+      },
+      {
+        "tableName": "grocery_store_to_edit",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `version` INTEGER NOT NULL, `name` TEXT NOT NULL, `execution_time` TEXT NOT NULL, `grocery_store_id` INTEGER NOT NULL, `grocery_store_transaction_time` TEXT NOT NULL, `grocery_chain_id` INTEGER NOT NULL, `grocery_chain_transaction_time` TEXT NOT NULL)",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "version",
+            "columnName": "version",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "name",
+            "columnName": "name",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "executionTime",
+            "columnName": "execution_time",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "groceryStore.id",
+            "columnName": "grocery_store_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "groceryStore.transactionTime",
+            "columnName": "grocery_store_transaction_time",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "groceryChain.id",
+            "columnName": "grocery_chain_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "groceryChain.transactionTime",
+            "columnName": "grocery_chain_transaction_time",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "id"
+          ]
+        }
       }
     ],
     "views": [
@@ -3493,7 +3553,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '534aeff1f726f1d1f7ca1f9f9e14de40')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '1fab2c114e6d82446d1eb5db79a9fbed')"
     ]
   }
 }

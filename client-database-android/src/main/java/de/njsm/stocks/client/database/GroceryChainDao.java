@@ -23,7 +23,6 @@ package de.njsm.stocks.client.database;
 
 import androidx.room.Dao;
 import androidx.room.Query;
-import de.njsm.stocks.client.business.entities.GroceryChainForDeletion;
 import de.njsm.stocks.client.business.entities.GroceryChainForListing;
 import io.reactivex.rxjava3.core.Observable;
 
@@ -31,9 +30,6 @@ import java.util.List;
 
 @Dao
 abstract class GroceryChainDao {
-
-    @Query("select * from current_grocery_chain where id = :id")
-    abstract GroceryChainForDeletion getGroceryChain(int id);
 
     @Query("select * from current_grocery_chain where id = :id")
     abstract Observable<GroceryChainForListing> getGroceryChainForListing(int id);
@@ -51,5 +47,5 @@ abstract class GroceryChainDao {
     @Query("select * " +
             "from current_grocery_chain " +
             "where id = :id")
-    abstract GroceryChainDbEntity getGroceryChainToEdit(int id);
+    abstract GroceryChainDbEntity getGroceryChainEntity(int id);
 }
