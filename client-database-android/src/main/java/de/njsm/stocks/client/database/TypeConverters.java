@@ -128,7 +128,7 @@ public class TypeConverters {
     }
 
     @TypeConverter
-    public Id<GroceryStore> groceryStoreId(int id) {
-        return IdImpl.create(id);
+    public int groceryStoreId(Id<GroceryChain> id) {
+        return id.id();
     }
 }

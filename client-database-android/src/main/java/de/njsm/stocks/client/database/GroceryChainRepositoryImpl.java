@@ -41,7 +41,7 @@ class GroceryChainRepositoryImpl implements EntityDeleteRepository<GroceryChain>
 
     @Override
     public GroceryChainForDeletion getEntityForDeletion(Id<GroceryChain> id) {
-        GroceryChainDbEntity groceryChainEntity = groceryChainDao.getGroceryChainEntity(id.id());
+        GroceryChainDbEntity groceryChainEntity = groceryChainDao.getGroceryChainEntity(id);
         return GroceryChainForDeletion.create(groceryChainEntity.id(), groceryChainEntity.version());
     }
 
@@ -59,7 +59,7 @@ class GroceryChainRepositoryImpl implements EntityDeleteRepository<GroceryChain>
 
     @Override
     public GroceryChainForEditing getCurrentGroceryChainBeforeEditing(Id<GroceryChain> formData) {
-        return map(groceryChainDao.getGroceryChainEntity(formData.id()));
+        return map(groceryChainDao.getGroceryChainEntity(formData));
     }
 
     private static GroceryChainForEditing map(GroceryChainDbEntity v) {
