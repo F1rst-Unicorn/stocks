@@ -69,8 +69,8 @@ public class PriceAdapter extends RecyclerView.Adapter<PriceViewHolder> {
         PriceForListing item = data.get(position);
         holder.setDate(dateRenderStrategy.render(item.date()));
         holder.setGroceryStore(item.groceryStoreAndChainName());
-        holder.setPrice(unitAmountRenderStrategy.render(item.price()));
-        holder.setQuantity(unitAmountRenderStrategy.render(item.quantity()));
+        holder.setPrice(unitAmountRenderStrategy.render(item.normalisedPrice()));
+        holder.setQuantity(unitAmountRenderStrategy.render(item.normalisedQuantity()));
     }
 
     @Override

@@ -22,9 +22,13 @@
 package de.njsm.stocks.client.business.entities;
 
 import com.google.auto.value.AutoValue;
+import com.google.auto.value.extension.memoized.Memoized;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDateTime;
+
+import static de.njsm.stocks.client.business.Constants.ROUNDING_PRECISION;
 
 @AutoValue
 public abstract class PriceForListing {
@@ -33,13 +37,29 @@ public abstract class PriceForListing {
 
     public abstract LocalDateTime date();
 
-    public abstract String groceryStoreAndChainName();
+    public abstract String groceryStoreName();
+
+    public abstract String groceryChainName();
+
+    public String groceryStoreAndChainName() {
+        return groceryStoreName() + " " + groceryChainName();
+    }
 
     public abstract BigDecimal price();
 
     public abstract StoredAmount quantity();
 
-    public static PriceForListing create(IdImpl<Price> id, LocalDateTime date, String groceryStoreAndChainName, BigDecimal price, StoredAmount quantity) {
-        return new AutoValue_PriceForListing(id, date, groceryStoreAndChainName, price, quantity);
+    @Memoized
+    public BigDecimal normalisedPrice() {
+        return price().divide(quantity().amount(), ROUNDING_PRECISION, RoundingMode.HALF_UP);
+    }
+
+    @Memoized
+    public StoredAmount normalisedQuantity() {
+        return StoredAmount.create(BigDecimal.ONE, quantity().abbreviation());
+    }
+
+    public static PriceForListing create(IdImpl<Price> id, LocalDateTime date, String groceryStoreName, String groceryChainName, BigDecimal price, StoredAmount quantity) {
+        return new AutoValue_PriceForListing(id, date, groceryStoreName, groceryChainName, price, quantity);
     }
 }

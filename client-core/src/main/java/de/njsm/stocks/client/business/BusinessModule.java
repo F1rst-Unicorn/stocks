@@ -250,4 +250,7 @@ public interface BusinessModule {
 
     @Binds
     PriceAddInteractor PriceAddInteractor(PriceAddInteractorImpl impl);
+
+    @Binds
+    PriceListInteractor PriceListInteractor(PriceListInteractorImpl impl);
 }

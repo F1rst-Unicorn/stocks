@@ -437,4 +437,11 @@ public class ViewModelModule {
     ViewModel PriceListViewModel(PriceListInteractor interactor, EntityDeleter<Price> deleter, Synchroniser synchroniser, ObservableListCache<PriceForListing> data) {
         return new PriceListViewModel(interactor, deleter, synchroniser, data);
     }
+
+    @Provides
+    @IntoMap
+    @ViewModelKey(GroceryStoreConflictViewModel.class)
+    ViewModel GroceryStoreConflictViewModel(GroceryStoreConflictInteractor groceryStoreConflictInteractor, ErrorRetryInteractor errorRetryInteractor, ObservableDataCache<GroceryStoreEditConflictData> data) {
+        return new GroceryStoreConflictViewModel(groceryStoreConflictInteractor, errorRetryInteractor, data);
+    }
 }

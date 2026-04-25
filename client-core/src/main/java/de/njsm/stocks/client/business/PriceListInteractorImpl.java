@@ -21,11 +21,25 @@
 
 package de.njsm.stocks.client.business;
 
-import java.time.Instant;
+import de.njsm.stocks.client.business.entities.Food;
+import de.njsm.stocks.client.business.entities.IdImpl;
+import de.njsm.stocks.client.business.entities.PriceForListing;
+import io.reactivex.rxjava3.core.Observable;
 
-public abstract class Constants {
+import javax.inject.Inject;
+import java.util.List;
 
-    public static final Instant INFINITY = Instant.ofEpochMilli(9223372036825200000L);
+class PriceListInteractorImpl implements PriceListInteractor {
 
-    public static final int ROUNDING_PRECISION = 6;
+    private final PriceRepository priceRepository;
+
+    @Inject
+    PriceListInteractorImpl(PriceRepository priceRepository) {
+        this.priceRepository = priceRepository;
+    }
+
+    @Override
+    public Observable<List<PriceForListing>> getPrices(IdImpl<Food> id) {
+        return priceRepository.getPrices(id);
+    }
 }
