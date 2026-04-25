@@ -40,7 +40,7 @@ public abstract class LocationToEdit implements Id<Location>, LocationFields {
     }
 
     public boolean isContainedIn(LocationForEditing currentState) {
-        return id() == id() &&
+        return id() == currentState.id() &&
                 name().equals(currentState.name()) &&
                 description().equals(currentState.description());
     }

@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 53,
-    "identityHash": "60e5235dd5dfbf05cb04a6b6e15fa156",
+    "identityHash": "534aeff1f726f1d1f7ca1f9f9e14de40",
     "entities": [
       {
         "tableName": "updates",
@@ -3383,6 +3383,54 @@
             "id"
           ]
         }
+      },
+      {
+        "tableName": "grocery_chain_to_edit",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `version` INTEGER NOT NULL, `name` TEXT NOT NULL, `execution_time` TEXT NOT NULL, `grocery_chain_id` INTEGER NOT NULL, `grocery_chain_transaction_time` TEXT NOT NULL)",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "version",
+            "columnName": "version",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "name",
+            "columnName": "name",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "executionTime",
+            "columnName": "execution_time",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "groceryChain.id",
+            "columnName": "grocery_chain_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "groceryChain.transactionTime",
+            "columnName": "grocery_chain_transaction_time",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "id"
+          ]
+        }
       }
     ],
     "views": [
@@ -3445,7 +3493,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '60e5235dd5dfbf05cb04a6b6e15fa156')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '534aeff1f726f1d1f7ca1f9f9e14de40')"
     ]
   }
 }

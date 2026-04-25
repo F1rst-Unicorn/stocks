@@ -37,6 +37,11 @@ public abstract class GroceryChainForEditing implements GroceryChain {
         return new AutoValue_GroceryChainForEditing.Builder();
     }
 
+    public boolean isContainedIn(GroceryChainForEditing other) {
+        return id() == other.id() &&
+                name().equals(other.name());
+    }
+
     @AutoValue.Builder
     public abstract static class Builder
             extends BaseBuilder<GroceryChainForEditing>

@@ -24,6 +24,7 @@ package de.njsm.stocks.client.database;
 import de.njsm.stocks.client.business.EntityDeleteRepository;
 import de.njsm.stocks.client.business.GroceryChainRepository;
 import de.njsm.stocks.client.business.entities.*;
+import de.njsm.stocks.client.business.entities.VersionedId;
 import io.reactivex.rxjava3.core.Observable;
 
 import javax.inject.Inject;
@@ -47,5 +48,23 @@ class GroceryChainRepositoryImpl implements EntityDeleteRepository<GroceryChain>
     public Observable<List<GroceryChainForListing>> getGroceryChains() {
         return groceryChainDao.getGroceryChains()
                 .distinctUntilChanged();
+    }
+
+    @Override
+    public Observable<GroceryChainForEditing> getGroceryChain(Id<GroceryChain> id) {
+        return groceryChainDao.getGroceryChainForEditing(id.id())
+                .map(GroceryChainRepositoryImpl::map);
+    }
+
+    @Override
+    public GroceryChainForEditing getCurrentGroceryChainBeforeEditing(Id<GroceryChain> formData) {
+        return map(groceryChainDao.getGroceryChainToEdit(formData.id()));
+    }
+
+    private static GroceryChainForEditing map(GroceryChainDbEntity v) {
+        return GroceryChainForEditing.create(
+                VersionedId.create(v.id(), v.version()),
+                v.name()
+        );
     }
 }

@@ -21,11 +21,18 @@
 
 package de.njsm.stocks.client.business;
 
+import de.njsm.stocks.client.business.entities.GroceryChain;
+import de.njsm.stocks.client.business.entities.GroceryChainForEditing;
 import de.njsm.stocks.client.business.entities.GroceryChainForListing;
+import de.njsm.stocks.client.business.entities.Id;
 import io.reactivex.rxjava3.core.Observable;
 
 import java.util.List;
 
 public interface GroceryChainRepository {
     Observable<List<GroceryChainForListing>> getGroceryChains();
+
+    Observable<GroceryChainForEditing> getGroceryChain(Id<GroceryChain> id);
+
+    GroceryChainForEditing getCurrentGroceryChainBeforeEditing(Id<GroceryChain> formData);
 }

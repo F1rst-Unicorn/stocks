@@ -41,5 +41,15 @@ abstract class GroceryChainDao {
     @Query("select * " +
             "from current_grocery_chain " +
             "order by name")
-    public abstract Observable<List<GroceryChainForListing>> getGroceryChains();
+    abstract Observable<List<GroceryChainForListing>> getGroceryChains();
+
+    @Query("select * " +
+            "from current_grocery_chain " +
+            "where id = :id")
+    abstract Observable<GroceryChainDbEntity> getGroceryChainForEditing(int id);
+
+    @Query("select * " +
+            "from current_grocery_chain " +
+            "where id = :id")
+    abstract GroceryChainDbEntity getGroceryChainToEdit(int id);
 }
