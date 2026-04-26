@@ -128,12 +128,27 @@ public class TypeConverters {
     }
 
     @TypeConverter
+    public Id<Price> priceId(int id) {
+        return IdImpl.create(id);
+    }
+
+    @TypeConverter
     public IdImpl<GroceryStore> groceryStoreId(int id) {
         return IdImpl.create(id);
     }
 
     @TypeConverter
     public IdImpl<GroceryChain> groceryChainId(int id) {
+        return IdImpl.create(id);
+    }
+
+    @TypeConverter
+    public IdImpl<Price> priceIdImpl(int id) {
+        return IdImpl.create(id);
+    }
+
+    @TypeConverter
+    public IdImpl<Food> foodIdImpl(int id) {
         return IdImpl.create(id);
     }
 

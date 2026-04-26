@@ -53,6 +53,8 @@ public class FoodEventInteractorImpl extends BaseEventInteractorImpl implements 
                         .map(v -> transformToEvents(v, eventFactory::getFoodItemEventFrom)))
                 .mergeWith(repository.getEanNumberFeed(getHint(), localiser.toInstant(day))
                         .map(v -> transformToEvents(v, eventFactory::getEanNumberEventFrom)))
+                .mergeWith(repository.getPriceFeed(getHint(), localiser.toInstant(day))
+                        .map(v -> transformToEvents(v, eventFactory::getPriceEventFrom)))
 
                 .buffer(getRelevantEntities().size())
                 .map(this::sortEvents)
@@ -71,7 +73,8 @@ public class FoodEventInteractorImpl extends BaseEventInteractorImpl implements 
         return List.of(
                 EntityType.FOOD,
                 EntityType.FOOD_ITEM,
-                EntityType.EAN_NUMBER
+                EntityType.EAN_NUMBER,
+                EntityType.PRICE
         );
     }
 }

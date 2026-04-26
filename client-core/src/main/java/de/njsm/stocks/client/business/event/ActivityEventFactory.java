@@ -95,6 +95,27 @@ public class ActivityEventFactory {
                 unsupported("ean numbers cannot be edited"));
     }
 
+    public ActivityEvent getGroceryChainEventFrom(List<GroceryChainEventFeedItem> feedItems) {
+        return getEventFrom(feedItems,
+                GroceryChainCreatedEvent::create,
+                GroceryChainDeletedEvent::create,
+                GroceryChainEditedEvent::create);
+    }
+
+    public ActivityEvent getGroceryStoreEventFrom(List<GroceryStoreEventFeedItem> feedItems) {
+        return getEventFrom(feedItems,
+                GroceryStoreCreatedEvent::create,
+                GroceryStoreDeletedEvent::create,
+                GroceryStoreEditedEvent::create);
+    }
+
+    public ActivityEvent getPriceEventFrom(List<PriceEventFeedItem> feedItems) {
+        return getEventFrom(feedItems,
+                PriceCreatedEvent::create,
+                PriceDeletedEvent::create,
+                unsupported("prices cannot be edited"));
+    }
+
     private <T extends EventFeedItem<E>, E extends Entity<E>>
     ActivityEvent getEventFrom(List<T> feedItems,
                                BiFunction<T, Localiser, ? extends ActivityEvent> createdFactory,

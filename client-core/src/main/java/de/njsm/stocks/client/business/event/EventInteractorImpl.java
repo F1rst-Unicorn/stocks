@@ -50,7 +50,10 @@ public class EventInteractorImpl extends BaseEventInteractorImpl {
                 EntityType.SCALED_UNIT,
                 EntityType.FOOD,
                 EntityType.FOOD_ITEM,
-                EntityType.EAN_NUMBER
+                EntityType.EAN_NUMBER,
+                EntityType.GROCERY_CHAIN,
+                EntityType.GROCERY_STORE,
+                EntityType.PRICE
         );
     }
 
@@ -72,6 +75,12 @@ public class EventInteractorImpl extends BaseEventInteractorImpl {
                         .map(v -> transformToEvents(v, eventFactory::getFoodItemEventFrom)))
                 .mergeWith(repository.getEanNumberFeed(getHint(), localiser.toInstant(day))
                         .map(v -> transformToEvents(v, eventFactory::getEanNumberEventFrom)))
+                .mergeWith(repository.getGroceryChainFeed(getHint(), localiser.toInstant(day))
+                        .map(v -> transformToEvents(v, eventFactory::getGroceryChainEventFrom)))
+                .mergeWith(repository.getGroceryStoreFeed(getHint(), localiser.toInstant(day))
+                        .map(v -> transformToEvents(v, eventFactory::getGroceryStoreEventFrom)))
+                .mergeWith(repository.getPriceFeed(getHint(), localiser.toInstant(day))
+                        .map(v -> transformToEvents(v, eventFactory::getPriceEventFrom)))
 
                 .buffer(getRelevantEntities().size())
                 .map(this::sortEvents)

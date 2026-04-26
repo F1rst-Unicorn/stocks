@@ -49,6 +49,12 @@ public interface EventRepository {
 
     Single<List<EanNumberEventFeedItem>> getEanNumberFeed(EventKeyHint hint, Instant day);
 
+    Single<List<GroceryChainEventFeedItem>> getGroceryChainFeed(EventKeyHint hint, Instant day);
+
+    Single<List<GroceryStoreEventFeedItem>> getGroceryStoreFeed(EventKeyHint hint, Instant day);
+
+    Single<List<PriceEventFeedItem>> getPriceFeed(EventKeyHint hint, Instant day);
+
     Maybe<Instant> getPreviousDayContainingEvents(Instant day, List<EntityType> relevantEntities, EventKeyHint hint);
 
     Maybe<Instant> getNextDayContainingEvents(Instant day, List<EntityType> relevantEntities, EventKeyHint hint);

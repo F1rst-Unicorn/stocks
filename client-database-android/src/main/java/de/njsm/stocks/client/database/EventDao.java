@@ -380,6 +380,121 @@ abstract class EventDao {
             "order by main_table.transaction_time_start desc, main_table.valid_time_end")
     abstract Observable<List<EanNumberEventFeedItem>> getEanNumberEventsOfInitiatorUser(int initiatorUser, Instant lower, Instant upper);
 
+    private static final String SELECT_GROCERY_CHAIN_JOIN_TABLES = "select " +
+            EVENT_COLUMNS +
+            "main_table.name as name " +
+            "from grocery_chain main_table ";
+
+    @Query(SELECT_GROCERY_CHAIN_JOIN_TABLES +
+            JOIN_INITIATOR +
+            WHERE_TIME_INTERVAL +
+            "order by main_table.transaction_time_start desc, main_table.valid_time_end")
+    abstract Observable<List<GroceryChainEventFeedItem>> getGroceryChainEvents(Instant lower, Instant upper);
+
+    @Query(SELECT_GROCERY_CHAIN_JOIN_TABLES +
+            JOIN_INITIATOR +
+            WHERE_TIME_INTERVAL +
+            "and main_table.initiates = :initiator " +
+            "order by main_table.transaction_time_start desc, main_table.valid_time_end")
+    abstract Observable<List<GroceryChainEventFeedItem>> getGroceryChainEventsOfInitiator(int initiator, Instant lower, Instant upper);
+
+    @Query(SELECT_GROCERY_CHAIN_JOIN_TABLES +
+            JOIN_INITIATOR +
+            WHERE_TIME_INTERVAL +
+            FILTER_INITIATES_USER +
+            "order by main_table.transaction_time_start desc, main_table.valid_time_end")
+    abstract Observable<List<GroceryChainEventFeedItem>> getGroceryChainEventsOfInitiatorUser(int initiatorUser, Instant lower, Instant upper);
+
+    private static final String SELECT_GROCERY_STORE_JOIN_TABLES = "select " +
+            EVENT_COLUMNS +
+            "main_table.name as name, " +
+            "grocery_chain.id as groceryChainId, " +
+            "grocery_chain.name as groceryChainName " +
+            "from grocery_store main_table " +
+            "cross join grocery_chain on grocery_chain.id = main_table.grocery_chain " +
+                "and grocery_chain.valid_time_start <= main_table.transaction_time_start " +
+                "and main_table.transaction_time_start < grocery_chain.valid_time_end " +
+                "and grocery_chain.transaction_time_end = " + DATABASE_INFINITY_STRING_SQL;
+
+    @Query(SELECT_GROCERY_STORE_JOIN_TABLES +
+            JOIN_INITIATOR +
+            WHERE_TIME_INTERVAL +
+            "order by main_table.transaction_time_start desc, main_table.valid_time_end")
+    abstract Observable<List<GroceryStoreEventFeedItem>> getGroceryStoreEvents(Instant lower, Instant upper);
+
+    @Query(SELECT_GROCERY_STORE_JOIN_TABLES +
+            JOIN_INITIATOR +
+            WHERE_TIME_INTERVAL +
+            "and main_table.initiates = :initiator " +
+            "order by main_table.transaction_time_start desc, main_table.valid_time_end")
+    abstract Observable<List<GroceryStoreEventFeedItem>> getGroceryStoreEventsOfInitiator(int initiator, Instant lower, Instant upper);
+
+    @Query(SELECT_GROCERY_STORE_JOIN_TABLES +
+            JOIN_INITIATOR +
+            WHERE_TIME_INTERVAL +
+            FILTER_INITIATES_USER +
+            "order by main_table.transaction_time_start desc, main_table.valid_time_end")
+    abstract Observable<List<GroceryStoreEventFeedItem>> getGroceryStoreEventsOfInitiatorUser(int initiatorUser, Instant lower, Instant upper);
+
+    private static final String SELECT_PRICE_JOIN_TABLES = "select " +
+            EVENT_COLUMNS +
+            "food.id as foodId, " +
+            "food.name as foodName, " +
+            "main_table.price as price, " +
+            "main_table.scale as scale, " +
+            "main_table.valid_time_start as validTime, " +
+            "scaled_unit.scale as scaledUnitScale, " +
+            "unit.abbreviation as abbreviation, " +
+            "grocery_store.name || ' ' || grocery_chain.name as groceryStoreName " +
+            "from price main_table " +
+            "join food on food.id = main_table.food " +
+                "and food.valid_time_start <= main_table.transaction_time_start " +
+                "and main_table.transaction_time_start < food.valid_time_end " +
+                "and food.transaction_time_end = " + DATABASE_INFINITY_STRING_SQL +
+            "cross join scaled_unit on scaled_unit.id = main_table.scaled_unit " +
+                "and scaled_unit.valid_time_start <= main_table.transaction_time_start " +
+                "and main_table.transaction_time_start < scaled_unit.valid_time_end " +
+                "and scaled_unit.transaction_time_end = " + DATABASE_INFINITY_STRING_SQL +
+            "cross join unit on unit.id = scaled_unit.unit " +
+                "and unit.valid_time_start <= main_table.transaction_time_start " +
+                "and main_table.transaction_time_start < unit.valid_time_end " +
+                "and unit.transaction_time_end = " + DATABASE_INFINITY_STRING_SQL +
+            "cross join grocery_store on grocery_store.id = main_table.grocery_store " +
+                "and grocery_store.valid_time_start <= main_table.transaction_time_start " +
+                "and main_table.transaction_time_start < grocery_store.valid_time_end " +
+                "and grocery_store.transaction_time_end = " + DATABASE_INFINITY_STRING_SQL +
+            "cross join grocery_chain on grocery_chain.id = grocery_store.grocery_chain " +
+                "and grocery_chain.valid_time_start <= main_table.transaction_time_start " +
+                "and main_table.transaction_time_start < grocery_chain.valid_time_end " +
+                "and grocery_chain.transaction_time_end = " + DATABASE_INFINITY_STRING_SQL;
+
+    @Query(SELECT_PRICE_JOIN_TABLES +
+            JOIN_INITIATOR +
+            WHERE_TIME_INTERVAL +
+            "order by main_table.transaction_time_start desc, main_table.valid_time_end")
+    abstract Observable<List<EventRepositoryImpl.PriceEventFeedItemData>> getPriceEvents(Instant lower, Instant upper);
+
+    @Query(SELECT_PRICE_JOIN_TABLES +
+            JOIN_INITIATOR +
+            WHERE_TIME_INTERVAL +
+            "and main_table.food = :foodId " +
+            "order by main_table.transaction_time_start desc, main_table.valid_time_end")
+    abstract Observable<List<EventRepositoryImpl.PriceEventFeedItemData>> getPriceEventsOfFood(int foodId, Instant lower, Instant upper);
+
+    @Query(SELECT_PRICE_JOIN_TABLES +
+            JOIN_INITIATOR +
+            WHERE_TIME_INTERVAL +
+            "and main_table.initiates = :initiator " +
+            "order by main_table.transaction_time_start desc, main_table.valid_time_end")
+    abstract Observable<List<EventRepositoryImpl.PriceEventFeedItemData>> getPriceEventsOfInitiator(int initiator, Instant lower, Instant upper);
+
+    @Query(SELECT_PRICE_JOIN_TABLES +
+            JOIN_INITIATOR +
+            WHERE_TIME_INTERVAL +
+            FILTER_INITIATES_USER +
+            "order by main_table.transaction_time_start desc, main_table.valid_time_end")
+    abstract Observable<List<EventRepositoryImpl.PriceEventFeedItemData>> getPriceEventsOfInitiatorUser(int initiatorUser, Instant lower, Instant upper);
+
     @Query("select max(last_update) x " +
             "from updates " +
             "where name in (:relevantEntities) " +

@@ -21,13 +21,14 @@
 
 package de.njsm.stocks.client.database;
 
-import de.njsm.stocks.client.business.entities.EntityType;
+import de.njsm.stocks.client.business.entities.*;
 import de.njsm.stocks.client.business.event.*;
 import io.reactivex.rxjava3.core.Maybe;
 import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.core.Single;
 
 import javax.inject.Inject;
+import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
@@ -261,6 +262,118 @@ class EventRepositoryImpl implements EventRepository {
                         .first(emptyList());
             }
         }.visit(hint, null);
+    }
+
+    @Override
+    public Single<List<GroceryChainEventFeedItem>> getGroceryChainFeed(EventKeyHint hint, Instant day) {
+        return new EventKeyHint.Visitor<Void, Single<List<GroceryChainEventFeedItem>>>() {
+            @Override
+            public Single<List<GroceryChainEventFeedItem>> none(EventKeyHint.None none, Void input) {
+                return eventDao.getGroceryChainEvents(day, day.plus(1, ChronoUnit.DAYS))
+                        .first(emptyList());
+            }
+
+            @Override
+            public Single<List<GroceryChainEventFeedItem>> user(EventKeyHint.User user, Void input) {
+                return eventDao.getGroceryChainEventsOfInitiatorUser(user.id().id(), day, day.plus(1, ChronoUnit.DAYS))
+                        .first(emptyList());
+            }
+
+            @Override
+            public Single<List<GroceryChainEventFeedItem>> userDevice(EventKeyHint.UserDevice userDevice, Void input) {
+                return eventDao.getGroceryChainEventsOfInitiator(userDevice.id().id(), day, day.plus(1, ChronoUnit.DAYS))
+                        .first(emptyList());
+            }
+        }.visit(hint, null);
+    }
+
+    @Override
+    public Single<List<GroceryStoreEventFeedItem>> getGroceryStoreFeed(EventKeyHint hint, Instant day) {
+        return new EventKeyHint.Visitor<Void, Single<List<GroceryStoreEventFeedItem>>>() {
+            @Override
+            public Single<List<GroceryStoreEventFeedItem>> none(EventKeyHint.None none, Void input) {
+                return eventDao.getGroceryStoreEvents(day, day.plus(1, ChronoUnit.DAYS))
+                        .first(emptyList());
+            }
+
+            @Override
+            public Single<List<GroceryStoreEventFeedItem>> user(EventKeyHint.User user, Void input) {
+                return eventDao.getGroceryStoreEventsOfInitiatorUser(user.id().id(), day, day.plus(1, ChronoUnit.DAYS))
+                        .first(emptyList());
+            }
+
+            @Override
+            public Single<List<GroceryStoreEventFeedItem>> userDevice(EventKeyHint.UserDevice userDevice, Void input) {
+                return eventDao.getGroceryStoreEventsOfInitiator(userDevice.id().id(), day, day.plus(1, ChronoUnit.DAYS))
+                        .first(emptyList());
+            }
+        }.visit(hint, null);
+    }
+
+    @Override
+    public Single<List<PriceEventFeedItem>> getPriceFeed(EventKeyHint hint, Instant day) {
+        return new EventKeyHint.Visitor<Void, Single<List<PriceEventFeedItem>>>() {
+            @Override
+            public Single<List<PriceEventFeedItem>> none(EventKeyHint.None none, Void input) {
+                return eventDao.getPriceEvents(day, day.plus(1, ChronoUnit.DAYS))
+                        .map(v -> v.stream().map(this::mapLine).toList())
+                        .first(emptyList());
+            }
+
+            @Override
+            public Single<List<PriceEventFeedItem>> food(EventKeyHint.Food food, Void input) {
+                return eventDao.getPriceEventsOfFood(food.id().id(), day, day.plus(1, ChronoUnit.DAYS))
+                        .map(v -> v.stream().map(this::mapLine).toList())
+                        .first(emptyList());
+            }
+
+            @Override
+            public Single<List<PriceEventFeedItem>> user(EventKeyHint.User user, Void input) {
+                return eventDao.getPriceEventsOfInitiatorUser(user.id().id(), day, day.plus(1, ChronoUnit.DAYS))
+                        .map(v -> v.stream().map(this::mapLine).toList())
+                        .first(emptyList());
+            }
+
+            @Override
+            public Single<List<PriceEventFeedItem>> userDevice(EventKeyHint.UserDevice userDevice, Void input) {
+                return eventDao.getPriceEventsOfInitiator(userDevice.id().id(), day, day.plus(1, ChronoUnit.DAYS))
+                        .map(v -> v.stream().map(this::mapLine).toList())
+                        .first(emptyList());
+            }
+
+            private PriceEventFeedItem mapLine(PriceEventFeedItemData priceEventFeedItemData) {
+                return PriceEventFeedItem.create(
+                        IdImpl.create(priceEventFeedItemData.id),
+                        priceEventFeedItemData.validTimeEnd,
+                        priceEventFeedItemData.transactionTimeStart,
+                        priceEventFeedItemData.userName,
+                        IdImpl.create(priceEventFeedItemData.foodId),
+                        priceEventFeedItemData.foodName,
+                        priceEventFeedItemData.price,
+                        priceEventFeedItemData.scale,
+                        priceEventFeedItemData.scaledUnitScale,
+                        priceEventFeedItemData.abbreviation,
+                        priceEventFeedItemData.validTime,
+                        priceEventFeedItemData.groceryStoreName
+                );
+            }
+
+        }.visit(hint, null);
+    }
+
+    static class PriceEventFeedItemData {
+        int id;
+        Instant validTimeEnd;
+        Instant transactionTimeStart;
+        String userName;
+        int foodId;
+        String foodName;
+        BigDecimal price;
+        BigDecimal scale;
+        BigDecimal scaledUnitScale;
+        String abbreviation;
+        Instant validTime;
+        String groceryStoreName;
     }
 
     @Override

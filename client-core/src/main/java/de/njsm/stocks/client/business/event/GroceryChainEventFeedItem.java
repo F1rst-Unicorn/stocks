@@ -38,6 +38,6 @@ public abstract class GroceryChainEventFeedItem extends EventFeedItem<GroceryCha
     }
 
     public static GroceryChainEventFeedItem create(Id<GroceryChain> id, Instant validTimeEnd, Instant transactionTimeStart, String userName, String name) {
-        return new AutoValue_GroceryChainEventFeedItem(validTimeEnd, transactionTimeStart, userName, id, name);
+        return new AutoValue_GroceryChainEventFeedItem(validTimeEnd, transactionTimeStart, userName, id.toId(), name);
     }
 }

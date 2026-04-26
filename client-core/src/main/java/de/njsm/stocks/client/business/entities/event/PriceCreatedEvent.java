@@ -52,9 +52,9 @@ public abstract class PriceCreatedEvent extends ActivityEvent {
                 feedItem.userName(),
                 feedItem.foodId(),
                 feedItem.foodName(),
-                feedItem.price(),
-                feedItem.quantity(),
-                feedItem.validTime(),
+                feedItem.price().normalisedPrice(),
+                feedItem.price().normalisedQuantity(),
+                localiser.toLocalDateTime(feedItem.validTime()),
                 feedItem.groceryStoreName());
     }
 

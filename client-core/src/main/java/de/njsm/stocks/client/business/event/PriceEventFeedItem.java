@@ -26,7 +26,6 @@ import de.njsm.stocks.client.business.entities.*;
 
 import java.math.BigDecimal;
 import java.time.Instant;
-import java.time.LocalDateTime;
 
 @AutoValue
 public abstract class PriceEventFeedItem extends EventFeedItem<Price> {
@@ -35,15 +34,13 @@ public abstract class PriceEventFeedItem extends EventFeedItem<Price> {
 
     public abstract String foodName();
 
-    public abstract BigDecimal price();
+    public abstract PricePerQuantity price();
 
-    public abstract StoredAmount quantity();
-
-    public abstract LocalDateTime validTime();
+    public abstract Instant validTime();
 
     public abstract String groceryStoreName();
 
-    public static PriceEventFeedItem create(Id<Price> id, Instant validTimeEnd, Instant transactionTimeStart, String userName, IdImpl<Food> foodId, String foodName, BigDecimal price, StoredAmount quantity, LocalDateTime validTime, String groceryChainName) {
-        return new AutoValue_PriceEventFeedItem(validTimeEnd, transactionTimeStart, userName, id, foodId, foodName, price, quantity, validTime, groceryChainName);
+    public static PriceEventFeedItem create(Id<Price> id, Instant validTimeEnd, Instant transactionTimeStart, String userName, IdImpl<Food> foodId, String foodName, BigDecimal price, BigDecimal scale, BigDecimal scaledUnitScale, String abbreviation, Instant validTime, String groceryStoreName) {
+        return new AutoValue_PriceEventFeedItem(validTimeEnd, transactionTimeStart, userName, id.toId(), foodId, foodName, PricePerQuantity.create(price, scale, StoredAmount.create(scaledUnitScale, abbreviation)), validTime, groceryStoreName);
     }
 }
