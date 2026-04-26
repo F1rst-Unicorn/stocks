@@ -144,6 +144,38 @@ public class StandardEntities {
                 .identifies(randomnessProvider.getId("ean_number identifies"));
     }
 
+    GroceryChainDbEntity groceryChainDbEntity() {
+        return groceryChainDbEntityBuilder().build();
+    }
+
+    GroceryChainDbEntity.Builder groceryChainDbEntityBuilder() {
+        return initialiseBuilder(GroceryChainDbEntity.builder())
+                .name("BigShop");
+    }
+
+    GroceryStoreDbEntity groceryStoreDbEntity() {
+        return groceryStoreDbEntityBuilder().build();
+    }
+
+    GroceryStoreDbEntity.Builder groceryStoreDbEntityBuilder() {
+        return initialiseBuilder(GroceryStoreDbEntity.builder())
+                .name("Village")
+                .groceryChain(randomnessProvider.getId("grocery_store grocery_chain"));
+    }
+
+    PriceDbEntity priceDbEntity() {
+        return priceDbEntityBuilder().build();
+    }
+
+    PriceDbEntity.Builder priceDbEntityBuilder() {
+        return initialiseBuilder(PriceDbEntity.builder())
+                .price(BigDecimal.ONE)
+                .scale(BigDecimal.TEN)
+                .food(randomnessProvider.getId("price food"))
+                .groceryStore(randomnessProvider.getId("price grocery_store"))
+                .scaledUnit(randomnessProvider.getId("price scaled_unit"));
+    }
+
     public TicketEntity ticketEntity(int userDeviceId) {
         return TicketEntity.create(randomnessProvider.getId("ticket id"), "ticket", userDeviceId);
     }

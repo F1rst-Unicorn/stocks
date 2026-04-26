@@ -57,9 +57,9 @@ public class ConflictRepositoryImplTest extends DbTestCase {
 
     @Before
     public void setUp() {
-        uut = new ConflictRepositoryImpl(stocksDatabase.errorDao(), localiser);
+        uut = new ConflictRepositoryImpl(stocksDatabase.errorDao(), stocksDatabase.bitemporalSearchDao(), localiser);
         errorRecorder = new ErrorRecorderImpl(stocksDatabase.errorDao(), this);
-        errorRepository = new ErrorRepositoryImpl(stocksDatabase.errorDao(), localiser);
+        errorRepository = new ErrorRepositoryImpl(stocksDatabase.errorDao(), stocksDatabase.bitemporalSearchDao(), localiser);
 
         List<UpdateDbEntity> updates = Arrays.stream(EntityType.values())
                 .map(v -> UpdateDbEntity.create(v, Instant.EPOCH))
@@ -140,7 +140,7 @@ public class ConflictRepositoryImplTest extends DbTestCase {
                 editTime));
         setNow(editTime.plusSeconds(2));
         errorRecorder.recordLocationEditError(exception, localEdit);
-        LocationDbEntity remoteEdited = stocksDatabase.errorDao().getCurrentLocation(original.id());
+        LocationDbEntity remoteEdited = stocksDatabase.bitemporalSearchDao().getCurrentLocation(original.id());
         stocksDatabase.synchronisationDao().writeLocations(currentDelete(remoteEdited, deleteTime));
         ErrorDescription error = testList(errorRepository.getErrors()).values().get(0).get(0);
         setArtificialDbNow(deleteTime.plusSeconds(3));
@@ -224,7 +224,7 @@ public class ConflictRepositoryImplTest extends DbTestCase {
                 editTime));
         setNow(editTime.plusSeconds(2));
         errorRecorder.recordUnitEditError(exception, localEdit);
-        UnitDbEntity remoteEdited = stocksDatabase.errorDao().getCurrentUnit(original.id());
+        UnitDbEntity remoteEdited = stocksDatabase.bitemporalSearchDao().getCurrentUnit(original.id());
         stocksDatabase.synchronisationDao().writeUnits(currentDelete(remoteEdited, deleteTime));
         ErrorDescription error = testList(errorRepository.getErrors()).values().get(0).get(0);
         setArtificialDbNow(deleteTime.plusSeconds(3));
@@ -323,7 +323,7 @@ public class ConflictRepositoryImplTest extends DbTestCase {
                 editTime));
         setNow(editTime.plusSeconds(2));
         errorRecorder.recordScaledUnitEditError(exception, localEdit);
-        ScaledUnitDbEntity remoteEdited = stocksDatabase.errorDao().getCurrentScaledUnit(original.id());
+        ScaledUnitDbEntity remoteEdited = stocksDatabase.bitemporalSearchDao().getCurrentScaledUnit(original.id());
         stocksDatabase.synchronisationDao().writeScaledUnits(currentDelete(remoteEdited, deleteTime));
         ErrorDescription error = testList(errorRepository.getErrors()).values().get(0).get(0);
         setArtificialDbNow(deleteTime.plusSeconds(3));
@@ -471,7 +471,7 @@ public class ConflictRepositoryImplTest extends DbTestCase {
                                 .description(remoteEdit.description()), editTime));
         setNow(editTime.plusSeconds(2));
         errorRecorder.recordFoodEditError(exception, localEdit);
-        FoodDbEntity remoteEdited = stocksDatabase.errorDao().getCurrentFood(original.id());
+        FoodDbEntity remoteEdited = stocksDatabase.bitemporalSearchDao().getCurrentFood(original.id());
         stocksDatabase.synchronisationDao().writeFood(currentDelete(remoteEdited, deleteTime));
         ErrorDescription error = testList(errorRepository.getErrors()).values().get(0).get(0);
         setArtificialDbNow(deleteTime.plusSeconds(3));
@@ -614,7 +614,7 @@ public class ConflictRepositoryImplTest extends DbTestCase {
                                 .unit(remoteEdit.unit()), editTime));
         setNow(editTime.plusSeconds(2));
         errorRecorder.recordFoodItemEditError(exception, localEdit);
-        FoodItemDbEntity remoteEdited = stocksDatabase.errorDao().getCurrentFoodItem(original.id());
+        FoodItemDbEntity remoteEdited = stocksDatabase.bitemporalSearchDao().getCurrentFoodItem(original.id());
         stocksDatabase.synchronisationDao().writeFoodItems(currentDelete(remoteEdited, deleteTime));
         ErrorDescription error = testList(errorRepository.getErrors()).values().get(0).get(0);
         setArtificialDbNow(deleteTime.plusSeconds(3));

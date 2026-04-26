@@ -116,8 +116,8 @@ public class PriceShowView {
             store.setGravity(Gravity.START);
             TextView priceView = new TextView(context);
             priceView.setText(String.format(dictionary.apply(R.string.text_fraction),
-                            unitAmountRenderStrategy.render(price.price()),
-                            unitAmountRenderStrategy.render(price.quantity())));
+                            unitAmountRenderStrategy.render(price.price().normalisedPrice()),
+                            unitAmountRenderStrategy.render(price.price().normalisedQuantity())));
             priceView.setPadding(8, 8, 8, 8);
             priceView.setGravity(Gravity.END);
             row.addView(date);

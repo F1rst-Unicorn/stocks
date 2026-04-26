@@ -24,26 +24,26 @@ package de.njsm.stocks.client.business.entities;
 import com.google.auto.value.AutoValue;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 @AutoValue
-public abstract class PriceForListing {
+public abstract class PriceForTableListingData {
 
-    public abstract IdImpl<Price> id();
-
-    public abstract LocalDateTime date();
+    public abstract Instant date();
 
     public abstract String groceryStoreName();
 
     public abstract String groceryChainName();
 
-    public String groceryStoreAndChainName() {
-        return groceryStoreName() + " " + groceryChainName();
-    }
+    public abstract BigDecimal price();
 
-    public abstract PricePerQuantity pricePerQuantity();
+    public abstract BigDecimal scale();
 
-    public static PriceForListing create(IdImpl<Price> id, LocalDateTime date, String groceryStoreName, String groceryChainName, PricePerQuantity pricePerQuantity) {
-        return new AutoValue_PriceForListing(id, date, groceryStoreName, groceryChainName, pricePerQuantity);
+    public abstract BigDecimal scaledUnitScale();
+
+    public abstract String abbreviation();
+
+    public static PriceForTableListingData create(Instant date, String groceryStoreName, String groceryChainName, BigDecimal price, BigDecimal scale, BigDecimal scaledUnitScale, String abbreviation) {
+        return new AutoValue_PriceForTableListingData(date, groceryStoreName, groceryChainName, price, scale, scaledUnitScale, abbreviation);
     }
 }

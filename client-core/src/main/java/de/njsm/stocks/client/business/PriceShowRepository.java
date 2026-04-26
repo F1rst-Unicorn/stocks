@@ -19,24 +19,16 @@
  *
  */
 
-package de.njsm.stocks.client.business.entities;
+package de.njsm.stocks.client.business;
 
-import com.google.auto.value.AutoValue;
+import de.njsm.stocks.client.business.entities.Food;
+import de.njsm.stocks.client.business.entities.Id;
+import de.njsm.stocks.client.business.entities.PriceForTableListingData;
+import io.reactivex.rxjava3.core.Observable;
 
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.util.List;
 
-@AutoValue
-public abstract class PriceForTableListing {
+public interface PriceShowRepository {
 
-    public abstract LocalDateTime date();
-
-    public abstract String groceryStore();
-
-    public abstract PricePerQuantity price();
-
-    public static PriceForTableListing create(LocalDateTime date, String groceryStore, PricePerQuantity price) {
-        return new AutoValue_PriceForTableListing(date, groceryStore, price);
-    }
+    Observable<List<PriceForTableListingData>> getPricesForTable(Id<Food> id);
 }

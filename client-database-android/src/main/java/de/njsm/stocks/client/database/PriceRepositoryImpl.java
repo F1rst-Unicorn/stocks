@@ -58,11 +58,13 @@ class PriceRepositoryImpl implements PriceRepository, EntityDeleteRepository<Pri
                                 localiser.toLocalDateTime(item.date),
                                 item.groceryStoreName,
                                 item.groceryChainName,
-                                item.price,
-                                StoredAmount.create(
-                                        item.quantity,
-                                        item.abbreviation
-                                )
+                                PricePerQuantity.create(
+                                        item.price,
+                                        StoredAmount.create(
+                                                item.quantity,
+                                                item.abbreviation
+
+                                        ))
                         )).toList());
     }
 

@@ -32,11 +32,11 @@ import static org.junit.Assert.assertEquals;
 
 public class ErrorDaoTest extends DbTestCase {
 
-    private ErrorDao uut;
+    private BitemporalSearchDao uut;
 
     @Before
     public void setup() {
-        uut = stocksDatabase.errorDao();
+        uut = stocksDatabase.bitemporalSearchDao();
     }
 
     @Test

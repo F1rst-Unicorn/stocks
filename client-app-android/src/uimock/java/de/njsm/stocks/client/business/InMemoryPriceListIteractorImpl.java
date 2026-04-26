@@ -21,10 +21,7 @@
 
 package de.njsm.stocks.client.business;
 
-import de.njsm.stocks.client.business.entities.Food;
-import de.njsm.stocks.client.business.entities.IdImpl;
-import de.njsm.stocks.client.business.entities.PriceForListing;
-import de.njsm.stocks.client.business.entities.StoredAmount;
+import de.njsm.stocks.client.business.entities.*;
 import io.reactivex.rxjava3.core.Observable;
 
 import javax.inject.Inject;
@@ -41,8 +38,22 @@ public class InMemoryPriceListIteractorImpl implements PriceListInteractor {
     @Override
     public Observable<List<PriceForListing>> getPrices(IdImpl<Food> id) {
         return Observable.just(List.of(
-                PriceForListing.create(IdImpl.create(1), LocalDateTime.of(2025, 4, 17, 15, 3), "BuyAndEat Village", BigDecimal.valueOf(4.1), StoredAmount.create(BigDecimal.valueOf(100), "g")),
-                PriceForListing.create(IdImpl.create(1), LocalDateTime.of(2025, 4, 12, 15, 3), "BigShop Capital", BigDecimal.valueOf(4.1), StoredAmount.create(BigDecimal.valueOf(100), "g"))
-        ));
+                PriceForListing.create(
+                        IdImpl.create(1),
+                        LocalDateTime.of(2025, 4, 17, 15, 3),
+                        "BuyAndEat",
+                        "Village",
+                        PricePerQuantity.create(
+                                BigDecimal.valueOf(4.1),
+                                StoredAmount.create(BigDecimal.valueOf(100), "g"))),
+                PriceForListing.create(
+                        IdImpl.create(1),
+                        LocalDateTime.of(2025, 4, 12, 15, 3),
+                        "BigShop",
+                        "Capital",
+                        PricePerQuantity.create(
+                                BigDecimal.valueOf(4.1),
+                                StoredAmount.create(BigDecimal.valueOf(100), "g"))
+        )));
     }
 }

@@ -51,7 +51,7 @@ public abstract class AbstractErrorRepositoryImplTest extends DbTestCase {
     @Before
     public void setup() {
         errorRecorder = new ErrorRecorderImpl(stocksDatabase.errorDao(), this);
-        uut = new ErrorRepositoryImpl(stocksDatabase.errorDao(), localiser);
+        uut = new ErrorRepositoryImpl(stocksDatabase.errorDao(), stocksDatabase.bitemporalSearchDao(), localiser);
 
         List<UpdateDbEntity> updates = Arrays.stream(EntityType.values())
                 .map(v -> UpdateDbEntity.create(v, Instant.EPOCH))

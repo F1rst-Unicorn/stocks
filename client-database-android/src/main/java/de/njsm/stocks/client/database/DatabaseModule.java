@@ -30,10 +30,7 @@ import de.njsm.stocks.client.business.*;
 import de.njsm.stocks.client.business.entities.*;
 import de.njsm.stocks.client.business.event.EventRepository;
 import de.njsm.stocks.client.database.contentprovider.SearchSuggestionsProvider;
-import de.njsm.stocks.client.database.error.ConflictRepositoryImpl;
-import de.njsm.stocks.client.database.error.ErrorDao;
-import de.njsm.stocks.client.database.error.ErrorRecorderImpl;
-import de.njsm.stocks.client.database.error.ErrorRepositoryImpl;
+import de.njsm.stocks.client.database.error.*;
 import de.njsm.stocks.client.database.migration.*;
 import de.njsm.stocks.client.execution.Scheduler;
 import io.requery.android.database.sqlite.RequerySQLiteOpenHelperFactory;
@@ -196,6 +193,11 @@ public interface DatabaseModule {
         return database.priceDao();
     }
 
+    @Provides
+    static BitemporalSearchDao BitemporalSearchDao(StocksDatabase database) {
+        return database.bitemporalSearchDao();
+    }
+
     @Binds
     ErrorRepository errorRepository(ErrorRepositoryImpl impl);
 
@@ -324,4 +326,7 @@ public interface DatabaseModule {
 
     @Binds
     PriceRepository PriceRepository(PriceRepositoryImpl impl);
+
+    @Binds
+    PriceShowRepository PriceShowRepository(PriceShowRepositoryImpl impl);
 }

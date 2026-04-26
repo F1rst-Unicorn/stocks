@@ -131,4 +131,9 @@ public class TypeConverters {
     public int groceryStoreId(Id<GroceryChain> id) {
         return id.id();
     }
+
+    @TypeConverter
+    public int foodId(Id<Food> id) {
+        return id.id();
+    }
 }

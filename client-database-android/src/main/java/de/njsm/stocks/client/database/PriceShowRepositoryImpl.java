@@ -19,31 +19,28 @@
  *
  */
 
-package de.njsm.stocks.client.business.entities;
+package de.njsm.stocks.client.database;
 
-import com.google.auto.value.AutoValue;
+import de.njsm.stocks.client.business.PriceShowRepository;
+import de.njsm.stocks.client.business.entities.Food;
+import de.njsm.stocks.client.business.entities.Id;
+import de.njsm.stocks.client.business.entities.PriceForTableListingData;
+import io.reactivex.rxjava3.core.Observable;
 
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import javax.inject.Inject;
+import java.util.List;
 
-@AutoValue
-public abstract class PriceForListing {
+class PriceShowRepositoryImpl implements PriceShowRepository {
 
-    public abstract IdImpl<Price> id();
+    private final PriceDao priceDao;
 
-    public abstract LocalDateTime date();
-
-    public abstract String groceryStoreName();
-
-    public abstract String groceryChainName();
-
-    public String groceryStoreAndChainName() {
-        return groceryStoreName() + " " + groceryChainName();
+    @Inject
+    PriceShowRepositoryImpl(PriceDao priceDao) {
+        this.priceDao = priceDao;
     }
 
-    public abstract PricePerQuantity pricePerQuantity();
-
-    public static PriceForListing create(IdImpl<Price> id, LocalDateTime date, String groceryStoreName, String groceryChainName, PricePerQuantity pricePerQuantity) {
-        return new AutoValue_PriceForListing(id, date, groceryStoreName, groceryChainName, pricePerQuantity);
+    @Override
+    public Observable<List<PriceForTableListingData>> getPricesForTable(Id<Food> id) {
+        return priceDao.getLatestPriceByGroceryStore(id);
     }
 }

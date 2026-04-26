@@ -170,4 +170,6 @@ public abstract class StocksDatabase extends RoomDatabase {
     abstract GroceryStoreDao groceryStoreDao();
 
     abstract PriceDao priceDao();
+
+    public abstract BitemporalSearchDao bitemporalSearchDao();
 }

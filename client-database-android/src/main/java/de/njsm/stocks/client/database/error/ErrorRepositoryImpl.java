@@ -38,11 +38,14 @@ public class ErrorRepositoryImpl implements ErrorRepository, ErrorEntity.ActionV
 
     private final ErrorDao errorDao;
 
+    private final BitemporalSearchDao bitemporalSearchDao;
+
     private final Localiser localiser;
 
     @Inject
-    ErrorRepositoryImpl(ErrorDao errorDao, Localiser localiser) {
+    ErrorRepositoryImpl(ErrorDao errorDao, BitemporalSearchDao bitemporalSearchDao, Localiser localiser) {
         this.errorDao = errorDao;
+        this.bitemporalSearchDao = bitemporalSearchDao;
         this.localiser = localiser;
     }
 
@@ -97,7 +100,7 @@ public class ErrorRepositoryImpl implements ErrorRepository, ErrorEntity.ActionV
     @Override
     public ErrorDetails deleteLocation(ErrorEntity.Action action, Long input) {
         LocationDeleteEntity locationDeleteEntity = errorDao.getLocationDelete(input);
-        LocationDbEntity location = errorDao.getLocationByValidOrTransactionTime(locationDeleteEntity.location());
+        LocationDbEntity location = bitemporalSearchDao.getLocationByValidOrTransactionTime(locationDeleteEntity.location());
         return LocationDeleteErrorDetails.create(location.id(), location.name());
     }
 
@@ -116,7 +119,7 @@ public class ErrorRepositoryImpl implements ErrorRepository, ErrorEntity.ActionV
     @Override
     public ErrorDetails deleteUnit(ErrorEntity.Action action, Long input) {
         UnitDeleteEntity unitDeleteEntity = errorDao.getUnitDelete(input);
-        UnitDbEntity unit = errorDao.getUnitByValidOrTransactionTime(unitDeleteEntity.unit());
+        UnitDbEntity unit = bitemporalSearchDao.getUnitByValidOrTransactionTime(unitDeleteEntity.unit());
         return UnitDeleteErrorDetails.create(unit.id(), unit.name(), unit.abbreviation());
     }
 
@@ -129,31 +132,31 @@ public class ErrorRepositoryImpl implements ErrorRepository, ErrorEntity.ActionV
     @Override
     public ErrorDetails addScaledUnit(ErrorEntity.Action action, Long input) {
         ScaledUnitAddEntity scaledUnitAddEntity = errorDao.getScaledUnitAdd(input);
-        UnitDbEntity unit = errorDao.getUnitByValidOrTransactionTime(scaledUnitAddEntity.unit());
+        UnitDbEntity unit = bitemporalSearchDao.getUnitByValidOrTransactionTime(scaledUnitAddEntity.unit());
         return ScaledUnitAddErrorDetails.create(scaledUnitAddEntity.scale(), scaledUnitAddEntity.unit().id(), unit.name(), unit.abbreviation());
     }
 
     @Override
     public ErrorDetails editScaledUnit(ErrorEntity.Action action, Long input) {
         ScaledUnitEditEntity entity = errorDao.getScaledUnitEdit(input);
-        UnitDbEntity unit = errorDao.getUnitByValidOrTransactionTime(entity.unit());
+        UnitDbEntity unit = bitemporalSearchDao.getUnitByValidOrTransactionTime(entity.unit());
         return ScaledUnitEditErrorDetails.create(entity.scaledUnit().id(), entity.scale(), unit.id(), unit.name(), unit.abbreviation());
     }
 
     @Override
     public ErrorDetails deleteScaledUnit(ErrorEntity.Action action, Long input) {
         ScaledUnitDeleteEntity entity = errorDao.getScaledUnitDelete(input);
-        ScaledUnitDbEntity scaledUnit = errorDao.getScaledUnitByValidOrTransactionTime(entity.scaledUnit());
-        UnitDbEntity unit = errorDao.getUnitByValidOrTransactionTime(PreservedId.create(scaledUnit.unit(), entity.scaledUnit().transactionTime()));
+        ScaledUnitDbEntity scaledUnit = bitemporalSearchDao.getScaledUnitByValidOrTransactionTime(entity.scaledUnit());
+        UnitDbEntity unit = bitemporalSearchDao.getUnitByValidOrTransactionTime(PreservedId.create(scaledUnit.unit(), entity.scaledUnit().transactionTime()));
         return ScaledUnitDeleteErrorDetails.create(scaledUnit.id(), scaledUnit.scale(), unit.name(), unit.abbreviation());
     }
 
     @Override
     public ErrorDetails addFood(ErrorEntity.Action action, Long input) {
         FoodAddEntity entity = errorDao.getFoodAdd(input);
-        Optional<LocationDbEntity> location = entity.location().maybe().map(errorDao::getLocationByValidOrTransactionTime);
-        ScaledUnitDbEntity scaledUnit = errorDao.getScaledUnitByValidOrTransactionTime(entity.storeUnit());
-        UnitDbEntity unit = errorDao.getUnitByValidOrTransactionTime(PreservedId.create(scaledUnit.unit(), entity.storeUnit().transactionTime()));
+        Optional<LocationDbEntity> location = entity.location().maybe().map(bitemporalSearchDao::getLocationByValidOrTransactionTime);
+        ScaledUnitDbEntity scaledUnit = bitemporalSearchDao.getScaledUnitByValidOrTransactionTime(entity.storeUnit());
+        UnitDbEntity unit = bitemporalSearchDao.getUnitByValidOrTransactionTime(PreservedId.create(scaledUnit.unit(), entity.storeUnit().transactionTime()));
         return FoodAddErrorDetails.create(
                 entity.name(),
                 entity.toBuy(),
@@ -168,7 +171,7 @@ public class ErrorRepositoryImpl implements ErrorRepository, ErrorEntity.ActionV
     @Override
     public ErrorDetails deleteFood(ErrorEntity.Action action, Long input) {
         FoodDeleteEntity entity = errorDao.getFoodDelete(input);
-        FoodDbEntity food = errorDao.getFoodByValidOrTransactionTime(entity.food());
+        FoodDbEntity food = bitemporalSearchDao.getFoodByValidOrTransactionTime(entity.food());
         return FoodDeleteErrorDetails.create(food.id(), food.name());
     }
 
@@ -181,10 +184,10 @@ public class ErrorRepositoryImpl implements ErrorRepository, ErrorEntity.ActionV
     @Override
     public ErrorDetails addFoodItem(ErrorEntity.Action action, Long input) {
         FoodItemAddEntity entity = errorDao.getFoodItemAdd(input);
-        FoodDbEntity food = errorDao.getFoodByValidOrTransactionTime(entity.ofType());
-        LocationDbEntity location = errorDao.getLocationByValidOrTransactionTime(entity.storedIn());
-        ScaledUnitDbEntity scaledUnit = errorDao.getScaledUnitByValidOrTransactionTime(entity.unit());
-        UnitDbEntity unit = errorDao.getUnitByValidOrTransactionTime(PreservedId.create(scaledUnit.unit(), entity.unit().transactionTime()));
+        FoodDbEntity food = bitemporalSearchDao.getFoodByValidOrTransactionTime(entity.ofType());
+        LocationDbEntity location = bitemporalSearchDao.getLocationByValidOrTransactionTime(entity.storedIn());
+        ScaledUnitDbEntity scaledUnit = bitemporalSearchDao.getScaledUnitByValidOrTransactionTime(entity.unit());
+        UnitDbEntity unit = bitemporalSearchDao.getUnitByValidOrTransactionTime(PreservedId.create(scaledUnit.unit(), entity.unit().transactionTime()));
         return FoodItemAddErrorDetails.create(
                 localiser.toLocalDate(entity.eatBy()),
                 entity.ofType().id(),
@@ -199,10 +202,10 @@ public class ErrorRepositoryImpl implements ErrorRepository, ErrorEntity.ActionV
     @Override
     public ErrorDetails deleteFoodItem(ErrorEntity.Action action, Long input) {
         FoodItemDeleteEntity entity = errorDao.getFoodItemDelete(input);
-        FoodItemDbEntity foodItem = errorDao.getFoodItemByValidOrTransactionTime(entity.foodItem());
-        FoodDbEntity food = errorDao.getFoodByValidOrTransactionTime(PreservedId.create(foodItem.ofType(), entity.foodItem().transactionTime()));
-        ScaledUnitDbEntity scaledUnit = errorDao.getScaledUnitByValidOrTransactionTime(PreservedId.create(foodItem.unit(), entity.foodItem().transactionTime()));
-        UnitDbEntity unit = errorDao.getUnitByValidOrTransactionTime(PreservedId.create(scaledUnit.unit(), entity.foodItem().transactionTime()));
+        FoodItemDbEntity foodItem = bitemporalSearchDao.getFoodItemByValidOrTransactionTime(entity.foodItem());
+        FoodDbEntity food = bitemporalSearchDao.getFoodByValidOrTransactionTime(PreservedId.create(foodItem.ofType(), entity.foodItem().transactionTime()));
+        ScaledUnitDbEntity scaledUnit = bitemporalSearchDao.getScaledUnitByValidOrTransactionTime(PreservedId.create(foodItem.unit(), entity.foodItem().transactionTime()));
+        UnitDbEntity unit = bitemporalSearchDao.getUnitByValidOrTransactionTime(PreservedId.create(scaledUnit.unit(), entity.foodItem().transactionTime()));
         return FoodItemDeleteErrorDetails.create(
                 foodItem.id(),
                 food.name(),
@@ -213,23 +216,23 @@ public class ErrorRepositoryImpl implements ErrorRepository, ErrorEntity.ActionV
     @Override
     public ErrorDetails editFoodItem(ErrorEntity.Action action, Long input) {
         FoodItemEditEntity entity = errorDao.getFoodItemEdit(input);
-        FoodItemDbEntity foodItem = errorDao.getFoodItemByValidOrTransactionTime(entity.foodItem());
-        FoodDbEntity food = errorDao.getFoodByValidOrTransactionTime(PreservedId.create(foodItem.ofType(), entity.foodItem().transactionTime()));
+        FoodItemDbEntity foodItem = bitemporalSearchDao.getFoodItemByValidOrTransactionTime(entity.foodItem());
+        FoodDbEntity food = bitemporalSearchDao.getFoodByValidOrTransactionTime(PreservedId.create(foodItem.ofType(), entity.foodItem().transactionTime()));
         return FoodItemEditErrorDetails.create(entity.foodItem().id(), food.name(), localiser.toLocalDate(entity.eatBy()), entity.storedIn().id(), entity.unit().id());
     }
 
     @Override
     public ErrorDetails addEanNumber(ErrorEntity.Action action, Long input) {
         EanNumberAddEntity eanNumberAddEntity = errorDao.getEanNumberAdd(input);
-        var food = errorDao.getFoodByValidOrTransactionTime(eanNumberAddEntity.identifies());
+        var food = bitemporalSearchDao.getFoodByValidOrTransactionTime(eanNumberAddEntity.identifies());
         return EanNumberAddErrorDetails.create(food.id(), food.name(), eanNumberAddEntity.eanNumber());
     }
 
     @Override
     public ErrorDetails deleteEanNumber(ErrorEntity.Action action, Long input) {
         EanNumberDeleteEntity entity = errorDao.getEanNumberDelete(input);
-        EanNumberDbEntity eanNumber = errorDao.getEanNumberByValidOrTransactionTime(entity.eanNumber());
-        FoodDbEntity food = errorDao.getFoodByValidOrTransactionTime(PreservedId.create(eanNumber.identifies(), entity.eanNumber().transactionTime()));
+        EanNumberDbEntity eanNumber = bitemporalSearchDao.getEanNumberByValidOrTransactionTime(entity.eanNumber());
+        FoodDbEntity food = bitemporalSearchDao.getFoodByValidOrTransactionTime(PreservedId.create(eanNumber.identifies(), entity.eanNumber().transactionTime()));
         return EanNumberDeleteErrorDetails.create(
                 eanNumber.id(),
                 food.name(),
@@ -240,8 +243,8 @@ public class ErrorRepositoryImpl implements ErrorRepository, ErrorEntity.ActionV
     @Override
     public ErrorDetails deleteUserDevice(ErrorEntity.Action action, Long input) {
         UserDeviceDeleteEntity entity = errorDao.getUserDeviceDelete(input);
-        UserDeviceDbEntity userDevice = errorDao.getUserDeviceByValidOrTransactionTime(entity.userDevice());
-        UserDbEntity user = errorDao.getUserByValidOrTransactionTime(PreservedId.create(userDevice.belongsTo(), entity.userDevice().transactionTime()));
+        UserDeviceDbEntity userDevice = bitemporalSearchDao.getUserDeviceByValidOrTransactionTime(entity.userDevice());
+        UserDbEntity user = bitemporalSearchDao.getUserByValidOrTransactionTime(PreservedId.create(userDevice.belongsTo(), entity.userDevice().transactionTime()));
         return UserDeviceDeleteErrorDetails.create(
                 userDevice.id(),
                 user.name(),
@@ -252,7 +255,7 @@ public class ErrorRepositoryImpl implements ErrorRepository, ErrorEntity.ActionV
     @Override
     public ErrorDetails deleteUser(ErrorEntity.Action action, Long input) {
         UserDeleteEntity entity = errorDao.getUserDelete(input);
-        UserDbEntity user = errorDao.getUserByValidOrTransactionTime(entity.user());
+        UserDbEntity user = bitemporalSearchDao.getUserByValidOrTransactionTime(entity.user());
         return UserDeleteErrorDetails.create(
                 user.id(),
                 user.name()
@@ -287,14 +290,14 @@ public class ErrorRepositoryImpl implements ErrorRepository, ErrorEntity.ActionV
     @Override
     public ErrorDetails addUserDevice(ErrorEntity.Action action, Long input) {
         var userDevice = errorDao.getUserDeviceToAdd(input);
-        var user = errorDao.getUserByValidOrTransactionTime(userDevice.belongsTo());
+        var user = bitemporalSearchDao.getUserByValidOrTransactionTime(userDevice.belongsTo());
         return UserDeviceAddErrorDetails.create(userDevice.name(), user::id, user.name());
     }
 
     @Override
     public ErrorDetails deleteRecipe(ErrorEntity.Action action, Long id) {
         var recipeDelete = errorDao.getRecipeDelete(id);
-        var recipe = errorDao.getRecipeByValidOrTransactionTime(recipeDelete.recipe());
+        var recipe = bitemporalSearchDao.getRecipeByValidOrTransactionTime(recipeDelete.recipe());
         return RecipeDeleteErrorDetails.create(recipe.id(), recipe.name());
     }
 
@@ -316,27 +319,27 @@ public class ErrorRepositoryImpl implements ErrorRepository, ErrorEntity.ActionV
     @Override
     public ErrorDetails deleteGroceryChain(ErrorEntity.Action action, Long input) {
         var groceryChainDelete = errorDao.getGroceryChainDelete(input);
-        var groceryChain = errorDao.getGroceryChainByValidOrTransactionTime(groceryChainDelete.groceryChain());
+        var groceryChain = bitemporalSearchDao.getGroceryChainByValidOrTransactionTime(groceryChainDelete.groceryChain());
         return GroceryChainDeleteErrorDetails.create(VersionedId.create(groceryChain.id(), groceryChainDelete.version()), groceryChain.name());
     }
 
     @Override
     public ErrorDetails deleteGroceryStore(ErrorEntity.Action action, Long input) {
         var groceryStoreDelete = errorDao.getGroceryStoreDelete(input);
-        var groceryStore = errorDao.getGroceryStoreByValidOrTransactionTime(groceryStoreDelete.groceryStore());
-        var groceryChain = errorDao.getGroceryChainByValidOrTransactionTime(PreservedId.create(groceryStore.groceryChain(), groceryStoreDelete.groceryStore().transactionTime()));
+        var groceryStore = bitemporalSearchDao.getGroceryStoreByValidOrTransactionTime(groceryStoreDelete.groceryStore());
+        var groceryChain = bitemporalSearchDao.getGroceryChainByValidOrTransactionTime(PreservedId.create(groceryStore.groceryChain(), groceryStoreDelete.groceryStore().transactionTime()));
         return GroceryStoreDeleteErrorDetails.create(VersionedId.create(groceryStore.id(), groceryStoreDelete.version()), groceryStore.name(), groceryChain.name());
     }
 
     @Override
     public ErrorDetails deletePrice(ErrorEntity.Action action, Long input) {
         PriceDeleteEntity entity = errorDao.getPriceDelete(input);
-        PriceDbEntity price = errorDao.getPriceByValidOrTransactionTime(entity.price());
-        var groceryStore = errorDao.getGroceryStoreByValidOrTransactionTime(PreservedId.create(price.groceryStore(), entity.price().transactionTime()));
-        var groceryChain = errorDao.getGroceryChainByValidOrTransactionTime(PreservedId.create(groceryStore.groceryChain(), entity.price().transactionTime()));
-        var food = errorDao.getFoodByValidOrTransactionTime(PreservedId.create(price.food(), entity.price().transactionTime()));
-        ScaledUnitDbEntity scaledUnit = errorDao.getScaledUnitByValidOrTransactionTime(PreservedId.create(price.scaledUnit(), entity.price().transactionTime()));
-        UnitDbEntity unit = errorDao.getUnitByValidOrTransactionTime(PreservedId.create(scaledUnit.unit(), entity.price().transactionTime()));
+        PriceDbEntity price = bitemporalSearchDao.getPriceByValidOrTransactionTime(entity.price());
+        var groceryStore = bitemporalSearchDao.getGroceryStoreByValidOrTransactionTime(PreservedId.create(price.groceryStore(), entity.price().transactionTime()));
+        var groceryChain = bitemporalSearchDao.getGroceryChainByValidOrTransactionTime(PreservedId.create(groceryStore.groceryChain(), entity.price().transactionTime()));
+        var food = bitemporalSearchDao.getFoodByValidOrTransactionTime(PreservedId.create(price.food(), entity.price().transactionTime()));
+        ScaledUnitDbEntity scaledUnit = bitemporalSearchDao.getScaledUnitByValidOrTransactionTime(PreservedId.create(price.scaledUnit(), entity.price().transactionTime()));
+        UnitDbEntity unit = bitemporalSearchDao.getUnitByValidOrTransactionTime(PreservedId.create(scaledUnit.unit(), entity.price().transactionTime()));
         return PriceDeleteErrorDetails.create(
                 VersionedId.create(price.id(), entity.version()),
                 price.price(),
@@ -357,18 +360,18 @@ public class ErrorRepositoryImpl implements ErrorRepository, ErrorEntity.ActionV
     @Override
     public ErrorDetails addGroceryStore(ErrorEntity.Action action, Long input) {
         var entity = errorDao.getGroceryStoreAdd(input);
-        var groceryChain = errorDao.getGroceryChainByValidOrTransactionTime(entity.groceryChain());
+        var groceryChain = bitemporalSearchDao.getGroceryChainByValidOrTransactionTime(entity.groceryChain());
         return GroceryStoreAddErrorDetails.create(entity.name(), IdImpl.create(entity.groceryChain().id()), groceryChain.name());
     }
 
     @Override
     public ErrorDetails addPrice(ErrorEntity.Action action, Long input) {
         var entity = errorDao.getPriceAdd(input);
-        var groceryStore = errorDao.getGroceryStoreByValidOrTransactionTime(entity.groceryStore());
-        var groceryChain = errorDao.getGroceryChainByValidOrTransactionTime(PreservedId.create(groceryStore.groceryChain(), entity.groceryStore().transactionTime()));
-        var food = errorDao.getFoodByValidOrTransactionTime(entity.food());
-        var scaledUnit = errorDao.getScaledUnitByValidOrTransactionTime(entity.scaledUnit());
-        var unit = errorDao.getUnitByValidOrTransactionTime(PreservedId.create(scaledUnit.unit(), entity.scaledUnit().transactionTime()));
+        var groceryStore = bitemporalSearchDao.getGroceryStoreByValidOrTransactionTime(entity.groceryStore());
+        var groceryChain = bitemporalSearchDao.getGroceryChainByValidOrTransactionTime(PreservedId.create(groceryStore.groceryChain(), entity.groceryStore().transactionTime()));
+        var food = bitemporalSearchDao.getFoodByValidOrTransactionTime(entity.food());
+        var scaledUnit = bitemporalSearchDao.getScaledUnitByValidOrTransactionTime(entity.scaledUnit());
+        var unit = bitemporalSearchDao.getUnitByValidOrTransactionTime(PreservedId.create(scaledUnit.unit(), entity.scaledUnit().transactionTime()));
         return PriceAddErrorDetails.create(
                 entity.price(),
                 entity.scale(),
@@ -394,8 +397,8 @@ public class ErrorRepositoryImpl implements ErrorRepository, ErrorEntity.ActionV
     @Override
     public ErrorDetails editGroceryStore(ErrorEntity.Action action, Long input) {
         var entity = errorDao.getGroceryStoreEdit(input);
-        var groceryStore = errorDao.getGroceryStoreByValidOrTransactionTime(entity.groceryStore());
-        var groceryChain = errorDao.getGroceryChainByValidOrTransactionTime(PreservedId.create(groceryStore.groceryChain(), entity.groceryStore().transactionTime()));
+        var groceryStore = bitemporalSearchDao.getGroceryStoreByValidOrTransactionTime(entity.groceryStore());
+        var groceryChain = bitemporalSearchDao.getGroceryChainByValidOrTransactionTime(PreservedId.create(groceryStore.groceryChain(), entity.groceryStore().transactionTime()));
         return GroceryStoreEditErrorDetails.create(
                 VersionedId.create(groceryStore.id(), entity.version()),
                 entity.name(),

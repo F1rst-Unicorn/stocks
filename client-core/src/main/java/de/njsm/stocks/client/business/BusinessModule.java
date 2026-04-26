@@ -265,4 +265,7 @@ public interface BusinessModule {
 
     @Binds
     GroceryStoreConflictInteractor GroceryStoreConflictInteractor(GroceryStoreConflictInteractorImpl impl);
+
+    @Binds
+    PriceShowInteractor PriceShowInteractor(PriceShowInteractorImpl impl);
 }
