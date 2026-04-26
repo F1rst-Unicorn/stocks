@@ -23,10 +23,7 @@ package de.njsm.stocks.client.database;
 
 import androidx.room.Dao;
 import androidx.room.Query;
-import de.njsm.stocks.client.business.entities.Food;
-import de.njsm.stocks.client.business.entities.Id;
-import de.njsm.stocks.client.business.entities.PriceForDeletion;
-import de.njsm.stocks.client.business.entities.PriceForTableListingData;
+import de.njsm.stocks.client.business.entities.*;
 import io.reactivex.rxjava3.core.Observable;
 
 import java.util.List;
@@ -112,8 +109,59 @@ abstract class PriceDao {
                 "and transaction_time_end = " + DATABASE_INFINITY_STRING_SQL +
                 "group by grocery_store " +
                 "having price.valid_time_start = max(price.valid_time_start)" +
-                "" +
             ") " +
             "order by price.valid_time_start desc")
     abstract Observable<List<PriceForTableListingData>> getLatestPriceByGroceryStore(Id<Food> id);
+
+    @Query("select " +
+                "price.valid_time_start as date, " +
+                "price.price as price, " +
+                "price.scale as scale, " +
+                "grocery_store.id as groceryStoreId, " +
+                "grocery_store.name as groceryStoreName, " +
+                "grocery_chain.id as groceryChainId, " +
+                "grocery_chain.name as groceryChainName, " +
+                "scaled_unit.scale as scaledUnitScale, " +
+                "unit.abbreviation as abbreviation " +
+            "from price " +
+            "join grocery_store on grocery_store.id = price.grocery_store " +
+                "and grocery_store.transaction_time_end = " + DATABASE_INFINITY_STRING_SQL +
+                " and grocery_store.valid_time_start = (" +
+                    "select max(g.valid_time_start) " +
+                    "from grocery_store g " +
+                    "where g.id = grocery_store.id " +
+                    "and g.valid_time_start <= " + NOW +
+                    "and g.transaction_time_end = " + DATABASE_INFINITY_STRING_SQL +
+                ")" +
+            "join grocery_chain on grocery_chain.id = grocery_store.grocery_chain " +
+                "and grocery_chain.transaction_time_end = " + DATABASE_INFINITY_STRING_SQL +
+                " and grocery_chain.valid_time_start = (" +
+                    "select max(g.valid_time_start) " +
+                    "from grocery_chain g " +
+                    "where g.id = grocery_chain.id " +
+                    "and g.valid_time_start <= " + NOW +
+                    "and g.transaction_time_end = " + DATABASE_INFINITY_STRING_SQL +
+                ")" +
+            "join scaled_unit on scaled_unit.id = price.scaled_unit " +
+                "and scaled_unit.transaction_time_end = " + DATABASE_INFINITY_STRING_SQL +
+                " and scaled_unit.valid_time_start = (" +
+                    "select max(g.valid_time_start) " +
+                    "from scaled_unit g " +
+                    "where g.id = scaled_unit.id " +
+                    "and g.valid_time_start <= " + NOW +
+                    "and g.transaction_time_end = " + DATABASE_INFINITY_STRING_SQL +
+                ")" +
+            "join unit on unit.id = scaled_unit.unit " +
+                "and unit.transaction_time_end = " + DATABASE_INFINITY_STRING_SQL +
+                " and unit.valid_time_start = (" +
+                    "select max(g.valid_time_start) " +
+                    "from unit g " +
+                    "where g.id = unit.id " +
+                    "and g.valid_time_start <= " + NOW +
+                    "and g.transaction_time_end = " + DATABASE_INFINITY_STRING_SQL +
+                ")" +
+            "where price.transaction_time_end = " + DATABASE_INFINITY_STRING_SQL +
+            " and price.food = :id " +
+            "order by price.valid_time_start desc")
+    abstract Observable<List<PriceForPlotPointData>> getPricePlotData(IdImpl<Food> id);
 }

@@ -21,9 +21,7 @@
 
 package de.njsm.stocks.client.business;
 
-import de.njsm.stocks.client.business.entities.Food;
-import de.njsm.stocks.client.business.entities.Id;
-import de.njsm.stocks.client.business.entities.PriceForTableListingData;
+import de.njsm.stocks.client.business.entities.*;
 import io.reactivex.rxjava3.core.Observable;
 
 import java.util.List;
@@ -31,4 +29,6 @@ import java.util.List;
 public interface PriceShowRepository {
 
     Observable<List<PriceForTableListingData>> getPricesForTable(Id<Food> id);
+
+    Observable<List<PriceForPlotPointData>> getPricePlotData(IdImpl<Food> id);
 }

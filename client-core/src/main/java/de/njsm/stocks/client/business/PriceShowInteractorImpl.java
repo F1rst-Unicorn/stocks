@@ -25,6 +25,12 @@ import de.njsm.stocks.client.business.entities.*;
 import io.reactivex.rxjava3.core.Observable;
 
 import javax.inject.Inject;
+import java.time.LocalDateTime;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
+
+import static java.util.stream.Collectors.groupingBy;
 
 class PriceShowInteractorImpl implements PriceShowInteractor {
 
@@ -42,14 +48,15 @@ class PriceShowInteractorImpl implements PriceShowInteractor {
     public Observable<PriceDetails> getPriceDetails(IdImpl<Food> id) {
         return Observable.combineLatest(
                         priceShowRepository.getPricesForTable(id),
-                        priceShowRepository.getPricesForTable(id),
-                (tableData, tsra) -> {
+                        priceShowRepository.getPricePlotData(id),
+                (tableData, plotPointData) -> {
+                    var plotData = groupPricePlotDataByChainAndStore(plotPointData);
                     return PriceDetails.create(
                             tableData.stream()
                                     .map(this::mapPriceForTable)
                                     .toList(),
-                            null /* TODO */,
-                            null /* TODO */
+                            plotData.byChain,
+                            plotData.byStore
                     );
                 });
     }
@@ -64,5 +71,47 @@ class PriceShowInteractorImpl implements PriceShowInteractor {
                         StoredAmount.create(v.scaledUnitScale(), v.abbreviation())
                 )
         );
+    }
+
+    private PlotPointData groupPricePlotDataByChainAndStore(List<PriceForPlotPointData> data) {
+        Map<IdImpl<GroceryChain>, Map<IdImpl<GroceryStore>, List<PriceForPlotPointData>>> pricesByStore = data.stream()
+                .collect(groupingBy(PriceForPlotPointData::groceryChainId, groupingBy(PriceForPlotPointData::groceryStoreId)));
+
+        var plotPointByChain = pricesByStore.entrySet().stream()
+                .map(groceryChain -> {
+                    var allPrices = groceryChain.getValue().values()
+                            .stream()
+                            .flatMap(List::stream)
+                            .map(v -> PlotPoint.create(localiser.toLocalDateTime(v.date()), v.toPricePerQuantity().normalisedPrice()))
+                            .sorted(Comparator.comparing(PlotPoint::x))
+                            .toList();
+                    String groceryChainName = groceryChain.getValue().values().stream().findAny().get().get(0).groceryChainName();
+                    return PricePlot.create(groceryChain.getKey(), groceryChainName, allPrices);
+                })
+                .toList();
+
+        var plotPointByStore = pricesByStore.entrySet().stream()
+                .flatMap(v -> v.getValue().values().stream())
+                .map(pricesOfGroceryStore -> {
+                    var first = pricesOfGroceryStore.get(0);
+                    var prices = pricesOfGroceryStore.stream()
+                            .map(v -> PlotPoint.create(localiser.toLocalDateTime(v.date()), v.toPricePerQuantity().normalisedPrice()))
+                            .sorted(Comparator.comparing(PlotPoint::x))
+                            .toList();
+                    return PricePlot.create(first.groceryStoreId(), first.groceryChainName() + " " + first.groceryStoreName(), prices);
+                })
+                .toList();
+
+        return new PlotPointData(plotPointByChain, plotPointByStore);
+    }
+
+    static class PlotPointData {
+        List<PricePlot<GroceryChain, LocalDateTime>> byChain;
+        List<PricePlot<GroceryStore, LocalDateTime>> byStore;
+
+        public PlotPointData(List<PricePlot<GroceryChain, LocalDateTime>> byChain, List<PricePlot<GroceryStore, LocalDateTime>> byStore) {
+            this.byChain = byChain;
+            this.byStore = byStore;
+        }
     }
 }

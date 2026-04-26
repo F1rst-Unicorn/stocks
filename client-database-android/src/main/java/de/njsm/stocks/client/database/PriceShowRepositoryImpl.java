@@ -22,9 +22,7 @@
 package de.njsm.stocks.client.database;
 
 import de.njsm.stocks.client.business.PriceShowRepository;
-import de.njsm.stocks.client.business.entities.Food;
-import de.njsm.stocks.client.business.entities.Id;
-import de.njsm.stocks.client.business.entities.PriceForTableListingData;
+import de.njsm.stocks.client.business.entities.*;
 import io.reactivex.rxjava3.core.Observable;
 
 import javax.inject.Inject;
@@ -42,5 +40,10 @@ class PriceShowRepositoryImpl implements PriceShowRepository {
     @Override
     public Observable<List<PriceForTableListingData>> getPricesForTable(Id<Food> id) {
         return priceDao.getLatestPriceByGroceryStore(id);
+    }
+
+    @Override
+    public Observable<List<PriceForPlotPointData>> getPricePlotData(IdImpl<Food> id) {
+        return priceDao.getPricePlotData(id);
     }
 }
