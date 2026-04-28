@@ -41,8 +41,8 @@ import static de.njsm.stocks.server.v2.web.Endpoint.parseToInstant;
 public interface Get<U extends TableRecord<U>, T extends Entity<T>> {
 
     @GetMapping(produces = MediaType.APPLICATION_JSON)
-    default Response get(@RequestParam("startingFrom") String startingFromParameter,
-                     @RequestParam("upUntil") String upUntilParameter) {
+    default Response get(@RequestParam(value = "startingFrom", required = false) String startingFromParameter,
+                     @RequestParam(value = "upUntil", required = false) String upUntilParameter) {
         Optional<Instant> startingFrom = parseToInstant(startingFromParameter, "startingFrom");
         Optional<Instant> upUntil = parseToInstant(upUntilParameter, "upUntil");
         if (startingFrom.isEmpty() || upUntil.isEmpty()) {

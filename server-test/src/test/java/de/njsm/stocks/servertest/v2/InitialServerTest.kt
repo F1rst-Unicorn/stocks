@@ -41,6 +41,12 @@ class InitialServerTest : Base() {
     }
 
     @Test
+    fun gettingWithNoTimeRangeDataGivesEmptyList() {
+        assertThat(updateService.getFood(Instant.MIN, Instant.MIN))
+            .isEmpty()
+    }
+
+    @Test
     fun locationsAreEmpty() {
         assertThat(updateService.getLocations(Instant.EPOCH, Constants.INFINITY))
             .isEmpty()
