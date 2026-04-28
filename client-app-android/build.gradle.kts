@@ -136,7 +136,6 @@ dependencies {
     "demoImplementation"(project(":client-network"))
     "demoImplementation"(project(":client-crypto"))
     implementation(libs.bundles.dagger.android)
-    implementation(libs.slf4j)
     implementation(libs.android.material)
     implementation(libs.bundles.android.navigation)
     implementation(libs.android.preference)

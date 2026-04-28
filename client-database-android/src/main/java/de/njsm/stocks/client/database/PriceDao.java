@@ -34,7 +34,10 @@ import static de.njsm.stocks.client.database.StocksDatabase.NOW;
 @Dao
 abstract class PriceDao {
 
-    @Query("select * from current_price where id = :id")
+    @Query("select * " +
+            "from price " +
+            "where id = :id " +
+            "and transaction_time_end = " + DATABASE_INFINITY_STRING_SQL)
     abstract PriceForDeletion getPrice(int id);
 
     @Query("select " +
