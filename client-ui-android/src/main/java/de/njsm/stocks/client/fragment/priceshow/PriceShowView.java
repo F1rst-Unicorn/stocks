@@ -174,6 +174,9 @@ public class PriceShowView {
         LineData data = new LineData();
         int colourIndex = 0;
         for (var dataSource : plotData) {
+            if (dataSource.plotPoints().size() < 2)
+                continue;
+
             var entries = dataSource.plotPoints().stream()
                     .map(v -> new Entry(dateRenderStrategy.toFloat(v.x()), v.y().floatValue()))
                     .collect(Collectors.toList());
