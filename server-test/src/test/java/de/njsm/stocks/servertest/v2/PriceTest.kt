@@ -75,7 +75,7 @@ class PriceTest : Base() {
         val groceryStore = groceryStoreRepository.createNew(uniqueName)
         val food = foodRepository.createNew(uniqueName)
         val scaledUnit = scaledUnitRepository.createNew(BigDecimal.ONE)
-        val input = PriceAddForm.create(price, Instant.now(), scale, groceryStore.id(), food.id(), scaledUnit.id())
+        val input = PriceAddForm.create(price, Instant.now(), scale, groceryStore, food, scaledUnit)
 
         addService.addPrice(input)
 

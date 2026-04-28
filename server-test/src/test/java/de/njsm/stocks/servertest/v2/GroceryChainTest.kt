@@ -29,6 +29,7 @@ import de.njsm.stocks.client.business.entities.GroceryChainForDeletion
 import de.njsm.stocks.client.business.entities.GroceryChainForEditing
 import de.njsm.stocks.client.business.entities.GroceryChainForSynchronisation
 import de.njsm.stocks.client.business.entities.StatusCode
+import de.njsm.stocks.client.business.entities.VersionedId
 import de.njsm.stocks.servertest.v2.repo.GroceryChainRepository
 import org.assertj.core.api.Assertions
 import org.assertj.core.api.Assertions.assertThatExceptionOfType
@@ -74,7 +75,7 @@ class GroceryChainTest : Base() {
         val newName = uniqueName
         val id = repository.createNew(uniqueName)
 
-        editService.edit(GroceryChainForEditing.create(id.id(), 0, newName))
+        editService.edit(GroceryChainForEditing.create(VersionedId.create(id, 0), newName))
 
         val data = updateService.getGroceryChains(Instant.EPOCH, Constants.INFINITY)
         Assertions.assertThat(data).filteredOn(GroceryChainForSynchronisation::name, newName)
@@ -90,7 +91,7 @@ class GroceryChainTest : Base() {
         assertThatExceptionOfType(StatusCodeException::class.java)
             .isThrownBy {
                 editService.edit(
-                    GroceryChainForEditing.create(id.id(), 99, newName),
+                    GroceryChainForEditing.create(VersionedId.create(id.id(), 99), newName),
                 )
             }
             .matches { it.statusCode == StatusCode.INVALID_DATA_VERSION }
@@ -101,7 +102,7 @@ class GroceryChainTest : Base() {
         assertThatExceptionOfType(StatusCodeException::class.java)
             .isThrownBy {
                 editService.edit(
-                    GroceryChainForEditing.create(9999, 0, uniqueName),
+                    GroceryChainForEditing.create(VersionedId.create(9999, 0), uniqueName),
                 )
             }
             .matches { it.statusCode == StatusCode.NOT_FOUND }

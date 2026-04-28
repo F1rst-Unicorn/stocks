@@ -51,6 +51,6 @@ class GroceryStoreRepository
             name: String,
             groceryChain: IdImpl<GroceryChain> = groceryChainRepository.anyGroceryChainId
         ): IdImpl<GroceryStore> {
-            return addService.addGroceryStore(GroceryStoreAddForm.create(name, groceryChain.id()))
+            return addService.addGroceryStore(GroceryStoreAddForm.create(name, groceryChain))
         }
     }

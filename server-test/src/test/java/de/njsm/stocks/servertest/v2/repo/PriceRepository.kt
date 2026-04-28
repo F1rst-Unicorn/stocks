@@ -54,9 +54,9 @@ class PriceRepository
                 price,
                 Instant.now(),
                 scale,
-                groceryStore.id(),
-                food.id(),
-                scaledUnit.id()
+                groceryStore,
+                food,
+                scaledUnit
             ))
         }
     }
