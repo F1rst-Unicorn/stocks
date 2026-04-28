@@ -120,7 +120,7 @@ public abstract class CrudDatabaseHandler<T extends TableRecord<T>, N extends En
                                                         .where(inner.field(table.transactionTimeEnd()).eq(INFINITY))
                                                         .and(inner.field(table.id()).eq(id))))
                                         .and(table.validTimeStart().gt(validTimeStart))
-                                        .and(table.validTimeEnd().eq(INFINITY))
+                                        .and(table.transactionTimeEnd().eq(INFINITY))
                                 ))
                 .returningResult(fields)
                 .fetchOptional();
@@ -131,6 +131,10 @@ public abstract class CrudDatabaseHandler<T extends TableRecord<T>, N extends En
                       .set(table.transactionTimeEnd(), now)
                       .where(
                               table.id().eq(id)
+                                      .and(table.validTimeEnd().eq(select(min(inner.field(table.validTimeEnd())))
+                                              .from(inner)
+                                              .where(inner.field(table.transactionTimeEnd()).eq(INFINITY))
+                                              .and(inner.field(table.id()).eq(id))))
                                       .and(table.transactionTimeEnd().eq(INFINITY))
                                       .and(table.transactionTimeStart().lt(now))
                       )

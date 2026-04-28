@@ -113,6 +113,10 @@ public class PriceHandler extends CrudDatabaseHandler<PriceRecord, Price> {
                     .ifPresent(groceryChainId ->
                             prolongValidTimeStart(context, new TableDescription.GroceryChain(), validTime, groceryChainId.get(GROCERY_STORE.GROCERY_CHAIN)));
 
+            prolongValidTimeStart(context, new TableDescription.ScaledUnit(), validTime, price.scaledUnit(), SCALED_UNIT.UNIT)
+                    .ifPresent(unitId ->
+                            prolongValidTimeStart(context, new TableDescription.Unit(), validTime, unitId.get(SCALED_UNIT.UNIT)));
+
             int lastInsertId = new JooqInsertionVisitor<PriceRecord>()
                     .visit(item, new JooqInsertionVisitor.Input<>(context.insertInto(tableDescription().table()), getPrincipals()))
                     .returning(tableDescription().id())

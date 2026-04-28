@@ -80,7 +80,7 @@ class PriceHandlerTest extends DbTestCase {
                 .scale(BigDecimal.ONE)
                 .validTime(validTime)
                 .food(1)
-                .scaledUnit(1)
+                .scaledUnit(2)
                 .groceryStore(1)
                 .build();
 
