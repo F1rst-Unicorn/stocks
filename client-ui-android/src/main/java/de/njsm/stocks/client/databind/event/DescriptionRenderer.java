@@ -316,7 +316,7 @@ public class DescriptionRenderer implements Visitor<Void, String> {
     public String priceCreated(PriceCreatedEvent priceCreatedEvent, Void input) {
         String template = dictionary.apply(R.string.event_price_created);
         return String.format(template,
-                dateRenderStrategy.render(priceCreatedEvent.validTime()),
+                dateRenderStrategy.renderUpToDay(priceCreatedEvent.validTime()),
                 unitAmountRenderStrategy.render(priceCreatedEvent.quantity()),
                 priceCreatedEvent.foodName(),
                 unitAmountRenderStrategy.render(priceCreatedEvent.price()),
@@ -331,7 +331,7 @@ public class DescriptionRenderer implements Visitor<Void, String> {
                 unitAmountRenderStrategy.render(priceDeletedEvent.quantity()),
                 priceDeletedEvent.foodName(),
                 unitAmountRenderStrategy.render(priceDeletedEvent.price()),
-                dateRenderStrategy.render(priceDeletedEvent.validTime()),
+                dateRenderStrategy.renderUpToDay(priceDeletedEvent.validTime()),
                 priceDeletedEvent.groceryStoreName(),
                 priceDeletedEvent.userName());
     }

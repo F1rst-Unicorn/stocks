@@ -36,6 +36,7 @@ public class DateRenderStrategy {
     private static final java.time.format.DateTimeFormatter FORMAT = DateTimeFormatter.ofPattern("dd.MM.yyyy");
     private static final java.time.format.DateTimeFormatter FORMAT_SHORT = DateTimeFormatter.ofPattern("dd.MM.yy");
     private static final java.time.format.DateTimeFormatter FORMAT_WITH_TIME = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss");
+    private static final java.time.format.DateTimeFormatter FORMAT_WITH_DAY = DateTimeFormatter.ofPattern("dd.MM.yyyy");
 
     private final Localiser localiser;
 
@@ -50,6 +51,10 @@ public class DateRenderStrategy {
 
     public String render(LocalDateTime date) {
         return FORMAT_WITH_TIME.format(date);
+    }
+
+    public String renderUpToDay(LocalDateTime date) {
+        return FORMAT_WITH_DAY.format(date);
     }
 
     public String renderEpochSeconds(float value) {

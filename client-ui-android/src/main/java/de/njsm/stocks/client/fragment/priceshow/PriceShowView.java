@@ -107,7 +107,7 @@ public class PriceShowView {
         for (var price : prices) {
             TableRow row = new TableRow(context);
             TextView date = new TextView(context);
-            date.setText(dateRenderStrategy.render(price.date()));
+            date.setText(dateRenderStrategy.renderUpToDay(price.date()));
             date.setPadding(8, 8, 8, 8);
             date.setGravity(Gravity.START);
             TextView store = new TextView(context);
