@@ -37,7 +37,7 @@ public class PriceDeleterImpl extends AbstractDeleterImpl<Price> {
 
     @Override
     Job.Type getJobType() {
-        return Job.Type.DELETE_GROCERY_STORE;
+        return Job.Type.DELETE_PRICE;
     }
 
     @Override
