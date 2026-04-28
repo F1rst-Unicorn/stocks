@@ -23,16 +23,10 @@ package de.njsm.stocks.server.v2.db;
 
 import de.njsm.stocks.common.api.*;
 import de.njsm.stocks.server.v2.db.jooq.tables.records.EanNumberRecord;
-import org.jooq.Field;
 import org.jooq.RecordMapper;
-import org.jooq.Table;
-import org.jooq.TableField;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.context.annotation.RequestScope;
-
-import java.util.Arrays;
-import java.util.List;
 
 import static de.njsm.stocks.server.v2.db.jooq.Tables.EAN_NUMBER;
 
@@ -52,21 +46,6 @@ public class EanNumberHandler extends CrudDatabaseHandler<EanNumberRecord, EanNu
     }
 
     @Override
-    protected Table<EanNumberRecord> getTable() {
-        return EAN_NUMBER;
-    }
-
-    @Override
-    protected TableField<EanNumberRecord, Integer> getIdField() {
-        return EAN_NUMBER.ID;
-    }
-
-    @Override
-    protected TableField<EanNumberRecord, Integer> getVersionField() {
-        return EAN_NUMBER.VERSION;
-    }
-
-    @Override
     protected RecordMapper<EanNumberRecord, EanNumber> getDtoMap() {
         return cursor -> BitemporalEanNumber.builder()
                 .id(cursor.getId())
@@ -82,12 +61,7 @@ public class EanNumberHandler extends CrudDatabaseHandler<EanNumberRecord, EanNu
     }
 
     @Override
-    protected List<Field<?>> getNontemporalFields() {
-        return Arrays.asList(
-                EAN_NUMBER.ID,
-                EAN_NUMBER.VERSION,
-                EAN_NUMBER.NUMBER,
-                EAN_NUMBER.IDENTIFIES
-        );
+    TableDescription<EanNumberRecord> tableDescription() {
+        return new TableDescription.EanNumber();
     }
 }

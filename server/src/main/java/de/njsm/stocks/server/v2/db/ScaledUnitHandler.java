@@ -27,17 +27,13 @@ import de.njsm.stocks.common.api.ScaledUnitForEditing;
 import de.njsm.stocks.common.api.StatusCode;
 import de.njsm.stocks.server.v2.db.jooq.tables.records.ScaledUnitRecord;
 import fj.data.Validation;
-import org.jooq.Field;
 import org.jooq.RecordMapper;
-import org.jooq.Table;
-import org.jooq.TableField;
 import org.jooq.impl.DSL;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.context.annotation.RequestScope;
 
 import java.util.Arrays;
-import java.util.List;
 import java.util.Optional;
 
 import static de.njsm.stocks.server.v2.db.jooq.Tables.SCALED_UNIT;
@@ -47,7 +43,6 @@ import static de.njsm.stocks.server.v2.db.jooq.Tables.SCALED_UNIT;
 @RequestScope
 @Primary
 public class ScaledUnitHandler extends CrudDatabaseHandler<ScaledUnitRecord, ScaledUnit> {
-
 
     public ScaledUnitHandler(ConnectionFactory connectionFactory) {
         super(connectionFactory);
@@ -60,13 +55,11 @@ public class ScaledUnitHandler extends CrudDatabaseHandler<ScaledUnitRecord, Sca
 
             return currentUpdate(context,
                     Arrays.asList(
-                            SCALED_UNIT.ID,
-                            SCALED_UNIT.VERSION.add(1),
                             DSL.inline(data.scale()),
                             DSL.inline(data.unit())
                     ),
-                    getIdField().eq(data.id())
-                            .and(getVersionField().eq(data.version()))
+                    tableDescription().id().eq(data.id())
+                            .and(tableDescription().version().eq(data.version()))
                             .and(SCALED_UNIT.SCALE.ne(data.scale())
                                     .or(SCALED_UNIT.UNIT.ne(data.unit())))
 
@@ -89,21 +82,6 @@ public class ScaledUnitHandler extends CrudDatabaseHandler<ScaledUnitRecord, Sca
     }
 
     @Override
-    protected Table<ScaledUnitRecord> getTable() {
-        return SCALED_UNIT;
-    }
-
-    @Override
-    protected TableField<ScaledUnitRecord, Integer> getIdField() {
-        return SCALED_UNIT.ID;
-    }
-
-    @Override
-    protected TableField<ScaledUnitRecord, Integer> getVersionField() {
-        return SCALED_UNIT.VERSION;
-    }
-
-    @Override
     protected RecordMapper<ScaledUnitRecord, ScaledUnit> getDtoMap() {
         return cursor -> BitemporalScaledUnit.builder()
                 .id(cursor.getId())
@@ -119,12 +97,7 @@ public class ScaledUnitHandler extends CrudDatabaseHandler<ScaledUnitRecord, Sca
     }
 
     @Override
-    protected List<Field<?>> getNontemporalFields() {
-        return Arrays.asList(
-                SCALED_UNIT.ID,
-                SCALED_UNIT.VERSION,
-                SCALED_UNIT.SCALE,
-                SCALED_UNIT.UNIT
-        );
+    TableDescription<ScaledUnitRecord> tableDescription() {
+        return new TableDescription.ScaledUnit();
     }
 }

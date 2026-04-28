@@ -24,32 +24,18 @@ package de.njsm.stocks.server.v2.db;
 import de.njsm.stocks.common.api.BitemporalUser;
 import de.njsm.stocks.common.api.User;
 import de.njsm.stocks.server.v2.db.jooq.tables.records.UserRecord;
-import org.jooq.Field;
 import org.jooq.RecordMapper;
-import org.jooq.Table;
-import org.jooq.TableField;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.context.annotation.RequestScope;
-
-import java.util.Arrays;
-import java.util.List;
-
-import static de.njsm.stocks.server.v2.db.jooq.tables.User.USER;
 
 @Repository
 @RequestScope
 @Primary
 public class UserHandler extends CrudDatabaseHandler<UserRecord, User> {
 
-
     public UserHandler(ConnectionFactory connectionFactory) {
         super(connectionFactory);
-    }
-
-    @Override
-    protected Table<UserRecord> getTable() {
-        return USER;
     }
 
     @Override
@@ -67,21 +53,7 @@ public class UserHandler extends CrudDatabaseHandler<UserRecord, User> {
     }
 
     @Override
-    protected TableField<UserRecord, Integer> getIdField() {
-        return USER.ID;
-    }
-
-    @Override
-    protected TableField<UserRecord, Integer> getVersionField() {
-        return USER.VERSION;
-    }
-
-    @Override
-    protected List<Field<?>> getNontemporalFields() {
-        return Arrays.asList(
-                USER.ID,
-                USER.VERSION,
-                USER.NAME
-        );
+    TableDescription<UserRecord> tableDescription() {
+        return new TableDescription.User();
     }
 }

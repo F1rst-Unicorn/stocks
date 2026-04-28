@@ -23,16 +23,12 @@ package de.njsm.stocks.server.v2.db;
 
 import de.njsm.stocks.common.api.*;
 import de.njsm.stocks.server.v2.db.jooq.tables.records.RecipeProductRecord;
-import org.jooq.Field;
 import org.jooq.RecordMapper;
-import org.jooq.Table;
-import org.jooq.TableField;
 import org.jooq.impl.DSL;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.context.annotation.RequestScope;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
@@ -44,7 +40,6 @@ import static de.njsm.stocks.server.v2.db.jooq.Tables.RECIPE_PRODUCT;
 @Primary
 public class RecipeProductHandler extends CrudDatabaseHandler<RecipeProductRecord, RecipeProduct> implements CompleteReferenceChecker<Recipe, RecipeProduct> {
 
-
     public RecipeProductHandler(ConnectionFactory connectionFactory) {
         super(connectionFactory);
     }
@@ -52,21 +47,19 @@ public class RecipeProductHandler extends CrudDatabaseHandler<RecipeProductRecor
     @Override
     public StatusCode areEntitiesComplete(Identifiable<Recipe> recipe, Set<? extends Versionable<RecipeProduct>> products) {
         return runCommand(context -> new CompleteEntityReferenceChecker<Recipe, RecipeProduct, RecipeProductRecord>(
-                getIdField(),
-                getVersionField(),
+                tableDescription().id(),
+                tableDescription().version(),
                 RECIPE_PRODUCT.VALID_TIME_START,
                 RECIPE_PRODUCT.VALID_TIME_END,
                 RECIPE_PRODUCT.TRANSACTION_TIME_END,
                 RECIPE_PRODUCT.RECIPE,
-                getTable()
+                tableDescription().table()
         ).check(context, recipe, products));
     }
 
     public StatusCode edit(RecipeProductForEditing data) {
         return runCommand(context -> checkPresenceInThisVersion(data, context)
                 .bind(() -> currentUpdate(context, List.of(
-                            RECIPE_PRODUCT.ID,
-                            RECIPE_PRODUCT.VERSION.add(1),
                             DSL.inline(data.amount()),
                             DSL.inline(data.product()),
                             DSL.inline(data.recipe()),
@@ -91,21 +84,6 @@ public class RecipeProductHandler extends CrudDatabaseHandler<RecipeProductRecor
     }
 
     @Override
-    protected Table<RecipeProductRecord> getTable() {
-        return RECIPE_PRODUCT;
-    }
-
-    @Override
-    protected TableField<RecipeProductRecord, Integer> getIdField() {
-        return RECIPE_PRODUCT.ID;
-    }
-
-    @Override
-    protected TableField<RecipeProductRecord, Integer> getVersionField() {
-        return RECIPE_PRODUCT.VERSION;
-    }
-
-    @Override
     protected RecordMapper<RecipeProductRecord, RecipeProduct> getDtoMap() {
         return cursor -> BitemporalRecipeProduct.builder()
                 .id(cursor.getId())
@@ -123,14 +101,7 @@ public class RecipeProductHandler extends CrudDatabaseHandler<RecipeProductRecor
     }
 
     @Override
-    protected List<Field<?>> getNontemporalFields() {
-        return Arrays.asList(
-                RECIPE_PRODUCT.ID,
-                RECIPE_PRODUCT.VERSION,
-                RECIPE_PRODUCT.AMOUNT,
-                RECIPE_PRODUCT.PRODUCT,
-                RECIPE_PRODUCT.RECIPE,
-                RECIPE_PRODUCT.UNIT
-        );
+    TableDescription<RecipeProductRecord> tableDescription() {
+        return new TableDescription.RecipeProduct();
     }
 }

@@ -26,16 +26,12 @@ import de.njsm.stocks.common.api.Recipe;
 import de.njsm.stocks.common.api.RecipeForEditing;
 import de.njsm.stocks.common.api.StatusCode;
 import de.njsm.stocks.server.v2.db.jooq.tables.records.RecipeRecord;
-import org.jooq.Field;
 import org.jooq.RecordMapper;
-import org.jooq.Table;
-import org.jooq.TableField;
 import org.jooq.impl.DSL;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.context.annotation.RequestScope;
 
-import java.util.Arrays;
 import java.util.List;
 
 import static de.njsm.stocks.server.v2.db.jooq.Tables.RECIPE;
@@ -46,7 +42,6 @@ import static de.njsm.stocks.server.v2.db.jooq.Tables.RECIPE;
 @Primary
 public class RecipeHandler extends CrudDatabaseHandler<RecipeRecord, Recipe> {
 
-
     public RecipeHandler(ConnectionFactory connectionFactory) {
         super(connectionFactory);
     }
@@ -55,8 +50,6 @@ public class RecipeHandler extends CrudDatabaseHandler<RecipeRecord, Recipe> {
         return runCommand(context -> checkPresenceInThisVersion(recipe, context)
                 .bind(() ->
                         currentUpdate(context, List.of(
-                                    RECIPE.ID,
-                                    RECIPE.VERSION.add(1),
                                     DSL.inline(recipe.name()),
                                     DSL.inline(recipe.instructions()),
                                     DSL.inline(recipe.duration())
@@ -71,21 +64,6 @@ public class RecipeHandler extends CrudDatabaseHandler<RecipeRecord, Recipe> {
                         ).map(this::notFoundIsOk)
                 )
         );
-    }
-
-    @Override
-    protected Table<RecipeRecord> getTable() {
-        return RECIPE;
-    }
-
-    @Override
-    protected TableField<RecipeRecord, Integer> getIdField() {
-        return RECIPE.ID;
-    }
-
-    @Override
-    protected TableField<RecipeRecord, Integer> getVersionField() {
-        return RECIPE.VERSION;
     }
 
     @Override
@@ -105,13 +83,7 @@ public class RecipeHandler extends CrudDatabaseHandler<RecipeRecord, Recipe> {
     }
 
     @Override
-    protected List<Field<?>> getNontemporalFields() {
-        return Arrays.asList(
-                RECIPE.ID,
-                RECIPE.VERSION,
-                RECIPE.NAME,
-                RECIPE.INSTRUCTIONS,
-                RECIPE.DURATION
-        );
+    TableDescription<RecipeRecord> tableDescription() {
+        return new TableDescription.Recipe();
     }
 }

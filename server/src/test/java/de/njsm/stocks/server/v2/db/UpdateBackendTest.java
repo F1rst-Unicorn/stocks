@@ -46,6 +46,6 @@ public class UpdateBackendTest extends DbTestCase {
         Validation<StatusCode, List<Update>> result = uut.get();
 
         assertTrue(result.isSuccess());
-        assertEquals(11, result.success().size());
+        assertEquals(14, result.success().size());
     }
 }

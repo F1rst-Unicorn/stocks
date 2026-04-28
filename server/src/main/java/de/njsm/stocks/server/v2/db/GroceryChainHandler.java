@@ -26,16 +26,12 @@ import de.njsm.stocks.common.api.GroceryChain;
 import de.njsm.stocks.common.api.GroceryChainForEditing;
 import de.njsm.stocks.common.api.StatusCode;
 import de.njsm.stocks.server.v2.db.jooq.tables.records.GroceryChainRecord;
-import org.jooq.Field;
 import org.jooq.RecordMapper;
-import org.jooq.Table;
-import org.jooq.TableField;
 import org.jooq.impl.DSL;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.context.annotation.RequestScope;
 
-import java.util.Arrays;
 import java.util.List;
 
 import static de.njsm.stocks.server.v2.db.jooq.tables.GroceryChain.GROCERY_CHAIN;
@@ -45,14 +41,8 @@ import static de.njsm.stocks.server.v2.db.jooq.tables.GroceryChain.GROCERY_CHAIN
 @Primary
 public class GroceryChainHandler extends CrudDatabaseHandler<GroceryChainRecord, GroceryChain> {
 
-
     public GroceryChainHandler(ConnectionFactory connectionFactory) {
         super(connectionFactory);
-    }
-
-    @Override
-    protected Table<GroceryChainRecord> getTable() {
-        return GROCERY_CHAIN;
     }
 
     @Override
@@ -75,32 +65,16 @@ public class GroceryChainHandler extends CrudDatabaseHandler<GroceryChainRecord,
                 return StatusCode.NOT_FOUND;
 
             return currentUpdate(context, List.of(
-                    GROCERY_CHAIN.ID,
-                    GROCERY_CHAIN.VERSION,
                     DSL.val(item.name())),
-                    getIdField().eq(item.id())
-                            .and(getVersionField().eq(item.version()))
+                    tableDescription().id().eq(item.id())
+                            .and(tableDescription().version().eq(item.version()))
                             .and(GROCERY_CHAIN.NAME.ne(item.name())))
             .map(this::notFoundMeansInvalidVersion);
         });
     }
 
     @Override
-    protected TableField<GroceryChainRecord, Integer> getIdField() {
-        return GROCERY_CHAIN.ID;
-    }
-
-    @Override
-    protected TableField<GroceryChainRecord, Integer> getVersionField() {
-        return GROCERY_CHAIN.VERSION;
-    }
-
-    @Override
-    protected List<Field<?>> getNontemporalFields() {
-        return Arrays.asList(
-                GROCERY_CHAIN.ID,
-                GROCERY_CHAIN.VERSION,
-                GROCERY_CHAIN.NAME
-        );
+    TableDescription<GroceryChainRecord> tableDescription() {
+        return new TableDescription.GroceryChain();
     }
 }

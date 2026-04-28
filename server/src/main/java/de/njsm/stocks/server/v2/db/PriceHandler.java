@@ -22,23 +22,26 @@
 package de.njsm.stocks.server.v2.db;
 
 import de.njsm.stocks.common.api.*;
+import de.njsm.stocks.common.api.serialisers.InstantDeserialiser;
+import de.njsm.stocks.server.v2.business.data.visitor.JooqInsertionVisitor;
 import de.njsm.stocks.server.v2.db.jooq.tables.records.PriceRecord;
+import fj.data.Validation;
 import org.jooq.Field;
 import org.jooq.RecordMapper;
-import org.jooq.Table;
-import org.jooq.TableField;
 import org.jooq.impl.DSL;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.context.annotation.RequestScope;
 
+import java.io.IOException;
 import java.time.OffsetDateTime;
-import java.util.Arrays;
-import java.util.List;
+import java.time.ZoneOffset;
 
 import static de.njsm.stocks.common.api.StatusCode.NOT_FOUND;
+import static de.njsm.stocks.server.v2.db.jooq.tables.Food.FOOD;
 import static de.njsm.stocks.server.v2.db.jooq.tables.GroceryStore.GROCERY_STORE;
 import static de.njsm.stocks.server.v2.db.jooq.tables.Price.PRICE;
+import static de.njsm.stocks.server.v2.db.jooq.tables.ScaledUnit.SCALED_UNIT;
 import static org.jooq.impl.DSL.select;
 
 @Repository
@@ -54,11 +57,6 @@ public class PriceHandler extends CrudDatabaseHandler<PriceRecord, Price> {
         super(connectionFactory);
         this.groceryChainHandler = groceryChainHandler;
         this.groceryStoreHandler = groceryStoreHandler;
-    }
-
-    @Override
-    protected Table<PriceRecord> getTable() {
-        return PRICE;
     }
 
     @Override
@@ -80,26 +78,48 @@ public class PriceHandler extends CrudDatabaseHandler<PriceRecord, Price> {
     }
 
     @Override
-    protected TableField<PriceRecord, Integer> getIdField() {
-        return PRICE.ID;
+    TableDescription<PriceRecord> tableDescription() {
+        return new TableDescription.Price();
     }
 
     @Override
-    protected TableField<PriceRecord, Integer> getVersionField() {
-        return PRICE.VERSION;
-    }
+    public Validation<StatusCode, Integer> addReturningId(Insertable<Price> item) {
+        return runFunction(context -> {
 
-    @Override
-    protected List<Field<?>> getNontemporalFields() {
-        return Arrays.asList(
-                PRICE.ID,
-                PRICE.VERSION,
-                PRICE.PRICE_,
-                PRICE.SCALE,
-                PRICE.GROCERY_STORE,
-                PRICE.FOOD,
-                PRICE.SCALED_UNIT
-        );
+            if (!(item instanceof PriceForInsertion price)) {
+                throw new IllegalArgumentException("unexpected typ for price insertion: " + item.getClass());
+            }
+            OffsetDateTime validTime;
+            try {
+                validTime = InstantDeserialiser.parseString(price.validTime()).atOffset(ZoneOffset.UTC);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+
+            prolongValidTimeStart(context, new TableDescription.Food(), validTime, price.food(), FOOD.LOCATION, FOOD.STORE_UNIT)
+                    .ifPresent(nextIds -> {
+
+                Integer location = nextIds.get(FOOD.LOCATION);
+                if (location != null) {
+                    prolongValidTimeStart(context, new TableDescription.Location(), validTime, location);
+                }
+
+                var unit = prolongValidTimeStart(context, new TableDescription.ScaledUnit(), validTime, nextIds.get(FOOD.STORE_UNIT), SCALED_UNIT.UNIT);
+                unit.ifPresent(v ->
+                        prolongValidTimeStart(context, new TableDescription.Unit(), validTime, v.get(SCALED_UNIT.UNIT)));
+            });
+
+            prolongValidTimeStart(context, new TableDescription.GroceryStore(), validTime, price.groceryStore(), GROCERY_STORE.GROCERY_CHAIN)
+                    .ifPresent(groceryChainId ->
+                            prolongValidTimeStart(context, new TableDescription.GroceryChain(), validTime, groceryChainId.get(GROCERY_STORE.GROCERY_CHAIN)));
+
+            int lastInsertId = new JooqInsertionVisitor<PriceRecord>()
+                    .visit(item, new JooqInsertionVisitor.Input<>(context.insertInto(tableDescription().table()), getPrincipals()))
+                    .returning(tableDescription().id())
+                    .fetch()
+                    .getValue(0, tableDescription().id());
+            return Validation.success(lastInsertId);
+        });
     }
 
     /**
@@ -112,9 +132,9 @@ public class PriceHandler extends CrudDatabaseHandler<PriceRecord, Price> {
     public StatusCode delete(Versionable<Price> item) {
         return runCommand(context -> {
             Field<OffsetDateTime> now = DSL.currentOffsetDateTime();
-            int changedItems = context.update(getTable())
-                    .set(getTransactionTimeEndField(), now)
-                    .where(getIdField().eq(item.id()))
+            int changedItems = context.update(tableDescription().table())
+                    .set(tableDescription().transactionTimeEnd(), now)
+                    .where(tableDescription().id().eq(item.id()))
                     .execute();
 
             if (0 < changedItems)

@@ -27,15 +27,12 @@ import de.njsm.stocks.server.v2.db.jooq.tables.records.UserDeviceRecord;
 import fj.data.Validation;
 import org.jooq.Field;
 import org.jooq.RecordMapper;
-import org.jooq.Table;
-import org.jooq.TableField;
 import org.jooq.impl.DSL;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.context.annotation.RequestScope;
 
 import java.time.OffsetDateTime;
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -74,18 +71,13 @@ public class UserDeviceHandler extends CrudDatabaseHandler<UserDeviceRecord, Use
             Field<OffsetDateTime> now = DSL.currentOffsetDateTime();
             UserDeviceRecord userDevice = context.selectFrom(USER_DEVICE)
                     .where(USER_DEVICE.ID.eq(deviceId.id())
-                            .and(getValidTimeStartField().le(now))
-                            .and(now.lt(getValidTimeEndField()))
-                            .and(getTransactionTimeEndField().eq(INFINITY)))
+                            .and(tableDescription().validTimeStart().le(now))
+                            .and(now.lt(tableDescription().validTimeEnd()))
+                            .and(tableDescription().transactionTimeEnd().eq(INFINITY)))
                     .fetchOne();
 
             return Validation.success(userDevice.getTechnicalUseCase() != null);
         });
-    }
-
-    @Override
-    protected Table<UserDeviceRecord> getTable() {
-        return USER_DEVICE;
     }
 
     @Override
@@ -104,22 +96,7 @@ public class UserDeviceHandler extends CrudDatabaseHandler<UserDeviceRecord, Use
     }
 
     @Override
-    protected TableField<UserDeviceRecord, Integer> getIdField() {
-        return USER_DEVICE.ID;
-    }
-
-    @Override
-    protected TableField<UserDeviceRecord, Integer> getVersionField() {
-        return USER_DEVICE.VERSION;
-    }
-
-    @Override
-    protected List<Field<?>> getNontemporalFields() {
-        return Arrays.asList(
-                USER_DEVICE.ID,
-                USER_DEVICE.VERSION,
-                USER_DEVICE.NAME,
-                USER_DEVICE.BELONGS_TO
-        );
+    TableDescription<UserDeviceRecord> tableDescription() {
+        return new TableDescription.UserDevice();
     }
 }

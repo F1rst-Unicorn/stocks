@@ -39,4 +39,5 @@
     <include file="0011-limit-constraints-to-changed-records.xml" relativeToChangelogFile="true"/>
     <include file="0012-indices-on-foreign-keys.xml" relativeToChangelogFile="true"/>
     <include file="0013-stores.xml" relativeToChangelogFile="true"/>
+    <include file="0014-fix-price-to-store-fkey.xml" relativeToChangelogFile="true"/>
 </databaseChangeLog>

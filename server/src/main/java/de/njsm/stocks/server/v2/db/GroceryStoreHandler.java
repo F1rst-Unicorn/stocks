@@ -23,16 +23,12 @@ package de.njsm.stocks.server.v2.db;
 
 import de.njsm.stocks.common.api.*;
 import de.njsm.stocks.server.v2.db.jooq.tables.records.GroceryStoreRecord;
-import org.jooq.Field;
 import org.jooq.RecordMapper;
-import org.jooq.Table;
-import org.jooq.TableField;
 import org.jooq.impl.DSL;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.context.annotation.RequestScope;
 
-import java.util.Arrays;
 import java.util.List;
 
 import static de.njsm.stocks.server.v2.db.jooq.tables.GroceryStore.GROCERY_STORE;
@@ -47,11 +43,6 @@ public class GroceryStoreHandler extends CrudDatabaseHandler<GroceryStoreRecord,
     public GroceryStoreHandler(ConnectionFactory connectionFactory, GroceryChainHandler groceryChainHandler) {
         super(connectionFactory);
         this.groceryChainHandler = groceryChainHandler;
-    }
-
-    @Override
-    protected Table<GroceryStoreRecord> getTable() {
-        return GROCERY_STORE;
     }
 
     public StatusCode deleteStoresOfChain(Versionable<GroceryChain> id) {
@@ -71,12 +62,10 @@ public class GroceryStoreHandler extends CrudDatabaseHandler<GroceryStoreRecord,
                 return StatusCode.NOT_FOUND;
 
             return currentUpdate(context, List.of(
-                            GROCERY_STORE.ID,
-                            GROCERY_STORE.VERSION,
                             DSL.val(item.name()),
                             DSL.val(item.groceryChain())),
-                    getIdField().eq(item.id())
-                            .and(getVersionField().eq(item.version()))
+                    tableDescription().id().eq(item.id())
+                            .and(tableDescription().version().eq(item.version()))
                             .and(GROCERY_STORE.NAME.ne(item.name())
                                     .or(GROCERY_STORE.GROCERY_CHAIN.ne(item.groceryChain()))))
                     .map(this::notFoundMeansInvalidVersion);
@@ -99,22 +88,7 @@ public class GroceryStoreHandler extends CrudDatabaseHandler<GroceryStoreRecord,
     }
 
     @Override
-    protected TableField<GroceryStoreRecord, Integer> getIdField() {
-        return GROCERY_STORE.ID;
-    }
-
-    @Override
-    protected TableField<GroceryStoreRecord, Integer> getVersionField() {
-        return GROCERY_STORE.VERSION;
-    }
-
-    @Override
-    protected List<Field<?>> getNontemporalFields() {
-        return Arrays.asList(
-                GROCERY_STORE.ID,
-                GROCERY_STORE.VERSION,
-                GROCERY_STORE.NAME,
-                GROCERY_STORE.GROCERY_CHAIN
-        );
+    TableDescription<GroceryStoreRecord> tableDescription() {
+        return new TableDescription.GroceryStore();
     }
 }

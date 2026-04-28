@@ -26,17 +26,13 @@ import de.njsm.stocks.common.api.StatusCode;
 import de.njsm.stocks.common.api.Unit;
 import de.njsm.stocks.common.api.UnitForRenaming;
 import de.njsm.stocks.server.v2.db.jooq.tables.records.UnitRecord;
-import org.jooq.Field;
 import org.jooq.RecordMapper;
-import org.jooq.Table;
-import org.jooq.TableField;
 import org.jooq.impl.DSL;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.context.annotation.RequestScope;
 
 import java.util.Arrays;
-import java.util.List;
 
 import static de.njsm.stocks.server.v2.db.jooq.Tables.UNIT;
 
@@ -45,7 +41,6 @@ import static de.njsm.stocks.server.v2.db.jooq.Tables.UNIT;
 @RequestScope
 @Primary
 public class UnitHandler extends CrudDatabaseHandler<UnitRecord, Unit> {
-
 
     public UnitHandler(ConnectionFactory connectionFactory) {
         super(connectionFactory);
@@ -58,8 +53,6 @@ public class UnitHandler extends CrudDatabaseHandler<UnitRecord, Unit> {
             }
 
             return currentUpdate(context, Arrays.asList(
-                    UNIT.ID,
-                    UNIT.VERSION.add(1),
                     DSL.inline(unit.name()),
                     DSL.inline(unit.abbreviation())),
 
@@ -70,21 +63,6 @@ public class UnitHandler extends CrudDatabaseHandler<UnitRecord, Unit> {
             ).map(this::notFoundMeansInvalidVersion);
 
         });
-    }
-
-    @Override
-    protected Table<UnitRecord> getTable() {
-        return UNIT;
-    }
-
-    @Override
-    protected TableField<UnitRecord, Integer> getIdField() {
-        return UNIT.ID;
-    }
-
-    @Override
-    protected TableField<UnitRecord, Integer> getVersionField() {
-        return UNIT.VERSION;
     }
 
     @Override
@@ -103,12 +81,7 @@ public class UnitHandler extends CrudDatabaseHandler<UnitRecord, Unit> {
     }
 
     @Override
-    protected List<Field<?>> getNontemporalFields() {
-        return Arrays.asList(
-                UNIT.ID,
-                UNIT.VERSION,
-                UNIT.NAME,
-                UNIT.ABBREVIATION
-        );
+    TableDescription<UnitRecord> tableDescription() {
+        return new TableDescription.Unit();
     }
 }

@@ -23,16 +23,12 @@ package de.njsm.stocks.server.v2.db;
 
 import de.njsm.stocks.common.api.*;
 import de.njsm.stocks.server.v2.db.jooq.tables.records.RecipeIngredientRecord;
-import org.jooq.Field;
 import org.jooq.RecordMapper;
-import org.jooq.Table;
-import org.jooq.TableField;
 import org.jooq.impl.DSL;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.context.annotation.RequestScope;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
@@ -54,13 +50,13 @@ public class RecipeIngredientHandler
     @Override
     public StatusCode areEntitiesComplete(Identifiable<Recipe> recipe, Set<? extends Versionable<RecipeIngredient>> ingredients) {
         return runCommand(context -> new CompleteEntityReferenceChecker<Recipe, RecipeIngredient, RecipeIngredientRecord>(
-                getIdField(),
-                getVersionField(),
+                tableDescription().id(),
+                tableDescription().version(),
                 RECIPE_INGREDIENT.VALID_TIME_START,
                 RECIPE_INGREDIENT.VALID_TIME_END,
                 RECIPE_INGREDIENT.TRANSACTION_TIME_END,
                 RECIPE_INGREDIENT.RECIPE,
-                getTable()
+                tableDescription().table()
         ).check(context, recipe, ingredients));
     }
 
@@ -68,8 +64,6 @@ public class RecipeIngredientHandler
         return runCommand(context -> checkPresenceInThisVersion(data, context)
                 .bind(() ->
                         currentUpdate(context, List.of(
-                                RECIPE_INGREDIENT.ID,
-                                RECIPE_INGREDIENT.VERSION.add(1),
                                 DSL.inline(data.amount()),
                                 DSL.inline(data.ingredient()),
                                 DSL.inline(data.recipe()),
@@ -91,21 +85,6 @@ public class RecipeIngredientHandler
     }
 
     @Override
-    protected Table<RecipeIngredientRecord> getTable() {
-        return RECIPE_INGREDIENT;
-    }
-
-    @Override
-    protected TableField<RecipeIngredientRecord, Integer> getIdField() {
-        return RECIPE_INGREDIENT.ID;
-    }
-
-    @Override
-    protected TableField<RecipeIngredientRecord, Integer> getVersionField() {
-        return RECIPE_INGREDIENT.VERSION;
-    }
-
-    @Override
     protected RecordMapper<RecipeIngredientRecord, RecipeIngredient> getDtoMap() {
         return cursor -> BitemporalRecipeIngredient.builder()
                 .id(cursor.getId())
@@ -123,14 +102,7 @@ public class RecipeIngredientHandler
     }
 
     @Override
-    protected List<Field<?>> getNontemporalFields() {
-        return Arrays.asList(
-                RECIPE_INGREDIENT.ID,
-                RECIPE_INGREDIENT.VERSION,
-                RECIPE_INGREDIENT.AMOUNT,
-                RECIPE_INGREDIENT.INGREDIENT,
-                RECIPE_INGREDIENT.RECIPE,
-                RECIPE_INGREDIENT.UNIT
-        );
+    TableDescription<RecipeIngredientRecord> tableDescription() {
+        return new TableDescription.RecipeIngredient();
     }
 }

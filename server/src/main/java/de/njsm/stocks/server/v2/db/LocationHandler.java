@@ -23,13 +23,13 @@ package de.njsm.stocks.server.v2.db;
 
 import de.njsm.stocks.common.api.*;
 import de.njsm.stocks.server.v2.db.jooq.tables.records.LocationRecord;
-import org.jooq.*;
+import org.jooq.DSLContext;
+import org.jooq.RecordMapper;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.context.annotation.RequestScope;
 
 import java.util.Arrays;
-import java.util.List;
 
 import static de.njsm.stocks.server.v2.db.jooq.Tables.LOCATION;
 import static org.jooq.impl.DSL.inline;
@@ -54,9 +54,7 @@ public class LocationHandler extends CrudDatabaseHandler<LocationRecord, Locatio
                 return StatusCode.NOT_FOUND;
 
             return currentUpdate(context, Arrays.asList(
-                    LOCATION.ID,
                     inline(item.name()),
-                    LOCATION.VERSION.add(1),
                     LOCATION.DESCRIPTION
                     ),
                     LOCATION.ID.eq(item.id())
@@ -79,9 +77,7 @@ public class LocationHandler extends CrudDatabaseHandler<LocationRecord, Locatio
                 return StatusCode.NOT_FOUND;
 
             return currentUpdate(context, Arrays.asList(
-                    LOCATION.ID,
                     LOCATION.NAME,
-                    LOCATION.VERSION.add(1),
                     inline(input.description())
                     ),
                     LOCATION.ID.eq(input.id())
@@ -98,9 +94,7 @@ public class LocationHandler extends CrudDatabaseHandler<LocationRecord, Locatio
                 return StatusCode.NOT_FOUND;
 
             return currentUpdate(context, Arrays.asList(
-                    LOCATION.ID,
                     inline(data.name()),
-                    LOCATION.VERSION.add(1),
                     inline(data.description())
                     ),
                     LOCATION.ID.eq(data.id())
@@ -120,21 +114,6 @@ public class LocationHandler extends CrudDatabaseHandler<LocationRecord, Locatio
     }
 
     @Override
-    protected Table<LocationRecord> getTable() {
-        return LOCATION;
-    }
-
-    @Override
-    protected TableField<LocationRecord, Integer> getIdField() {
-        return LOCATION.ID;
-    }
-
-    @Override
-    protected TableField<LocationRecord, Integer> getVersionField() {
-        return LOCATION.VERSION;
-    }
-
-    @Override
     protected RecordMapper<LocationRecord, Location> getDtoMap() {
         return cursor -> BitemporalLocation.builder()
                 .id(cursor.getId())
@@ -150,12 +129,7 @@ public class LocationHandler extends CrudDatabaseHandler<LocationRecord, Locatio
     }
 
     @Override
-    protected List<Field<?>> getNontemporalFields() {
-        return Arrays.asList(
-                LOCATION.ID,
-                LOCATION.NAME,
-                LOCATION.VERSION,
-                LOCATION.DESCRIPTION
-        );
+    TableDescription<LocationRecord> tableDescription() {
+        return new TableDescription.Location();
     }
 }

@@ -41,6 +41,9 @@ class SampleData {
             "delete from recipe",
             "delete from recipe_ingredient",
             "delete from recipe_product",
+            "delete from grocery_chain",
+            "delete from grocery_store",
+            "delete from price",
 
             "alter sequence \"Food_item_ID_seq\" restart",
             "alter sequence \"Food_ID_seq\" restart",
@@ -53,7 +56,10 @@ class SampleData {
             "alter sequence scaled_unit_id_seq restart",
             "alter sequence recipe_id_seq restart",
             "alter sequence recipe_ingredient_id_seq restart",
-            "alter sequence recipe_product_id_seq restart"
+            "alter sequence recipe_product_id_seq restart",
+            "alter sequence grocery_chain_id_seq restart",
+            "alter sequence grocery_store_id_seq restart",
+            "alter sequence price_id_seq restart"
     );
 
     private static final List<String> sampleDbData = List.of(
@@ -101,7 +107,11 @@ class SampleData {
             "insert into recipe_ingredient (amount, ingredient, recipe, unit, initiates) values " +
                     "(2, 3, 1, 2, 1)",
             "insert into recipe_product (amount, product, recipe, unit, initiates) values " +
-                    "(2, 3, 1, 2, 1)"
+                    "(2, 3, 1, 2, 1)",
+            "insert into grocery_chain (name, initiates) values " +
+                    "('BigShop', 1)",
+            "insert into grocery_store (name, grocery_chain, initiates) values " +
+                    "('City', 1, 1)"
     );
 
     private final Connection connection;

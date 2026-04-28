@@ -76,13 +76,11 @@ public class FoodItemHandler extends CrudDatabaseHandler<FoodItemRecord, FoodIte
                     .orElseGet(DSL::falseCondition);
 
             return currentUpdate(context, Arrays.asList(
-                    FOOD_ITEM.ID,
-                    DSL.inline(OffsetDateTime.from(newEatByDate)),
+                    DSL.inline(newEatByDate),
                     FOOD_ITEM.OF_TYPE,
                     DSL.inline(item.storedIn()),
                     FOOD_ITEM.REGISTERS,
                     FOOD_ITEM.BUYS,
-                    FOOD_ITEM.VERSION.add(1),
                     unitField
                     ),
                     FOOD_ITEM.ID.eq(item.id())
@@ -108,13 +106,11 @@ public class FoodItemHandler extends CrudDatabaseHandler<FoodItemRecord, FoodIte
                 return StatusCode.NOT_FOUND;
             }
             return currentUpdate(context, Arrays.asList(
-                    FOOD_ITEM.ID,
                     FOOD_ITEM.EAT_BY,
                     FOOD_ITEM.OF_TYPE,
                     FOOD_ITEM.STORED_IN,
                     DSL.inline(to.id()),
                     FOOD_ITEM.BUYS,
-                    FOOD_ITEM.VERSION.add(1),
                     FOOD_ITEM.UNIT
                     ),
                     FOOD_ITEM.REGISTERS.eq(from.id()))
@@ -142,13 +138,11 @@ public class FoodItemHandler extends CrudDatabaseHandler<FoodItemRecord, FoodIte
                     .collect(Collectors.toList());
 
             return currentUpdate(context, Arrays.asList(
-                    FOOD_ITEM.ID,
                     FOOD_ITEM.EAT_BY,
                     FOOD_ITEM.OF_TYPE,
                     FOOD_ITEM.STORED_IN,
                     DSL.inline(toDevice.id()),
                     DSL.inline(to.id()),
-                    FOOD_ITEM.VERSION.add(1),
                     FOOD_ITEM.UNIT
                     ),
                     FOOD_ITEM.BUYS.eq(from.id())
@@ -173,28 +167,13 @@ public class FoodItemHandler extends CrudDatabaseHandler<FoodItemRecord, FoodIte
         int result = context.select(DSL.count())
                 .from(FOOD_ITEM)
                 .where(FOOD_ITEM.STORED_IN.eq(location.id())
-                        .and(getValidTimeStartField().lessOrEqual(now))
-                        .and(now.lessThan(getValidTimeEndField()))
-                        .and(getTransactionTimeEndField().eq(INFINITY))
+                        .and(tableDescription().validTimeStart().lessOrEqual(now))
+                        .and(now.lessThan(tableDescription().validTimeEnd()))
+                        .and(tableDescription().transactionTimeEnd().eq(INFINITY))
                 )
                 .fetchOne(0, int.class);
 
         return result != 0;
-    }
-
-    @Override
-    protected Table<FoodItemRecord> getTable() {
-        return FOOD_ITEM;
-    }
-
-    @Override
-    protected TableField<FoodItemRecord, Integer> getIdField() {
-        return FOOD_ITEM.ID;
-    }
-
-    @Override
-    protected TableField<FoodItemRecord, Integer> getVersionField() {
-        return FOOD_ITEM.VERSION;
     }
 
     @Override
@@ -217,16 +196,7 @@ public class FoodItemHandler extends CrudDatabaseHandler<FoodItemRecord, FoodIte
     }
 
     @Override
-    protected List<Field<?>> getNontemporalFields() {
-        return Arrays.asList(
-                FOOD_ITEM.ID,
-                FOOD_ITEM.EAT_BY,
-                FOOD_ITEM.OF_TYPE,
-                FOOD_ITEM.STORED_IN,
-                FOOD_ITEM.REGISTERS,
-                FOOD_ITEM.BUYS,
-                FOOD_ITEM.VERSION,
-                FOOD_ITEM.UNIT
-        );
+    TableDescription<FoodItemRecord> tableDescription() {
+        return new TableDescription.FoodItem();
     }
 }
