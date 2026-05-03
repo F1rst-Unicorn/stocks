@@ -43,6 +43,8 @@ public abstract class PriceForPlotPointData {
 
     public abstract BigDecimal scale();
 
+    public abstract IdImpl<Unit> unitId();
+
     public abstract BigDecimal scaledUnitScale();
 
     public abstract String abbreviation();
@@ -51,7 +53,7 @@ public abstract class PriceForPlotPointData {
         return PricePerQuantity.create(price(), scale(), StoredAmount.create(scaledUnitScale(), abbreviation()));
     }
 
-    public static PriceForPlotPointData create(IdImpl<GroceryStore> groceryStoreId, IdImpl<GroceryChain> groceryChainId, String groceryStoreName, String groceryChainName, Instant date, BigDecimal price, BigDecimal scale, BigDecimal scaledUnitScale, String abbreviation) {
-        return new AutoValue_PriceForPlotPointData(groceryStoreId, groceryChainId, groceryStoreName, groceryChainName, date, price, scale, scaledUnitScale, abbreviation);
+    public static PriceForPlotPointData create(IdImpl<GroceryStore> groceryStoreId, IdImpl<GroceryChain> groceryChainId, String groceryStoreName, String groceryChainName, Instant date, BigDecimal price, BigDecimal scale, IdImpl<Unit> unitId, BigDecimal scaledUnitScale, String abbreviation) {
+        return new AutoValue_PriceForPlotPointData(groceryStoreId, groceryChainId, groceryStoreName, groceryChainName, date, price, scale, unitId, scaledUnitScale, abbreviation);
     }
 }

@@ -64,7 +64,7 @@ class PriceShowInteractorImpl implements PriceShowInteractor {
     private PriceForTableListing mapPriceForTable(PriceForTableListingData v) {
         return PriceForTableListing.create(
                 localiser.toLocalDateTime(v.date()),
-                v.groceryStoreName() + " " + v.groceryChainName(),
+                v.groceryChainName() + " " + v.groceryStoreName(),
                 PricePerQuantity.create(
                         v.price(),
                         v.scale(),
@@ -74,32 +74,40 @@ class PriceShowInteractorImpl implements PriceShowInteractor {
     }
 
     private PlotPointData groupPricePlotDataByChainAndStore(List<PriceForPlotPointData> data) {
-        Map<IdImpl<GroceryChain>, Map<IdImpl<GroceryStore>, List<PriceForPlotPointData>>> pricesByStore = data.stream()
-                .collect(groupingBy(PriceForPlotPointData::groceryChainId, groupingBy(PriceForPlotPointData::groceryStoreId)));
+        Map<IdImpl<Unit>, Map<IdImpl<GroceryChain>, Map<IdImpl<GroceryStore>, List<PriceForPlotPointData>>>> pricesByUnitByStore = data.stream()
+                .collect(groupingBy(PriceForPlotPointData::unitId,
+                        groupingBy(PriceForPlotPointData::groceryChainId,
+                                groupingBy(PriceForPlotPointData::groceryStoreId))));
 
-        var plotPointByChain = pricesByStore.entrySet().stream()
-                .map(groceryChain -> {
-                    var allPrices = groceryChain.getValue().values()
-                            .stream()
-                            .flatMap(List::stream)
-                            .map(v -> PlotPoint.create(localiser.toLocalDateTime(v.date()), v.toPricePerQuantity().normalisedPrice()))
-                            .sorted(Comparator.comparing(PlotPoint::x))
-                            .toList();
-                    String groceryChainName = groceryChain.getValue().values().stream().findAny().get().get(0).groceryChainName();
-                    return PricePlot.create(groceryChain.getKey(), groceryChainName, allPrices);
-                })
+        var plotPointByChain = pricesByUnitByStore.entrySet().stream()
+                .flatMap(unit -> unit.getValue().entrySet().stream()
+                    .map(groceryChain -> {
+                            var allPrices = groceryChain.getValue().values()
+                                    .stream()
+                                    .flatMap(List::stream)
+                                    .map(v -> PlotPoint.create(localiser.toLocalDateTime(v.date()), v.toPricePerQuantity().normalisedPrice()))
+                                    .sorted(Comparator.comparing(PlotPoint::x))
+                                    .toList();
+                            PriceForPlotPointData first = groceryChain.getValue().values().stream().findAny().get().get(0);
+                            return PricePlot.create(
+                                    groceryChain.getKey(),
+                                    first.groceryChainName() + " (" + first.abbreviation() + ")",
+                                    allPrices);
+                        }))
                 .toList();
 
-        var plotPointByStore = pricesByStore.entrySet().stream()
-                .flatMap(v -> v.getValue().values().stream())
-                .map(pricesOfGroceryStore -> {
-                    var first = pricesOfGroceryStore.get(0);
-                    var prices = pricesOfGroceryStore.stream()
-                            .map(v -> PlotPoint.create(localiser.toLocalDateTime(v.date()), v.toPricePerQuantity().normalisedPrice()))
-                            .sorted(Comparator.comparing(PlotPoint::x))
-                            .toList();
-                    return PricePlot.create(first.groceryStoreId(), first.groceryChainName() + " " + first.groceryStoreName(), prices);
-                })
+        var plotPointByStore = pricesByUnitByStore.entrySet().stream()
+                .flatMap(unit -> unit.getValue().entrySet().stream()
+                    .flatMap(v -> v.getValue().values().stream())
+                    .map(pricesOfGroceryStore -> {
+                        var first = pricesOfGroceryStore.get(0);
+                        var prices = pricesOfGroceryStore.stream()
+                                .map(v -> PlotPoint.create(localiser.toLocalDateTime(v.date()), v.toPricePerQuantity().normalisedPrice()))
+                                .sorted(Comparator.comparing(PlotPoint::x))
+                                .toList();
+                        return PricePlot.create(first.groceryStoreId(), first.groceryChainName() + " " + first.groceryStoreName() + " (" + first.abbreviation() + ")", prices);
+                    })
+                )
                 .toList();
 
         return new PlotPointData(plotPointByChain, plotPointByStore);

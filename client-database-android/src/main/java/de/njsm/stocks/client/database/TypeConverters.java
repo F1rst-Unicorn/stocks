@@ -153,6 +153,11 @@ public class TypeConverters {
     }
 
     @TypeConverter
+    public IdImpl<Unit> unitIdImpl(int id) {
+        return IdImpl.create(id);
+    }
+
+    @TypeConverter
     public int groceryStoreId(Id<GroceryChain> id) {
         return id.id();
     }

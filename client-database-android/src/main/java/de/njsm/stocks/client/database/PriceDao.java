@@ -125,6 +125,7 @@ abstract class PriceDao {
                 "grocery_chain.id as groceryChainId, " +
                 "grocery_chain.name as groceryChainName, " +
                 "scaled_unit.scale as scaledUnitScale, " +
+                "unit.id as unitId, " +
                 "unit.abbreviation as abbreviation " +
             "from price " +
             "join grocery_store on grocery_store.id = price.grocery_store " +
